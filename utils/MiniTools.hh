@@ -1,0 +1,483 @@
+#ifndef ESTTOOLS_MINITOOLS_HH_
+#define ESTTOOLS_MINITOOLS_HH_
+
+#if !defined(__CINT__) || defined(__MAKECINT__)
+#include <iostream>
+#include <sstream>
+#include <cassert>
+#include <memory>
+#include <chrono>
+#include <vector>
+#include <map>
+#include <set>
+#include <TTreeFormula.h>
+
+#include "Style.hh"
+#include "Quantity.h"
+#include "Config.h"
+
+using namespace std;
+#endif
+
+namespace EstTools{
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+template<typename Number>
+std::string toString(Number value, int precision = 2, bool setFixed = true){
+  std::stringstream ss;
+  if (setFixed) ss << fixed;
+  ss << setprecision(precision) << value;
+  return ss.str();
+}
+
+TString filterString(TString instr){
+  return instr.ReplaceAll("/", "_over_").ReplaceAll("*", "_times_");
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TString addCuts(const vector<TString>& cuts, TString prefix=""){
+  TString rlt = prefix;
+  for (unsigned i=0; i<cuts.size(); ++i){
+    if (i==0){
+      rlt = rlt + cuts.at(i);
+    }else{
+      rlt = rlt + " && " + cuts.at(i);
+    }
+  }
+  return rlt;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* normalize(TH1 *h, double norm = 1){
+  h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
+  return h;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* addOverflow(TH1 *h){
+  int nbins = h->GetNbinsX()+1;
+  double e1 = h->GetBinError(nbins-1);
+  double e2 = h->GetBinError(nbins);
+  h->AddBinContent(nbins-1, h->GetBinContent(nbins));
+  h->SetBinError(nbins-1, sqrt(e1*e1 + e2*e2));
+  h->SetBinContent(nbins, 0);
+  h->SetBinError(nbins, 0);
+  return h;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* addUnderflow(TH1 *h){
+  double e1 = h->GetBinError(1);
+  double e0 = h->GetBinError(0);
+  h->AddBinContent(1, h->GetBinContent(0));
+  h->SetBinError(1, sqrt(e1*e1 + e0*e0));
+  h->SetBinContent(0, 0);
+  h->SetBinError(0, 0);
+  return h;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quantity getHistBin(const TH1* h, int ibin){
+  return Quantity(h->GetBinContent(ibin), h->GetBinError(ibin));
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void setHistBin(TH1* h, int ibin, const Quantity& q){
+  h->SetBinContent(ibin, q.value);
+  h->SetBinError(ibin, q.error);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1D* convertToHist(vector<Quantity> vec, TString hname, TString title, const BinInfo *bin=nullptr){
+  auto nbins = vec.size();
+  TH1D *hist;
+
+  if (bin && bin->nbins==nbins){
+    hist = new TH1D(hname, title, nbins, bin->plotbins.data());
+    hist->SetXTitle(bin->label + (bin->unit=="" ? "" : "["+bin->unit+"]"));
+  }else{
+    hist = new TH1D(hname, title, nbins, 0, nbins);
+  }
+  hist->Sumw2();
+  for (unsigned i=0; i<nbins; ++i){
+    hist->SetBinContent(i+1, vec.at(i).value);
+    hist->SetBinError(i+1, vec.at(i).error);
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double getHistXCenter(TH1* hist, double min=1, double max=-1){
+  assert(hist);
+  double sum_evt = 0;
+  double sum_pos = 0;
+  int lowBin, highBin;
+  if (min<=max){
+    lowBin = hist->FindBin(min);
+    lowBin = lowBin>0 ? lowBin : 1;
+    highBin = hist->FindBin(max);
+    if (max==hist->GetBinLowEdge(highBin)) --highBin;
+    highBin = highBin<=hist->GetNbinsX() ? highBin : hist->GetNbinsX();
+  }else{
+    lowBin = 1;
+    highBin = hist->GetNbinsX();
+  }
+  for (int ibin=lowBin; ibin<=highBin; ++ibin){
+    double value = hist->GetBinContent(ibin);
+    double pos   = hist->GetXaxis()->GetBinCenter(ibin);
+    sum_evt += value;
+    sum_pos += value * pos;
+  }
+  return sum_pos/sum_evt;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* sumHists(const std::vector<TH1*>& hists, const std::vector<double>& weights, TString name = ""){
+  assert(!hists.empty());
+  assert(hists.size() == weights.size());
+  auto hist = (TH1*)hists.front()->Clone(name!="" ? name : (hists.front()->GetName()+TString("_sum")));
+  hist->Reset();
+  hist->Sumw2();
+#ifdef DEBUG_
+  cout << (name!="" ? name : (hists.front()->GetName()+TString("_sum"))) << endl;
+#endif
+  for (unsigned i=0; i<hists.size(); ++i){
+    hist->Add(hists.at(i), weights.at(i));
+#ifdef DEBUG_
+    cout << "---, " << hists.at(i)->GetName() << ", ... x " << weights.at(i) << endl;
+#endif
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* sumHists(const std::vector<TH1*>& hists, TString name = ""){
+  assert(!hists.empty());
+  auto hist = (TH1*)hists.front()->Clone(name!="" ? name : (hists.front()->GetName()+TString("_sum")));
+  hist->Reset();
+  hist->Sumw2();
+#ifdef DEBUG_
+  cout << (name!="" ? name : (hists.front()->GetName()+TString("_sum"))) << endl;
+#endif
+  for (unsigned i=0; i<hists.size(); ++i){
+    hist->Add(hists.at(i));
+#ifdef DEBUG_
+    cout << "    --- " << hists.at(i)->GetName() << endl;
+#endif
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1D* getSummedHist(std::vector<TTree*> intrees, std::vector<double> weights, TString plotvar, TString wgtvar, TString sel, TString hname, TString title, int nbinsx, double xmin, double xmax){
+  assert(intrees.size()==weights.size());
+  TH1D* hist = new TH1D(hname, title, nbinsx, xmin, xmax);
+  hist->Sumw2();
+  TH1D* htmp = new TH1D("htmp", title, nbinsx, xmin, xmax);
+  hist->Sumw2();
+  TString cutstr = wgtvar + "*(" + sel + ")";
+  for (unsigned i=0; i<intrees.size(); ++i){
+#ifdef DEBUG_
+    cout << hname << endl << intrees.at(i)->GetTitle() << ": " << cutstr << endl;
+#endif
+    intrees.at(i)->Project("htmp", plotvar, cutstr, "e");
+    hist->Add(htmp, weights.at(i));
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1D* getSummedHist(std::vector<TTree*> intrees, std::vector<double> weights, TString plotvar, TString wgtvar, TString sel, TString hname, TString title, std::vector<double> xbins){
+  assert(intrees.size()==weights.size());
+  TH1D* hist = new TH1D(hname, title, xbins.size()-1, xbins.data());
+  hist->Sumw2();
+  TH1D* htmp = new TH1D("htmp", title, xbins.size()-1, xbins.data());
+  hist->Sumw2();
+  TString cutstr = wgtvar + "*(" + sel + ")";
+  for (unsigned i=0; i<intrees.size(); ++i){
+#ifdef DEBUG_
+    cout << hname << endl << intrees.at(i)->GetTitle() << ": " << cutstr << endl;
+#endif
+    intrees.at(i)->Project("htmp", plotvar, cutstr, "e");
+    hist->Add(htmp, weights.at(i));
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString sel, const TH1 *hWeights, TString rewgtvar, TString hname, TString title, std::vector<double> xbins){
+  TH1D* hist = new TH1D(hname, title, xbins.size()-1, xbins.data());
+  TString rewgtstr;
+  for (int ibin=0; ibin<=hWeights->GetNbinsX()+1; ++ibin){
+    TString cond;
+    if (ibin==0){
+      cond = "(" + rewgtvar + "<" + std::to_string(hWeights->GetBinLowEdge(1)) + ")";
+    }else if (ibin==hWeights->GetNbinsX()+1){
+      cond = "(" + rewgtvar + ">=" + std::to_string(hWeights->GetBinLowEdge(hWeights->GetNbinsX()+1)) + ")";
+    }else{
+      cond = "(" + rewgtvar + ">=" + std::to_string(hWeights->GetBinLowEdge(ibin)) + "&&" + rewgtvar + "<" + std::to_string(hWeights->GetBinLowEdge(ibin)+hWeights->GetBinWidth(ibin)) + ")";
+    }
+    rewgtstr = rewgtstr + "*(" + cond + "*" + std::to_string(hWeights->GetBinContent(ibin)) + " + (!" + cond + ")*1.0" + ")";
+  }
+  TString cutstr = wgtvar + "*(" + sel + ")" + rewgtstr;
+#ifdef DEBUG_
+  cout << hname << endl << intree->GetTitle() << ": " << cutstr << endl;
+#endif
+  intree->Project(hname, plotvar, cutstr, "e");
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString sel, const TH1 *hWeights, TString rewgtvar, TString hname, TString title, int nbinsx, double xmin, double xmax){
+  TH1D* hist = new TH1D(hname, title, nbinsx, xmin, xmax);
+  TString rewgtstr;
+  for (int ibin=0; ibin<=hWeights->GetNbinsX()+1; ++ibin){
+    TString cond;
+    if (ibin==0){
+      cond = "(" + rewgtvar + "<" + std::to_string(hWeights->GetBinLowEdge(1)) + ")";
+    }else if (ibin==hWeights->GetNbinsX()+1){
+      cond = "(" + rewgtvar + ">=" + std::to_string(hWeights->GetBinLowEdge(hWeights->GetNbinsX()+1)) + ")";
+    }else{
+      cond = "(" + rewgtvar + ">=" + std::to_string(hWeights->GetBinLowEdge(ibin)) + "&&" + rewgtvar + "<" + std::to_string(hWeights->GetBinLowEdge(ibin)+hWeights->GetBinWidth(ibin)) + ")";
+    }
+    rewgtstr = rewgtstr + "*(" + cond + "*" + std::to_string(hWeights->GetBinContent(ibin)) + " + (!" + cond + ")*1.0" + ")";
+  }
+  TString cutstr = wgtvar + "*(" + sel + ")" + rewgtstr;
+#ifdef DEBUG_
+  cout << hname << endl << intree->GetTitle() << ": " << cutstr << endl;
+#endif
+  intree->Project(hname, plotvar, cutstr, "e");
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdded = true, bool isFilled = false, vector<Color_t> colors = {}){
+  int count = 0;
+  for (unsigned ih = 0; ih < hists.size(); ++ih){
+    auto *h = hists.at(ih);
+    if (isNormalized) normalize(h);
+    if (isOverflowAdded) addOverflow(h);
+
+    bool isColored = false;
+    if (ih < colors.size()){
+      h->SetLineColor(colors.at(ih));
+      isColored = true;
+    }else {
+      TString hname = h->GetName();
+      for (const auto &c : COLOR_MAP){
+        if (hname.Contains(c.first, TString::kIgnoreCase)){
+          h->SetLineColor(c.second);
+          isColored = true;
+          break;
+        }
+      }
+    }
+    if (!isColored) {
+      h->SetLineColor(comp_colors.at(count % comp_colors.size()));
+      ++count;
+    }
+    h->SetMarkerColor(h->GetLineColor());
+  }
+
+  std::set<Color_t> colorset;
+  for (auto *h : hists){
+    auto color = h->GetLineColor();
+    if (colorset.find(color)!=colorset.end()){
+      h->SetLineColor(color+2);
+      h->SetMarkerColor(color+2);
+    }
+    colorset.insert(color);
+  }
+
+  if (isFilled){
+    for (auto h:hists){
+      if (h->GetLineColor()!=kBlack)
+        h->SetFillColor(h->GetLineColor()); h->SetFillStyle(1001); h->SetLineColor(kBlack);
+    }
+  }
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TLegend* initLegend(){
+  double fLegX1 = 0.6, fLegY1 = 0.88, fLegX2 = 0.93, fLegY2 = 0.88;
+  TLegend *leg = new TLegend(fLegX1, fLegY1, fLegX2, fLegY2);
+  leg->SetFillStyle (0);
+  leg->SetFillColor (0);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.05);
+  return leg;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType = "L", double height = 0.06){
+  double fLegY1 = leg->GetY1()-height;
+  leg->SetY1(fLegY1);
+  leg->AddEntry(obj, label, legType);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "L"){
+  assert(hists.size() == labels.size());
+  double fLegY1 = leg->GetY1()-0.06*hists.size();
+  leg->SetY1(fLegY1);
+  for (unsigned i=0; i<hists.size(); ++i){
+    leg->AddEntry(hists.at(i), labels.at(i), legType);
+  }
+  return leg;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "L"){
+  assert(hists.size() == labels.size());
+  auto leg = initLegend();
+  appendLegends(leg, hists, labels, legType);
+  return leg;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void drawHeader(TString text, TPad *p=0, double lowX = 0.7, double lowY = 0.93)
+{
+#ifdef TDR_STYLE_
+  if (text.Contains("TeV")) {
+    if (p) CMS_lumi(p, 4, 10);
+    return;
+  }
+#endif
+  TPaveText* lumi  = new TPaveText(lowX, lowY, lowX+0.25, lowY+0.04, "NDC");
+  lumi->SetBorderSize(   0 );
+  lumi->SetFillStyle(    0 );
+  lumi->SetTextAlign(   31 );
+  lumi->SetTextSize ( 0.045);
+  lumi->SetTextColor(    1 );
+  lumi->SetTextFont (   62 );
+  lumi->AddText(text);
+  lumi->Draw();
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void drawTextBox(TString text, double x1, double y1, double x2, double y2, int align = 21, int bordersize=0, int textcolor=1, int fillcolor=0){
+
+  TPaveText *tb = new TPaveText(x1,y1,x2,y2,"NDC");
+  tb->SetTextColor(textcolor);
+  tb->SetTextAlign(align);
+
+  if(fillcolor==-1)
+    tb->SetFillStyle(0);
+  else
+    tb->SetFillColor(fillcolor);
+
+  tb->SetBorderSize(bordersize);
+  tb->AddText(text);
+  tb->Draw();
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void drawText(TString text, double lowX = 0.7, double lowY = 0.93)
+{
+  TPaveText* lumi  = new TPaveText(lowX, lowY, lowX+0.25, lowY+0.04, "NDC");
+  lumi->SetBorderSize(   0 );
+  lumi->SetFillStyle(    0 );
+  lumi->SetTextAlign(   11 );
+  lumi->SetTextSize ( 0.03);
+  lumi->SetTextColor(    1 );
+  lumi->SetTextFont (   62 );
+  lumi->AddText(text);
+  lumi->Draw();
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void getRatioUpDownErrors(int dN, double mN, double mE, double& eL, double& eH){
+  if(mN <= 0) return;
+  if(dN < 0)  return;
+  eL = 0;
+  eH = 0;
+
+  if(mN <= 0) return;
+  if(dN < 0)  return;
+
+  const double alpha = 1 - 0.6827;
+  static TRandom3 * rand = new TRandom3(1234);
+
+  const int nEntries = 10000;
+  vector<float> h;
+  h.reserve(nEntries);
+  vector<float> hL;
+  hL.reserve(nEntries);
+
+  for(unsigned int i = 0; i < nEntries; ++i){
+    double ndL = 0;
+    for(int iD = 0; iD < dN; ++iD){
+      ndL -= TMath::Log(rand->Uniform());
+    }
+    double nd = ndL -  TMath::Log(rand->Uniform());
+    double nm = rand->Gaus(mN,mE);
+    if(nm < 0) nm = fabs(nm);
+    h.push_back(nd/nm);
+    hL.push_back(ndL/nm);
+  }
+
+
+
+  if(dN){
+      std::sort(hL.begin(), hL.end());
+      eL = hL[int( double(nEntries)*alpha/2  )];
+      eL = double(dN)/mN - eL;
+   }
+  std::sort(h.begin(), h.end());
+  eH = h[int( double(nEntries)* (1 - alpha/2)  )];
+  eH = eH - double(dN)/mN;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* getAsymmErrors(TH1* h){
+  TGraphAsymmErrors* gr = new TGraphAsymmErrors(h);
+  const double alpha = 1 - 0.6827;
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    int dN = gr->GetY()[ibin];
+    double L =  (dN == 0) ? 0  : (ROOT::Math::gamma_quantile(alpha/2,dN,1.));
+    double U =  ROOT::Math::gamma_quantile_c(alpha/2,dN+1,1) ;
+    gr->SetPointEYhigh(ibin, U - double(dN));
+    gr->SetPointEYlow(ibin, double(dN)- L);
+    if(dN == 0) {
+      gr->SetPointEXlow(ibin, 0);
+      gr->SetPointEXhigh(ibin, 0);
+    }
+  }
+  return gr;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* getRatioAsymmErrors(TH1* hD, TH1* hM) {
+
+  TGraphAsymmErrors* gr = new TGraphAsymmErrors(hD);
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    int dN = gr->GetY()[ibin];
+    double mN = hM->GetBinContent(ibin+1);
+    double mE = hM->GetBinError(ibin+1);
+    double eL = 0, eH = 0;
+    gr->SetPoint(ibin, gr->GetX()[ibin], double(dN)/mN);
+    getRatioUpDownErrors(dN, mN, mE, eL, eH);
+    gr->SetPointEYhigh(ibin, eH);
+    gr->SetPointEYlow(ibin, eL);
+  }
+  return gr;
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Quantity dileptonZtoLLScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Quantity tt_peak, Quantity data_off, Quantity dy_off, Quantity tt_off){
+  double num = (data_off*tt_peak - data_peak*tt_off).value;
+  double den = (  dy_off*tt_peak -   dy_peak*tt_off).value;
+  double val = num/den;
+  double err = (tt_peak.value*data_off - tt_off.value*data_peak - val*tt_peak.value*dy_off + val*tt_off.value*dy_peak
+      + (data_off.value-val*dy_off.value)*tt_peak + (-data_peak.value+val*dy_peak.value)*tt_off).error / std::abs(den);
+  return Quantity(val, err);
+}
+
+Quantity dileptonTTbarScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Quantity tt_peak, Quantity data_off, Quantity dy_off, Quantity tt_off){
+  return dileptonZtoLLScaleFactorHelper(data_peak, tt_peak, dy_peak, data_off, tt_off, dy_off);
+}
+
+}
+#endif /*ESTTOOLS_MINITOOLS_HH_*/
