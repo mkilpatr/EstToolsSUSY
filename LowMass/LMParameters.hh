@@ -7,7 +7,7 @@ namespace EstTools{
 
 // lumi and base weight
 const TString lumistr = "3.99";
-const TString wgtvar = lumistr+"*weight";
+const TString wgtvar = lumistr+"*weight*truePUWeight";
 //const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight";
 
 // photon trigger eff.

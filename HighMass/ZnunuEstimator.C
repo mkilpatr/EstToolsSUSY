@@ -118,7 +118,7 @@ void ZvsGamma(){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void DoubleRatios(TString extraCut = "", TString suffix = ""){
+void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix = ""){
 
   const TString drbase = "met>100 && njets>=5";
   std::map<TString, TString> DRNormMap{
@@ -150,7 +150,8 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
       }
 
       for (auto var : vars){
-        hists["pho_"+norm.first].push_back(z.plotDataMC(varDict.at(var), {"gjets", "qcd-fake", "qcd-frag"}, "singlepho", Category::dummy_category(), true));
+        auto phoDataMC = z.plotDataMC(varDict.at(var), {"gjets", "qcd-fake", "qcd-frag"}, "singlepho", Category::dummy_category(), normalized);
+        hists["pho_"+norm.first].push_back(phoDataMC);
       }
     }
 
@@ -195,7 +196,7 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
         hdata->Add(httbar, -1);
 
         double normFactor = hdata->Integral(0, hdata->GetNbinsX()+1)/hdyll->Integral(0, hdyll->GetNbinsX()+1);
-        hdyll->Scale( normFactor );
+        if(normalized) hdyll->Scale( normFactor );
         hdata->Divide(hdyll);
 
         hists["z_"+norm.first].push_back(hdata);
@@ -219,7 +220,7 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
       auto leg = prepLegends({h0, h1}, {"#gamma+jets"+labels.at(norm.first), "Z#rightarrowll"+labels.at(norm.first)});
       auto c = drawCompAndRatio({h0, h1}, {makeRatioHists(h1, h0)}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
 
-      c->SaveAs(phoConfig().outputdir+"/znunu_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+norm.first+".pdf");
+      c->SaveAs(phoConfig().outputdir+"/znunu_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
 
     }
   }
@@ -292,6 +293,7 @@ void plotZllInclusive(){
 
   map<TString, BinInfo> varDict {
     {"met",       BinInfo("met", "#slash{E}_{T}", 16, 0, 800, "GeV")},
+    {"npv",       BinInfo("npv", "Number of Primary Vertices", 40, -0.5, 39.5)},
     {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
     {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
     {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
