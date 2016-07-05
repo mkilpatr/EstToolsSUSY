@@ -486,6 +486,28 @@ public:
     }
   }
 
+  void printSummary(const vector<vector<Quantity>> &bkgs, const vector<Quantity> &data){
+    auto totalbkg = bkgs.front();
+    for (unsigned ibkg=1; ibkg<bkgs.size(); ++ibkg) totalbkg = totalbkg + bkgs.at(ibkg);
+
+    cout << setw(30) << "category" << "\t " << setw(30) << "pred." << setw(30) << "obs." << endl;
+    unsigned ibin=0;
+    for (const auto &cat_name : config.categories){
+      Quantity pred(0, 0);
+      Quantity obs(0, 0);
+      const auto & cat = config.catMaps.at(cat_name);
+      for (const auto &b : cat.bin.cuts){
+        pred = pred + totalbkg.at(ibin);
+        obs  = obs  + data.at(ibin);
+      }
+      cout << setw(30) << cat.label << "\t "
+          << setw(30) << setprecision(2) << pred
+          << setw(30) << setprecision(0) << obs.value << endl;
+      ++ibin;
+    }
+
+  }
+
 
 public:
   map<TString, vector<Quantity>> yields;  // stores yields of all bins in all categories for each sample

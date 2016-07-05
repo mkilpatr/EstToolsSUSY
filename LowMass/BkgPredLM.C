@@ -32,6 +32,7 @@ void BkgPredLM(){
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
+//  q.runBootstrapping = false;
   q.pred();
   q.printYields();
 
@@ -95,4 +96,9 @@ void BkgPredLM(){
   plot(pred, "fbd_pred_lepplusmet");
   plot(altpred, "fbd_pred_trad");
 
+  cout << "\n\n Summary Lep+MET \n";
+  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
+
+  cout << "\n\n Summary Traditional \n";
+  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
 }
