@@ -336,6 +336,15 @@ TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void setLegend(TLegend *leg, int ncols, double x1, double y1, double x2, double y2){
+  leg->SetNColumns(ncols);
+  leg->SetX1(x1);
+  leg->SetY1(y1);
+  leg->SetX2(x2);
+  leg->SetY2(y2);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void drawHeader(TString text, TPad *p=0, double lowX = 0.7, double lowY = 0.93)
 {
 #ifdef TDR_STYLE_
