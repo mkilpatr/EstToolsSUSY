@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#include "HMParameters.hh"
+#include "LMParameters_LowMET.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
@@ -15,12 +15,12 @@
 
 using namespace EstTools;
 
-void BkgPredHM(){
+void BkgPredLM_LowMET(){
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
   z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
-  z.phocr_normMap = {};
+  z.phocr_normMap = phoNormMap;
   z.pred();
   z.printYields();
 
@@ -86,6 +86,7 @@ void BkgPredHM(){
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999);
     c->SetTitle(outputBase);
+    c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
     c->Print(s.config.outputdir+"/" + outputBase +".C");
 
@@ -96,12 +97,12 @@ void BkgPredHM(){
     output->Close();
   };
 
-  plot(pred, "std_pred_lepplusmet");
-  plot(altpred, "std_pred_trad");
+  plot(pred, "fbd_pred_lepplusmet");
+  plot(altpred, "fbd_pred_trad");
 
   cout << "\n\n Summary Lep+MET \n";
-  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("rare-sr")}, s.yields.at("data-sr"));
+  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
 
   cout << "\n\n Summary Traditional \n";
-  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred"), alt.yields.at("rare-sr")}, s.yields.at("data-sr"));
+  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
 }

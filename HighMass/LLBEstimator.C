@@ -37,7 +37,14 @@ void plotLepCR(){
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
-  z.plotDataMC({"ttbar", "wjets", "tW", "ttW"}, "singlelep", false);
+  vector<TString> mc_samples = {"ttbar", "wjets", "tW", "ttW"};
+  TString data_sample = "singlelep";
+
+  for (auto category : z.config.categories){
+    const auto &cat = z.config.catMaps.at(category);
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
+  }
 
 }
 
@@ -69,7 +76,7 @@ void ZeroVsOneLep(){
 
   vector<TString> vars;
 
-  vars = {"mtcsv12met", "j1lpt", "csvj1pt", "njets" ,"met"};
+  vars = {"mtcsv12met"};
   for (auto v : vars){
     z.setPostfix("baseline_nb0");
     z.plotComp(varDict.at(v), {"ttbarplusw-0b", "tt_revert-0b", "tt_lepcr-0b"}, {"dummy"});
@@ -235,6 +242,7 @@ void DoubleRatios(bool srsel=false){
 void srYields(){
 
   auto config = lepConfig();
+  config.crCatMaps.clear();
 
   config.samples.clear();
   config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar-mg",        lepvetowgt, datasel + trigSR + vetoes);
@@ -302,22 +310,22 @@ void plot1LepInclusive(){
 //    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
 //    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
 //    {"ncttstd",   BinInfo("ncttstd", "N_{CTT}", 3, -0.5, 2.5)},
-    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)}
-//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
+//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
+    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
 //    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
 //    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
 //    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
-//    {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)}
-//    {"lp",  BinInfo("lp", "L_{P}", 40, -2, 2.)}
+//    {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
+//    {"lp",  BinInfo("lp", "L_{P}", 40, -2, 2.)},
   };
 
   for (auto &var : varDict){
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true);
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);
   }
 
 }

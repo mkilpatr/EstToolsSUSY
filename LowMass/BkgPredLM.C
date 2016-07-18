@@ -39,6 +39,7 @@ void BkgPredLM(){
   vector<TH1*> pred;
   pred.push_back(convertToHist(q.yields.at("_pred"),"qcd_pred",";Search Region;Events"));
 //  pred.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_pred",";Search Region;Events"));
+  pred.push_back(convertToHist(l.yields.at("rare-sr"),"rare_pred",";Search Region;Events"));
   pred.push_back(convertToHist(l.yields.at("_pred"),"ttbarplusw_pred",";Search Region;Events"));
   pred.push_back(convertToHist(z.yields.at("_pred"),"znunu_pred",";Search Region;Events"));
 
@@ -52,13 +53,15 @@ void BkgPredLM(){
   vector<TH1*> altpred;
   altpred.push_back(convertToHist(q.yields.at("_pred"),"qcd_pred",";Search Region;Events"));
 //  altpred.push_back(convertToHist(alt.yields.at("qcd-sr"),"qcd_pred",";Search Region;Events"));
+  altpred.push_back(convertToHist(alt.yields.at("rare-sr"),"rare_pred",";Search Region;Events"));
   altpred.push_back(convertToHist(alt.yields.at("_pred"),"ttbarplusw_pred",";Search Region;Events"));
   altpred.push_back(convertToHist(z.yields.at("_pred"),"znunu_pred",";Search Region;Events"));
 
 
   vector<TH1*> mc;
-  mc.push_back(convertToHist(q.yields.at("qcd-sr-withveto"),"qcd_mc",";Search Region;Events"));
+  mc.push_back(convertToHist(q.yields.at("qcd-withveto-sr"),"qcd_mc",";Search Region;Events"));
 //  mc.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_mc",";Search Region;Events"));
+  mc.push_back(convertToHist(l.yields.at("rare-sr"),"rare_mc",";Search Region;Events"));
   mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Search Region;Events"));
   mc.push_back(convertToHist(z.yields.at("znunu-sr"),"znunu_mc",";Search Region;Events"));
 
@@ -68,7 +71,7 @@ void BkgPredLM(){
 
   auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
 
-  vector<TString> bkglabels = {"QCD", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
+  vector<TString> bkglabels = {"QCD", "Rare", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
   vector<TString> datalabel = {"Data"};
 
   auto plot = [&](const vector<TH1*> &vpred, TString outputBase) {

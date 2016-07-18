@@ -125,7 +125,7 @@ struct Category{
 
   TString name;   // name of the category
   TString cut;    // cut string for this category
-  TString label;  // label: TO_BE_IMPLEMENTED
+  TString label;  // label
 
   BinInfo bin;    // binning infomation
 

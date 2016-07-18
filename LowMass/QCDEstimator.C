@@ -29,7 +29,7 @@ void plotQCDCR(){
   BaseEstimator z(config.outputdir);
   z.setConfig(config);
 
-  z.plotDataMC({"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr", "qcd-cr-withveto"}, "data-cr", false);
+  z.plotDataMC({"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr", "qcd-withveto-cr"}, "data-cr", false);
 
 }
 

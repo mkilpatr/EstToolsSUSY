@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include <vector>
 #include <map>
 #include <set>
@@ -17,7 +18,6 @@
 #define DEBUG_
 
 #define PLOT_MAX_YSCALE 1.25
-#define LOG_YMIN 0.01
 
 #define RATIO_YMIN 0
 #define RATIO_YMAX 1.999
@@ -26,6 +26,8 @@ using namespace std;
 #endif
 
 namespace EstTools{
+
+double LOG_YMIN = 0.01;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity getYields(TTree *intree, TString wgtvar, TString sel){
@@ -353,7 +355,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   }
   hbkgtotal->SetLineColorAlpha(kWhite,0);
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
-  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000: plotMax));
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
   hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
@@ -428,7 +430,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  hData->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
+  hData->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
   hData->SetMinimum(plotlog? LOG_YMIN : 0);
   if(lowX<highX) hData->GetXaxis()->SetRangeUser(lowX, highX);
   hData->GetXaxis()->SetLabelOffset(0.20);

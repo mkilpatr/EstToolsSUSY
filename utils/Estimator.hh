@@ -106,7 +106,7 @@ public:
     int ibin = 0;
     for (const auto &cat_name : config.categories){
       const auto & cat = config.catMaps.at(cat_name);
-      cout << setw(30) << cat.label << "\t ";
+      cout << setw(30) << cat.name << "\t ";
       for (const auto &b : cat.bin.cuts){
         const auto &quantity = vec.at(ibin++);
         cout << fixed << setprecision(2) << setw(10) << quantity << "\t ";
@@ -118,13 +118,13 @@ public:
     cout << endl;
   }
 
-  void calcYields(){
+  virtual void calcYields(){
     vector<TString> snames;
     for (const auto &s : config.samples) snames.push_back(s.first);
     doYieldsCalc(snames);
   }
 
-  void calcYieldsExcludes(const vector<TString> &excludes){
+  virtual void calcYieldsExcludes(const vector<TString> &excludes){
     vector<TString> snames;
     for (const auto &s : config.samples) {
       if ( std::find(excludes.begin(), excludes.end(), s.first) != excludes.end() ) continue;
@@ -133,7 +133,7 @@ public:
     doYieldsCalc(snames);
   }
 
-  void doYieldsCalc(const vector<TString> &sample_names){
+  virtual void doYieldsCalc(const vector<TString> &sample_names, int nBootstrapping = 0){
     // calculate yields for the samples in snames
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
@@ -142,12 +142,30 @@ public:
       yields[sname] = vector<Quantity>();
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
+      auto srCatMaps = config.catMaps;
       for (auto &cat_name : config.categories){
         const auto & cat = catMaps.at(cat_name);
         auto cut = config.sel + " && " + cat.cut;
-        auto v = getYieldVector(sample.tree, sample.wgtvar, cut + sample.sel, cat.bin);
-        yields[sname].insert(yields[sname].end(), v.begin(), v.end());
+        auto v = getYieldVectorWrapper(sample.tree, sample.wgtvar, cut + sample.sel, cat.bin, nBootstrapping);
+        if (v.size()<srCatMaps.at(cat_name).bin.nbins){
+          // !! FIXME : if cr bin numbers < sr: repeat the last bin
+          vector<Quantity> vv(v);
+          for (unsigned ibin=v.size(); ibin<srCatMaps.at(cat_name).bin.nbins; ++ibin){
+            vv.push_back(v.back());
+          }
+          yields[sname].insert(yields[sname].end(), vv.begin(), vv.end());
+        }else{
+          yields[sname].insert(yields[sname].end(), v.begin(), v.end());
+        }
       }
+    }
+  }
+
+  virtual vector<Quantity> getYieldVectorWrapper(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping=0){
+    if (nBootstrapping==0){
+      return getYieldVector(intree, wgtvar, sel, bin);
+    }else{
+      throw std::invalid_argument("BaseEstimator::getYieldVectorWrapper: Bootstrapping not implemented!");
     }
   }
 
@@ -182,7 +200,7 @@ public:
 
     for (auto &cat_name : config.categories){
       const auto &cat = config.catMaps.at(cat_name);
-      cout << cat.label << endl;
+      cout << cat.name << endl;
       for (auto &bin : cat.bin.plotnames){
         cout << bin << "\t";
         for (const auto &c : columns){
@@ -398,7 +416,7 @@ public:
 
 
 
-  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false){
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
     // make DataMC plots with the given cateogory selection
     // possible to normalize MC to Data with a different selection (set by *norm_cut*)
 
@@ -468,6 +486,8 @@ public:
       c = drawStack(mchists, {}, plotlog, leg);
     }
 
+    if (plotextra) (*plotextra)(c);
+
     TString plotname = filterString(plotvar)+"_DataMC_"+category.name+"__"+postfix_;
     c->SetTitle(plotname);
     savePlot(c, plotname);
@@ -478,11 +498,11 @@ public:
       return nullptr;
   }
 
-  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = ""){
+  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);
-      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut);
+      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra);
     }
   }
 
@@ -499,11 +519,11 @@ public:
       for (const auto &b : cat.bin.cuts){
         pred = pred + totalbkg.at(ibin);
         obs  = obs  + data.at(ibin);
+        ++ibin;
       }
-      cout << setw(30) << cat.label << "\t "
+      cout << setw(30) << cat.name << "\t "
           << setw(30) << setprecision(2) << pred
           << setw(30) << setprecision(0) << obs.value << endl;
-      ++ibin;
     }
 
   }
