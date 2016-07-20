@@ -36,7 +36,14 @@ void plotLepCR(){
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
-  z.plotDataMC({"ttbar", "wjets", "tW", "ttW"}, "singlelep", false);
+  vector<TString> mc_samples = {"ttbar", "wjets", "tW", "ttW"};
+  TString data_sample = "singlelep";
+
+  for (auto category : z.config.categories){
+    const auto &cat = z.config.catMaps.at(category);
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
+  }
 
 }
 
@@ -138,9 +145,15 @@ void compSLep(){
 // ~~~~~~~
 void DoubleRatios(bool srsel=false){
 
-  vector<TString> vars = {"mtcsv12met", "j1lpt", "csvj1pt", "njets", "met"};
+  map<TString, TString> normMap = {{"inc", "nbjets>=0"}};
+
+  map<TString, TString> labels = {
+      {"inc", ""}, {"nb0", " N_{B}=0"}, {"nb1", " N_{B}#geq1, N_{B}^{L}=1"}, {"nb2", " N_{B}#geq1, N_{B}^{L}#geq2"}
+  };
+
+  vector<TString> vars = {"mtcsv12met", "j1lpt", "csvj1pt", "njets", "met", "nlbjets", "ptb12", "leptonpt"};
 //  vector<TString> vars = {"leptonpt", "origmet", "leptonptovermet"};
-//  vector<TString> vars = {"csvj1pt_1"};
+//  vector<TString> vars = {"leptonpt"};
   map<TString, vector<TH1*>> hists;
 
   {
@@ -189,9 +202,6 @@ void DoubleRatios(bool srsel=false){
 
   }
 
-  map<TString, TString> labels = {
-      {"nb0", " N_{B}=0"}, {"nb1", " N_{B}#geq1"}
-  };
   for (auto &norm : normMap){
     for (unsigned i=0; i<vars.size(); ++i){
       auto h0 = hists["noaddback_"+norm.first].at(i);
@@ -208,6 +218,7 @@ void DoubleRatios(bool srsel=false){
 
     }
   }
+
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -215,6 +226,7 @@ void DoubleRatios(bool srsel=false){
 void srYields(){
 
   auto config = lepConfig();
+  config.crCatMaps.clear();
 
   config.samples.clear();
   config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar-mg",        lepvetowgt, datasel + trigSR + vetoes);
@@ -247,26 +259,11 @@ void lepcrYields(){
 
   auto config = lepConfig();
 
-  config.samples.clear();
-  config.addSample("singlelep",   "Data",          "lepcr/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
-  config.addSample("ttbar",       "t#bar{t}",      "lepcr/ttbar-mg",        lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("wjets",       "W+jets",        "lepcr/wjets-ht",        lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("tW",          "tW",            "lepcr/tW",              lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("ttW",         "ttW",           "lepcr/ttW",             lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("qcd",         "QCD",           "lepcr/qcd",             lepselwgt, datasel + trigLepCR + lepcrsel);
-//  config.addSample("ww",          "WW",            "sr/ww",                 lepselwgt, datasel + trigLepCR + lepcrsel);
-//  config.addSample("wz",          "WZ",            "sr/wz",                 lepselwgt, datasel + trigLepCR + lepcrsel);
-//  config.addSample("zz",          "ZZ",            "sr/zz",                 lepselwgt, datasel + trigLepCR + lepcrsel);
-
-//  config.addSample("T2fbd_375_355",  "T2fbd_375_355",  "lepcr/signals/T2fbd_375_355", lepselwgt, datasel + trigLepCR + lepcrsel);
-//  config.addSample("T2fbd_375_325",  "T2fbd_375_325",  "lepcr/signals/T2fbd_375_325", lepselwgt, datasel + trigLepCR + lepcrsel);
-//  config.addSample("T2fbd_375_295",  "T2fbd_375_295",  "lepcr/signals/T2fbd_375_295", lepselwgt, datasel + trigLepCR + lepcrsel);
-
   BaseEstimator z(config);
 
-  z.calcYields();
+  z.calcYieldsExcludes({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"});
   z.printYields();
-  z.sumYields({"ttbar", "wjets", "tW", "ttW", "qcd"}, "Total BKG");
-  z.printYieldsTable({"ttbar", "wjets", "tW", "ttW", "qcd", "Total BKG", "singlelep"});
+  z.sumYields({"ttbar", "wjets", "tW", "ttW"}, "Total BKG");
+  z.printYieldsTable({"ttbar", "wjets", "tW", "ttW", "Total BKG", "singlelep"});
 
 }

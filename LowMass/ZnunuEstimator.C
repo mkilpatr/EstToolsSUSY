@@ -56,6 +56,7 @@ void plotSgamma(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
     TString norm_cut = "";
     for (const auto &nb : phoNormMap) {
       if(cat.name.Contains(nb.first)) {
@@ -63,7 +64,7 @@ void plotSgamma(){
         break;
       }
     }
-    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, true, addCuts({z.config.sel, norm_cut}));
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, true, addCuts({z.config.sel, norm_cut}), false, &plotextra);
   }
 
 }
@@ -137,8 +138,15 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
   vector<TString> zlllabels = {"N_{B}=0", "N_{B}#geq1"};
   vector<TString> pholabels = {"N_{B}^{L}=0", "N_{B}^{L}#geq1"};
 
-  vector<TString> vars = {"metzg"};
-//  vector<TString> vars = {"j1lpt", "csvj1pt"};
+//  vector<TString> nbcat = {"inc"};
+//  map<TString, TString> zllNormMap = {{"inc","nbjets>=0"}};
+//  vector<TString> phoNormCuts = {"nlbjets>=0"};
+//  vector<TString> zlllabels = {"N_{B}#geq0"};
+//  vector<TString> pholabels = {"N_{B}^{L}#geq0"};
+
+
+//  vector<TString> vars = {"metzg"};
+  vector<TString> vars = {"metzg", "j1lpt", "csvj1pt", "ptb12", "njets"};
   map<TString, vector<TH1*>> hists;
 
   {

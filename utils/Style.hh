@@ -36,6 +36,8 @@ using namespace std;
 
 namespace EstTools{
 
+TString getLumi();
+
 std::map<TString, Color_t> COLOR_MAP = {
     {"data",      kBlack},
     {"single",    kBlack},
@@ -52,6 +54,7 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"ttbar",     kAzure+6},
     {"ttw",       606},
     {"ttz",       797},
+    {"rare",      797},
     {"ww",        606},
     {"wz",        kGreen+3},
     {"zz",        kYellow-9}
@@ -358,7 +361,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   // ratio of "CMS" and extra text size
   float extraOverCmsTextSize  = 0.76;
 
-  TString lumi_13TeV = "4.0 fb^{-1}";
+  TString lumi_13TeV = getLumi()+" fb^{-1}";
   TString lumi_8TeV  = "19.7 fb^{-1}";
   TString lumi_7TeV  = "5.1 fb^{-1}";
   TString lumi_sqrtS = "";

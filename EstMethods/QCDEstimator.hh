@@ -11,6 +11,33 @@ using namespace std;
 
 namespace EstTools{
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vector<Quantity> getYieldVectorManual(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping){
+  assert(intree);
+
+  auto start = chrono::steady_clock::now();
+
+  auto metGetter = HistogramGetter(bin.var, bin.var, bin.label, bin.nbins, bin.plotbins.data());
+  metGetter.setUnderOverflow(false, true);
+  metGetter.setNBS(nBootstrapping);
+  auto htmp = metGetter.getHistogramManual(intree, sel, wgtvar, "htmp");
+
+  vector<Quantity> yields;
+  for (unsigned i=0; i<bin.nbins; ++i)
+  yields.push_back(getHistBin(htmp, i+1));
+#ifdef DEBUG_
+  cout << intree->GetTitle() << "(" << intree << ")" << ": " << wgtvar + "*(" + sel + ")" << ", " << bin.var << ", entries=" << htmp->GetEntries() << endl
+       << "  --> " << yields << endl;
+#endif
+
+  auto end = chrono::steady_clock::now();
+  auto diff = end - start;
+  cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+
+  return yields;
+}
+
+
 class QCDEstimator : public BaseEstimator {
 public:
   QCDEstimator() {}
@@ -21,8 +48,16 @@ public:
 
   virtual ~QCDEstimator() {}
 
+  virtual vector<Quantity> getYieldVectorWrapper(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping=0){
+    if (nBootstrapping==0){
+      return getYieldVector(intree, wgtvar, sel, bin);
+    }else{
+      return getYieldVectorManual(intree, wgtvar, sel, bin, 50);
+    }
+  }
+
   void naiveTF(){
-    yields["_NaiveTF"] = yields.at("qcd-sr-withveto") / yields.at("qcd-cr-withveto");
+    yields["_NaiveTF"] = yields.at("qcd-withveto-sr") / yields.at("qcd-withveto-cr");
   }
 
   void calcTF(){
@@ -30,43 +65,9 @@ public:
 
     cerr << "\n--->" << __func__ << endl;
 
-    if (!runBootstrapping){
-      cerr << "... Do NOT run bootstrapping ..." << endl;
-      yields["_TF"] = yields.at("qcd-sr") / yields.at("qcd-cr");
-      return;
-    }
+    doYieldsCalc({"qcd-sr", "qcd-cr"}, runBootstrapping ? 50 : 0);
 
-    cerr << "... Running bootstrapping ..." << endl;
-
-    std::vector<Quantity> transfer_factors;
-
-    auto qcd = config.samples.at("qcd-sr");
-    auto qcdcr = config.samples.at("qcd-cr");
-
-    for (auto &cat_name : config.categories){
-      cerr << cat_name << endl;
-
-      const auto & cat = config.catMaps.at(cat_name);
-      const auto & crcat = config.crCatMaps.at(cat_name);
-      auto SRsel = config.sel + " && " + cat.cut + qcd.sel;
-      auto CRsel = config.sel + " && " + crcat.cut + qcdcr.sel;
-
-      cerr << "SRsel: " << SRsel << endl;
-      cerr << "CRsel: " << CRsel << endl;
-
-      auto metGetter = HistogramGetter(cat.bin.var, cat.bin.var, cat.bin.label, cat.bin.nbins, cat.bin.plotbins.data());
-      metGetter.setNBS(50);
-      auto nom = metGetter.getTFAndCov(qcd.tree, SRsel, qcd.wgtvar, CRsel, qcdcr.wgtvar, "TF_"+cat.name);
-
-      for (int ibin=1; ibin<=nom->GetNbinsX(); ++ibin){
-        auto tf = getHistBin(nom, ibin);
-        if (tf.error>tf.value) tf.error = tf.value;
-        transfer_factors.push_back(tf);
-        cout << tf << endl;
-      }
-    }
-
-    yields["_TF"] = transfer_factors;
+    yields["_TF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
 
   }
 
@@ -74,9 +75,12 @@ public:
 
     cerr << "\n--->" << __func__ << endl;
 
+    vector<TString> calc_samples = {"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr", "data-cr"};
+    doYieldsCalc(calc_samples);
+    doYieldsCalc({"qcd-withveto-sr", "qcd-withveto-cr"}, runBootstrapping ? 50 : 0);
+
     vector<TString> otherbkg_samples = {"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr"};
     vector<TString> norm_samples = {"ttbar-norm", "wjets-norm", "tW-norm", "ttW-norm", "qcd-norm"};
-    calcYieldsExcludes(norm_samples);
     sumYields(otherbkg_samples, "non-qcd");
     yields["otherbkgs-noznunu"] = yields.at("non-qcd");
 
@@ -112,7 +116,7 @@ public:
     for (unsigned i=0; i<vdata.size(); ++i){
       double otherVal = yields.at("otherbkgs").at(i).value;
       double dataVal = vdata.at(i).value;
-      if (dataVal<10) dataVal = yields.at("qcd-cr-withveto").at(i).value + otherVal;
+      if (dataVal<10) dataVal = yields.at("qcd-withveto-cr").at(i).value + otherVal;
       double sub = otherVal/dataVal;
       Quantity corr(1-sub, sub*(1-sub)); // 100% unc on the subtraction: FIXME?
       yields.at("_DataCorr").push_back(corr);
@@ -123,6 +127,10 @@ public:
 
   void pred(){
     cerr << "\n--->" << "Running QCD prediction..." << endl << endl;
+
+    if (!runBootstrapping){
+      cerr << "... Do NOT run bootstrapping ..." << endl;
+    }
 
     calcDataCorr();
     calcTF();

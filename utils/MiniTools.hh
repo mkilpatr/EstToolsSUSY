@@ -10,7 +10,8 @@
 #include <vector>
 #include <map>
 #include <set>
-#include <TTreeFormula.h>
+#include "TTreeFormula.h"
+#include "TRegexp.h"
 
 #include "Style.hh"
 #include "Quantity.h"
@@ -336,6 +337,15 @@ TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void setLegend(TLegend *leg, int ncols, double x1, double y1, double x2, double y2){
+  leg->SetNColumns(ncols);
+  leg->SetX1(x1);
+  leg->SetY1(y1);
+  leg->SetX2(x2);
+  leg->SetY2(y2);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void drawHeader(TString text, TPad *p=0, double lowX = 0.7, double lowY = 0.93)
 {
 #ifdef TDR_STYLE_
@@ -384,6 +394,26 @@ void drawText(TString text, double lowX = 0.7, double lowY = 0.93)
   lumi->SetTextFont (   62 );
   lumi->AddText(text);
   lumi->Draw();
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0)
+{
+  TLatex tl;
+  tl.SetTextSize(size);
+  tl.SetTextAlign(align);
+  tl.SetTextAngle(angle);
+  tl.DrawLatexNDC(xpos, ypos, text);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void drawLine(double x1, double y1, double x2, double y2, int color=kGray+2, int style=kDashed, int width=3)
+{
+  TLine *line = new TLine(x1,y1,x2,y2);
+  line->SetLineColor(color);
+  line->SetLineStyle(style);
+  line->SetLineWidth(width);
+  line->Draw();
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -477,6 +507,36 @@ Quantity dileptonZtoLLScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Qu
 
 Quantity dileptonTTbarScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Quantity tt_peak, Quantity data_off, Quantity dy_off, Quantity tt_off){
   return dileptonZtoLLScaleFactorHelper(data_peak, tt_peak, dy_peak, data_off, tt_off, dy_off);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+template<typename Number>
+vector<TString> convertBinRangesToLabels(const vector<Number>& binedges){
+  vector<TString> labels;
+  for (unsigned idx=0; idx<binedges.size()-1; ++idx){
+    if (idx == binedges.size() - 2)
+      labels.push_back(TString::Format("#geq %d", int(binedges.at(idx))));
+    else
+      labels.push_back(TString::Format("[%d, %d)", int(binedges.at(idx)), int(binedges.at(idx+1))));
+  }
+  return labels;
+}
+
+template<typename Number>
+vector<TString> convertBinRangesToLabels(const vector<TString>& binnames, const map<TString, vector<Number>>& binedges){
+  vector<TString> labels;
+  for (const auto &name : binnames){
+    auto bins = binedges.at(name);
+    auto l = convertBinRangesToLabels<Number>(bins);
+    labels.insert(labels.end(), l.begin(), l.end());
+  }
+  return labels;
+}
+
+void setBinLabels(TH1 *h, const vector<TString>& labels){
+  for (unsigned i=0; i<labels.size() && i<unsigned(h->GetNbinsX()); ++i){
+    h->GetXaxis()->SetBinLabel(i+1, labels.at(i));
+  }
 }
 
 }

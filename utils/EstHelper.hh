@@ -7,6 +7,7 @@
 #include <cassert>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include <vector>
 #include <map>
 #include <set>
@@ -25,6 +26,8 @@ using namespace std;
 #endif
 
 namespace EstTools{
+
+double LOG_YMIN = 0.01;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity getYields(TTree *intree, TString wgtvar, TString sel){
@@ -352,8 +355,8 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   }
   hbkgtotal->SetLineColorAlpha(kWhite,0);
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
-  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000: plotMax));
-  hbkgtotal->SetMinimum(plotlog ? 0.1 : 0);
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
+  hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
 #ifdef DEBUG_
@@ -391,7 +394,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, vector<TH1*> sighists={}, TH1* inUnc=nullptr, TH1* inRatio = nullptr)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TH1* inUnc=nullptr, TH1* inRatio = nullptr)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = (TH1*)inData->Clone();
@@ -427,8 +430,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  hData->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
-  hData->SetMinimum(plotlog? 0.1 : 0);
+  hData->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
+  hData->SetMinimum(plotlog? LOG_YMIN : 0);
+  if(lowX<highX) hData->GetXaxis()->SetRangeUser(lowX, highX);
   hData->GetXaxis()->SetLabelOffset(0.20);
   hData->Draw("E");
   hstack->Draw("histsame");
@@ -501,6 +505,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   ratio = getRatioAsymmErrors(h3, hMCNoError);
   ratio->SetLineWidth(h3->GetLineWidth());
   h3->GetYaxis()->SetRangeUser(lowY,highY);
+  if(lowX<highX) h3->GetXaxis()->SetRangeUser(lowX, highX);
   h3->Draw("AXIS");
   ratio->Draw("PZ0same");
 
@@ -534,6 +539,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     hRatio->GetYaxis()->SetNdivisions(305);
     hRatio->GetYaxis()->SetTitle(ratioYTitle);
     hRatio->GetYaxis()->SetRangeUser(lowY, highY);
+    if(lowX<highX) hRatio->GetXaxis()->SetRangeUser(lowX, highX);
     hRatio->Draw("E");
 #ifdef DEBUG_
   cout << "-->drawing RATIO: "<< hRatio->GetName() << endl;
@@ -544,6 +550,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
   double xmin = inData->GetXaxis()->GetXmin();
   double xmax = inData->GetXaxis()->GetXmax();
+  if (lowX<highX) { xmin = lowX; xmax = highX; }
   TLine *l = new TLine(xmin,1,xmax,1);
   l->SetLineWidth(2);
   l->SetLineColor(kBlack);
