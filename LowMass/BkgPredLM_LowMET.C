@@ -29,6 +29,7 @@ void BkgPredLM_LowMET(){
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
+  Quantity::removeNegatives(l.yields.at("rare-sr"));
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
@@ -36,12 +37,24 @@ void BkgPredLM_LowMET(){
   q.pred();
   q.printYields();
 
+  auto convert = [](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs){
+    for(const auto &s : c.bkgs){
+      hists.push_back(convertToHist(c.getPrediction(s.first), s.first, ";Search Region;Events"));
+      graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s.first), s.first+"_gr", ";Search Region;Events"));
+    }
+    graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(), "pred_total_gr", ";Search Region;Events"));
+  };
+
+  ToyCombination tc;
+  tc.addBackground("znunu_pred",        &z.yields.at("singlepho"), &z.yields.at("_TF"));
+  tc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
+  tc.addBackground("qcd_pred",          &q.yields.at("_DATA"), &q.yields.at("_TF"));
+  tc.addBackground("rare_pred",         nullptr, nullptr, &l.yields.at("rare-sr"));
+  tc.combine();
+
   vector<TH1*> pred;
-  pred.push_back(convertToHist(q.yields.at("_pred"),"qcd_pred",";Search Region;Events"));
-//  pred.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_pred",";Search Region;Events"));
-  pred.push_back(convertToHist(l.yields.at("rare-sr"),"rare_pred",";Search Region;Events"));
-  pred.push_back(convertToHist(l.yields.at("_pred"),"ttbarplusw_pred",";Search Region;Events"));
-  pred.push_back(convertToHist(z.yields.at("_pred"),"znunu_pred",";Search Region;Events"));
+  vector<TGraphAsymmErrors*> predGraphs;
+  convert(tc, pred, predGraphs);
 
   // traditional method for LLB
   EstTools::ADD_LEP_TO_MET = false;
@@ -49,14 +62,18 @@ void BkgPredLM_LowMET(){
   LLBEstimator alt(altllbcfg);
   alt.pred();
   alt.printYields();
+  Quantity::removeNegatives(alt.yields.at("rare-sr"));
+
+  ToyCombination lc;
+  lc.addBackground("znunu_pred",        &z.yields.at("singlepho"), &z.yields.at("_TF"));
+  lc.addBackground("ttbarplusw_pred",   &alt.yields.at("singlelep"), &alt.yields.at("_TF"));
+  lc.addBackground("qcd_pred",          &q.yields.at("_DATA"), &q.yields.at("_TF"));
+  lc.addBackground("rare_pred",         nullptr, nullptr, &alt.yields.at("rare-sr"));
+  lc.combine();
 
   vector<TH1*> altpred;
-  altpred.push_back(convertToHist(q.yields.at("_pred"),"qcd_pred",";Search Region;Events"));
-//  altpred.push_back(convertToHist(alt.yields.at("qcd-sr"),"qcd_pred",";Search Region;Events"));
-  altpred.push_back(convertToHist(alt.yields.at("rare-sr"),"rare_pred",";Search Region;Events"));
-  altpred.push_back(convertToHist(alt.yields.at("_pred"),"ttbarplusw_pred",";Search Region;Events"));
-  altpred.push_back(convertToHist(z.yields.at("_pred"),"znunu_pred",";Search Region;Events"));
-
+  vector<TGraphAsymmErrors*> altgraphs;
+  convert(lc, altpred, altgraphs);
 
   vector<TH1*> mc;
   mc.push_back(convertToHist(q.yields.at("qcd-withveto-sr"),"qcd_mc",";Search Region;Events"));
@@ -74,7 +91,7 @@ void BkgPredLM_LowMET(){
   vector<TString> bkglabels = {"QCD", "Rare", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
   vector<TString> datalabel = {"Data"};
 
-  auto plot = [&](const vector<TH1*> &vpred, TString outputBase) {
+  auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
     prepHists(vpred, false, false, true);
     prepHists({hdata}, false, false, false, {kBlack});
@@ -92,17 +109,29 @@ void BkgPredLM_LowMET(){
 
     TFile *output = new TFile(s.config.outputdir+"/" + outputBase +".root", "RECREATE");
     for (auto *h : vpred) h->Write();
+    for (auto *g : vgraphs) g->Write();
     for (auto *h : mc)   h->Write();
     hdata->Write();
     output->Close();
   };
 
-  plot(pred, "fbd_pred_lepplusmet");
-  plot(altpred, "fbd_pred_trad");
+  plot(pred, predGraphs, "fbd_pred_lepplusmet");
+  plot(altpred, altgraphs, "fbd_pred_trad");
 
-  cout << "\n\n Summary Lep+MET \n";
-  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
+  cout << "\n\n Lep+MET \n";
+  for (const auto &b : tc.bkgs){
+    s.printVec(tc.getPrediction(b.first),b.first);
+  }
+  s.printVec(tc.getPrediction(),"total_bkg");
+  cout << "\n Summary Lep+MET \n";
+  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("rare-sr")}, s.yields.at("data-sr"));
 
-  cout << "\n\n Summary Traditional \n";
-  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred")}, s.yields.at("data-sr"));
+
+  cout << "\n\n Traditional \n";
+  for (const auto &b : lc.bkgs){
+    s.printVec(lc.getPrediction(b.first),b.first);
+  }
+  s.printVec(lc.getPrediction(),"total_bkg");
+  cout << "\n Summary Traditional \n";
+  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred"), alt.yields.at("rare-sr")}, s.yields.at("data-sr"));
 }

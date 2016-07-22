@@ -9,7 +9,7 @@ namespace EstTools{
 //const TString lumistr = "4.32";
 
 const TString datadir = ".";
-const TString lumistr = "9.22";
+const TString lumistr = "12.9";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
@@ -22,9 +22,9 @@ const TString phowgt = wgtvar;
 //const TString phowgt = wgtvar+"*trigPhoWeight";
 
 // No Lepton SF
-//const TString lepvetowgt = wgtvar;
-//const TString lepselwgt  = wgtvar;
-//const TString vetoes = " && nvetolep==0 && nvetotau==0";
+const TString lepvetowgt = wgtvar;
+const TString lepselwgt  = wgtvar;
+const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
 //const TString lepvetowgt = wgtvar + "*leptnpweight*lepvetoweight";
@@ -32,9 +32,9 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
-const TString lepvetowgt = wgtvar + "*lepvetoweight";
-const TString lepselwgt  = wgtvar + "*lepselweight";
-const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
+//const TString lepvetowgt = wgtvar + "*lepvetoweight";
+//const TString lepselwgt  = wgtvar + "*lepselweight";
+//const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;

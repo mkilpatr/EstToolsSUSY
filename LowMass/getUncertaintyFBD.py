@@ -14,7 +14,6 @@ import json
 import argparse
 import ROOT as rt
 import re
-from test.test_doctest import sample_func
 rt.gROOT.SetBatch(True)
 
 uncfiles=[
@@ -32,8 +31,10 @@ uncfiles=[
 ttzuncfile = 'values_0l_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'rare', 'qcd')
-hist_names=('ttbarplusw_pred', 'znunu_pred', 'rare_pred', 'qcd_pred')
+graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_rare_pred_gr', 'Graph_from_qcd_pred_gr')
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & \\Rare &  QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
+
+pred_total_name = 'Graph_from_pred_total_gr'
 
 # ordered bin list
 binlist=('bin_450_nb0_highboost_lownj',
@@ -147,7 +148,11 @@ labelMap = {
     }
 
 
-
+def addAsymm(e, asymm):
+    print e, asymm
+    e_low = math.sqrt(e*e + asymm[0]*asymm[0])
+    e_up  = math.sqrt(e*e + asymm[1]*asymm[1])
+    return (e_low, e_up)
 
 def sumUnc(unc_list):
     '''Add uncertainties in quadrature.'''
@@ -157,7 +162,7 @@ def sumUnc(unc_list):
 # relUnc[type][bin][sample] : percentage syst. uncertainty of each 'type' per 'bin' per 'sample'
 # absUnc[bin][type] : absolute uncertainty per 'bin' of each 'type'
 # yields[bin][sample] : predicted bkg yields per bin per sample 
-# statUnc[bin] : stat. (MC + data CR) unc. per bin
+# statUnc[bin] : stat. (MC + data CR) unc. per bin [asymmetric errors]
 # systUnc[bin] : syst. unc. per bin
 # fullUnc[bin] : full unc. per bin
 
@@ -166,12 +171,12 @@ absUnc={}
 absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}}
 yields={}
 yields_data={}
-statUnc={}
-statUnc_pieces={}
+statUnc={} #asymm
+statUnc_pieces={} #asymm 
 systUnc={}
 systUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}}
-fullUnc={}
-fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}}
+fullUnc={} #asymm
+fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}} #asymm
 allVals = {}
 
 def readRelUnc(config_path):
@@ -231,26 +236,31 @@ def readYields(pred_file):
     pred_file -- input root file 
     '''
     f = rt.TFile(pred_file)
-    for hname, sample in zip(hist_names, all_samples):
+    for hname, sample in zip(graph_names, all_samples):
         h = f.Get(hname)
-        for ibin in xrange(0, h.GetNbinsX()):
+        for ibin in xrange(0, h.GetN()):
             bin = binlist[ibin]
             if bin not in yields:
                 yields[bin] = {}
                 statUnc_pieces[bin] = {}
-            y = h.GetBinContent(ibin+1)
-            e = h.GetBinError(ibin+1)
+            y = h.GetY()[ibin]
+            e_up = h.GetErrorYhigh(ibin)
+            e_low = h.GetErrorYlow(ibin)
             yields[bin][sample] = y
-            if sample == 'rare': statUnc_pieces[bin][sample] = min(e,y) # don't want MC stat unc > 100%
-            else :              statUnc_pieces[bin][sample] = e
+            if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
+            else :               statUnc_pieces[bin][sample] = (e_low, e_up)
     h = f.Get('data')
     for ibin in xrange(0, h.GetNbinsX()):
         bin = binlist[ibin]
         yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
+    # get total pred (w/ asymmetric errors)
+    h = f.Get(pred_total_name)
+    for ibin in xrange(0, h.GetN()):
+        bin = binlist[ibin]
+        e_up = h.GetErrorYhigh(ibin)
+        e_low = h.GetErrorYlow(ibin)
+        statUnc[bin] = (e_low, e_up)
     f.Close()
-    for bin in binlist:
-        statUnc[bin] = sumUnc(statUnc_pieces[bin].values())
-
 
 def calcAbsUnc():
     ''' Calculate syst. uncertainty.
@@ -272,33 +282,34 @@ def calcAbsUnc():
     for bin in absUnc:
         # Add different types of unc. in quadrature
         systUnc[bin] = sumUnc(absUnc[bin].values())
-        fullUnc[bin] = sumUnc([statUnc[bin], systUnc[bin]])
+        fullUnc[bin] = addAsymm(systUnc[bin], statUnc[bin])
         for sample in all_samples:
             systUnc_pieces[sample][bin] = sumUnc(absUnc_pieces[sample][bin].values())
-            fullUnc_pieces[sample][bin] = sumUnc([statUnc_pieces[bin][sample], systUnc_pieces[sample][bin]])
-
+            fullUnc_pieces[sample][bin] = addAsymm(systUnc_pieces[sample][bin], statUnc_pieces[bin][sample])
+            
 
 def writeFullUnc(pred_file):
     ''' Update the input root file, add a hist with total prediction and full uncertainty. '''
     f = rt.TFile(pred_file, 'UPDATE')
-    h = rt.TH1F('bkgtotal_unc_sr', '', len(binlist), 0, len(binlist))
+    h = f.Get(pred_total_name).Clone('bkgtotal_unc_sr')
     h_pieces = {}
-    for sample in all_samples : h_pieces[sample] = rt.TH1F(sample+'_unc_sr', '', len(binlist), 0, len(binlist))
-    print "%30s %10s %8s" % ('bin', 'total pred', 'total unc.')
-    for ibin in xrange(0, h.GetNbinsX()):
+    for hname, sample in zip(graph_names, all_samples):
+        h_pieces[sample] = f.Get(hname).Clone(sample+'_unc_sr')
+    print "%30s %10s %16s" % ('bin', 'total pred', 'total unc.')
+    for ibin in xrange(0, h.GetN()):
         bin = binlist[ibin]
-        val = sum(yields[bin].values())
-        err = fullUnc[bin]
-        h.SetBinContent(ibin+1, val)
-        h.SetBinError(ibin+1, err)
-        print "%30s %10.2f %8.2f" % (bin, val, err)
-        allVals[bin] = {'bkg':(val,err)}
+        val = h.GetY()[ibin]
+        e_low, e_up = fullUnc[bin]
+        h.SetPointEYlow(ibin, e_low)
+        h.SetPointEYhigh(ibin, e_up)
+        print "%30s %10.2f +%8.2f -%8.2f" % (bin, val, e_up, e_low)
+        allVals[bin] = {'bkg':(val,e_low,e_up)}
         for sample in all_samples:
             val = yields[bin][sample]
-            err = fullUnc_pieces[sample][bin]
-            h_pieces[sample].SetBinContent(ibin+1, val)
-            h_pieces[sample].SetBinError(ibin+1, err)
-            allVals[bin][sample] = (val,err)  
+            e_low, e_up = fullUnc_pieces[sample][bin]
+            h_pieces[sample].SetPointEYlow(ibin, e_low)
+            h_pieces[sample].SetPointEYhigh(ibin, e_up)
+            allVals[bin][sample] = (val,e_low,e_up)  
     h.Write('bkgtotal_unc_sr', rt.TObject.kOverwrite)
     for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
     f.Close()
@@ -333,29 +344,36 @@ def makeTable():
         ibin = ibin+1
         s += metlabel
         for bkg in list(all_samples)+['bkg']:
-            n, e = allVals[bin][bkg]
-            s += formatPrediction(n,e)
+            n, e_low, e_up = allVals[bin][bkg]
+            s += formatPrediction(n,e_low,e_up)
         n, e = yields_data[bin]
         s += ' & ' + str(int(n))
         s += ' \\\\ \n'
     return s
 
 # formats the prediction nEvents +/- error
-def formatPrediction(n,e):
-  if n>=10:
-    n = str(int(round(n,0)))
-    e = str(int(round(e,0)))
-  elif n>=1:
-    n = str(round(n,1))
-    e = str(round(e,1))
-  else:
-    n = str(round(n,2))
-    e = str(round(e,2))
-  if n=='0.0':
-    if e=='0.0':
-      return ' & $<$0.01'
-    return ' & $<$' + e
-  return ' & ' + n + ' $\\pm$ ' + e
+def formatPrediction(n,e_low,e_up):
+    if n>=10:
+        n = str(int(round(n,0)))
+        e_low = str(int(round(e_low,0)))
+        e_up  = str(int(round(e_up,0)))
+    elif n>=1:
+        n = str(round(n,1))
+        e_low = str(round(e_low,1))
+        e_up  = str(round(e_up,1))
+    else:
+        n = str(round(n,2))
+        e_low = str(round(e_low,2))
+        e_up  = str(round(e_up,2))
+    if n=='0.0':
+        if e_up=='0.0':
+            return ' & $<$0.01'
+        return ' & $<$' + e_up
+    if e_low==e_up:
+        return ' & $ %s\\pm%s $ ' %(n, e_up)
+    else:
+        return ' & $ %s\,^{+%s}_{-%s} $ ' %(n, e_up, e_low)
+
 
 # puts together the bin header for bins of nJets, mtb, nTop (no selection on nB)
 def chunkHeader(sec):

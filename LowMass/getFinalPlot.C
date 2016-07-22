@@ -55,7 +55,7 @@ void getFinalPlot(TString inputFile="/tmp/plots/LowMass/sig/fbd_pred_lepplusmet.
     pred.push_back((TH1*)f->Get(b));
   }
   TH1* hdata = (TH1*)f->Get(data);
-  TH1* unc   = (TH1*)f->Get("bkgtotal_unc_sr");
+  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});

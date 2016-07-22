@@ -60,7 +60,7 @@ public:
     return {z_sf, t_sf};
   }
 
-  vector<Quantity> calcSgamma(const Category& cat, TString extraCutForNorm = ""){
+  std::pair<vector<Quantity>,vector<Quantity>> calcSgamma(const Category& cat, TString extraCutForNorm = ""){
 
     cerr << "\n--->" << __func__ << " " << cat.name << endl;
 
@@ -80,10 +80,13 @@ public:
 
     Quantity::removeZeroes(data, 0.001, 1.8);
 
-    auto s_gamma = data / (mc * norm_factor);
+    auto scaled_mc = mc * norm_factor;
+    auto s_gamma = data / scaled_mc;
     cout << "    ... norm factor ---> " << norm_factor << endl;
     cout << "    ... sgamma ---> " << s_gamma << endl;
-    return s_gamma;
+
+
+    return std::make_pair(s_gamma, scaled_mc);
 
   }
 
@@ -96,6 +99,7 @@ public:
 
     // Sgamma
     yields["_Sgamma"] = vector<Quantity>();
+    yields["_photon-scaled"] = vector<Quantity>();
     for (auto &cat_name : config.categories){
       // find norm category
       TString normCut = ""; // default to empty: no extra cut
@@ -104,10 +108,13 @@ public:
           normCut = norm.second;
       }
       const auto & cat = config.catMaps.at(cat_name);
-      auto sgamma = calcSgamma(config.crCatMaps.at(cat_name), normCut);
+      auto rlt = calcSgamma(config.crCatMaps.at(cat_name), normCut);
+      auto sgamma = rlt.first;
+      auto scaledMC = rlt.second;
       assert(sgamma.size()==1 || sgamma.size()==cat.bin.nbins); // FIXME: only handle size==1 and same size now
       for (unsigned ibin = 0; ibin < cat.bin.nbins; ++ibin){
         yields["_Sgamma"].push_back(sgamma.at( ibin%sgamma.size() ));
+        yields["_photon-scaled"].push_back(scaledMC.at( ibin%scaledMC.size() ));
       }
     }
 
@@ -128,6 +135,8 @@ public:
         }
       }
     }
+
+    yields["_TF"] = yields.at("znunu-sr") / yields.at("_photon-scaled") * yields.at("_Rz");
 
     yields["_pred"] = yields.at("znunu-sr") * yields.at("_Sgamma") * yields.at("_Rz");
     printVec(yields["_pred"], "Final prediction", true);

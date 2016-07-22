@@ -19,8 +19,6 @@ vector<Quantity> LLBPred(){
   LLBEstimator l(llbcfg);
   l.pred();
 
-  l.yields["_TF"] = l.yields.at("ttbarplusw-sr")/l.yields.at("ttbarplusw");
-
   l.printYields();
 
   return l.yields.at("_pred");

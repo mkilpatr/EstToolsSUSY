@@ -394,7 +394,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TH1* inUnc=nullptr, TH1* inRatio = nullptr)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, TH1* inRatio = nullptr)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = (TH1*)inData->Clone();
@@ -447,7 +447,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   }
 
 #ifdef TDR_STYLE_
-  TH1 *unc = inUnc ? inUnc : hbkgtotal;
+  TGraphAsymmErrors *unc = inUnc ? inUnc : new TGraphAsymmErrors(hbkgtotal);
   unc->SetFillColor(kBlue);
   unc->SetFillStyle(3013);
   unc->SetLineStyle(0);
@@ -509,13 +509,15 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   h3->Draw("AXIS");
   ratio->Draw("PZ0same");
 
-  TH1* hRelUnc = (TH1*)hbkgtotal->Clone();
-  for (int i=0; i < hRelUnc->GetNbinsX()+1; ++i){
-    auto val = hRelUnc->GetBinContent(i);
-    auto err = hRelUnc->GetBinError(i);
+  TGraphAsymmErrors* hRelUnc = (TGraphAsymmErrors*)unc->Clone();
+  for (int i=0; i < hRelUnc->GetN(); ++i){
+    auto val = hRelUnc->GetY()[i];
+    auto errUp = hRelUnc->GetErrorYhigh(i);
+    auto errLow = hRelUnc->GetErrorYlow(i);
     if (val==0) continue;
-    hRelUnc->SetBinError(i, err/val);
-    hRelUnc->SetBinContent(i, 1);
+    hRelUnc->SetPointEYhigh(i, errUp/val);
+    hRelUnc->SetPointEYlow(i, errLow/val);
+    hRelUnc->SetPoint(i, hRelUnc->GetX()[i], 1);
   }
   hRelUnc->SetFillColor(kBlue);
   hRelUnc->SetFillStyle(3013);

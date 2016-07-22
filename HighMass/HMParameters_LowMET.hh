@@ -9,7 +9,7 @@ namespace EstTools{
 //const TString lumistr = "4.32";
 
 const TString datadir = ".";
-const TString lumistr = "9.22";
+const TString lumistr = "12.9";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
