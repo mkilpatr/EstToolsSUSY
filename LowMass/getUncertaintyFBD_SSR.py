@@ -36,99 +36,33 @@ table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & 
 pred_total_name = 'Graph_from_pred_total_gr'
 
 # ordered bin list
-binlist=('bin_450_nb0_highboost_lownj',
- 'bin_550_nb0_highboost_lownj',
- 'bin_650_nb0_highboost_lownj',
- 'bin_750_nb0_highboost_lownj',
- 'bin_450_nb0_highboost_highnj',
- 'bin_550_nb0_highboost_highnj',
- 'bin_650_nb0_highboost_highnj',
- 'bin_750_nb0_highboost_highnj',
- 'bin_300_nb1_medboost_lowptb',
+binlist=('bin_300_nb1_medboost_lowptb',
  'bin_400_nb1_medboost_lowptb',
  'bin_500_nb1_medboost_lowptb',
- 'bin_600_nb1_medboost_lowptb',
  'bin_300_nb1_medboost_medptb',
  'bin_400_nb1_medboost_medptb',
  'bin_500_nb1_medboost_medptb',
- 'bin_600_nb1_medboost_medptb',
- 'bin_450_nb1_highboost_lowptb',
- 'bin_550_nb1_highboost_lowptb',
- 'bin_650_nb1_highboost_lowptb',
- 'bin_750_nb1_highboost_lowptb',
- 'bin_450_nb1_highboost_medptb',
- 'bin_550_nb1_highboost_medptb',
- 'bin_650_nb1_highboost_medptb',
- 'bin_750_nb1_highboost_medptb',
  'bin_300_nb2_medboost_lowptb',
  'bin_400_nb2_medboost_lowptb',
  'bin_500_nb2_medboost_lowptb',
- 'bin_600_nb2_medboost_lowptb',
  'bin_300_nb2_medboost_medptb',
  'bin_400_nb2_medboost_medptb',
  'bin_500_nb2_medboost_medptb',
- 'bin_600_nb2_medboost_medptb',
- 'bin_450_nb2_highboost_lowptb',
- 'bin_550_nb2_highboost_lowptb',
- 'bin_650_nb2_highboost_lowptb',
- 'bin_750_nb2_highboost_lowptb',
- 'bin_450_nb2_highboost_medptb',
- 'bin_550_nb2_highboost_medptb',
- 'bin_650_nb2_highboost_medptb',
- 'bin_750_nb2_highboost_medptb'
  )
 
 binMap={
-'nb0_highboost_lownj': {
-   'cut': 'nbjets==0 && j1lpt>500 && (njets>=2 && njets<=5)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb0_highboost_highnj': {
-   'cut': 'nbjets==0 && j1lpt>500 && njets>=6',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
 'nb1_medboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && (j1lpt>250 && j1lpt<500) && csvj1pt<40',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
+   'bin': [300, 400, 500, 1000]
    },
 'nb1_medboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && (j1lpt>250 && j1lpt<500) && (csvj1pt>40 && csvj1pt<70)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
-   },
-'nb1_highboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && j1lpt>500 && csvj1pt<40',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb1_highboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && j1lpt>500 && (csvj1pt>40 && csvj1pt<70)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
+   'bin': [300, 400, 500, 1000]
    },
 'nb2_medboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && (j1lpt>250 && j1lpt<500) && ((csvj1pt+csvj2pt)<100)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
+   'bin': [300, 400, 500, 1000]
    },
 'nb2_medboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && (j1lpt>250 && j1lpt<500) && ((csvj1pt+csvj2pt)>100) && ((csvj1pt+csvj2pt)<160)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
+   'bin': [300, 400, 500, 1000]
    },
-'nb2_highboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && j1lpt>500 && ((csvj1pt+csvj2pt)<100)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb2_highboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && j1lpt>500 && ((csvj1pt+csvj2pt)>100) && ((csvj1pt+csvj2pt)<160)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   }
 }
 
 
@@ -136,8 +70,7 @@ labelMap = {
     'nb0': r'$\nb=0$',
     'nb1': r'$\nb\geq1, \nbl=1$',
     'nb2': r'$\nb\geq1, \nbl\geq2$',
-    'medboost': r'$250\leq\ptisr<500$~\GeV',
-    'highboost': r'$\ptisr \geq500$~\GeV',
+    'medboost': r'$\ptisr \geq250$~\GeV',
     'lownj': r'$2 \leq \nj < 6$',
     'highnj': r'$\nj \geq 6$',
     'lowptb': r'$20\leq\ptb<40~\GeV$',
@@ -313,7 +246,7 @@ def writeFullUnc(pred_file):
     for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
     f.Close()
 
-def makeYieldTable(output='pred_lm.tex'):
+def makeYieldTable(output='pred_lm_SSR.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s  = '\\hline\n'

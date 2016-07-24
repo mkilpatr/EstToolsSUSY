@@ -1,5 +1,5 @@
-#ifndef ESTTOOLS_LMPARAMETERS_HH_
-#define ESTTOOLS_LMPARAMETERS_HH_
+#ifndef ESTTOOLS_HMPARAMETERS_HH_
+#define ESTTOOLS_HMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
 
@@ -16,7 +16,6 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // lumi and base weight
 //const TString wgtvar = lumistr+"*weight*truePUWeight";
 const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight";
-const TString srmcwgt = wgtvar+"*(0.9*(met<250)+1.0*(met>250))";
 
 // photon trigger eff.
 const TString phowgt = wgtvar + "*qcdRespTailWeight";
@@ -28,8 +27,8 @@ const TString phowgt = wgtvar + "*qcdRespTailWeight";
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt = wgtvar + "*leptnpweightLM*lepvetoweightLM";
-const TString lepselwgt  = wgtvar + "*leptnpweightLM";
+const TString lepvetowgt = wgtvar + "*leptnpweightHM*lepvetoweightHM";
+const TString lepselwgt  = wgtvar + "*leptnpweightHM";
 const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
@@ -38,11 +37,11 @@ const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgenta
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // 1Lep LLB method
-//bool ADD_LEP_TO_MET = false;
+bool ADD_LEP_TO_MET = false;
 const TString revert_vetoes = " && nvetolep>0 && mtlepmet<100";
 
 // MET+LEP LL method
-bool ADD_LEP_TO_MET = true;
+//bool ADD_LEP_TO_MET = true;
 const TString lepcrsel = " && nvetolep==1 && mtlepmet<100 && origmet>100";
 //const TString lepcrsel = " && nprimlep==1 && mtlepmet<100 && origmet>100";
 
@@ -59,7 +58,6 @@ const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
 const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-const TString srqcdwgt = srmcwgt + "*qcdRespTailWeight";
 //const TString qcdwgt = wgtvar;
 const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
@@ -73,96 +71,102 @@ const TString trigSR = " && (passmetmht100 || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR";
 const TString datasel = " && passjson && passmetfilters && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "met>200 && met<450 && njets>=2 && njl>=1 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && metovsqrtht>10 && j1lpt>250 && dphij1lmet>2";
-const TString baseNoDPhi = "met>200 && met<450 && njets>=2 && njl>=1 && metovsqrtht>10 && j1lpt>250 && dphij1lmet>2";
-const TString dphi = " && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15",
-    dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
+const TString baseline = "met>250 && njets>=5 && nbjets>=1 && nlbjets>=2 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5";
+const TString baseNoDPhi = "met>250 && njets>=5 && nbjets>=1 && nlbjets>=2";
+const TString dphi = " && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5" + qcdSpikeRemovals,
+    dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met < 0.1)" + qcdSpikeRemovals;
+const TString baseForNorm = "met>200 && njets>=5 && nlbjets>=2 && nbjets>=1";
 
 std::vector<TString> srbins{
-  "nb0_highboost_lownj", "nb0_highboost_highnj",
-  "nb1_medboost_lowptb", "nb1_medboost_medptb",
-  "nb1_highboost_lowptb", "nb1_highboost_medptb",
-  "nb2_medboost_lowptb", "nb2_medboost_medptb",
-  "nb2_highboost_lowptb", "nb2_highboost_medptb",
-};
+  "nb1_mtb0_nj7",
+  "nb2_mtb0_nj7",
+  "nb2_mtb175_nj7_nt0_nw0",
+  "nb2_mtb175_nj5t_nt0_nw1t", "nb2_mtb175_nj5t_nt1t_nw0", "nb2_mtb175_nj5t_nt1t_nw1t"
+  };
 
-const TString mtb = "mtcsv12met<100",
-    nb0 = "nbjets==0", nb1 = "nbjets>=1 && nlbjets==1", nb2 = "nbjets>=1 && nlbjets>=2",
-    medboost = "j1lpt>250 && j1lpt<500", highboost = "j1lpt>500",
-    lowptb = "csvj1pt<40", medptb = "csvj1pt>40 && csvj1pt<70",
-    lowptb12 = "(csvj1pt+csvj2pt)<100", medptb12 = "(csvj1pt+csvj2pt)>100 && (csvj1pt+csvj2pt)<160",
-    lownj = "njets>=2 && njets<=5", highnj = "njets>=6";
+const TString lowmt = "mtcsv12met<=175", highmt = "mtcsv12met>175",
+    nb1 = "nbjets==1", nb2 = "nbjets>=2", nbgeq1 = "nbjets>=1",
+    mednj = "njets>=5 && njets<7", highnj = "njets>=7", nj5g = "njets>=5",
+    nw0 = "nsdwloose==0", nw1g = "nsdwloose>=1",
+    nt0 = "nsdtoploose==0", nt1g = "nsdtoploose>=1";
 
 std::map<TString, TString> normMap{
-  {"nb0", nb0},
   {"nb1", nb1},
   {"nb2", nb2}
 };
 
 std::map<TString, TString> srcuts{
-  {"nb0_highboost_lownj",   addCuts({nb0, highboost, lownj})},
-  {"nb0_highboost_highnj",  addCuts({nb0, highboost, highnj})},
+  {"nb1_mtb0_nj7",     addCuts({nb1, lowmt, highnj, "met<400"})},
 
-  {"nb1_medboost_lowptb",   addCuts({mtb, nb1, medboost,  lowptb, "met<300"}) },
-  {"nb1_medboost_medptb",   addCuts({mtb, nb1, medboost,  medptb, "met<300"}) },
-  {"nb1_highboost_lowptb",  addCuts({mtb, nb1, highboost, lowptb}) },
-  {"nb1_highboost_medptb",  addCuts({mtb, nb1, highboost, medptb}) },
+  {"nb2_mtb0_nj7",     addCuts({nb2, lowmt, highnj, "met<400"})},
 
-  {"nb2_medboost_lowptb",   addCuts({mtb, nb2, medboost,  lowptb12, "met<300"}) },
-  {"nb2_medboost_medptb",   addCuts({mtb, nb2, medboost,  medptb12, "met<300"}) },
-  {"nb2_highboost_lowptb",  addCuts({mtb, nb2, highboost, lowptb12}) },
-  {"nb2_highboost_medptb",  addCuts({mtb, nb2, highboost, medptb12}) },
+  {"nb2_mtb175_nj7_nt0_nw0",     addCuts({nb2, highmt, highnj, nt0, nw0})},
+  {"nb2_mtb175_nj5t_nt0_nw1t",   addCuts({nb2, highmt, nj5g, nt0, nw1g})},
+  {"nb2_mtb175_nj5t_nt1t_nw0",   addCuts({nb2, highmt, nj5g, nt1g, nw0})},
+  {"nb2_mtb175_nj5t_nt1t_nw1t",  addCuts({nb2, highmt, nj5g, nt1g, nw1g})}
 };
+
+std::map<TString, TString> srlabels{
+  {"nb1_mtb0_nj7",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{b} = 1, N_{j} #geq 7}"},
+
+  {"nb2_mtb0_nj7",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{b} #geq 2, N_{j} #geq 7}"},
+
+  {"nb2_mtb175_nj7_nt0_nw0",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 2, N_{j} #geq 7, N_{t} = 0, N_{W} = 0}"},
+  {"nb2_mtb175_nj5t_nt0_nw1t",   "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 2, N_{j} #geq 5, N_{t} = 0, N_{W} #geq 1}"},
+  {"nb2_mtb175_nj5t_nt1t_nw0",   "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 2, N_{j} #geq 5, N_{t} #geq 1, N_{W} = 0}"},
+  {"nb2_mtb175_nj5t_nt1t_nw1t",  "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 2, N_{j} #geq 5, N_{t} #geq 1, N_{W} #geq 1}"},
+};
+
 
 std::map<TString, std::vector<int>> srMETbins{
-  {"nb0_highboost_lownj",        {250, 350, 450}},
-  {"nb0_highboost_highnj",       {250, 350, 450}},
+  {"nb1_mtb0_nj7",                {250, 300, 400}},
 
-  {"nb1_medboost_lowptb",        {200, 250, 300}},
-  {"nb1_medboost_medptb",        {200, 250, 300}},
-  {"nb1_highboost_lowptb",            {250, 350, 450}},
-  {"nb1_highboost_medptb",            {250, 350, 450}},
+  {"nb2_mtb0_nj7",                {250, 300, 400}},
 
-  {"nb2_medboost_lowptb",        {200, 250, 300}},
-  {"nb2_medboost_medptb",        {200, 250, 300}},
-  {"nb2_highboost_lowptb",            {250, 350, 450}},
-  {"nb2_highboost_medptb",            {250, 350, 450}},
+  {"nb2_mtb175_nj7_nt0_nw0",      {250, 350, 450, 550, 1000}},
+  {"nb2_mtb175_nj5t_nt0_nw1t",    {250, 450, 1000}},
+  {"nb2_mtb175_nj5t_nt1t_nw0",    {250, 450, 1000}},
+  {"nb2_mtb175_nj5t_nt1t_nw1t",   {250, 1000}}
 };
 
-const TString nlb0 = "nlbjets==0", nlb1 = "nlbjets==1", nlb2 = "nlbjets>=2";
+std::map<TString, TString> crcuts{
+  {"nb1_mtb0_nj7",     addCuts({lowmt, highnj, "met<400"})},
 
-std::map<TString, TString> phoNormMap{
-  {"nb0", nlb0},
-  {"nb1", nlb1},
-  {"nb2", nlb2}
+  {"nb2_mtb0_nj7",     addCuts({lowmt, highnj, "met<400"})},
+
+  {"nb2_mtb175_nj7_nt0_nw0",     addCuts({highmt, highnj, nt0, nw0})},
+  {"nb2_mtb175_nj5t_nt0_nw1t",   addCuts({highmt, nj5g, nt0, nw1g})},
+  {"nb2_mtb175_nj5t_nt1t_nw0",   addCuts({highmt, nj5g, nt1g, nw0})},
+  {"nb2_mtb175_nj5t_nt1t_nw1t",  addCuts({highmt, nj5g, nt1g, nw1g})}
 };
 
-std::map<TString, TString> phocrCuts{
-  {"nb0_highboost_lownj",   addCuts({nlb0, highboost, lownj})},
-  {"nb0_highboost_highnj",  addCuts({nlb0, highboost, highnj})},
+std::map<TString, TString> crlabels{
+  {"nb1_mtb0_nj7",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{b} #geq 1, N_{j} #geq 7}"},
 
-  {"nb1_medboost_lowptb",   addCuts({mtb, nlb1, medboost,  lowptb}) },
-  {"nb1_medboost_medptb",   addCuts({mtb, nlb1, medboost,  medptb}) },
-  {"nb1_highboost_lowptb",  addCuts({mtb, nlb1, highboost, lowptb}) },
-  {"nb1_highboost_medptb",  addCuts({mtb, nlb1, highboost, medptb}) },
+  {"nb2_mtb0_nj7",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{b} #geq 1, N_{j} #geq 7}"},
 
-  {"nb2_medboost_lowptb",   addCuts({mtb, nlb2, medboost,  lowptb12}) },
-  {"nb2_medboost_medptb",   addCuts({mtb, nlb2, medboost,  medptb12}) },
-  {"nb2_highboost_lowptb",  addCuts({mtb, nlb2, highboost, lowptb12}) },
-  {"nb2_highboost_medptb",  addCuts({mtb, nlb2, highboost, medptb12}) }
-
+  {"nb2_mtb175_nj7_nt0_nw0",     "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 1, N_{j} #geq 7, N_{t} = 0, N_{W} = 0}"},
+  {"nb2_mtb175_nj5t_nt0_nw1t",   "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 1, N_{j} #geq 5, N_{t} = 0, N_{W} #geq 1}"},
+  {"nb2_mtb175_nj5t_nt1t_nw0",   "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 1, N_{j} #geq 5, N_{t} #geq 1, N_{W} = 0}"},
+  {"nb2_mtb175_nj5t_nt1t_nw1t",  "#splitline{M_{T}(b_{1,2},#slash{E}_{T}) #geq 175 GeV}{N_{b} #geq 1, N_{j} #geq 5, N_{t} #geq 1, N_{W} #geq 1}"},
 };
 
-std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
+
+
+std::map<TString, std::vector<int>> crMETbins = srMETbins;
+
+std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
+
 
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
-    cmap[name] = Category(name, srcuts.at(name), name, BinInfo("met", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
+    cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo("met", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
 }
@@ -170,7 +174,7 @@ map<TString, Category> srCatMap(){
 map<TString, Category> phoCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
-    cmap[name] = Category(name, phocrCuts.at(name), name, BinInfo("met", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
+    cmap[name] = Category(name, crcuts.at(name), crlabels.at(name), BinInfo("met", "#slash{E}_{T}^{#gamma}", crMETbins.at(name), "GeV"));
   }
   return cmap;
 }
@@ -179,13 +183,19 @@ map<TString, Category> lepCatMap(){
   TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
   map<TString, Category> cmap;
   for (auto &name : srbins){
-    cmap[name] = Category(name, srcuts.at(name), name, BinInfo("met", varlabel, srMETbins.at(name), "GeV"));
+    // No integration in Nb now!
+//    cmap[name] = Category(name, crcuts.at(name), crlabels.at(name), BinInfo("met", varlabel, crMETbins.at(name), "GeV"));
+    cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo("met", varlabel, crMETbins.at(name), "GeV"));
   }
   return cmap;
 }
 
 map<TString, Category> qcdCatMap(){
-  return srCatMap();
+  map<TString, Category> cmap;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, crcuts.at(name), crlabels.at(name), BinInfo("met", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
 }
 
 map<TString, Category> zllCatMap{
@@ -201,7 +211,7 @@ BaseConfig phoConfig(){
   BaseConfig     config;
 
   config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/LowMET/LowMass/znunu";
+  config.outputdir = "/tmp/SSR/HighMass/znunu";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
@@ -224,14 +234,14 @@ BaseConfig zllConfig(){
   BaseConfig     config;
 
   config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/LowMET/LowMass/zllcr";
+  config.outputdir = "/tmp/SSR/HighMass/zllcr";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/zll",                      lepselwgt, datasel + trigDiLepCR);
   config.addSample("ttbar",     "t#bar{t}",               "zllcr/ttbar",                    lepselwgt, datasel + trigDiLepCR);
   config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",       "1.0",     datasel + trigDiLepCR);
 
-  config.sel = baseline;
+  config.sel = baseForNorm;
   config.catMaps = zllCatMap;
   for (auto &c : zllCatMap) config.categories.push_back(c.first);
 
@@ -244,7 +254,7 @@ BaseConfig lepConfig(){
   BaseConfig     config;
 
   config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/LowMET/LowMass/LLB";
+  config.outputdir = "/tmp/SSR/HighMass/LLB";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   if (ADD_LEP_TO_MET){
@@ -267,7 +277,7 @@ BaseConfig lepConfig(){
   config.addSample("wjets-sr",       "W+jets",        "sr/wjets-ht",        lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
-//  config.addSample("qcd-sr",         "QCD",           "qcd-4bd/qcd",    lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("qcd-sr",         "QCD",           "qcd-std/qcd",        lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("rare-sr",        "Rare",          "sr/rare",            lepvetowgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
@@ -284,15 +294,15 @@ BaseConfig qcdConfig(){
   BaseConfig     config;
 
   config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/LowMET/LowMass/QCD";
+  config.outputdir = "/tmp/SSR/HighMass/QCD";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   // qcdcr
-  config.addSample("data-cr",     "Data",          datadir+"/sr/met",             "1.0",         datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd-cr",      "QCD",           "qcd-4bd/qcd",          qcdwgt,      datasel + trigSR + dphi_invert);
+  config.addSample("data-cr",     "Data",          datadir+"/sr/met",      "1.0",       datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("qcd-cr",      "QCD",           "qcd-std/qcd",          qcdwgt,      datasel + trigSR + dphi_invert);
 
-  config.addSample("qcd-withveto-cr",  "QCD",      "qcd-4bd/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd-withveto-sr",  "QCD",      "qcd-4bd/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi);
+  config.addSample("qcd-withveto-cr",  "QCD",      "qcd-std/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("qcd-withveto-sr",  "QCD",      "qcd-std/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi);
 
   // qcdcr: other bkg subtraction
   config.addSample("ttbar-cr",       "t#bar{t}",      "sr/ttbar-mg",     lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
@@ -307,10 +317,10 @@ BaseConfig qcdConfig(){
   config.addSample("wjets-norm",     "W+jets",        "sr/wjets-ht",     lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
   config.addSample("tW-norm",        "tW",            "sr/tW",           lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
   config.addSample("ttW-norm",       "ttW",           "sr/ttW",          lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
-  config.addSample("qcd-norm",       "QCD",           "qcd-4bd/qcd",     lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
+  config.addSample("qcd-norm",       "QCD",           "qcd-std/qcd",     lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
 
   // qcdsr
-  config.addSample("qcd-sr",      "QCD",           "qcd-4bd/qcd",          srqcdwgt,      datasel + trigSR + dphi);
+  config.addSample("qcd-sr",         "QCD",           "qcd-std/qcd",     qcdwgt,      datasel + trigSR + dphi);
 
   config.sel = baseNoDPhi;
   config.categories = srbins;
@@ -326,14 +336,15 @@ BaseConfig sigConfig(){
   BaseConfig     config;
 
   config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/LowMET/LowMass/sig";
+  config.outputdir = "/tmp/SSR/HighMass/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
-//  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "signals/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "signals/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "signals/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_425_325",  "T2tt(425,325)",  "sr/T2tt_425_325",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_850_100",  "T2tt(850,100)",  "sr/T2tt_850_100",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_950_1",    "T2tt(950,1)",    "signals/T2tt_950_1",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_550_250",  "T2tt(550,250)",  "signals/T2tt_550_250",  sigwgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -345,25 +356,21 @@ BaseConfig sigConfig(){
 
 map<TString, BinInfo> varDict {
   {"norm",      BinInfo("met", "#slash{E}_{T}", vector<int>{0, 1000}, "GeV")},
-  {"met",       BinInfo("met", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-  {"metgx",       BinInfo("met", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-  {"metzg",       BinInfo("met", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
+  {"met",       BinInfo("met", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 1000}, "GeV")},
+  {"metzg",       BinInfo("met", "#slash{E}_{T}^{#gamma/ll}", vector<int>{200, 300, 400, 500, 600, 800}, "GeV")},
   {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
-  {"njets",     BinInfo("njets", "N_{j}", 8, -0.5, 7.5)},
-  {"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
+  {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+  {"ncttstd",   BinInfo("ncttstd", "N_{ctt}", 3, -0.5, 2.5)},
+  {"nt",        BinInfo("nsdtoploose", "N_{T}^{L}", 3, -0.5, 2.5)},
+  {"nw",        BinInfo("nsdwloose", "N_{W}^{L}", 3, -0.5, 2.5)},
   {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
   {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
   {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
   {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-  {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
-  {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-  {"dphij1lmet_fine",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
   {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
   {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-  {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-  {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 10, 250, 750)},
-  {"csvj1pt",   BinInfo("csvj1pt/1", "p_{T}(b_{1}) [GeV]", 8, 20, 100)}
+  {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)}
 };
 
 }
-#endif /* ESTTOOLS_LMPARAMETERS_HH_ */
+#endif /* ESTTOOLS_HMPARAMETERS_HH_ */

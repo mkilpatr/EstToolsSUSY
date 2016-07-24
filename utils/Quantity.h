@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cassert>
 
 namespace EstTools{
 
@@ -22,8 +23,9 @@ public:
   enum Styles {PLAIN, LATEX, ROOT};
   static Styles printStyle;
 
-  Quantity() : value(0), error(0) {}
+  Quantity(double v = 0) : value(v), error(0) {}
   Quantity(double value, double error) : value(value), error(error) {}
+  Quantity(const Quantity &q) : Quantity(q.value, q.error) {}
 
   virtual ~Quantity() {}
 
@@ -93,74 +95,6 @@ public:
     return os;
   }
 
-  friend std::vector<Quantity> operator+(const std::vector<Quantity> &a, const std::vector<Quantity> &b){
-    assert(a.size()==b.size());
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) + b.at(i));
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator-(const std::vector<Quantity> &a, const std::vector<Quantity> &b){
-    assert(a.size()==b.size());
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) - b.at(i));
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator*(const std::vector<Quantity> &a, const std::vector<Quantity> &b){
-    assert(a.size()==b.size());
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) * b.at(i));
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator*(const std::vector<Quantity> &a, double b){
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) * b);
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator*(const std::vector<Quantity> &a, const Quantity &b){
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) * b);
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator/(const std::vector<Quantity> &a, const std::vector<Quantity> &b){
-    assert(a.size()==b.size());
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) / b.at(i));
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator/(const std::vector<Quantity> &a, double b){
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) / b);
-    return rlt;
-  }
-
-  friend std::vector<Quantity> operator/(const std::vector<Quantity> &a, const Quantity &b){
-    std::vector<Quantity> rlt;
-    for (unsigned i=0; i<a.size(); ++i)
-      rlt.push_back(a.at(i) / b);
-    return rlt;
-  }
-
-
-  friend std::ostream &operator<<(std::ostream &os, const std::vector<Quantity> &vec){
-    for (const auto &q : vec){
-      os << q << ", ";
-    }
-    return os;
-  }
-
   static Quantity sum(const std::vector<Quantity> vec){
     Quantity sum(0,0);
     for (auto &q : vec) sum = sum + q;
@@ -209,6 +143,78 @@ public:
 };
 
 Quantity::Styles Quantity::printStyle = Quantity::PLAIN;
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+template<typename Number>
+std::vector<Number> operator+(const std::vector<Number> &a, const std::vector<Number> &b){
+  assert(a.size()==b.size());
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) + b.at(i));
+  return rlt;
+}
+
+template<typename Number>
+std::vector<Number> operator-(const std::vector<Number> &a, const std::vector<Number> &b){
+  assert(a.size()==b.size());
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) - b.at(i));
+  return rlt;
+}
+
+template<typename Number, typename NumberB>
+std::vector<Number> operator*(const std::vector<Number> &a, const std::vector<NumberB> &b){
+  assert(a.size()==b.size());
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) * b.at(i));
+  return rlt;
+}
+
+template<typename Number, typename NumberB>
+std::vector<Number> operator*(const std::vector<Number> &a, const NumberB &b){
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) * b);
+  return rlt;
+}
+
+template<typename Number, typename NumberB>
+std::vector<Number> operator/(const std::vector<Number> &a, const std::vector<NumberB> &b){
+  assert(a.size()==b.size());
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) / b.at(i));
+  return rlt;
+}
+
+template<typename Number, typename NumberB>
+std::vector<Number> operator/(const std::vector<Number> &a, const NumberB &b){
+  std::vector<Number> rlt;
+  for (unsigned i=0; i<a.size(); ++i)
+    rlt.push_back(a.at(i) / b);
+  return rlt;
+}
+
+template<typename Number>
+std::ostream &operator<<(std::ostream &os, const std::vector<Number> &vec){
+  for (const auto &q : vec){
+    os << q << ", ";
+  }
+  return os;
+}
+
+template<typename Number>
+Number sumVector(const std::vector<Number> &vec){
+  Number sum(0);
+  for (auto &q : vec) sum = sum + q;
+  return sum;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 /*
 void testQuantity(){

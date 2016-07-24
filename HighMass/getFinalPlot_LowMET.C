@@ -61,7 +61,7 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     pred.push_back((TH1*)f->Get(b));
   }
   TH1* hdata = (TH1*)f->Get(data);
-  TH1* unc   = (TH1*)f->Get("bkgtotal_unc_sr");
+  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("pred_total_gr");
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
@@ -111,7 +111,7 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
-    TString basename = outputName + "_" + region;
+    TString basename = outputName;
     c->SetTitle(basename);
     c->Print(basename+".pdf");
     c->Print(basename +".C");

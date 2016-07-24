@@ -14,7 +14,7 @@
 #include "TRegexp.h"
 
 #include "Style.hh"
-#include "Quantity.h"
+#include "QuantityAsymmErrors.h"
 #include "Config.h"
 
 using namespace std;
@@ -89,7 +89,7 @@ void setHistBin(TH1* h, int ibin, const Quantity& q){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(vector<Quantity> vec, TString hname, TString title, const BinInfo *bin=nullptr){
+TH1D* convertToHist(const vector<Quantity> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
   auto nbins = vec.size();
   TH1D *hist;
 
@@ -105,6 +105,26 @@ TH1D* convertToHist(vector<Quantity> vec, TString hname, TString title, const Bi
     hist->SetBinError(i+1, vec.at(i).error);
   }
   return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1D* convertToHist(const vector<QuantityAsymmErrors> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
+  vector<Quantity> qv;
+  for (auto &q : vec){
+    qv.push_back(q.getQuantity(true));
+  }
+  return convertToHist(qv, hname, title, bin);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* convertToGraphAsymmErrors(const vector<QuantityAsymmErrors> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
+  auto h = convertToHist(vec, hname, title, bin);
+  TGraphAsymmErrors *gr = new TGraphAsymmErrors(h);
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    gr->SetPointEYhigh(ibin, vec.at(ibin).errHigh);
+    gr->SetPointEYlow(ibin, vec.at(ibin).errLow);
+  }
+  return gr;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

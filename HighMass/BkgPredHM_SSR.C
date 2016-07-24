@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#include "HMParameters_LowMET.hh"
+#include "HMParameters_SSR.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
@@ -15,7 +15,7 @@
 
 using namespace EstTools;
 
-void BkgPredHM_LowMET(){
+void BkgPredHM_SSR(){
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
   z.zllcr_cfg = zllConfig();
@@ -103,7 +103,6 @@ void BkgPredHM_LowMET(){
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999);
     c->SetTitle(outputBase);
-    c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
     c->Print(s.config.outputdir+"/" + outputBase +".C");
 

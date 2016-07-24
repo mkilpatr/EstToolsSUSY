@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#include "HMParameters_LowMET.hh"
+#include "LMParameters_SSR.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
@@ -15,12 +15,12 @@
 
 using namespace EstTools;
 
-void BkgPredHM_LowMET(){
+void BkgPredLM_SSR(){
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
   z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
-  z.phocr_normMap = {};
+  z.phocr_normMap = phoNormMap;
   z.pred();
   z.printYields();
 
@@ -103,7 +103,6 @@ void BkgPredHM_LowMET(){
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999);
     c->SetTitle(outputBase);
-    c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
     c->Print(s.config.outputdir+"/" + outputBase +".C");
 
@@ -115,8 +114,8 @@ void BkgPredHM_LowMET(){
     output->Close();
   };
 
-  plot(pred, predGraphs, "std_pred_lepplusmet");
-  plot(altpred, altgraphs, "std_pred_trad");
+  plot(pred, predGraphs, "fbd_pred_lepplusmet");
+  plot(altpred, altgraphs, "fbd_pred_trad");
 
   cout << "\n\n Lep+MET \n";
   for (const auto &b : tc.bkgs){
