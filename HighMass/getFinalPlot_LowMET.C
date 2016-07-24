@@ -111,7 +111,7 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
-    TString basename = outputName + "_" + region;
+    TString basename = outputName;
     c->SetTitle(basename);
     c->Print(basename+".pdf");
     c->Print(basename +".C");

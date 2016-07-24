@@ -22,7 +22,7 @@ uncfiles=[
 'values_0l_unc_wtopfrac.conf',
  ]
 
-ttzuncfile = 'values_0l_unc_all.conf'
+all_bin_unc_file = 'values_0l_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'rare', 'qcd')
 graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_rare_pred_gr', 'Graph_from_qcd_pred_gr')
@@ -236,8 +236,8 @@ def readRelUnc(config_path):
                     relUnc[type][bin][sample] = float(value)-1
     
     # for all bin uncs
-    if ttzuncfile != '':
-        with open(os.path.join(config_path, ttzuncfile), 'r') as f:
+    if all_bin_unc_file != '':
+        with open(os.path.join(config_path, all_bin_unc_file), 'r') as f:
             for line in f.readlines():
                 try:
                     bin, type, sample, value = line.split()
@@ -351,7 +351,7 @@ def writeFullUnc(pred_file):
     for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
     f.Close()
 
-def makeYieldTable(output='pred.tex'):
+def makeYieldTable(output='pred_hm.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s  = '\\hline\n'

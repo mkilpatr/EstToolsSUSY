@@ -16,134 +16,72 @@ import ROOT as rt
 rt.gROOT.SetBatch(True)
 
 uncfiles=[
-'values_0l_unc_jes.conf',
+'values_0l_unc_jesunc.conf',
 'values_0l_unc_lepcorr.conf',
-'values_0l_unc_metres.conf',
-'values_0l_unc_pdfunc.conf',
-'values_0l_unc_scaleunc.conf',
 'values_0l_unc_toppt.conf',
-'values_0l_unc_trig.conf',
-'values_0l_unc_wpolunc.conf',
-'values_0l_unc_wtopfracunc.conf',
+'values_0l_unc_wtopfrac.conf',
  ]
 
 all_bin_unc_file = 'values_0l_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'rare', 'qcd')
 graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_rare_pred_gr', 'Graph_from_qcd_pred_gr')
-table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare &  QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
+table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & \\Rare &  QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'Graph_from_pred_total_gr'
 
 # ordered bin list
-binlist=('bin_450_nb0_highboost_lownj',
- 'bin_550_nb0_highboost_lownj',
- 'bin_650_nb0_highboost_lownj',
- 'bin_750_nb0_highboost_lownj',
- 'bin_450_nb0_highboost_highnj',
- 'bin_550_nb0_highboost_highnj',
- 'bin_650_nb0_highboost_highnj',
- 'bin_750_nb0_highboost_highnj',
- 'bin_300_nb1_medboost_lowptb',
- 'bin_400_nb1_medboost_lowptb',
- 'bin_500_nb1_medboost_lowptb',
- 'bin_600_nb1_medboost_lowptb',
- 'bin_300_nb1_medboost_medptb',
- 'bin_400_nb1_medboost_medptb',
- 'bin_500_nb1_medboost_medptb',
- 'bin_600_nb1_medboost_medptb',
- 'bin_450_nb1_highboost_lowptb',
- 'bin_550_nb1_highboost_lowptb',
- 'bin_650_nb1_highboost_lowptb',
- 'bin_750_nb1_highboost_lowptb',
- 'bin_450_nb1_highboost_medptb',
- 'bin_550_nb1_highboost_medptb',
- 'bin_650_nb1_highboost_medptb',
- 'bin_750_nb1_highboost_medptb',
- 'bin_300_nb2_medboost_lowptb',
- 'bin_400_nb2_medboost_lowptb',
- 'bin_500_nb2_medboost_lowptb',
- 'bin_600_nb2_medboost_lowptb',
- 'bin_300_nb2_medboost_medptb',
- 'bin_400_nb2_medboost_medptb',
- 'bin_500_nb2_medboost_medptb',
- 'bin_600_nb2_medboost_medptb',
- 'bin_450_nb2_highboost_lowptb',
- 'bin_550_nb2_highboost_lowptb',
- 'bin_650_nb2_highboost_lowptb',
- 'bin_750_nb2_highboost_lowptb',
- 'bin_450_nb2_highboost_medptb',
- 'bin_550_nb2_highboost_medptb',
- 'bin_650_nb2_highboost_medptb',
- 'bin_750_nb2_highboost_medptb'
- )
+binlist=('bin_250_nb1_mtb0_nj7',
+ 'bin_300_nb1_mtb0_nj7',
+ 'bin_250_nb2_mtb0_nj7',
+ 'bin_300_nb2_mtb0_nj7',
+ 'bin_250_nb2_mtb175_nj7_nt0_nw0',
+ 'bin_350_nb2_mtb175_nj7_nt0_nw0',
+ 'bin_450_nb2_mtb175_nj7_nt0_nw0',
+ 'bin_550_nb2_mtb175_nj7_nt0_nw0',
+ 'bin_250_nb2_mtb175_nj5t_nt0_nw1t',
+ 'bin_450_nb2_mtb175_nj5t_nt0_nw1t',
+ 'bin_250_nb2_mtb175_nj5t_nt1t_nw0',
+ 'bin_450_nb2_mtb175_nj5t_nt1t_nw0',
+ 'bin_250_nb2_mtb175_nj5t_nt1t_nw1t',
+)
 
 binMap={
-'nb0_highboost_lownj': {
-   'cut': 'nbjets==0 && j1lpt>500 && (njets>=2 && njets<=5)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb0_highboost_highnj': {
-   'cut': 'nbjets==0 && j1lpt>500 && njets>=6',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb1_medboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && (j1lpt>250 && j1lpt<500) && csvj1pt<40',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
-   },
-'nb1_medboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && (j1lpt>250 && j1lpt<500) && (csvj1pt>40 && csvj1pt<70)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
-   },
-'nb1_highboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && j1lpt>500 && csvj1pt<40',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb1_highboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets==1 && j1lpt>500 && (csvj1pt>40 && csvj1pt<70)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb2_medboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && (j1lpt>250 && j1lpt<500) && ((csvj1pt+csvj2pt)<100)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
-   },
-'nb2_medboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && (j1lpt>250 && j1lpt<500) && ((csvj1pt+csvj2pt)>100) && ((csvj1pt+csvj2pt)<160)',
-   'var': 'met',
-   'bin': [300, 400, 500, 600, 1000]
-   },
-'nb2_highboost_lowptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && j1lpt>500 && ((csvj1pt+csvj2pt)<100)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   },
-'nb2_highboost_medptb': {
-   'cut': 'nbjets>=1 && nlbjets>1 && j1lpt>500 && ((csvj1pt+csvj2pt)>100) && ((csvj1pt+csvj2pt)<160)',
-   'var': 'met',
-   'bin': [450, 550, 650, 750, 1000]
-   }
+### nb1, low mtb ###
+'nb1_mtb0_nj7': {
+   'bin': [250, 300, 400, 1000] # add 1000 to have the correct range 300-400
+    },
+### nb2, low mtb ###
+'nb2_mtb0_nj7': {
+   'bin': [250, 300, 400, 1000] # add 1000 to have the correct range 300-400
+    },
+### nb2, high mtb ###
+'nb2_mtb175_nj7_nt0_nw0': {
+   'bin': [250, 350, 450, 550, 1000]
+    },
+'nb2_mtb175_nj5t_nt0_nw1t': {
+   'bin': [250, 450, 1000]
+    },
+'nb2_mtb175_nj5t_nt1t_nw0': {
+   'bin': [250, 450, 1000]
+    },
+'nb2_mtb175_nj5t_nt1t_nw1t': {
+   'bin': [250, 1000]
+    },
 }
 
-
 labelMap = {
-    'nb0': r'$\nb=0$',
-    'nb1': r'$\nb\geq1, \nbl=1$',
-    'nb2': r'$\nb\geq1, \nbl\geq2$',
-    'medboost': r'$250\leq\ptisr<500$~\GeV',
-    'highboost': r'$\ptisr \geq500$~\GeV',
-    'lownj': r'$2 \leq \nj < 6$',
-    'highnj': r'$\nj \geq 6$',
-    'lowptb': r'$20\leq\ptb<40~\GeV$',
-    'medptb': r'$40\leq\ptb<70~\GeV$',
-    'lowptb12': r'$40\leq\ptb_{1}+\ptb_{2}<100~\GeV$',
-    'medptb12': r'$100\leq\ptb_{1}+\ptb_{2}<160~\GeV$',
+    'nb1': r'$\nb=1$',
+    'nb2': r'$\nb\geq2$',
+    'mtb0': r'$\mtb<175$~\GeV',
+    'mtb175': r'$\mtb>175$~\GeV',
+    'nj5': r'$5\leq\nj<7$',
+    'nj7': r'$nj\geq7$',
+    'nj5t': r'$\nj\geq5$',
+    'nt0': r'$\nt=0$',
+    'nw0': r'$\nw=0$',
+    'nt1t':r'$\nt\geq1$',
+    'nw1t':r'$\nw\geq1$',
     }
 
 
@@ -313,7 +251,7 @@ def writeFullUnc(pred_file):
     for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
     f.Close()
 
-def makeYieldTable(output='pred_lm.tex'):
+def makeYieldTable(output='pred_hm_SSR.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s  = '\\hline\n'
@@ -377,9 +315,7 @@ def formatPrediction(n,e_low,e_up):
 # puts together the bin header for bins of nJets, mtb, nTop (no selection on nB)
 def chunkHeader(sec):
     ''' Put together the mega-bin chunk header. '''
-    sec_header = sec
-    if 'nb2' in sec_header: sec_header = sec_header.replace('ptb', 'ptb12')
-    cats = sec_header.split('_')
+    cats = sec.split('_')
     labs = [labelMap[c] for c in cats]
     ncolumn = len(all_samples)+4
     s  = '\\hline\n'

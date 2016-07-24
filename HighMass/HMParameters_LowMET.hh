@@ -19,7 +19,7 @@ const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight";
 const TString srmcwgt = wgtvar+"*0.9";
 
 // photon trigger eff.
-const TString phowgt = wgtvar;
+const TString phowgt = wgtvar + "*qcdRespTailWeight";
 //const TString phowgt = wgtvar+"*trigPhoWeight";
 
 // No Lepton SF
@@ -28,14 +28,14 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-//const TString lepvetowgt = wgtvar + "*leptnpweight*lepvetoweight";
-//const TString lepselwgt  = wgtvar + "*leptnpweight";
-//const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
+const TString lepvetowgt = wgtvar + "*leptnpweightHM*lepvetoweightHM";
+const TString lepselwgt  = wgtvar + "*leptnpweightHM";
+const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
-const TString lepvetowgt = srmcwgt + "*lepvetoweight";
-const TString lepselwgt  = wgtvar + "*lepselweight";
-const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
+//const TString lepvetowgt = wgtvar + "*lepvetoweight";
+//const TString lepselwgt  = wgtvar + "*lepselweight";
+//const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -240,9 +240,9 @@ BaseConfig zllConfig(){
   config.outputdir = "/tmp/LowMET/HighMass/zllcr";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/zll",                      wgtvar, datasel + trigDiLepCR);
-  config.addSample("ttbar",     "t#bar{t}",               "zllcr/ttbar",                    wgtvar, datasel + trigDiLepCR);
-  config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",                "1.0",     datasel + trigDiLepCR);
+  config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/zll",                      lepselwgt, datasel + trigDiLepCR);
+  config.addSample("ttbar",     "t#bar{t}",               "zllcr/ttbar",                    lepselwgt, datasel + trigDiLepCR);
+  config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",       "1.0",     datasel + trigDiLepCR);
 
   config.sel = baseForNorm;
   config.catMaps = zllCatMap;
@@ -268,7 +268,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           "lepcr/ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",   "Data",          datadir+"/sr/met",             "1.0",     datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",   "Data",          datadir+"/sr/met",    "1.0",     datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar-mg",        lepselwgt, datasel + trigSR + revert_vetoes);
     config.addSample("wjets",       "W+jets",        "sr/wjets-ht",        lepselwgt, datasel + trigSR + revert_vetoes);
     config.addSample("tW",          "tW",            "sr/tW",              lepselwgt, datasel + trigSR + revert_vetoes);
@@ -301,7 +301,7 @@ BaseConfig qcdConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   // qcdcr
-  config.addSample("data-cr",     "Data",          datadir+"/sr/met",             "1.0",       datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("data-cr",     "Data",          datadir+"/sr/met",      "1.0",       datasel + trigSR + vetoes + dphi_invert);
   config.addSample("qcd-cr",      "QCD",           "qcd-std/qcd",          qcdwgt,      datasel + trigSR + dphi_invert);
 
   config.addSample("qcd-withveto-cr",  "QCD",      "qcd-std/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);

@@ -1,14 +1,14 @@
 #include "../utils/EstHelper.hh"
-#include "LMParameters_LowMET.hh"
+#include "HMParameters_SSR.hh"
 #include "TRegexp.h"
 #include "TLatex.h"
 #include <functional>
 
 using namespace EstTools;
 
-void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lepplusmet.root", TString outputName="/tmp/LowMET/LowMass/LM_validation"){
+void getFinalPlot_SSR(TString inputFile="/tmp/SSR/HighMass/sig/std_pred_trad.root", TString outputName="/tmp/SSR/HighMass/HM_SSR"){
 
-  LOG_YMIN = 0.01;
+  LOG_YMIN = 0.1;
 
   vector<TString> bkgs = {"rare_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -21,23 +21,18 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
   vector<TString> splitlabels = {
       "",
   };
-
-  TLatex tl;
-  tl.SetTextSize(0.025);
-  tl.SetTextAlign(11);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){
-      tl.DrawLatexNDC(0.22, 0.74, "N_{b} = 0"); tl.DrawLatexNDC(0.18, 0.70, "p_{T}(j_{ISR}) > 500");
-      tl.DrawLatexNDC(0.18, 0.66, "5-6 jets");  tl.DrawLatexNDC(0.26, 0.66, "#geq 7 jets");
+    [](){
+      drawTLatexNDC("M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV", 0.19, 0.70);
+      drawTLatexNDC("#geq 7 jets", 0.26, 0.65);
+      drawTLatexNDC("N_{b}=1", 0.21, 0.60, 0.025);
+      drawTLatexNDC("N_{b}#geq2", 0.32, 0.60, 0.025);
 
-      tl.DrawLatexNDC(0.42, 0.74, "N_{b} #geq 1, N_{b}^{L} = 1");
-      tl.DrawLatexNDC(0.34, 0.70, "250 #leq p_{T}(j_{ISR}) < 500"); tl.DrawLatexNDC(0.52, 0.70, "p_{T}(j_{ISR}) > 500");
-
-      tl.DrawLatexNDC(0.76, 0.74, "N_{b} #geq 1, N_{b}^{L} #geq 2");
-      tl.DrawLatexNDC(0.66, 0.70, "250 #leq p_{T}(j_{ISR}) < 500"); tl.DrawLatexNDC(0.83, 0.70, "p_{T}(j_{ISR}) > 500");
-      drawTLatexNDC("p_{T}(b) < 40", 0.65, 0.64, 0.018); drawTLatexNDC("40 #leq p_{T}(b) < 70", 0.72, 0.64, 0.018);
-      drawTLatexNDC("p_{T}(b_{12}) < 100", 0.84, 0.52, 0.018, 11, 90); drawTLatexNDC("100 #leq p_{T}(b_{12}) < 160", 0.91, 0.52, 0.018, 11, 90);
-
+      drawTLatexNDC("M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV, N_{b}#geq2", 0.54, 0.70);
+      drawTLatexNDC("N_{W} = 0, N_{T} = 0", 0.48, 0.64, 0.025); drawTLatexNDC("#geq 7 jets", 0.5, 0.6, 0.025);
+      drawTLatexNDC("N_{W} #geq 1", 0.69, 0.64, 0.025); drawTLatexNDC("N_{T} = 0",    0.69, 0.6, 0.025);
+      drawTLatexNDC("N_{W} = 0",    0.81, 0.64, 0.025); drawTLatexNDC("N_{T} #geq 1", 0.81, 0.6, 0.025);
+      drawTLatexNDC("N_{W} #geq 1, N_{T} #geq 1", 0.94, 0.5, 0.025, 11, 90);
     },
   };
 
@@ -45,19 +40,18 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
     [](TCanvas *c){
       ((TPad*)c->GetListOfPrimitives()->At(0))->cd();
       drawLine(2,  LOG_YMIN, 2,  2000);
-      drawLine(4,  LOG_YMIN, 4,  20000);
-      drawLine(6,  LOG_YMIN, 6,  1000);
-      drawLine(8,  LOG_YMIN, 8,  4000);
-      drawLine(10,  LOG_YMIN, 10,  1000);
-      drawLine(12,  LOG_YMIN, 12,  20000);
-      drawLine(14,  LOG_YMIN, 14,  1000);
-      drawLine(16,  LOG_YMIN, 16,  4000);
-      drawLine(18,  LOG_YMIN, 18,  1000);
+      drawLine(4,  LOG_YMIN, 4,  50000);
+      drawLine(8,  LOG_YMIN, 8,  2000);
+      drawLine(10,  LOG_YMIN, 10,  2000);
+      drawLine(12,  LOG_YMIN, 12,  2000);
+      drawLine(14,  LOG_YMIN, 14,  2000);
       c->cd();
     },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
+  xlabels[1] = "[300, 400)";
+  xlabels[3] = "[300, 400)";
 
   vector<TH1*> pred;
 
@@ -67,7 +61,7 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
     pred.push_back((TH1*)f->Get(b));
   }
   TH1* hdata = (TH1*)f->Get(data);
-  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("pred_total_gr");
+  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
@@ -113,8 +107,8 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
     setLegend(leg, 2, 0.54, 0.72, 0.96, 0.88);
 
     auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc, hDataRawMC);
-    c->SetCanvasSize(900, 600);
-    drawText(splitlabels.at(ireg), 0.18, 0.69);
+    c->SetCanvasSize(800, 600);
+//    drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName;

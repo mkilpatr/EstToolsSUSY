@@ -291,6 +291,7 @@ void lepcrYields(){
 
 void plot1LepInclusive(){
   auto config = lepConfig();
+  config.sel = "met>200";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -310,8 +311,8 @@ void plot1LepInclusive(){
 //    {"ncttstd",   BinInfo("ncttstd", "N_{CTT}", 3, -0.5, 2.5)},
 //    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
 //    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
 //    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
@@ -320,10 +321,25 @@ void plot1LepInclusive(){
 //    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
 //    {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
 //    {"lp",  BinInfo("lp", "L_{P}", 40, -2, 2.)},
+
+    {"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
+    {"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
+    {"j1csv_wp",    BinInfo("j1csv/1", "CSV(j_{1})", vector<double>{0, 0.460, 0.800, 1})},
+    {"j2csv_wp",    BinInfo("j2csv/1", "CSV(j_{2})", vector<double>{0, 0.460, 0.800, 1})},
+    {"b1csv",    BinInfo("b1csv", "CSV(b_{1})", 20, 0, 1)},
+    {"b2csv",    BinInfo("b2csv", "CSV(b_{2})", 20, 0, 1)},
+
   };
 
   for (auto &var : varDict){
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);
+
+    z.resetSelection();
+    z.setSelection("njets>=2", "njgeq2", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+    z.setSelection("njets>=5", "njgeq5", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+
+//      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);
   }
 
 }

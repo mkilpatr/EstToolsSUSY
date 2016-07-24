@@ -137,7 +137,7 @@ public:
   };
 
   static double alpha;
-  unsigned nToys = 100000;
+  unsigned nToys = 1000000;
   unsigned useGaussianWhenAbove = 10;
 
   template<typename Number>

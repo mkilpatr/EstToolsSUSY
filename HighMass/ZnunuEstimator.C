@@ -271,7 +271,7 @@ void plotPhotonInclusive(){
 
   auto config = phoConfig();
   config.outputdir = "/tmp/plots/phocr_inclusive";
-  config.sel = "met>200 && njets>=2";
+  config.sel = "met>200";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -290,27 +290,38 @@ void plotPhotonInclusive(){
   TString data_sample = "singlepho";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 0, 800, "GeV")},
-    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
-    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
-    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
-//    {"drphotonparton",    BinInfo("drphotonparton", "min#DeltaR(#gamma, q)", 20, 0, 2)},
-    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
-    {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 20, 0, 1000)},
-    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)}
+//    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 0, 800, "GeV")},
+//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
+//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
+//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
+//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+//    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
+//    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
+//    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
+//    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
+//    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
+//    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
+////    {"drphotonparton",    BinInfo("drphotonparton", "min#DeltaR(#gamma, q)", 20, 0, 2)},
+//    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
+//    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
+//    {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 20, 0, 1000)},
+//    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
+
+    {"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
+    {"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
+    {"j1csv_wp",    BinInfo("j1csv/1", "CSV(j_{1})", vector<double>{0, 0.460, 0.800, 1})},
+    {"j2csv_wp",    BinInfo("j2csv/1", "CSV(j_{2})", vector<double>{0, 0.460, 0.800, 1})},
+    {"b1csv",    BinInfo("b1csv", "CSV(b_{1})", 20, 0, 1)},
+    {"b2csv",    BinInfo("b2csv", "CSV(b_{2})", 20, 0, 1)},
   };
 
   for (auto &var : varDict){
+    z.resetSelection();
+    z.setSelection("njets>=2", "njgeq2", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+    z.setSelection("njets>=5", "njgeq5", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
   }
 

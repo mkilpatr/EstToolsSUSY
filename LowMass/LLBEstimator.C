@@ -261,7 +261,7 @@ void lepcrYields(){
 
   BaseEstimator z(config);
 
-  z.calcYieldsExcludes({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"});
+  z.calcYieldsExcludes({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "rare-sr"});
   z.printYields();
   z.sumYields({"ttbar", "wjets", "tW", "ttW"}, "Total BKG");
   z.printYieldsTable({"ttbar", "wjets", "tW", "ttW", "Total BKG", "singlelep"});

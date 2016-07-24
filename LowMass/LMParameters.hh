@@ -18,18 +18,18 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight";
 
 // photon trigger eff.
-const TString phowgt = wgtvar;
+const TString phowgt = wgtvar + "*qcdRespTailWeight";
 //const TString phowgt = wgtvar+"*trigPhoWeight";
 
 // No Lepton SF
-const TString lepvetowgt = wgtvar;
-const TString lepselwgt  = wgtvar;
-const TString vetoes = " && nvetolep==0 && nvetotau==0";
+//const TString lepvetowgt = wgtvar;
+//const TString lepselwgt  = wgtvar;
+//const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-//const TString lepvetowgt = wgtvar + "*leptnpweight*lepvetoweight";
-//const TString lepselwgt  = wgtvar + "*leptnpweight";
-//const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
+const TString lepvetowgt = wgtvar + "*leptnpweightLM*lepvetoweightLM";
+const TString lepselwgt  = wgtvar + "*leptnpweightLM";
+const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -292,9 +292,9 @@ BaseConfig zllConfig(){
   config.outputdir = "/tmp/plots/LowMass/zllcr";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/zll",                      wgtvar, datasel + trigDiLepCR);
-  config.addSample("ttbar",     "t#bar{t}",               "zllcr/ttbar",                    wgtvar, datasel + trigDiLepCR);
-  config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",                "1.0",     datasel + trigDiLepCR);
+  config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/zll",                      lepselwgt, datasel + trigDiLepCR);
+  config.addSample("ttbar",     "t#bar{t}",               "zllcr/ttbar",                    lepselwgt, datasel + trigDiLepCR);
+  config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",       "1.0",     datasel + trigDiLepCR);
 
   config.sel = baseline;
   config.catMaps = zllCatMap;
@@ -320,7 +320,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           "lepcr/ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",   "Data",          datadir+"/sr/met",             "1.0",     datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",   "Data",          datadir+"/sr/met",    "1.0",     datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar-mg",        lepselwgt, datasel + trigSR + revert_vetoes);
     config.addSample("wjets",       "W+jets",        "sr/wjets-ht",        lepselwgt, datasel + trigSR + revert_vetoes);
     config.addSample("tW",          "tW",            "sr/tW",              lepselwgt, datasel + trigSR + revert_vetoes);
@@ -332,7 +332,7 @@ BaseConfig lepConfig(){
   config.addSample("wjets-sr",       "W+jets",        "sr/wjets-ht",        lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
-//  config.addSample("qcd-sr",         "QCD",           "qcd-4bd/qcd",    lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("qcd-sr",         "QCD",           "qcd-4bd/qcd",       lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("rare-sr",        "Rare",          "sr/rare",            lepvetowgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
@@ -375,7 +375,7 @@ BaseConfig qcdConfig(){
   config.addSample("qcd-norm",       "QCD",           "qcd-4bd/qcd",     lepselwgt,   datasel + trigSR + dphi + revert_vetoes);
 
   // qcdsr
-  config.addSample("qcd-sr",      "QCD",           "qcd-4bd/qcd",          qcdwgt,      datasel + trigSR + dphi);
+  config.addSample("qcd-sr",         "QCD",           "qcd-4bd/qcd",     qcdwgt,      datasel + trigSR + dphi);
 
   config.sel = baseNoDPhi;
   config.categories = srbins;
