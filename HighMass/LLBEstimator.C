@@ -247,7 +247,7 @@ void srYields(){
   config.addSample("wjets-sr",       "W+jets",        "sr/wjets-ht",        lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("qcd-sr",         "QCD",           "qcd/qcd-stdskim",    lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("qcd-sr",         "QCD",           "qcd-std/qcd",    lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("znunu-sr",       "znunu",         "sr/znunu",           lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("ww-sr",          "WW",            "sr/ww",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("wz-sr",          "WZ",            "sr/wz",              lepvetowgt, datasel + trigSR + vetoes);

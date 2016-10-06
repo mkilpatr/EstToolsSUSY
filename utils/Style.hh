@@ -342,7 +342,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   // Global variables
 
   TString cmsText     = "CMS";
-  float cmsTextFont   = 61;  // default is helvetic-bold
+  float cmsTextFont   = 62;  // default is helvetic-bold
 
   bool writeExtraText = true;
   float extraTextFont = 52;  // default is helvetica-italics
