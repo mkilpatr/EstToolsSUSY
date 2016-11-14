@@ -9,6 +9,14 @@ using namespace EstTools;
 void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lepplusmet.root", TString outputName="/tmp/LowMET/LowMass/LM_validation"){
 
   LOG_YMIN = 0.01;
+  PLOT_MAX_YSCALE = 5;
+
+  RATIOPLOT_XTITLE_OFFSET = 1.15;
+  RATIOPLOT_XLABEL_FONTSIZE = 0.117;
+  RATIOPLOT_XLABEL_OFFSET = 0.025;
+  PAD_SPLIT_Y = 0.31;
+  PAD_BOTTOM_MARGIN = 0.36;
+
 
   vector<TString> bkgs = {"rare_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -28,10 +36,12 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
   vector<std::function<void()>> drawRegionLabels {
     [&tl](){
       tl.DrawLatexNDC(0.22, 0.74, "N_{b} = 0"); tl.DrawLatexNDC(0.18, 0.70, "p_{T}(j_{ISR}) > 500");
-      tl.DrawLatexNDC(0.18, 0.66, "5-6 jets");  tl.DrawLatexNDC(0.26, 0.66, "#geq 7 jets");
+      tl.DrawLatexNDC(0.18, 0.64, "5-6 jets");  tl.DrawLatexNDC(0.26, 0.64, "#geq 7 jets");
 
       tl.DrawLatexNDC(0.42, 0.74, "N_{b} #geq 1, N_{b}^{L} = 1");
       tl.DrawLatexNDC(0.34, 0.70, "250 #leq p_{T}(j_{ISR}) < 500"); tl.DrawLatexNDC(0.52, 0.70, "p_{T}(j_{ISR}) > 500");
+      drawTLatexNDC("p_{T}(b) < 40", 0.33, 0.64, 0.018); drawTLatexNDC("40 #leq p_{T}(b) < 70", 0.4, 0.64, 0.018);
+      drawTLatexNDC("p_{T}(b_{12}) < 100", 0.52, 0.52, 0.018, 11, 90); drawTLatexNDC("100 #leq p_{T}(b_{12}) < 160", 0.61, 0.52, 0.018, 11, 90);
 
       tl.DrawLatexNDC(0.76, 0.74, "N_{b} #geq 1, N_{b}^{L} #geq 2");
       tl.DrawLatexNDC(0.66, 0.70, "250 #leq p_{T}(j_{ISR}) < 500"); tl.DrawLatexNDC(0.83, 0.70, "p_{T}(j_{ISR}) > 500");
@@ -75,16 +85,16 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
   hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
   // plot raw MC
-  TH1 *hmctotal = nullptr;
-  for(auto &mc : mcs){
-    if (!hmctotal) hmctotal = (TH1*)f->Get(mc)->Clone();
-    else hmctotal->Add((TH1*)f->Get(mc));
-  }
-
-  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-  hDataRawMC->Divide(hmctotal);
-  hDataRawMC->SetLineWidth(2);
-  prepHists({hDataRawMC}, false, false, false, {kOrange});
+//  TH1 *hmctotal = nullptr;
+//  for(auto &mc : mcs){
+//    if (!hmctotal) hmctotal = (TH1*)f->Get(mc)->Clone();
+//    else hmctotal->Add((TH1*)f->Get(mc));
+//  }
+//
+//  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
+//  hDataRawMC->Divide(hmctotal);
+//  hDataRawMC->SetLineWidth(2);
+//  prepHists({hDataRawMC}, false, false, false, {kOrange});
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -108,11 +118,11 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/LowMass/sig/fbd_pred_lep
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
-    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
+//    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
-    setLegend(leg, 2, 0.54, 0.72, 0.96, 0.88);
+    setLegend(leg, 2, 0.52, 0.76, 0.94, 0.87);
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc, hDataRawMC);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc);
     c->SetCanvasSize(900, 600);
     drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();

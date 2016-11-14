@@ -16,15 +16,19 @@ import ROOT as rt
 rt.gROOT.SetBatch(True)
 
 uncfiles=[
+'values_0l_unc_btag.conf',
 'values_0l_unc_jes.conf',
 'values_0l_unc_lepcorr.conf',
 'values_0l_unc_metres.conf',
 'values_0l_unc_pdfunc.conf',
+'values_0l_unc_pu.conf',
+'values_0l_unc_qcdsyst.conf',
+'values_0l_unc_rare_pdfscale.conf',
 'values_0l_unc_scaleunc.conf',
 'values_0l_unc_toppt.conf',
-'values_0l_unc_trig.conf',
 'values_0l_unc_wpolunc.conf',
 'values_0l_unc_wtopfracunc.conf',
+'values_0l_unc_zgamma.conf',
  ]
 
 all_bin_unc_file = 'values_0l_unc_all.conf'

@@ -21,6 +21,8 @@ vector<Quantity> LLBPred(){
 
   l.printYields();
 
+  l.printTable(false);
+
   return l.yields.at("_pred");
 }
 
@@ -40,7 +42,7 @@ void plotLepCR(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
 

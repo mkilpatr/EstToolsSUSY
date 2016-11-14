@@ -16,6 +16,18 @@
 using namespace EstTools;
 
 void BkgPredHM_SSR(){
+
+  auto sigcfg = sigConfig();
+  BaseEstimator s(sigcfg);
+  s.calcYields();
+
+  auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
+  vector<TH1*> mc;
+  for (const auto &sig : s.yields){
+    if (sig.first != "data-sr")
+      mc.push_back(convertToHist(sig.second, sig.first, ";Search Region;Events"));
+  }
+
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
   z.zllcr_cfg = zllConfig();
@@ -75,18 +87,11 @@ void BkgPredHM_SSR(){
   vector<TGraphAsymmErrors*> altgraphs;
   convert(lc, altpred, altgraphs);
 
-  vector<TH1*> mc;
   mc.push_back(convertToHist(q.yields.at("qcd-withveto-sr"),"qcd_mc",";Search Region;Events"));
 //  mc.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_mc",";Search Region;Events"));
   mc.push_back(convertToHist(l.yields.at("rare-sr"),"rare_mc",";Search Region;Events"));
   mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Search Region;Events"));
   mc.push_back(convertToHist(z.yields.at("znunu-sr"),"znunu_mc",";Search Region;Events"));
-
-  auto sigcfg = sigConfig();
-  BaseEstimator s(sigcfg);
-  s.calcYields();
-
-  auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
 
   vector<TString> bkglabels = {"QCD", "Rare", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
   vector<TString> datalabel = {"Data"};

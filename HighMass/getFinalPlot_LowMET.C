@@ -24,19 +24,19 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
   tl.SetTextAlign(11);
   vector<std::function<void()>> drawRegionLabels {
     [&tl](){
-      tl.DrawLatexNDC(0.18, 0.70, "M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV");
-      tl.DrawLatexNDC(0.2, 0.64, "N_{b}=1");
-      tl.DrawLatexNDC(0.32, 0.64, "N_{b}#geq2");
-      tl.DrawLatexNDC(0.58, 0.70, "M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV");
-      tl.DrawLatexNDC(0.52, 0.64, "N_{b}=1");
-      tl.DrawLatexNDC(0.80, 0.64, "N_{b}#geq2");
+      tl.DrawLatexNDC(0.18, 0.71, "M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV");
+      tl.DrawLatexNDC(0.2, 0.65, "N_{b}=1");
+      tl.DrawLatexNDC(0.31, 0.65, "N_{b}#geq2");
+      tl.DrawLatexNDC(0.58, 0.71, "M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV");
+      tl.DrawLatexNDC(0.52, 0.65, "N_{b}=1");
+      tl.DrawLatexNDC(0.80, 0.65, "N_{b}#geq2");
     },
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
     [](TCanvas *c){
       ((TPad*)c->GetListOfPrimitives()->At(0))->cd();
-      drawLine(2,  0.01, 2,  2000);
+      drawLine(2,  0.01, 2,  5000);
       drawLine(4,  0.01, 4,  50000);
       drawLine(9,  0.01, 9,  2000);
       c->cd();
@@ -47,11 +47,13 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
   vector<TString> xlabels {
     "5-6j", "#geq7j",
     "5-6j", "#geq7j",
-    "0W, 0T, 5-6j", "0W, 0T, #geq7j",
-    "#geq1W, 0T", "0W, #geq1T", "#geq1W, #geq1T",
-    "0W, 0T, 5-6j", "0W, 0T, #geq7j",
-    "#geq1W, 0T", "0W, #geq1T", "#geq1W, #geq1T",
+    "0W, 0t, 5-6j", "0W, 0t, #geq7j",
+    "#geq1W, 0t", "0W, #geq1t", "#geq1W, #geq1t",
+    "0W, 0T, 5-6j", "0W, 0t, #geq7j",
+    "#geq1W, 0t", "0W, #geq1t", "#geq1W, #geq1t",
   };
+
+  vector<TString> dummylabels(xlabels.size(), "");
 
   vector<TH1*> pred;
 
@@ -65,7 +67,7 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
-  setBinLabels(hdata, xlabels);
+  setBinLabels(hdata, dummylabels);
   hdata->GetXaxis()->SetTitle("");
 
   // plot raw MC
@@ -75,10 +77,10 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     else hmctotal->Add((TH1*)f->Get(mc));
   }
 
-  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-  hDataRawMC->Divide(hmctotal);
-  hDataRawMC->SetLineWidth(2);
-  prepHists({hDataRawMC}, false, false, false, {kOrange});
+//  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
+//  hDataRawMC->Divide(hmctotal);
+//  hDataRawMC->SetLineWidth(2);
+//  prepHists({hDataRawMC}, false, false, false, {kOrange});
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -102,15 +104,26 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
-    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
+//    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
-    setLegend(leg, 2, 0.54, 0.72, 0.96, 0.88);
+    setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc, hDataRawMC);
-    c->SetCanvasSize(800, 600);
+    PLOT_MAX_YSCALE = 10;
+    PAD_SPLIT_Y = 0.33;
+    PAD_BOTTOM_MARGIN = 0.38;
+
+    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc);
+    c->SetCanvasSize(800, 700);
     drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
+
+    double xpos = 0.19;
+    for (auto xl : xlabels){
+      drawTLatexNDC(xl, xpos, 0.12, 0.028, 13, 310, 42);
+      xpos += 0.0575;
+    }
+
     TString basename = outputName;
     c->SetTitle(basename);
     c->Print(basename+".pdf");
