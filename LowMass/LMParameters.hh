@@ -63,14 +63,14 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-//const TString sigwgt = lepvetowgt + "*btagFastSimWeight";
-const TString sigwgt = lepvetowgt;
+const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight";
+//const TString sigwgt = lepvetowgt;
 
 // triggers
 const TString trigSR = " && (passmetmht100 || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR";
-const TString datasel = " && passjson && passmetfilters && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 
 // ------------------------------------------------------------------------
@@ -118,18 +118,18 @@ std::map<TString, TString> srcuts{
 };
 
 std::map<TString, TString> srlabels{
-  {"nb0_highboost_lownj",   "#splitline{p_{T}(j_{ISR}) #geq 500 GeV, N_{b} = 0}{2 #leq N_{j} #leq 5}"},
-  {"nb0_highboost_highnj",  "#splitline{p_{T}(j_{ISR}) #geq 500 GeV, N_{b} = 0}{N_{j} #geq 6}"},
+  {"nb0_highboost_lownj",   "N_{b} = 0;#splitline{p_{T}(j_{ISR}) #geq 500 GeV}{2 #leq N_{j} #leq 5}"},
+  {"nb0_highboost_highnj",  "N_{b} = 0;#splitline{p_{T}(j_{ISR}) #geq 500 GeV}{N_{j} #geq 6}"},
 
-  {"nb1_medboost_lowptb",   "#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV, N_{b} #geq 1, N_{b}^{L} = 1}{p_{T}(b) < 40 GeV}"},
-  {"nb1_medboost_medptb",   "#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV, N_{b} #geq 1, N_{b}^{L} = 1}{40 #leq p_{T}(b) < 70 GeV}"},
-  {"nb1_highboost_lowptb",  "#splitline{p_{T}(j_{ISR}) > 500 GeV, N_{b} #geq 1, N_{b}^{L} = 1}{p_{T}(b) < 40 GeV}"},
-  {"nb1_highboost_medptb",  "#splitline{p_{T}(j_{ISR}) > 500 GeV, N_{b} #geq 1, N_{b}^{L} = 1}{40 #leq p_{T}(b) < 70 GeV}"},
+  {"nb1_medboost_lowptb",   "N_{b} #geq 1, N_{b}^{L} = 1;#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV}{p_{T}(b) < 40 GeV}"},
+  {"nb1_medboost_medptb",   "N_{b} #geq 1, N_{b}^{L} = 1;#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV}{40 #leq p_{T}(b) < 70 GeV}"},
+  {"nb1_highboost_lowptb",  "N_{b} #geq 1, N_{b}^{L} = 1;#splitline{p_{T}(j_{ISR}) > 500 GeV}{p_{T}(b) < 40 GeV}"},
+  {"nb1_highboost_medptb",  "N_{b} #geq 1, N_{b}^{L} = 1;#splitline{p_{T}(j_{ISR}) > 500 GeV}{40 #leq p_{T}(b) < 70 GeV}"},
 
-  {"nb2_medboost_lowptb",   "#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV, N_{b} #geq 1, N_{b}^{L} #geq 2}{p_{T}(b_{12}) < 100 GeV}"},
-  {"nb2_medboost_medptb",   "#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV, N_{b} #geq 1, N_{b}^{L} #geq 2}{100 #leq p_{T}(b_{12}) < 160 GeV}"},
-  {"nb2_highboost_lowptb",  "#splitline{p_{T}(j_{ISR}) > 500 GeV, N_{b} #geq 1, N_{b}^{L} #geq 2}{p_{T}(b_{12}) < 100 GeV}"},
-  {"nb2_highboost_medptb",  "#splitline{p_{T}(j_{ISR}) > 500 GeV, N_{b} #geq 1, N_{b}^{L} #geq 2}{100 #leq p_{T}(b_{12}) < 160 GeV}"},
+  {"nb2_medboost_lowptb",   "N_{b} #geq 1, N_{b}^{L} #geq 2;#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV}{p_{T}(b_{12}) < 100 GeV}"},
+  {"nb2_medboost_medptb",   "N_{b} #geq 1, N_{b}^{L} #geq 2;#splitline{250 #leq p_{T}(j_{ISR}) < 500 GeV}{100 #leq p_{T}(b_{12}) < 160 GeV}"},
+  {"nb2_highboost_lowptb",  "N_{b} #geq 1, N_{b}^{L} #geq 2;#splitline{p_{T}(j_{ISR}) > 500 GeV}{p_{T}(b_{12}) < 100 GeV}"},
+  {"nb2_highboost_medptb",  "N_{b} #geq 1, N_{b}^{L} #geq 2;#splitline{p_{T}(j_{ISR}) > 500 GeV}{100 #leq p_{T}(b_{12}) < 160 GeV}"},
 };
 
 std::map<TString, std::vector<int>> srMETbins{
@@ -396,9 +396,9 @@ BaseConfig sigConfig(){
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
-//  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "signals/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "signals/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "signals/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;

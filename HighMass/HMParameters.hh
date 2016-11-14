@@ -63,14 +63,14 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-//const TString sigwgt = lepvetowgt + "*btagFastSimWeight";
-const TString sigwgt = lepvetowgt;
+const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
+//const TString sigwgt = lepvetowgt;
 
 // triggers
 const TString trigSR = " && (passmetmht100 || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR";
-const TString datasel = " && passjson && passmetfilters && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 
 // ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ const TString baseline = "met>250 && njets>=5 && nbjets>=1 && nlbjets>=2 && dphi
 const TString baseNoDPhi = "met>250 && njets>=5 && nbjets>=1 && nlbjets>=2";
 const TString dphi = " && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5" + qcdSpikeRemovals,
     dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met < 0.1)" + qcdSpikeRemovals;
-const TString baseForNorm = "met>200 && njets>=5 && nlbjets>=2 && nbjets>=1";
+const TString baseForNorm = "met>250 && njets>=5 && nlbjets>=2 && nbjets>=1";
 
 std::vector<TString> srbins{
   "nb1_mtb0_nj5", "nb1_mtb0_nj7",
@@ -407,9 +407,9 @@ BaseConfig sigConfig(){
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
 //  config.addSample("T2tt_425_325",  "T2tt(425,325)",  "sr/T2tt_425_325",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2tt_850_100",  "T2tt(850,100)",  "sr/T2tt_850_100",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2tt_950_1",    "T2tt(950,1)",    "signals/T2tt_950_1",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2tt_550_250",  "T2tt(550,250)",  "signals/T2tt_550_250",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_600_300",  "T2tt(600,300)",  "sig/T2tt_600_300",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_850_50",   "T2tt(850,50)",   "sig/T2tt_850_50",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_950_1",    "T2tt(950,1)",    "sig/T2tt_950_1",  sigwgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;

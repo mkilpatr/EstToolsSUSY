@@ -49,6 +49,15 @@ TString addCuts(const vector<TString>& cuts, TString prefix=""){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vector<TString> splitString(const TString &instr, const TString &delimiter){
+  vector<TString> v;
+  TObjArray *tx = instr.Tokenize(delimiter);
+  for (Int_t i = 0; i < tx->GetEntries(); i++)
+    v.push_back(((TObjString *)(tx->At(i)))->String());
+  return v;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1* normalize(TH1 *h, double norm = 1){
   h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
   return h;
@@ -88,6 +97,30 @@ void setHistBin(TH1* h, int ibin, const Quantity& q){
   h->SetBinError(ibin, q.error);
 }
 
+TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderflow = false, bool useOverflow = true){
+
+  TH1 *htmp = (TH1 *)h->Clone("htmp");
+  if (useUnderflow) addUnderflow(htmp);
+  if (useOverflow) addOverflow(htmp);
+
+  TH1 *hist = (TH1 *)htmp->Clone(TString(htmp->GetName())+"_intg");
+  double integral, error;
+
+  int nbins = hist->GetNbinsX();
+  for(int ibin = 1; ibin <= nbins; ibin++) {
+    if(useGreaterThan) {
+      integral = htmp->IntegralAndError(ibin, nbins, error);
+    } else {
+      integral = htmp->IntegralAndError(1, ibin, error);
+    }
+    hist->SetBinContent(ibin, integral);
+    hist->SetBinError(ibin, error);
+  }
+  delete htmp;
+  return hist;
+
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1D* convertToHist(const vector<Quantity> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
   auto nbins = vec.size();
@@ -125,6 +158,16 @@ TGraphAsymmErrors* convertToGraphAsymmErrors(const vector<QuantityAsymmErrors> &
     gr->SetPointEYlow(ibin, vec.at(ibin).errLow);
   }
   return gr;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double getHistMaximumPlusError(const TH1* h){
+  double max = -1e99;
+  for (int i=1; i<h->GetNbinsX()+1; ++i){
+    if (h->GetBinContent(i)+h->GetBinError(i)>max)
+      max = h->GetBinContent(i)+h->GetBinError(i);
+  }
+  return max;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -321,24 +364,24 @@ void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdd
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TLegend* initLegend(){
-  double fLegX1 = 0.6, fLegY1 = 0.88, fLegX2 = 0.93, fLegY2 = 0.88;
+  double fLegX1 = 0.58, fLegY1 = 0.87, fLegX2 = 0.92, fLegY2 = 0.87;
   TLegend *leg = new TLegend(fLegX1, fLegY1, fLegX2, fLegY2);
   leg->SetFillStyle (0);
   leg->SetFillColor (0);
   leg->SetBorderSize(0);
-  leg->SetTextSize(0.05);
+  leg->SetTextSize(0.048);
   return leg;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType = "L", double height = 0.06){
+void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType = "LP", double height = 0.06){
   double fLegY1 = leg->GetY1()-height;
   leg->SetY1(fLegY1);
   leg->AddEntry(obj, label, legType);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "L"){
+TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
   assert(hists.size() == labels.size());
   double fLegY1 = leg->GetY1()-0.06*hists.size();
   leg->SetY1(fLegY1);
@@ -349,7 +392,7 @@ TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels,
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "L"){
+TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
   assert(hists.size() == labels.size());
   auto leg = initLegend();
   appendLegends(leg, hists, labels, legType);
@@ -417,12 +460,14 @@ void drawText(TString text, double lowX = 0.7, double lowY = 0.93)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0)
+void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
 {
   TLatex tl;
   tl.SetTextSize(size);
   tl.SetTextAlign(align);
   tl.SetTextAngle(angle);
+  tl.SetTextFont(font);
+  tl.SetTextColor(color);
   tl.DrawLatexNDC(xpos, ypos, text);
 }
 
@@ -531,23 +576,27 @@ Quantity dileptonTTbarScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Qu
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template<typename Number>
-vector<TString> convertBinRangesToLabels(const vector<Number>& binedges){
+vector<TString> convertBinRangesToLabels(const vector<Number>& binedges, bool tableStyle = false){
   vector<TString> labels;
   for (unsigned idx=0; idx<binedges.size()-1; ++idx){
-    if (idx == binedges.size() - 2)
-      labels.push_back(TString::Format("#geq %d", int(binedges.at(idx))));
-    else
-      labels.push_back(TString::Format("[%d, %d)", int(binedges.at(idx)), int(binedges.at(idx+1))));
+    if (idx == binedges.size() - 2){
+      TString tmpl = tableStyle ? "$\\geq%d$" : "#geq %d";
+      labels.push_back(TString::Format(tmpl, int(binedges.at(idx))));
+    }
+    else{
+      TString tmpl = tableStyle ? "%d$-$%d" : "[%d, %d)";
+      labels.push_back(TString::Format(tmpl, int(binedges.at(idx)), int(binedges.at(idx+1))));
+    }
   }
   return labels;
 }
 
 template<typename Number>
-vector<TString> convertBinRangesToLabels(const vector<TString>& binnames, const map<TString, vector<Number>>& binedges){
+vector<TString> convertBinRangesToLabels(const vector<TString>& binnames, const map<TString, vector<Number>>& binedges, bool tableStyle = false){
   vector<TString> labels;
   for (const auto &name : binnames){
     auto bins = binedges.at(name);
-    auto l = convertBinRangesToLabels<Number>(bins);
+    auto l = convertBinRangesToLabels<Number>(bins, tableStyle);
     labels.insert(labels.end(), l.begin(), l.end());
   }
   return labels;

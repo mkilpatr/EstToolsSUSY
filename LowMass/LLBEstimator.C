@@ -18,9 +18,10 @@ vector<Quantity> LLBPred(){
   LLBEstimator z(config);
 
   z.pred();
-  z.yields["_TF"] = z.yields.at("ttbarplusw-sr")/z.yields.at("ttbarplusw");
 
   z.printYields();
+
+  z.printTable(true);
 
   return z.yields.at("_pred");
 }
@@ -41,7 +42,7 @@ void plotLepCR(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); auto labels = splitString(cat.label, ";"); double initY = 0.77; for (auto l:labels) {drawTLatexNDC(l, 0.2, initY); initY-=0.071;} };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
 

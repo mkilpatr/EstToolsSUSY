@@ -17,15 +17,25 @@
 
 #define DEBUG_
 
-#define PLOT_MAX_YSCALE 1.25
-
 #define RATIO_YMIN 0
 #define RATIO_YMAX 1.999
+
+// show overall data/MC SF on plot
+//#define SHOW_DATA_MC_RATIO
 
 using namespace std;
 #endif
 
 namespace EstTools{
+
+double PLOT_MAX_YSCALE = 1.25;
+
+double PAD_SPLIT_Y = 0.3;
+double PAD_BOTTOM_MARGIN = 0.30;
+
+double RATIOPLOT_XLABEL_FONTSIZE = 0.10;
+double RATIOPLOT_XLABEL_OFFSET = 0.01;
+double RATIOPLOT_XTITLE_OFFSET = 0.85;
 
 double LOG_YMIN = 0.01;
 
@@ -212,7 +222,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   c->cd();
   double ymax = 0;
   for (auto *h : hists){
-    if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
+    if (getHistMaximumPlusError(h)>ymax) ymax = getHistMaximumPlusError(h);
   }
   bool isFirst = true;
   for (auto *h : hists){
@@ -243,7 +253,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
 
   auto c = MakeCanvas();
   c->cd();
-  TPad *p1 = new TPad("p1","p1",0,0.3,1,1);
+  TPad *p1 = new TPad("p1","p1",0,PAD_SPLIT_Y,1,1);
   p1->SetLeftMargin  (0.16);
   p1->SetTopMargin   (0.10);
   p1->SetRightMargin (0.04);
@@ -254,7 +264,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   //  c->SetLogy(fLogy);
   double ymax = 0;
   for (auto *h : hists){
-    if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
+    if (getHistMaximumPlusError(h)>ymax) ymax = getHistMaximumPlusError(h);
   }
   bool isFirst = true;
   for (auto *h : hists){
@@ -277,11 +287,11 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
 #endif
 
   c->cd();
-  TPad *p2 = new TPad("p2","p2",0,0,1,0.3);
+  TPad *p2 = new TPad("p2","p2",0,0,1,PAD_SPLIT_Y);
   p2->SetLeftMargin  (0.16);
   p2->SetTopMargin   (0.00);
   p2->SetRightMargin (0.04);
-  p2->SetBottomMargin(0.30);
+  p2->SetBottomMargin(PAD_BOTTOM_MARGIN);
   p2->SetGridy(1);
   p2->Draw();
   p2->cd();
@@ -415,7 +425,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
   auto c = MakeCanvas();
   c->cd();
-  TPad *p1 = new TPad("p1","p1",0,0.3,1,1);
+  TPad *p1 = new TPad("p1","p1",0,PAD_SPLIT_Y,1,1);
   p1->SetLeftMargin  (0.16);
   p1->SetTopMargin   (0.10);
   p1->SetRightMargin (0.04);
@@ -425,7 +435,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p1->cd();
   //  c->SetLogx(fLogx);
   //  c->SetLogy(fLogy);
-  double ymax = hData->GetMaximum();
+  double ymax = getHistMaximumPlusError(hData);
   if(hMC->GetMaximum()>ymax) ymax=hMC->GetMaximum();
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
@@ -439,7 +449,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
   for (auto *sig : sighists){
     auto h = (TH1*)sig->Clone();
-    h->SetLineWidth(2);
+    h->SetLineWidth(3);
     h->Draw("histsame");
 #ifdef DEBUG_
   cout << "-->drawing: "<< h->GetName() << endl;
@@ -469,16 +479,19 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 #endif
   if (leg) leg->Draw();
 
+  p1->SetTicks(1, 1);
+  p1->RedrawAxis();
+
 #ifdef DEBUG_
   cout << "-->drawing: "<< hstack->GetName() << endl;
 #endif
 
   c->cd();
-  TPad *p2 = new TPad("p2","p2",0,0,1,0.3);
+  TPad *p2 = new TPad("p2","p2",0,0,1,PAD_SPLIT_Y);
   p2->SetLeftMargin  (0.16);
   p2->SetTopMargin   (0.00);
   p2->SetRightMargin (0.04);
-  p2->SetBottomMargin(0.30);
+  p2->SetBottomMargin(PAD_BOTTOM_MARGIN);
   p2->SetGridy(1);
   p2->Draw();
   p2->cd();
@@ -488,8 +501,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   h3->SetTitleSize  (0.14,"Y");
   h3->SetTitleOffset(0.41,"Y");
   h3->SetTitleSize  (0.14,"X");
-  h3->SetTitleOffset(0.85,"X");
-  h3->SetLabelSize  (0.10,"X");
+  h3->SetTitleOffset(RATIOPLOT_XTITLE_OFFSET,"X");
+  h3->SetLabelSize  (RATIOPLOT_XLABEL_FONTSIZE,"X");
+  h3->SetLabelOffset(RATIOPLOT_XLABEL_OFFSET, "X");
   h3->SetLabelSize  (0.12,"Y");
   h3->GetYaxis()->CenterTitle(kTRUE);
   h3->GetYaxis()->SetNdivisions(305);
@@ -526,6 +540,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hRelUnc->SetMarkerSize(0);
   hRelUnc->Draw("E2same");
 
+  p2->SetTicks(1, 1);
   p2->RedrawAxis("G");
 #else
     auto hRatio = makeRatioHists(inData, hbkgtotal);
@@ -557,6 +572,15 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   l->SetLineWidth(2);
   l->SetLineColor(kBlack);
   l->Draw("same");
+
+  Quantity q_data, q_mc;
+  q_data.value = hData->IntegralAndError(1, hData->GetNbinsX()+1, q_data.error);
+  q_mc.value = hbkgtotal->IntegralAndError(1, hbkgtotal->GetNbinsX()+1, q_mc.error);
+  auto sf = q_data/q_mc;
+  cout << " :: Data/MC = " << sf << endl;
+#ifdef SHOW_DATA_MC_RATIO
+  drawTLatexNDC(TString::Format("Data/MC=%.2f#pm%.2f", sf.value, sf.error), 0.75, 0.88, 0.08, 11, 0, 62, kRed);
+#endif
 
   c->cd();
   c->Update();

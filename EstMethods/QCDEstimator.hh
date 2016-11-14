@@ -67,7 +67,7 @@ public:
 
     doYieldsCalc({"qcd-sr", "qcd-cr"}, runBootstrapping ? 50 : 0);
 
-    yields["_TF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
+    yields["_QCDTF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
 
   }
 
@@ -90,11 +90,12 @@ public:
       const auto & cat = config.catMaps.at(cat_name);
 
       auto samp = config.samples.at("data-norm");
-      auto norm_datayield = getYields(samp.tree, samp.wgtvar, config.sel + " && " + cat.cut + samp.sel);
+      auto norm_sel = config.sel + " && " + cat.cut + " && " + cat.bin.var + ">" + toString(cat.bin.plotbins.front()) + samp.sel;
+      auto norm_datayield = getYields(samp.tree, samp.wgtvar, norm_sel);
       Quantity norm_bkgtotal(0, 0);
       for (auto &s : norm_samples){
         samp = config.samples.at(s);
-        norm_bkgtotal = norm_bkgtotal + getYields(samp.tree, samp.wgtvar, config.sel + " && " + cat.cut + samp.sel);
+        norm_bkgtotal = norm_bkgtotal + getYields(samp.tree, samp.wgtvar, norm_sel);
       }
       Quantity norm_factor = norm_datayield / norm_bkgtotal;
       cerr << endl << "~~~" << cat_name << ": data(norm) = " << norm_datayield << ", total bkg (norm) = " << norm_bkgtotal << endl << endl;
@@ -110,17 +111,19 @@ public:
 
     auto vdata = yields.at("data-cr");
     Quantity::removeZeroes(vdata);
+    yields["_DATA"] = vdata;
 
-    yields["_DataCorr"] = std::vector<Quantity>();
-    yields["_DATA"] = std::vector<Quantity>();
+    yields["_SubCorr"] = std::vector<Quantity>();
+    yields["_TF"] = std::vector<Quantity>();
     for (unsigned i=0; i<vdata.size(); ++i){
       double otherVal = yields.at("otherbkgs").at(i).value;
       double dataVal = vdata.at(i).value;
       if (dataVal<10) dataVal = yields.at("qcd-withveto-cr").at(i).value + otherVal;
       double sub = otherVal/dataVal;
-      Quantity corr(1-sub, sub*(1-sub)); // 100% unc on the subtraction: FIXME?
-      yields.at("_DataCorr").push_back(corr);
-      yields.at("_DATA").push_back(vdata.at(i) * corr);
+//      Quantity corr(1-sub, sub*(1-sub)); // 100% unc on the subtraction: FIXME?
+      Quantity corr(1-sub, 0); // subtraction unc taken externally (in addition to jetresptail & met integration)
+      yields.at("_SubCorr").push_back(corr);
+      yields.at("_TF").push_back(yields.at("_QCDTF").at(i) * corr);
     }
 
   }
@@ -132,8 +135,9 @@ public:
       cerr << "... Do NOT run bootstrapping ..." << endl;
     }
 
-    calcDataCorr();
+    // calc TF first: needed in calcDataCorr
     calcTF();
+    calcDataCorr();
 
     yields["_pred"] = yields.at("_DATA") * yields.at("_TF");
     printVec(yields["_pred"], "QCD prediction", true);

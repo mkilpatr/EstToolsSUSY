@@ -25,6 +25,8 @@ vector<Quantity> ZnunuPred(){
   z.pred();
   z.printYields();
 
+  z.printTable(false);
+
   return z.yields.at("_pred");
 }
 
@@ -57,7 +59,7 @@ void plotSgamma(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, true, z.config.sel, false, &plotextra);
 
   }
@@ -243,7 +245,7 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
   }
 
   map<TString, TString> labels = {
-      {"nb0", " N_{B}=0"}, {"nbgeq1", " N_{B}#geq1"}
+      {"nb0", " N_{B} = 0"}, {"nbgeq1", " N_{B} #geq 1"}
   };
   for (auto &norm : DRNormMap){
 
@@ -255,10 +257,18 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
       h0->SetLineColor(kViolet+2); h0->SetMarkerColor(kViolet+2);
       h1->SetLineColor(kRed); h1->SetMarkerColor(kRed);
 
-      auto leg = prepLegends({h0, h1}, {"#gamma+jets"+labels.at(norm.first), "Z#rightarrowll"+labels.at(norm.first)});
-      auto c = drawCompAndRatio({h0, h1}, {makeRatioHists(h1, h0)}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
+      auto leg = prepLegends({h0, h1}, {"#gamma+jets", "Z#rightarrowll"});
+      auto hDR = makeRatioHists(h1, h0);
+      auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
+      drawTLatexNDC("N_{j} #geq 5, " + labels.at(norm.first), 0.2, 0.70, 0.032);
 
       c->SaveAs(phoConfig().outputdir+"/znunu_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
+
+      cout << "\n--------\n Double ratios: " << norm.first << endl;
+      for (int i=1; i<hDR->GetNbinsX()+1; ++i){
+        cout << hDR->GetBinLowEdge(i) << "->" << hDR->GetBinLowEdge(i+1) << ": " << getHistBin(hDR, i) << endl;
+      }
+
 
     }
   }

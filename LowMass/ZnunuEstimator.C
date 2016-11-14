@@ -25,6 +25,8 @@ vector<Quantity> ZnunuPred(){
   z.pred();
   z.printYields();
 
+  z.printTable(true);
+
   return z.yields.at("_pred");
 }
 
@@ -56,7 +58,7 @@ void plotSgamma(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.7); };
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
     TString norm_cut = "";
     for (const auto &nb : phoNormMap) {
       if(cat.name.Contains(nb.first)) {
@@ -134,9 +136,9 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
 
   vector<TString> nbcat = {"nb0", "nbgeq1"};
   map<TString, TString> zllNormMap = {{"nb0","nbjets==0"}, {"nbgeq1","nbjets>=1"}};
-  vector<TString> phoNormCuts = {"nlbjets==0", "nlbjets>=1"};
-  vector<TString> zlllabels = {"N_{B}=0", "N_{B}#geq1"};
-  vector<TString> pholabels = {"N_{B}^{L}=0", "N_{B}^{L}#geq1"};
+  vector<TString> phoNormCuts = {"nbjets==0", "nbjets>=1"};
+  vector<TString> zlllabels = {"N_{B} = 0", "N_{B} #geq 1"};
+  vector<TString> pholabels = {"N_{B} = 0", "N_{B} #geq 1"};
 
 //  vector<TString> nbcat = {"inc"};
 //  map<TString, TString> zllNormMap = {{"inc","nbjets>=0"}};
@@ -145,8 +147,8 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
 //  vector<TString> pholabels = {"N_{B}^{L}#geq0"};
 
 
-//  vector<TString> vars = {"metzg"};
-  vector<TString> vars = {"metzg", "j1lpt", "csvj1pt", "ptb12", "njets"};
+  vector<TString> vars = {"metzg"};
+//  vector<TString> vars = {"metzg", "j1lpt", "csvj1pt", "ptb12", "njets"};
   map<TString, vector<TH1*>> hists;
 
   {
@@ -233,10 +235,22 @@ void DoubleRatios(TString extraCut = "", TString suffix = ""){
       h0->SetLineColor(kViolet+2); h0->SetMarkerColor(kViolet+2);
       h1->SetLineColor(kRed); h1->SetMarkerColor(kRed);
 
-      auto leg = prepLegends({h0, h1}, {"#gamma+jets "+pholabels.at(ib), "Z#rightarrowll "+zlllabels.at(ib)});
-      auto c = drawCompAndRatio({h0, h1}, {makeRatioHists(h1, h0)}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
+      TLegend *leg;
+      if(pholabels.at(ib)==zlllabels.at(ib))
+        leg = prepLegends({h0, h1}, {"#gamma+jets", "Z#rightarrowll"});
+      else
+        leg = prepLegends({h0, h1}, {"#gamma+jets"+pholabels.at(ib), "Z#rightarrowll "+zlllabels.at(ib)});
+      auto hDR = makeRatioHists(h1, h0);
+      auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
+      drawTLatexNDC("N_{j} #geq 2, p_{T}(j_{ISR}) > 250 GeV", 0.2, 0.74, 0.032);
+      drawTLatexNDC(zlllabels.at(ib), 0.2, 0.70, 0.032);
 
       c->SaveAs(phoConfig().outputdir+"/znunu_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+nb+".pdf");
+
+      cout << "\n--------\n Double ratios: " << nb << endl;
+      for (int i=1; i<hDR->GetNbinsX()+1; ++i){
+        cout << hDR->GetBinLowEdge(i) << "->" << hDR->GetBinLowEdge(i+1) << ": " << getHistBin(hDR, i) << endl;
+      }
 
     }
   }

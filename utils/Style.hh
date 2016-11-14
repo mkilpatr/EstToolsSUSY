@@ -42,6 +42,7 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"data",      kBlack},
     {"single",    kBlack},
     {"double",    kBlack},
+    {"jetht",     kBlack},
     {"gjets",     kOrange-3},
     {"wjets",     kYellow-9},
     {"fake",      kSpring-9},
@@ -55,7 +56,7 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"ttw",       606},
     {"ttz",       797},
     {"rare",      797},
-    {"ww",        606},
+    {"ww",        kSpring-8},
     {"wz",        kGreen+3},
     {"zz",        kYellow-9}
 };

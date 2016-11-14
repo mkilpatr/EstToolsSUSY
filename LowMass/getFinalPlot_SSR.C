@@ -10,11 +10,20 @@ void getFinalPlot_SSR(TString inputFile="/tmp/SSR/LowMass/sig/fbd_pred_lepplusme
 
   LOG_YMIN = 0.1;
 
+  RATIOPLOT_XTITLE_OFFSET = 1.35;
+  RATIOPLOT_XLABEL_FONTSIZE = 0.13;
+  RATIOPLOT_XLABEL_OFFSET = 0.04;
+  PAD_SPLIT_Y = 0.31;
+  PAD_BOTTOM_MARGIN = 0.38;
+
+
   vector<TString> bkgs = {"rare_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
+  vector<TString> sigs = {"T2fbd_375_295", "T2fbd_375_325", "T2fbd_375_355"};
   TString data = "data";
 
   vector<TString> bkglabels = {"Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
+  vector<TString> siglabels = {"T2fbd(375,295)", "T2fbd(375,325)", "T2fbd(375,355)"};
   vector<TString> datalabel = {"Observed"};
 
   vector<TString> split = {"_"};
@@ -51,6 +60,7 @@ void getFinalPlot_SSR(TString inputFile="/tmp/SSR/LowMass/sig/fbd_pred_lepplusme
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
 
   vector<TH1*> pred;
+  vector<TH1*> hsigs;
 
   TFile *f = TFile::Open(inputFile);
   assert(f);
@@ -59,23 +69,29 @@ void getFinalPlot_SSR(TString inputFile="/tmp/SSR/LowMass/sig/fbd_pred_lepplusme
   }
   TH1* hdata = (TH1*)f->Get(data);
   TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
+  for (auto &s : sigs){
+    TH1 *h = (TH1*)f->Get(s);
+    h->SetLineStyle(kDashed);
+    hsigs.push_back(h);
+  }
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
+  prepHists(hsigs, false, false, false, {kGreen+3, kViolet-1, kRed});
   setBinLabels(hdata, xlabels);
   hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
   // plot raw MC
-  TH1 *hmctotal = nullptr;
-  for(auto &mc : mcs){
-    if (!hmctotal) hmctotal = (TH1*)f->Get(mc)->Clone();
-    else hmctotal->Add((TH1*)f->Get(mc));
-  }
+//  TH1 *hmctotal = nullptr;
+//  for(auto &mc : mcs){
+//    if (!hmctotal) hmctotal = (TH1*)f->Get(mc)->Clone();
+//    else hmctotal->Add((TH1*)f->Get(mc));
+//  }
 
-  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-  hDataRawMC->Divide(hmctotal);
-  hDataRawMC->SetLineWidth(2);
-  prepHists({hDataRawMC}, false, false, false, {kOrange});
+//  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
+//  hDataRawMC->Divide(hmctotal);
+//  hDataRawMC->SetLineWidth(2);
+//  prepHists({hDataRawMC}, false, false, false, {kOrange});
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -99,11 +115,12 @@ void getFinalPlot_SSR(TString inputFile="/tmp/SSR/LowMass/sig/fbd_pred_lepplusme
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
-    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
+    appendLegends(leg, hsigs, siglabels, "L");
+//    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
-    setLegend(leg, 2, 0.54, 0.72, 0.96, 0.88);
+    setLegend(leg, 2, 0.51, 0.69, 0.94, 0.87);
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc, hDataRawMC);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, hsigs, unc);
     c->SetCanvasSize(900, 600);
 //    drawText(splitlabels.at(ireg), 0.18, 0.69);
     drawRegionLabels.at(ireg)();

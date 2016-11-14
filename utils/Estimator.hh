@@ -439,7 +439,7 @@ public:
       hdata = getHist(d_sample.tree, plotvar, d_sample.wgtvar, cut + d_sample.sel, hname, title, var_info.plotbins);
       prepHists({hdata});
       if (saveHists_) saveHist(hdata);
-      addLegendEntry(leg, hdata, d_sample.label);
+      addLegendEntry(leg, hdata, d_sample.label, "LP");
     }
 
     for (auto &sname : mc_samples){

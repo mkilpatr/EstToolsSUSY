@@ -63,14 +63,14 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-//const TString sigwgt = lepvetowgt + "*btagFastSimWeight";
-const TString sigwgt = lepvetowgt;
+const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight";
+//const TString sigwgt = lepvetowgt;
 
 // triggers
 const TString trigSR = " && (passmetmht100 || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR";
-const TString datasel = " && passjson && passmetfilters && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 
 // ------------------------------------------------------------------------
@@ -336,9 +336,9 @@ BaseConfig sigConfig(){
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
-//  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "signals/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "signals/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "signals/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;
