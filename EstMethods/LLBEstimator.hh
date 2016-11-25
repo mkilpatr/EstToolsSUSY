@@ -36,7 +36,7 @@ public:
   }
 
   void pred(){
-    cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
+    cerr << "\n--->" << "Running LLB prediction ... " << endl << endl;
 
     // Yields
     calcYields();
@@ -45,10 +45,21 @@ public:
 
     yields["_SLep"] = calcSLep();
     yields["_TF"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
-
     yields["_pred"] = yields.at("singlelep") * yields.at("_TF");
     printVec(yields["_pred"], "Final prediction", true);
+  }
 
+  void newpred(){
+    cerr << "\n--->" << "Running LLB prediction ... " << endl << endl;
+
+    // Yields
+    calcYields();
+    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+    sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+
+    yields["_SLep"] = yields.at("singlelep")/yields.at("ttbarplusw");
+    yields["_pred"] = yields.at("_SLep")*yields.at("ttbarplusw-sr");
+    printVec(yields["_pred"], "Final prediction", true);
   }
 
   void printTable(bool doLM) {
