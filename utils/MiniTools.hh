@@ -501,7 +501,7 @@ void getRatioUpDownErrors(int dN, double mN, double mE, double& eL, double& eH){
   hL.reserve(nEntries);
 
   for(unsigned int i = 0; i < nEntries; ++i){
-    double ndL = 0;
+   double ndL = 0;
     for(int iD = 0; iD < dN; ++iD){
       ndL -= TMath::Log(rand->Uniform());
     }
@@ -512,13 +512,12 @@ void getRatioUpDownErrors(int dN, double mN, double mE, double& eL, double& eH){
     hL.push_back(ndL/nm);
   }
 
-
-
   if(dN){
       std::sort(hL.begin(), hL.end());
       eL = hL[int( double(nEntries)*alpha/2  )];
       eL = double(dN)/mN - eL;
    }
+
   std::sort(h.begin(), h.end());
   eH = h[int( double(nEntries)* (1 - alpha/2)  )];
   eH = eH - double(dN)/mN;
@@ -544,7 +543,6 @@ TGraphAsymmErrors* getAsymmErrors(TH1* h){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TGraphAsymmErrors* getRatioAsymmErrors(TH1* hD, TH1* hM) {
-
   TGraphAsymmErrors* gr = new TGraphAsymmErrors(hD);
   for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
     int dN = gr->GetY()[ibin];
