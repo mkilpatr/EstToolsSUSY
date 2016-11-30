@@ -56,6 +56,7 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"ttw",       606},
     {"ttz",       797},
     {"rare",      797},
+    {"diboson",   kSpring-8},
     {"ww",        kSpring-8},
     {"wz",        kGreen+3},
     {"zz",        kYellow-9}

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
+#include <stdexcept>
 #include <memory>
 #include <chrono>
 #include <vector>
@@ -56,6 +57,20 @@ vector<TString> splitString(const TString &instr, const TString &delimiter){
     v.push_back(((TObjString *)(tx->At(i)))->String());
   return v;
 }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TString createCutString(TString name, const std::map<TString, TString>& cutMap, TString delimiter="_"){
+  auto keys = splitString(name, delimiter);
+  vector<TString> cuts;
+  for (auto k : keys){
+    try{
+      cuts.push_back(cutMap.at(k));
+    }catch (const std::out_of_range &e) {
+      cerr << "No cut-string for " << k << endl;
+      throw e;
+    }
+  }
+  return addCuts(cuts);
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1* normalize(TH1 *h, double norm = 1){
@@ -103,7 +118,7 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
   if (useUnderflow) addUnderflow(htmp);
   if (useOverflow) addOverflow(htmp);
 
-  TH1 *hist = (TH1 *)htmp->Clone(TString(htmp->GetName())+"_intg");
+  TH1 *hist = (TH1 *)htmp->Clone(TString(h->GetName())+"_intg");
   double integral, error;
 
   int nbins = hist->GetNbinsX();
@@ -381,7 +396,8 @@ void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType =
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+template<class T>
+TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, TString legType = "LP"){
   assert(hists.size() == labels.size());
   double fLegY1 = leg->GetY1()-0.06*hists.size();
   leg->SetY1(fLegY1);
@@ -391,12 +407,20 @@ TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels,
   return leg;
 }
 
+TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+  return appendLegends(leg, hists, labels, legType);
+}
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+template<class T>
+TLegend* prepLegends(vector<T*> hists, vector<TString> labels, TString legType = "LP"){
   assert(hists.size() == labels.size());
   auto leg = initLegend();
   appendLegends(leg, hists, labels, legType);
   return leg;
+}
+
+TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+  return prepLegends<TH1>(hists, labels, legType);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

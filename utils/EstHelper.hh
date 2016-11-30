@@ -242,6 +242,38 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
+{
+  double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
+
+  vector<TGraph*> hists;
+  for (auto *h : inhists) hists.push_back((TGraph*)h->Clone());
+
+  auto c = MakeCanvas();
+  c->cd();
+  double ymax = 0;
+  for (auto *h : hists){
+    if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
+  }
+  bool isFirst = true;
+  for (auto *h : hists){
+    h->SetLineWidth(2);
+    if (isFirst){
+      isFirst = false;
+      h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
+      h->Draw();
+    }
+    h->Draw("same");
+#ifdef DEBUG_
+    cout << "-->drawing: "<< h->GetName() << endl;
+#endif
+  }
+  if (leg) leg->Draw();
+  return c;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true)
 {
 
@@ -404,12 +436,12 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, TH1* inRatio = nullptr)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {})
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
-  TH1* hData = (TH1*)inData->Clone();
+  TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
   TH1* hbkgtotal = nullptr;
-  THStack* hstack = new THStack(hData->GetName()+TString("_stack"), hData->GetTitle());
+  THStack* hstack = new THStack(inhists.front()->GetName()+TString("_stack"), inhists.front()->GetTitle());
   for (auto *h : inhists){
     auto *hmc = (TH1*)h->Clone();
     if (!hbkgtotal)
@@ -421,7 +453,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     }
     hstack->Add(hmc);
   }
-  auto hMC = (TH1*)hstack->GetStack()->Last();
 
   auto c = MakeCanvas();
   c->cd();
@@ -435,25 +466,23 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p1->cd();
   //  c->SetLogx(fLogx);
   //  c->SetLogy(fLogy);
-  double ymax = getHistMaximumPlusError(hData);
-  if(hMC->GetMaximum()>ymax) ymax=hMC->GetMaximum();
+  double ymax = hData ? getHistMaximumPlusError(hData) : 0;
+  if(hbkgtotal->GetMaximum()>ymax) ymax=hbkgtotal->GetMaximum();
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  hData->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
-  hData->SetMinimum(plotlog? LOG_YMIN : 0);
-  if(lowX<highX) hData->GetXaxis()->SetRangeUser(lowX, highX);
-  hData->GetXaxis()->SetLabelOffset(0.20);
-  hData->Draw("E");
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
+  hbkgtotal->SetMinimum(plotlog? LOG_YMIN : 0);
+  if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
+  hbkgtotal->GetXaxis()->SetLabelOffset(0.20);
+  hbkgtotal->Draw("hist");
+
   hstack->Draw("histsame");
 
   for (auto *sig : sighists){
     auto h = (TH1*)sig->Clone();
     h->SetLineWidth(3);
     h->Draw("histsame");
-#ifdef DEBUG_
-  cout << "-->drawing: "<< h->GetName() << endl;
-#endif
   }
 
 #ifdef TDR_STYLE_
@@ -466,16 +495,17 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   unc->Draw("E2same");
   if(leg) addLegendEntry(leg, unc,"Bkg. Uncertainty","F");
 
-  TH1F *h00 = (TH1F*)hData->Clone("data0");
-  TGraphAsymmErrors* gr = getAsymmErrors(h00);
-  gr->SetMarkerStyle(20);
-  gr->SetLineWidth(hData->GetLineWidth());
-  gr->SetFillStyle(0);
-  gr->Draw("PZ0same");
-
+  if (hData){
+    TH1F *h00 = (TH1F*)hData->Clone("data0");
+    TGraphAsymmErrors* gr = getAsymmErrors(h00);
+    gr->SetMarkerStyle(20);
+    gr->SetLineWidth(hData->GetLineWidth());
+    gr->SetFillStyle(0);
+    gr->Draw("PZ0same");
+  }
   CMS_lumi(p1, 4, 10);
 #else
-  hData->Draw("same");
+  if(hData) hData->Draw("Esame");
 #endif
   if (leg) leg->Draw();
 
@@ -497,31 +527,35 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p2->cd();
 
 #ifdef TDR_STYLE_
-  TH1 *h3 = (TH1*)inData->Clone("data3");
-  h3->SetTitleSize  (0.14,"Y");
-  h3->SetTitleOffset(0.41,"Y");
-  h3->SetTitleSize  (0.14,"X");
-  h3->SetTitleOffset(RATIOPLOT_XTITLE_OFFSET,"X");
-  h3->SetLabelSize  (RATIOPLOT_XLABEL_FONTSIZE,"X");
-  h3->SetLabelOffset(RATIOPLOT_XLABEL_OFFSET, "X");
-  h3->SetLabelSize  (0.12,"Y");
-  h3->GetYaxis()->CenterTitle(kTRUE);
-  h3->GetYaxis()->SetNdivisions(305);
-  h3->GetYaxis()->SetTitle(ratioYTitle);
-  h3->GetXaxis()->SetTitleFont(42);
-  h3->GetYaxis()->SetTitleFont(42);
-  h3->GetXaxis()->SetLabelFont(42);
-  h3->GetYaxis()->SetLabelFont(42);
+  TH1 *haxis = (TH1*)hbkgtotal->Clone("htmpaxis");
+  haxis->SetTitleSize  (0.14,"Y");
+  haxis->SetTitleOffset(0.41,"Y");
+  haxis->SetTitleSize  (0.14,"X");
+  haxis->SetTitleOffset(RATIOPLOT_XTITLE_OFFSET,"X");
+  haxis->SetLabelSize  (RATIOPLOT_XLABEL_FONTSIZE,"X");
+  haxis->SetLabelOffset(RATIOPLOT_XLABEL_OFFSET, "X");
+  haxis->SetLabelSize  (0.12,"Y");
+  haxis->GetYaxis()->CenterTitle(kTRUE);
+  haxis->GetYaxis()->SetNdivisions(305);
+  haxis->GetYaxis()->SetTitle(ratioYTitle);
+  haxis->GetXaxis()->SetTitleFont(42);
+  haxis->GetYaxis()->SetTitleFont(42);
+  haxis->GetXaxis()->SetLabelFont(42);
+  haxis->GetYaxis()->SetLabelFont(42);
+  haxis->GetYaxis()->SetRangeUser(lowY,highY);
+  if(lowX<highX) haxis->GetXaxis()->SetRangeUser(lowX, highX);
+  haxis->Draw("AXIS");
 
-  TGraphAsymmErrors* ratio;
-  TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
-  for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
-  ratio = getRatioAsymmErrors(h3, hMCNoError);
-  ratio->SetLineWidth(h3->GetLineWidth());
-  h3->GetYaxis()->SetRangeUser(lowY,highY);
-  if(lowX<highX) h3->GetXaxis()->SetRangeUser(lowX, highX);
-  h3->Draw("AXIS");
-  ratio->Draw("PZ0same");
+  if (inData){
+    TH1 *h3 = (TH1*)inData->Clone("data3");
+
+    TGraphAsymmErrors* ratio;
+    TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
+    for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
+    ratio = getRatioAsymmErrors(h3, hMCNoError);
+    ratio->SetLineWidth(h3->GetLineWidth());
+    ratio->Draw("PZ0same");
+  }
 
   TGraphAsymmErrors* hRelUnc = (TGraphAsymmErrors*)unc->Clone();
   for (int i=0; i < hRelUnc->GetN(); ++i){
@@ -543,6 +577,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p2->SetTicks(1, 1);
   p2->RedrawAxis("G");
 #else
+  if (inData){
     auto hRatio = makeRatioHists(inData, hbkgtotal);
     hRatio->SetTitleSize  (0.14,"Y");
     hRatio->SetTitleOffset(0.41,"Y");
@@ -560,27 +595,30 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     hRatio->Draw("E");
 #ifdef DEBUG_
   cout << "-->drawing RATIO: "<< hRatio->GetName() << endl;
+  }
 #endif
 #endif
 
-  if (inRatio) inRatio->Draw("histsame");
+  for (const auto& inRatio : inRatios) inRatio->Draw("histsame");
 
-  double xmin = inData->GetXaxis()->GetXmin();
-  double xmax = inData->GetXaxis()->GetXmax();
+  double xmin = inhists.front()->GetXaxis()->GetXmin();
+  double xmax = inhists.front()->GetXaxis()->GetXmax();
   if (lowX<highX) { xmin = lowX; xmax = highX; }
   TLine *l = new TLine(xmin,1,xmax,1);
   l->SetLineWidth(2);
   l->SetLineColor(kBlack);
   l->Draw("same");
 
-  Quantity q_data, q_mc;
-  q_data.value = hData->IntegralAndError(1, hData->GetNbinsX()+1, q_data.error);
-  q_mc.value = hbkgtotal->IntegralAndError(1, hbkgtotal->GetNbinsX()+1, q_mc.error);
-  auto sf = q_data/q_mc;
-  cout << " :: Data/MC = " << sf << endl;
+  if (hData){
+    Quantity q_data, q_mc;
+    q_data.value = hData->IntegralAndError(1, hData->GetNbinsX()+1, q_data.error);
+    q_mc.value = hbkgtotal->IntegralAndError(1, hbkgtotal->GetNbinsX()+1, q_mc.error);
+    auto sf = q_data/q_mc;
+    cout << " :: Data/MC = " << sf << endl;
 #ifdef SHOW_DATA_MC_RATIO
-  drawTLatexNDC(TString::Format("Data/MC=%.2f#pm%.2f", sf.value, sf.error), 0.75, 0.88, 0.08, 11, 0, 62, kRed);
+    drawTLatexNDC(TString::Format("Data/MC=%.2f#pm%.2f", sf.value, sf.error), 0.75, 0.88, 0.08, 11, 0, 62, kRed);
 #endif
+  }
 
   c->cd();
   c->Update();
