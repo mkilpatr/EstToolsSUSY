@@ -234,7 +234,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
     }
     h->Draw("histesame");
 #ifdef DEBUG_
-    cout << "-->drawing: "<< h->GetName() << endl;
+    cout << "-->drawing drawComp: "<< h->GetName() << endl;
 #endif
   }
   if (leg) leg->Draw();
@@ -242,7 +242,6 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -274,7 +273,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1.)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -293,23 +292,30 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   p1->Draw();
   p1->cd();
   //  c->SetLogx(fLogx);
-  //  c->SetLogy(fLogy);
+  // c->SetLogy(fLogy);
   double ymax = 0;
   for (auto *h : hists){
     if (getHistMaximumPlusError(h)>ymax) ymax = getHistMaximumPlusError(h);
   }
   bool isFirst = true;
   for (auto *h : hists){
-    h->SetLineWidth(3);
+    h->SetLineWidth(2);
     h->GetXaxis()->SetLabelOffset(0.20);
     if (isFirst){
       isFirst = false;
       h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
+      if(forceymax>0) h->GetYaxis()->SetRangeUser(0,plotMax*forceymax);
+      if(logymin>0) {
+        float gap = 0.40;
+        h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
+        h->SetMinimum(logymin);
+        gPad->SetLogy(1);
+      }
       h->Draw("histe");
     }
     h->Draw("histesame");
 #ifdef DEBUG_
-    cout << "-->drawing: "<< h->GetName() << endl;
+    cout << "-->drawing drawCompAndRatio: "<< h->GetName() << endl;
 #endif
   }
   if (leg) leg->Draw();
@@ -362,7 +368,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     }
     h->Draw(drawOpt+"same");
 #ifdef DEBUG_
-    cout << "-->drawing RATIO: "<< h->GetName() << endl;
+    cout << "-->drawing RATIO drawCompAndRatio: "<< h->GetName() << endl;
 #endif
   }
   c->Update();
@@ -402,7 +408,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
 #ifdef DEBUG_
-  cout << "-->drawing: "<< hstack->GetName() << endl;
+  cout << "-->drawing drawStack: "<< hstack->GetName() << endl;
 #endif
 
   for (auto *sig : sighists){
@@ -410,7 +416,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
     h->SetLineWidth(3);
     h->Draw("histsame");
 #ifdef DEBUG_
-  cout << "-->drawing: "<< h->GetName() << endl;
+  cout << "-->drawing drawStack: "<< h->GetName() << endl;
 #endif
   }
 
@@ -483,6 +489,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     auto h = (TH1*)sig->Clone();
     h->SetLineWidth(3);
     h->Draw("histsame");
+#ifdef DEBUG_
+  cout << "-->drawing drawStacKAndRatio sighist: "<< h->GetName() << endl;
+#endif
   }
 
 #ifdef TDR_STYLE_
@@ -513,7 +522,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p1->RedrawAxis();
 
 #ifdef DEBUG_
-  cout << "-->drawing: "<< hstack->GetName() << endl;
+  cout << "-->drawing drawStackAndRatio stack: "<< hstack->GetName() << endl;
 #endif
 
   c->cd();
@@ -557,6 +566,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     ratio->Draw("PZ0same");
   }
 
+
   TGraphAsymmErrors* hRelUnc = (TGraphAsymmErrors*)unc->Clone();
   for (int i=0; i < hRelUnc->GetN(); ++i){
     auto val = hRelUnc->GetY()[i];
@@ -576,6 +586,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
   p2->SetTicks(1, 1);
   p2->RedrawAxis("G");
+
 #else
   if (inData){
     auto hRatio = makeRatioHists(inData, hbkgtotal);
@@ -593,10 +604,11 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     hRatio->GetYaxis()->SetRangeUser(lowY, highY);
     if(lowX<highX) hRatio->GetXaxis()->SetRangeUser(lowX, highX);
     hRatio->Draw("E");
+
 #ifdef DEBUG_
-  cout << "-->drawing RATIO: "<< hRatio->GetName() << endl;
-  }
+    cout << "-->drawing RATIO drawStackAndRatio: "<< hRatio->GetName() << endl;
 #endif
+  }
 #endif
 
   for (const auto& inRatio : inRatios) inRatio->Draw("histsame");

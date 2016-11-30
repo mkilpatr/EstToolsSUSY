@@ -45,10 +45,8 @@ public:
 
     yields["_SLep"] = calcSLep();
     yields["_TF"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
-
     yields["_pred"] = yields.at("singlelep") * yields.at("_TF");
     printVec(yields["_pred"], "Final prediction", true);
-
   }
 
   void printTable(bool doLM) {
