@@ -602,8 +602,7 @@ public:
   void dumpDatacardConfig(std::string filename){
     cerr << "Writing binning definition to file: " << filename << endl;
 
-    std::ofstream fout;
-    fout.open(filename);
+    std::ofstream fout(filename);
 
     std::string tab = "  ";
 

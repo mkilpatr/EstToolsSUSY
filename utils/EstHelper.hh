@@ -3,6 +3,7 @@
 
 #if !defined(__CINT__) || defined(__MAKECINT__)
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <cassert>
 #include <memory>
