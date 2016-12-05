@@ -408,14 +408,14 @@ TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, T
 }
 
 TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
-  return appendLegends(leg, hists, labels, legType);
+  return appendLegends<TH1>(leg, hists, labels, legType);
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template<class T>
 TLegend* prepLegends(vector<T*> hists, vector<TString> labels, TString legType = "LP"){
   assert(hists.size() == labels.size());
   auto leg = initLegend();
-  appendLegends(leg, hists, labels, legType);
+  appendLegends<T>(leg, hists, labels, legType);
   return leg;
 }
 
@@ -512,8 +512,13 @@ void getRatioUpDownErrors(int dN, double mN, double mE, double& eL, double& eH){
   eL = 0;
   eH = 0;
 
-  if(mN <= 0) return;
-  if(dN < 0)  return;
+  if (dN > 10){
+    // if data counts > 10, use Gaussian error
+    auto q = Quantity(dN, std::sqrt(1.*dN)) / Quantity(mN, mE);
+    eL = q.error;
+    eH = eL;
+    return;
+  }
 
   const double alpha = 1 - 0.6827;
   static TRandom3 * rand = new TRandom3(1234);
@@ -525,7 +530,7 @@ void getRatioUpDownErrors(int dN, double mN, double mE, double& eL, double& eH){
   hL.reserve(nEntries);
 
   for(unsigned int i = 0; i < nEntries; ++i){
-   double ndL = 0;
+    double ndL = 0;
     for(int iD = 0; iD < dN; ++iD){
       ndL -= TMath::Log(rand->Uniform());
     }
