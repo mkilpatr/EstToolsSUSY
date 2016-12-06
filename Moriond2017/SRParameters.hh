@@ -264,14 +264,17 @@ std::map<TString, TString> normMap{
 };
 
 // normalize photon to Data after baseline+this cut to calc Sgamma
-std::map<TString, TString> phoNormMap = {
-  {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap)},
-  {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap)},
-  {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap)},
+std::map<TString, TString> phoNormMap = []{
+  if (ICHEPCR) return normMap;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap)},
 
-  {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
-  {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
-};
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
+  };
+}();
 
 //std::map<TString, TString> phoNormMap = normMap;
 
