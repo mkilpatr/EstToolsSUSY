@@ -16,6 +16,7 @@
 using namespace EstTools;
 
 void BkgPredHM_LowMET(){
+  auto start = chrono::steady_clock::now();
 
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
@@ -109,6 +110,7 @@ auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
     c->Print(s.config.outputdir+"/" + outputBase +".C");
+    c->Print(s.config.outputdir+"/" + outputBase +"_canvas.root");
 
     TFile *output = new TFile(s.config.outputdir+"/" + outputBase +".root", "RECREATE");
     for (auto *h : vpred) h->Write();
@@ -128,4 +130,10 @@ auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<
   s.printVec(lc.getPrediction(),"total_bkg");
   cout << "\n Summary Traditional \n";
   s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("ttZ-sr"), l.yields.at("diboson-sr")}, s.yields.at("data-sr"));
+
+
+  auto end = chrono::steady_clock::now();
+  auto diff = end - start;
+  cout << chrono::duration <double> (diff).count() << " s" << endl;
+
 }

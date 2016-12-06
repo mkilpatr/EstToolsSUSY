@@ -60,35 +60,41 @@ public:
     return {z_sf, t_sf};
   }
 
-  std::pair<vector<Quantity>,vector<Quantity>> calcSgamma(const Category& cat, TString extraCutForNorm = ""){
+  void calcSgamma(){
 
-    cerr << "\n--->" << __func__ << " " << cat.name << endl;
-    cerr << " ... Using norm cut " << extraCutForNorm << endl;
+    yields["_phoNormScale"] = vector<Quantity>();
+    for (auto &cat_name : config.categories){
+      cerr << "\n--->" << __func__ << " " << cat_name << endl;
+      // find norm category
+      TString normCut = ""; // default to empty: no extra cut
+      for (const auto &norm : phocr_normMap){
+        if (cat_name.BeginsWith(norm.first)){
+          normCut = norm.second;
+        }
+      }
+      if (normCut != ""){
+        cerr << " ... Using norm cut " << normCut << endl;
+        normCut = " && "+normCut;
+      }
 
-    TString extra = extraCutForNorm=="" ? "" : " && " + extraCutForNorm;
+      auto photon_sample = config.samples.at("photon");
+      auto singlepho_sample = config.samples.at("singlepho");
 
-    auto photon_sample = config.samples.at("photon");
-    auto singlepho_sample = config.samples.at("singlepho");
+      // norm factor
+      auto mc_total = getYields(photon_sample.tree, photon_sample.wgtvar, config.sel + normCut + photon_sample.sel);
+      auto data_total = getYields(singlepho_sample.tree, singlepho_sample.wgtvar, config.sel + normCut + singlepho_sample.sel);
+      auto norm_factor = (data_total/mc_total).value;
+      cout << "    ... norm factor ---> " << norm_factor << endl;
 
-    // norm factor
-    auto mc_total = getYields(photon_sample.tree, photon_sample.wgtvar, config.sel + extra + photon_sample.sel);
-    auto data_total = getYields(singlepho_sample.tree, singlepho_sample.wgtvar, config.sel + extra + singlepho_sample.sel);
-    auto norm_factor = (data_total/mc_total).value;
+      for (unsigned i=0; i<config.catMaps.at(cat_name).bin.nbins; ++i){
+        yields["_phoNormScale"].push_back(norm_factor);
+      }
+    }
 
-    auto cut = config.sel + " && " + cat.cut;
-    auto mc   = getYieldVector(photon_sample.tree,    photon_sample.wgtvar,    cut + photon_sample.sel,    cat.bin);
-    auto data = getYieldVector(singlepho_sample.tree, singlepho_sample.wgtvar, cut + singlepho_sample.sel, cat.bin);
-
+    auto data = yields.at("singlepho");
     Quantity::removeZeroes(data, 0.001, 1.8);
-
-    auto scaled_mc = mc * norm_factor;
-    auto s_gamma = data / scaled_mc;
-    cout << "    ... norm factor ---> " << norm_factor << endl;
-    cout << "    ... sgamma ---> " << s_gamma << endl;
-
-
-    return std::make_pair(s_gamma, scaled_mc);
-
+    yields["_photon-scaled"] = yields.at("_phoNormScale")*yields.at("photon");
+    yields["_Sgamma"] = data / yields.at("_photon-scaled");
   }
 
   void pred(){
@@ -97,29 +103,16 @@ public:
 
     // Yields
     calcYields();
-
-    // Sgamma
-    yields["_Sgamma"] = vector<Quantity>();
-    yields["_photon-scaled"] = vector<Quantity>();
-    for (auto &cat_name : config.categories){
-      // find norm category
-      TString normCut = ""; // default to empty: no extra cut
-      for (const auto &norm : phocr_normMap){
-        if (cat_name.BeginsWith(norm.first)){
-          normCut = norm.second;
-        }
-      }
-
-      const auto & cat = config.catMaps.at(cat_name);
-      auto rlt = calcSgamma(config.crCatMaps.at(cat_name), normCut);
-      auto sgamma = rlt.first;
-      auto scaledMC = rlt.second;
-      assert(sgamma.size()==1 || sgamma.size()==cat.bin.nbins); // FIXME: only handle size==1 and same size now
-      for (unsigned ibin = 0; ibin < cat.bin.nbins; ++ibin){
-        yields["_Sgamma"].push_back(sgamma.at( ibin%sgamma.size() ));
-        yields["_photon-scaled"].push_back(scaledMC.at( ibin%scaledMC.size() ));
+    for (auto &q : yields.at("photon")){
+      if (q.value<0.0001){
+        cerr << "MC yields <0.0001!" << endl;
+        q.value = 0.0001;
+        q.error = 0.0001;
       }
     }
+
+    // Sgamma
+    calcSgamma();
 
     // Rz
     yields["_Rz"] = vector<Quantity>();

@@ -76,7 +76,7 @@ const TString baseline = "met>200 && njets>=2";
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-        {"lmNoDPhi",  "j1lpt>200 && dphij1lmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10"},
+        {"lmNoDPhi",  "ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10"},
         {"dPhiLM",    "dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15"},
         {"hmNoDPhi",  "njets>=5 && nbjets>=1"},
         {"dPhiHM",    "dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5"},
@@ -87,8 +87,8 @@ std::map<TString, TString> cutMap = []{
         {"nb2",       "nbjets>=2"},
         {"nivf0",     "nivf==0"},
         {"nivf1",     "nivf>=1"},
-        {"lowptisr",  "j1lpt>300 && j1lpt<500"},
-        {"highptisr", "j1lpt>500"},
+        {"lowptisr",  "ak8isrpt>300 && ak8isrpt<500"},
+        {"highptisr", "ak8isrpt>500"},
         {"nj2to5",    "njets>=2 && njets<=5"},
         {"nj6",       "njets>=6"},
         {"nj7",       "njets>=7"},
@@ -111,6 +111,7 @@ std::map<TString, TString> cutMap = []{
         {"nrt2",      "nrestop>=2"},
         {"nrtge1",    "nrestop>=1"},
         {"met250",    "met<250"},
+        {"met300",    "met<300"},
         {"met350",    "met<350"},
         {"met400",    "met<400"},
         {"met450",    "met<450"},
@@ -131,18 +132,18 @@ std::vector<TString> srbins{
   "lm_nb0_nivf1_highptisr_nj6_met400",
 
   // 1b, 0 or >=1 ivf
-  "lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met250",
-  "lm_nb1_nivf0_lowmtb_lowptisr_medptb_met250",
+  "lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300",
+  "lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",
   "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",
   "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",
   // ---
-  "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met250",
+  "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",
   "lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",
 
   // 2b
-  "lm_nb2_lowmtb_lowptisr_lowptb12_met250",
-  "lm_nb2_lowmtb_lowptisr_medptb12_met250",
-  "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250",
+  "lm_nb2_lowmtb_lowptisr_lowptb12_met300",
+  "lm_nb2_lowmtb_lowptisr_medptb12_met300",
+  "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300",
   "lm_nb2_lowmtb_highptisr_lowptb12_met400",
   "lm_nb2_lowmtb_highptisr_medptb12_met400",
   "lm_nb2_lowmtb_highptisr_highptb12_nj7_met400",
@@ -194,27 +195,27 @@ std::map<TString, TString> srlabels=srcuts;// FIXME
 std::map<TString, std::vector<int>> srMETbins{
   //---------- low deltaM ----------
   // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5_met400",              {200, 1000}},
-  {"lm_nb0_nivf0_highptisr_nj6_met400",                 {200, 1000}},
-  {"lm_nb0_nivf1_highptisr_nj2to5_met400",              {200, 1000}},
-  {"lm_nb0_nivf1_highptisr_nj6_met400",                 {200, 1000}},
+  {"lm_nb0_nivf0_highptisr_nj2to5_met400",              {250, 1000}},
+  {"lm_nb0_nivf0_highptisr_nj6_met400",                 {250, 1000}},
+  {"lm_nb0_nivf1_highptisr_nj2to5_met400",              {250, 1000}},
+  {"lm_nb0_nivf1_highptisr_nj6_met400",                 {250, 1000}},
 
   // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met250",        {200, 1000}},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met250",        {200, 1000}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       {200, 1000}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       {200, 1000}},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300",        {250, 1000}},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",        {250, 1000}},
+  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       {250, 1000}},
+  {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       {250, 1000}},
 
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met250",        {200, 1000}},
-  {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       {200, 1000}},
+  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        {250, 1000}},
+  {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       {250, 1000}},
 
   // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12_met250",            {200, 1000}},
-  {"lm_nb2_lowmtb_lowptisr_medptb12_met250",            {200, 1000}},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250",       {200, 1000}},
-  {"lm_nb2_lowmtb_highptisr_lowptb12_met400",           {200, 1000}},
-  {"lm_nb2_lowmtb_highptisr_medptb12_met400",           {200, 1000}},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7_met400",      {200, 1000}},
+  {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            {250, 1000}},
+  {"lm_nb2_lowmtb_lowptisr_medptb12_met300",            {250, 1000}},
+  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300",       {250, 1000}},
+  {"lm_nb2_lowmtb_highptisr_lowptb12_met400",           {250, 1000}},
+  {"lm_nb2_lowmtb_highptisr_medptb12_met400",           {250, 1000}},
+  {"lm_nb2_lowmtb_highptisr_highptb12_nj7_met400",      {250, 1000}},
   //---------- low deltaM ----------
 
 
@@ -286,17 +287,17 @@ std::map<TString, TString> phocrMapping{
   {"lm_nb0_nivf1_highptisr_nj6_met400",                 "lm_nb0_highptisr_nj6_met400"},
 
   // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met250",        "lm_nb1_lowmtb_lowptisr_lowptb_met250"},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met250",        "lm_nb1_lowmtb_lowptisr_medptb_met250"},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_lowmtb_lowptisr_lowptb_met300"},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",        "lm_nb1_lowmtb_lowptisr_medptb_met300"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       "lm_nb1_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       "lm_nb1_lowmtb_highptisr_medptb_met400"},
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met250",        "lm_nb1_lowmtb_lowptisr_lowptb_met250"},
+  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_lowmtb_lowptisr_lowptb_met300"},
   {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       "lm_nb1_lowmtb_highptisr_lowptb_met400"},
 
   // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12_met250",            "lm_nb2_lowmtb_lowptisr_lowptb12_met250"},
-  {"lm_nb2_lowmtb_lowptisr_medptb12_met250",            "lm_nb2_lowmtb_lowptisr_medptb12_met250"},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250"},
+  {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
+  {"lm_nb2_lowmtb_lowptisr_medptb12_met300",            "lm_nb2_lowmtb_lowptisr_medptb12_met300"},
+  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300"},
   {"lm_nb2_lowmtb_highptisr_lowptb12_met400",           "lm_nb2_lowmtb_highptisr_lowptb12_met400"},
   {"lm_nb2_lowmtb_highptisr_medptb12_met400",           "lm_nb2_lowmtb_highptisr_medptb12_met400"},
   {"lm_nb2_lowmtb_highptisr_highptb12_nj7_met400",      "lm_nb2_lowmtb_highptisr_highptb12_nj7_met400"},
@@ -358,17 +359,17 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb0_nivf1_highptisr_nj6_met400",                 "lm_nb0_nivf1_highptisr_nj6_met400"},
 
   // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met250",        "lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met250"},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met250",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb_met250"},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300"},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met250",        "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met250"},
+  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300"},
   {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       "lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400"},
 
   // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12_met250",            "lm_nb2_lowmtb_lowptisr_lowptb12_met250"},
-  {"lm_nb2_lowmtb_lowptisr_medptb12_met250",            "lm_nb2_lowmtb_lowptisr_medptb12_met250"},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met250"},
+  {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
+  {"lm_nb2_lowmtb_lowptisr_medptb12_met300",            "lm_nb2_lowmtb_lowptisr_medptb12_met300"},
+  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300"},
   {"lm_nb2_lowmtb_highptisr_lowptb12_met400",           "lm_nb2_lowmtb_highptisr_lowptb12_met400"},
   {"lm_nb2_lowmtb_highptisr_medptb12_met400",           "lm_nb2_lowmtb_highptisr_medptb12_met400"},
   {"lm_nb2_lowmtb_highptisr_highptb12_nj7_met400",      "lm_nb2_lowmtb_highptisr_highptb12_nj7_met400"},
@@ -489,8 +490,8 @@ map<TString, Category> zllCatMap{
 BaseConfig phoConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/plots/LowMET_ak4isr/znunu";
+  config.inputdir = "/tmp/hqu/trees";
+  config.outputdir = "/tmp/hqu/plots/LowMET_ak8isr/znunu";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
@@ -512,8 +513,8 @@ BaseConfig phoConfig(){
 BaseConfig zllConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/plots/LowMET_ak4isr/zllcr";
+  config.inputdir = "/tmp/hqu/trees";
+  config.outputdir = "/tmp/hqu/plots/LowMET_ak8isr/zllcr";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/z-soup",                    lepselwgt, datasel + trigDiLepCR);
@@ -532,8 +533,8 @@ BaseConfig zllConfig(){
 BaseConfig lepConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/plots/LowMET_ak4isr/LLB";
+  config.inputdir = "/tmp/hqu/trees";
+  config.outputdir = "/tmp/hqu/plots/LowMET_ak8isr/LLB";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   if (ADD_LEP_TO_MET){
@@ -574,7 +575,7 @@ BaseConfig lepConfig(){
 BaseConfig srConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
+  config.inputdir = "/tmp/hqu/trees";
   config.outputdir = "/tmp/plots/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
@@ -622,16 +623,16 @@ BaseConfig srConfig(){
 BaseConfig qcdConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/plots/LowMET_ak4isr/QCD";
+  config.inputdir = "/tmp/hqu/trees";
+  config.outputdir = "/tmp/hqu/plots/LowMET_ak8isr/QCD";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   // qcdcr
   config.addSample("data-cr",     "Data",             datadir+"/sr/met",  "1.0",      datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd-cr",      "QCD",              "sr/qcd",          qcdwgt,      datasel + trigSR + dphi_invert);
+  config.addSample("qcd-cr",      "QCD",              "sr/qcd-cr",       qcdwgt,      datasel + trigSR + dphi_invert);
 
-  config.addSample("qcd-withveto-cr",  "QCD",         "sr/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd-withveto-sr",  "QCD",         "sr/qcd",          qcdvetowgt,  datasel + trigSR + vetoes);
+  config.addSample("qcd-withveto-cr",  "QCD",         "sr/qcd-cr",       qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("qcd-withveto-sr",  "QCD",         "sr/qcd-sr",       qcdvetowgt,  datasel + trigSR + vetoes);
 
   // qcdcr: other bkg subtraction
   config.addSample("ttbar-cr",       "t#bar{t}",      "sr/ttbar",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
@@ -646,10 +647,10 @@ BaseConfig qcdConfig(){
   config.addSample("wjets-norm",     "W+jets",        "sr/wjets",        lepselwgt,   datasel + trigSR + revert_vetoes);
   config.addSample("tW-norm",        "tW",            "sr/tW",           lepselwgt,   datasel + trigSR + revert_vetoes);
   config.addSample("ttW-norm",       "ttW",           "sr/ttW",          lepselwgt,   datasel + trigSR + revert_vetoes);
-  config.addSample("qcd-norm",       "QCD",           "sr/qcd",          lepselwgt,   datasel + trigSR + revert_vetoes);
+  config.addSample("qcd-norm",       "QCD",           "sr/qcd-sr",       lepselwgt,   datasel + trigSR + revert_vetoes);
 
   // qcdsr
-  config.addSample("qcd-sr",         "QCD",           "sr/qcd",          qcdwgt,      datasel + trigSR);
+  config.addSample("qcd-sr",         "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -664,8 +665,8 @@ BaseConfig qcdConfig(){
 BaseConfig sigConfig(){
   BaseConfig     config;
 
-  config.inputdir = "/tmp/trees";
-  config.outputdir = "/tmp/plots/LowMET_ak4isr/sig";
+  config.inputdir = "/tmp/hqu/trees";
+  config.outputdir = "/tmp/hqu/plots/LowMET_ak8isr/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
@@ -695,12 +696,12 @@ map<TString, BinInfo> varDict {
   {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
   {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
   {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
-  {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-  {"dphij1lmet_fine",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
+  {"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
+  {"dphiisrmet_fine",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
   {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
   {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
   {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-  {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 10, 250, 750)},
+  {"ak8isrpt",     BinInfo("ak8isrpt", "p_{T}(j_{1}^{ISR}) [GeV]", 10, 250, 750)},
   {"csvj1pt",   BinInfo("csvj1pt/1", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
   {"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
   {"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},
