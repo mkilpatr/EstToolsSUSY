@@ -76,8 +76,8 @@ public:
     auto norm_factor = (data_total/mc_total).value;
 
     auto cut = config.sel + " && " + cat.cut;
-    auto mc   = getYieldVector(photon_sample.tree,    photon_sample.wgtvar,    cut + photon_sample.sel,    cat.bin);
-    auto data = getYieldVector(singlepho_sample.tree, singlepho_sample.wgtvar, cut + singlepho_sample.sel, cat.bin);
+    auto mc   = yields.at("photon");
+    auto data = yields.at("singlepho");
 
     Quantity::removeZeroes(data, 0.001, 1.8);
 
