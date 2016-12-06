@@ -149,6 +149,10 @@ struct Sample{
   TString wgtvar; // weight variable for getting yields/plotting
   TString sel;    // sample-specific selection string
 
+  TString name;
+  TString filepath;
+  TString treename = "Events";
+
   TFile*  infile; // the root file
   TTree*  tree;   // the tree
 
@@ -178,6 +182,8 @@ struct BaseConfig {
 
     Sample sample(label, file, wgtvar, extraCut);
     TString filepath = inputdir+"/"+sample.fname+"_tree.root";
+    sample.name = name;
+    sample.filepath = filepath;
     sample.infile = TFile::Open(filepath);
     assert(sample.infile);
     sample.tree = (TTree*)sample.infile->Get("Events");

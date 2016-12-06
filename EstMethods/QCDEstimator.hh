@@ -12,7 +12,7 @@ using namespace std;
 namespace EstTools{
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-vector<Quantity> getYieldVectorManual(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping){
+vector<Quantity> getYieldVectorManual(const std::unique_ptr<TTree>& intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping){
   assert(intree);
 
   auto start = chrono::steady_clock::now();
@@ -20,13 +20,13 @@ vector<Quantity> getYieldVectorManual(TTree *intree, TString wgtvar, TString sel
   auto metGetter = HistogramGetter(bin.var, bin.var, bin.label, bin.nbins, bin.plotbins.data());
   metGetter.setUnderOverflow(false, true);
   metGetter.setNBS(nBootstrapping);
-  auto htmp = metGetter.getHistogramManual(intree, sel, wgtvar, "htmp");
+  auto htmp = metGetter.getHistogramManual(intree.get(), sel, wgtvar, "htmp");
 
   vector<Quantity> yields;
   for (unsigned i=0; i<bin.nbins; ++i)
   yields.push_back(getHistBin(htmp, i+1));
 #ifdef DEBUG_
-  cout << intree->GetTitle() << "(" << intree << ")" << ": " << wgtvar + "*(" + sel + ")" << ", " << bin.var << ", entries=" << htmp->GetEntries() << endl
+  cout << intree->GetTitle() << ": " << wgtvar + "*(" + sel + ")" << ", " << bin.var << ", entries=" << htmp->GetEntries() << endl
        << "  --> " << yields << endl;
 #endif
 
@@ -48,11 +48,14 @@ public:
 
   virtual ~QCDEstimator() {}
 
-  virtual vector<Quantity> getYieldVectorWrapper(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping=0){
+  virtual vector<Quantity> getYieldVectorWrapper(const Sample& sample, TString sel, const BinInfo &bin, int nBootstrapping=0) override{
+    std::unique_ptr<TFile> infile(new TFile(sample.filepath));
+    std::unique_ptr<TTree> intree(dynamic_cast<TTree*>(infile->Get(sample.treename)));
+    intree->SetTitle(sample.name);
     if (nBootstrapping==0){
-      return getYieldVector(intree, wgtvar, sel, bin);
+      return getYieldVector(intree, sample.wgtvar, sel, bin);
     }else{
-      return getYieldVectorManual(intree, wgtvar, sel, bin, 50);
+      return getYieldVectorManual(intree, sample.wgtvar, sel, bin, 50);
     }
   }
 
