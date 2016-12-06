@@ -6,6 +6,7 @@
 #include "EstHelper.hh"
 #include <thread>
 #include <mutex>
+#include <atomic>
 
 using namespace std;
 #endif
@@ -148,10 +149,13 @@ public:
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
 
+      const int nMax = std::thread::hardware_concurrency();
+      std::atomic<int> nRunning(0);
       std::unordered_map<std::string, vector<Quantity>> results;
       std::mutex results_mutex;
 
       auto calcOne = [&] (TString cat_name) {
+        ++nRunning;
         const auto & cat = catMaps.at(cat_name);
         auto cut = config.sel + " && " + cat.cut;
         auto v = getYieldVectorWrapper(sample, cut + sample.sel, cat.bin, nBootstrapping);
@@ -165,10 +169,12 @@ public:
         }
         std::lock_guard<std::mutex> guard(results_mutex);
         results[cat_name.Data()] = v;
+        --nRunning;
       };
 
       std::vector<std::thread> pool;
       for (auto &cat_name : config.categories){
+        while(nRunning>=nMax) { std::this_thread::sleep_for(std::chrono::seconds(1)); }
         pool.emplace_back(calcOne, cat_name);
       }
       for (auto && t : pool) t.join();

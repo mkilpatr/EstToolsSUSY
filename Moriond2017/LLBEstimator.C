@@ -20,7 +20,7 @@ vector<Quantity> LLBPred(){
   l.pred();
 
   l.printYields();
-  l.printTable(false);
+//  l.printTable(false);
 
   return l.yields.at("_pred");
 }
