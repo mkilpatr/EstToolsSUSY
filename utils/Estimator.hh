@@ -4,6 +4,8 @@
 #if !defined(__CINT__) || defined(__MAKECINT__)
 
 #include "EstHelper.hh"
+#include <thread>
+#include <mutex>
 
 using namespace std;
 #endif
@@ -20,6 +22,7 @@ public:
     fout_(nullptr)
   {
     gSystem->mkdir(outputdir, true);
+    ROOT::EnableThreadSafety();
     SetStyle();
   }
 
@@ -138,32 +141,55 @@ public:
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
     for (auto &sname : sample_names){
+      auto start = chrono::steady_clock::now();
+
       cout << "\nCalc yields for sample " << sname << endl;
-      yields[sname] = vector<Quantity>();
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
-      for (auto &cat_name : config.categories){
+
+      std::unordered_map<std::string, vector<Quantity>> results;
+      std::mutex results_mutex;
+
+      auto calcOne = [&] (TString cat_name) {
         const auto & cat = catMaps.at(cat_name);
         auto cut = config.sel + " && " + cat.cut;
-        auto v = getYieldVectorWrapper(sample.tree, sample.wgtvar, cut + sample.sel, cat.bin, nBootstrapping);
+        auto v = getYieldVectorWrapper(sample, cut + sample.sel, cat.bin, nBootstrapping);
         if (v.size()<srCatMaps.at(cat_name).bin.nbins){
           // !! FIXME : if cr bin numbers < sr: repeat the last bin
           vector<Quantity> vv(v);
           for (unsigned ibin=v.size(); ibin<srCatMaps.at(cat_name).bin.nbins; ++ibin){
             vv.push_back(v.back());
           }
-          yields[sname].insert(yields[sname].end(), vv.begin(), vv.end());
-        }else{
-          yields[sname].insert(yields[sname].end(), v.begin(), v.end());
+          v = vv;
         }
+        std::lock_guard<std::mutex> guard(results_mutex);
+        results[cat_name.Data()] = v;
+      };
+
+      std::vector<std::thread> pool;
+      for (auto &cat_name : config.categories){
+        pool.emplace_back(calcOne, cat_name);
       }
+      for (auto && t : pool) t.join();
+
+      yields[sname] = vector<Quantity>();
+      for (auto &cat_name : config.categories){
+        yields[sname].insert(yields[sname].end(), results.at(cat_name.Data()).begin(), results.at(cat_name.Data()).end());
+      }
+
+      auto end = chrono::steady_clock::now();
+      auto diff = end - start;
+      cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
     }
   }
 
-  virtual vector<Quantity> getYieldVectorWrapper(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping=0){
+  virtual vector<Quantity> getYieldVectorWrapper(const Sample& sample, TString sel, const BinInfo &bin, int nBootstrapping=0){
     if (nBootstrapping==0){
-      return getYieldVector(intree, wgtvar, sel, bin);
+      std::unique_ptr<TFile> infile(new TFile(sample.filepath));
+      std::unique_ptr<TTree> intree(dynamic_cast<TTree*>(infile->Get(sample.treename)));
+      intree->SetTitle(sample.name);
+      return getYieldVector(intree, sample.wgtvar, sel, bin);
     }else{
       throw std::invalid_argument("BaseEstimator::getYieldVectorWrapper: Bootstrapping not implemented!");
     }

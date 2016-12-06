@@ -11,6 +11,7 @@
 #include <functional>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include <TTreeFormula.h>
 
@@ -58,10 +59,8 @@ Quantity getYields(TTree *intree, TString wgtvar, TString sel){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-vector<Quantity> getYieldVector(TTree *intree, TString wgtvar, TString sel, const BinInfo &bin){
+vector<Quantity> getYieldVector(const std::unique_ptr<TTree>& intree, TString wgtvar, TString sel, const BinInfo &bin){
   assert(intree);
-
-  auto start = chrono::steady_clock::now();
 
   TH1D htmp("htmp", "htmp", bin.nbins, bin.plotbins.data());
   htmp.Sumw2();
@@ -74,13 +73,9 @@ vector<Quantity> getYieldVector(TTree *intree, TString wgtvar, TString sel, cons
   for (unsigned i=0; i<bin.nbins; ++i)
   yields.push_back(getHistBin(&htmp, i+1));
 #ifdef DEBUG_
-  cout << intree->GetTitle() << "(" << intree << ")" << ": " << cutstr << ", " << bin.var << ", entries=" << nentries << endl
+  cout << intree->GetTitle() << ": " << cutstr << ", " << bin.var << ", entries=" << nentries << endl
        << "  --> " << yields << endl;
 #endif
-
-  auto end = chrono::steady_clock::now();
-  auto diff = end - start;
-  cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
 
   return yields;
 }
