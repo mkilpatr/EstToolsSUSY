@@ -407,6 +407,9 @@ public:
         hist->Scale(sigScale);
     }
 
+    leg->SetTextSize(0.03);
+    setLegend(leg, 2, 0.45, 0.6, 0.92, 0.87);
+
     TCanvas *c = drawStack(mchists, sighists, false, leg);
     TString plotname = filterString(plotvar)+"_stack_"+category.name+"__"+postfix_;
     c->SetTitle(plotname);
@@ -414,6 +417,74 @@ public:
 
   }
 
+  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+    // make BKG vs Signal plots with the given cateogory selection
+    // plot S/sqrt(B) in the lower pad
+
+    vector<TH1*> mchists, sighists, sigmahists;
+    TH1 *bkgtotal = nullptr;
+    auto leg = initLegend();
+
+    TString plotvar = var_info.var;
+    TString title = ";"
+        + var_info.label + (var_info.unit=="" ? "" : " ["+var_info.unit + "]") +";"
+        + "Events";
+    TString RYTitle = "S/#sqrt{B}";
+
+    auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
+
+    for (auto &sname : mc_samples){
+      auto sample = config.samples.at(sname);
+      auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
+      auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
+      prepHists({hist});
+      if (saveHists_) saveHist(hist);
+      mchists.push_back(hist);
+      hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+      addLegendEntry(leg, hist, sample.label, "F");
+      if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
+      else{ bkgtotal->Add(hist); }
+    }
+
+    for (int i=0; i<=bkgtotal->GetNbinsX(); ++i){
+      auto q =getHistBin(bkgtotal, i).power(0.5);
+      if (q.value == 0) q=Quantity(0.0001, 0.0001);
+      setHistBin(bkgtotal, i, q);
+    }
+
+    for (auto &sname : sig_sample){
+      auto sample = config.samples.at(sname);
+      auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
+      auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
+      prepHists({hist});
+      hist->SetLineStyle(kDashed);
+      hist->SetLineWidth(3);
+      if (saveHists_) saveHist(hist);
+      sighists.push_back(hist);
+      addLegendEntry(leg, hist, sample.label, "L");
+      auto hs = (TH1*)hist->Clone(hname+"_signalOvSqrtBkg");
+      hs->Divide(bkgtotal);
+      sigmahists.push_back(hs);
+      if (saveHists_) saveHist(hs);
+    }
+
+    leg->SetTextSize(0.04);
+    setLegend(leg, 2, 0.45, 0.6, 0.92, 0.87);
+
+    TCanvas *c = nullptr;
+    if (showSigma){
+      c = drawStackAndRatio(mchists, nullptr, leg, plotlog, RYTitle, 0, 2.999, 0, -1, sighists, nullptr, sigmahists);
+    }else{
+      c = drawStack(mchists, sighists, plotlog, leg);
+    }
+
+    if (plotextra) (*plotextra)(c);
+
+    TString plotname = filterString(plotvar)+"_SigVsBkg_"+category.name+"__"+postfix_;
+    c->SetTitle(plotname);
+    savePlot(c, plotname);
+
+  }
 
 
   TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
@@ -528,6 +599,48 @@ public:
 
   }
 
+  void dumpDatacardConfig(std::string filename){
+    cerr << "Writing binning definition to file: " << filename << endl;
+
+    std::ofstream fout(filename);
+
+    std::string tab = "  ";
+
+    auto vec2str = [](const vector<double>& vec){
+      TString s="";
+      for (auto v : vec) {
+        if (s=="") s = toString(v, 0);
+        else s = s+", "+toString(v, 0);
+      }
+      return s;
+    };
+
+    for (const auto &category : config.categories){
+      const auto &cat = config.catMaps.at(category);
+      fout << cat.name << ": {" << endl
+           << tab << "'cut': '" + cat.cut + "'," << endl
+           << tab << "'var': '" + cat.bin.var + "'," << endl
+           << tab << "'bin': [" + vec2str(cat.bin.plotbins) + "]" << endl
+           << tab << "}" << endl;
+    }
+
+    fout.close();
+  }
+
+  void testSROrthogonality(TString samp = "ttbar"){
+    // test if SRs are orthogonal
+    for (unsigned ia=0; ia<config.categories.size(); ++ia){
+      for (unsigned ib=ia+1; ib<config.categories.size(); ++ib){
+        auto sra = config.categories.at(ia);
+        auto srb = config.categories.at(ib);
+        cout << "Testing " << sra << " && " << srb << endl;
+        auto cut = addCuts({config.catMaps.at(sra).cut, config.catMaps.at(srb).cut});
+        if (config.samples.at(samp).tree->GetEntries(cut)){
+          throw std::logic_error("Found overlap: " + sra + ", " + srb);
+        }
+      }
+    }
+  }
 
 public:
   map<TString, vector<Quantity>> yields;  // stores yields of all bins in all categories for each sample

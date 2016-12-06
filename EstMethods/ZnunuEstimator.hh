@@ -63,6 +63,7 @@ public:
   std::pair<vector<Quantity>,vector<Quantity>> calcSgamma(const Category& cat, TString extraCutForNorm = ""){
 
     cerr << "\n--->" << __func__ << " " << cat.name << endl;
+    cerr << " ... Using norm cut " << extraCutForNorm << endl;
 
     TString extra = extraCutForNorm=="" ? "" : " && " + extraCutForNorm;
 
@@ -104,9 +105,11 @@ public:
       // find norm category
       TString normCut = ""; // default to empty: no extra cut
       for (const auto &norm : phocr_normMap){
-        if (cat_name.Contains(norm.first))
+        if (cat_name.BeginsWith(norm.first)){
           normCut = norm.second;
+        }
       }
+
       const auto & cat = config.catMaps.at(cat_name);
       auto rlt = calcSgamma(config.crCatMaps.at(cat_name), normCut);
       auto sgamma = rlt.first;

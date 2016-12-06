@@ -7,7 +7,7 @@
 
 #include "../EstMethods/LLBEstimator.hh"
 
-#include "HMParameters.hh"
+#include "SRParameters.hh"
 
 using namespace EstTools;
 
@@ -17,14 +17,8 @@ vector<Quantity> LLBPred(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
+  l.pred();
 
-  if(ICHEPCR){
-    std::cout << "LLBPred: ICHEP2016 CR" << std::endl;
-    l.pred();
-  }else{
-    std::cout << "LLBPred: Moriond2017 CR" << std::endl;
-    l.newpred();
-  }
   l.printYields();
   l.printTable(false);
 
@@ -36,16 +30,9 @@ vector<Quantity> LLBPred(){
 
 void plotLepCR(){
   auto config = lepConfig();
+  config.catMaps = lepCatMap();
 
-  if(ICHEPCR){
-    std::cout << "plotLepCR: ICHEP2016 CR" << std::endl;
-    config.catMaps = lepCatMap();
-  }else{
-    std::cout << "plotLepCR: Moriond2017 CR" << std::endl;
-    config.catMaps = newlepCatMap();
-  }
-
-  TString region = ADD_LEP_TO_MET ? "lepcr" : "lepcr_from_sr";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -56,51 +43,6 @@ void plotLepCR(){
     const auto &cat = z.config.catMaps.at(category);
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
-  }
-
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-void ZeroVsOneLep(){
-
-  auto config = lepConfig();
-  config.samples.clear();
-  config.addSample("tt_lepcr-0b",  "1L (#slash{E}_{T}+#vec{p}_{T}^{lep}) N_{B}=0",      "lepcr/ttbarplusw",     lepselwgt, datasel + trigLepCR + lepcrsel + " && nbjets==0");
-  config.addSample("tt_revert-0b", "1L (Traditional) N_{B}=0",                          "sr/ttbarplusw",        lepselwgt, datasel + trigSR + revert_vetoes + " && nbjets==0");
-  config.addSample("ttbarplusw-0b",        "0L N_{B}=0",                                        "sr/ttbarplusw",        lepvetowgt,datasel + trigSR + vetoes + " && nbjets==0");
-
-  config.addSample("tt_lepcr-1b",  "1L (#slash{E}_{T}+#vec{p}_{T}^{lep}) N_{B}#geq1",   "lepcr/ttbarplusw",     lepselwgt, datasel + trigLepCR + lepcrsel + " && nbjets>=1");
-  config.addSample("tt_revert-1b", "1L (Traditional) N_{B}#geq1",                       "sr/ttbarplusw",        lepselwgt, datasel + trigSR + revert_vetoes + " && nbjets>=1");
-  config.addSample("ttbarplusw-1b",        "0L N_{B}#geq1",                                     "sr/ttbarplusw",        lepvetowgt,datasel + trigSR + vetoes + " && nbjets>=1");
-
-  config.categories.clear();
-  config.catMaps.clear();
-  config.categories.push_back("dummy");
-  config.catMaps["dummy"] = Category::dummy_category();
-
-  COLOR_MAP["lepcr-"] = kGreen+3;
-  COLOR_MAP["revert-"] = kRed-4;
-
-  BaseEstimator z(config.outputdir);
-  z.setConfig(config);
-  z.setSaveHists();
-
-  vector<TString> vars;
-
-  vars = {"mtcsv12met"};
-  for (auto v : vars){
-    z.setPostfix("baseline_nb0");
-    z.plotComp(varDict.at(v), {"ttbarplusw-0b", "tt_revert-0b", "tt_lepcr-0b"}, {"dummy"});
-    z.setPostfix("baseline_nb1");
-    z.plotComp(varDict.at(v), {"ttbarplusw-1b", "tt_revert-1b", "tt_lepcr-1b"}, {"dummy"});
-  }
-
-  z.config.sel = addCuts({baseline,highmt});
-  vars = {"j1lpt", "csvj1pt", "njets", "met"};
-  for (auto v : vars){
-    z.setPostfix("srsel_nb1");
-    z.plotComp(varDict.at(v), {"ttbarplusw-1b", "tt_revert-1b", "tt_lepcr-1b"}, {"dummy"});
   }
 
 }
@@ -131,7 +73,7 @@ void compSLep2(){
     config.samples.erase("qcd-sr");
     LLBEstimator z(config.outputdir);
     z.setConfig(config);
-    z.newpred();
+    z.pred();
     sLeps["newcr"] = z.yields.at("_SLep");
     pred["newcr"] = z.yields.at("_pred");
 
@@ -262,73 +204,6 @@ void compSLep(){
     c->SaveAs(lepConfig().outputdir+"/llb_pred_cmp.pdf");
   }
 
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-void DoubleRatios(bool srsel=false){
-
-  vector<TString> vars = {"mtcsv12met", "met"};
-//  vector<TString> vars = {"leptonpt", "origmet", "leptonptovermet"};
-//  vector<TString> vars = {"csvj1pt_1"};
-  map<TString, vector<TH1*>> hists;
-
-  {
-    ADD_LEP_TO_MET = false;
-
-    auto config = lepConfig();
-    LLBEstimator z(config.outputdir);
-    z.setConfig(config);
-
-    if (srsel) {
-      z.config.sel = addCuts({baseline, highmt});
-      z.setPostfix("noaddback_srsel");
-    } else{
-      z.config.sel = baseline;
-      z.setPostfix("noaddback_baseline");
-    }
-
-    for (auto var : vars){
-      hists["noaddback"].push_back(z.plotDataMC(varDict.at(var), {"ttbar", "wjets", "tW", "ttW"}, "singlelep", Category::dummy_category(), false));
-    }
-
-  }
-
-  {
-    ADD_LEP_TO_MET = true;
-
-    auto config = lepConfig();
-    LLBEstimator z(config.outputdir);
-    z.setConfig(config);
-
-    if (srsel) {
-      z.config.sel = addCuts({baseline, highmt});
-      z.setPostfix("addback_srsel");
-    } else{
-      z.config.sel = baseline;
-      z.setPostfix("addback_baseline");
-    }
-
-    for (auto var : vars){
-      hists["addback"].push_back(z.plotDataMC(varDict.at(var), {"ttbar", "wjets", "tW", "ttW"}, "singlelep", Category::dummy_category(), false));
-    }
-
-  }
-
-  for (unsigned i=0; i<vars.size(); ++i){
-    auto h0 = hists["noaddback"].at(i);
-    auto h1 = hists["addback"].at(i);
-    h0->SetYTitle("Data/Simulation");
-    h1->SetYTitle("Data/Simulation");
-    h0->SetLineColor(kBlack); h0->SetMarkerColor(kBlack);
-    h1->SetLineColor(kRed); h1->SetMarkerColor(kRed);
-
-    auto leg = prepLegends({h0, h1}, {"Traditional", "#slash{E}_{T}+#vec{p}_{T}^{lep}"});
-    auto c = drawCompAndRatio({h0, h1}, {makeRatioHists(h1, h0)}, leg, "#frac{#slash{E}_{T}+#vec{p}_{T}^{lep}}{Traditional}");
-
-    c->SaveAs(lepConfig().outputdir+"/llb_cmp_"+vars.at(i)+(srsel?"_srsel":"_baseline")+".pdf");
-
-  }
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

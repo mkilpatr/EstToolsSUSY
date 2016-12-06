@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#include "HMParameters_LowMET.hh"
+#include "LowMET_Parameters.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
@@ -16,20 +16,14 @@
 using namespace EstTools;
 
 void BkgPredHM_LowMET(){
+
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
   z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
-  z.phocr_normMap = {};
+  z.phocr_normMap = phoNormMap;
   z.pred();
   z.printYields();
-
-  EstTools::ADD_LEP_TO_MET = true;
-  auto llbcfg = lepConfig();
-  LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("rare-sr"));
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
@@ -37,38 +31,36 @@ void BkgPredHM_LowMET(){
   q.pred();
   q.printYields();
 
-  auto convert = [](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs){
-    for(const auto &s : c.bkgs){
-      hists.push_back(convertToHist(c.getPrediction(s.first), s.first, ";Search Region;Events"));
-      graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s.first), s.first+"_gr", ";Search Region;Events"));
+
+  vector<std::string> bkgnames  = {"qcd_pred", "diboson_pred", "ttZ_pred", "ttbarplusw_pred", "znunu_pred"};
+  vector<TString> bkglabels = {"QCD", "Diboson", "ttZ", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
+  vector<TString> datalabel = {"Data"};
+
+auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs){
+    for(const auto &s : bkgnames){
+      hists.push_back(convertToHist(c.getPrediction(s), s, ";Search Region;Events"));
+      graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s), s+"_gr", ";Search Region;Events"));
     }
     graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(), "pred_total_gr", ";Search Region;Events"));
   };
 
-  ToyCombination tc;
-  tc.addBackground("znunu_pred",        &z.yields.at("singlephoton"), &z.yields.at("_TF"));
-  tc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
-  tc.addBackground("qcd_pred",          &q.yields.at("_DATA"), &q.yields.at("_TF"));
-  tc.addBackground("rare_pred",         nullptr, nullptr, &l.yields.at("rare-sr"));
-  tc.combine();
-
-  vector<TH1*> pred;
-  vector<TGraphAsymmErrors*> predGraphs;
-  convert(tc, pred, predGraphs);
-
   // traditional method for LLB
   EstTools::ADD_LEP_TO_MET = false;
   auto altllbcfg = lepConfig();
-  LLBEstimator alt(altllbcfg);
-  alt.pred();
-  alt.printYields();
-  Quantity::removeNegatives(alt.yields.at("rare-sr"));
+  LLBEstimator l(altllbcfg);
+  l.pred();
+  l.printYields();
+  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+  Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   ToyCombination lc;
-  lc.addBackground("znunu_pred",        &z.yields.at("singlephoton"), &z.yields.at("_TF"));
-  lc.addBackground("ttbarplusw_pred",   &alt.yields.at("singlelep"), &alt.yields.at("_TF"));
+  lc.addBackground("znunu_pred",        &z.yields.at("singlepho"), &z.yields.at("_TF"));
+  lc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
   lc.addBackground("qcd_pred",          &q.yields.at("_DATA"), &q.yields.at("_TF"));
-  lc.addBackground("rare_pred",         nullptr, nullptr, &alt.yields.at("rare-sr"));
+//  lc.addBackground("qcd_pred",          nullptr, nullptr, &l.yields.at("qcd-sr"));
+  lc.addBackground("diboson_pred",      nullptr, nullptr, &l.yields.at("diboson-sr"));
+  lc.addBackground("ttZ_pred",          nullptr, nullptr, &l.yields.at("ttZ-sr"));
+//  lc.addBackground("rare_pred",         nullptr, nullptr, &l.yields.at("rare-sr"));
   lc.combine();
 
   vector<TH1*> altpred;
@@ -78,7 +70,9 @@ void BkgPredHM_LowMET(){
   vector<TH1*> mc;
   mc.push_back(convertToHist(q.yields.at("qcd-withveto-sr"),"qcd_mc",";Search Region;Events"));
 //  mc.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_mc",";Search Region;Events"));
-  mc.push_back(convertToHist(l.yields.at("rare-sr"),"rare_mc",";Search Region;Events"));
+  mc.push_back(convertToHist(l.yields.at("ttZ-sr"),"ttZ_mc",";Search Region;Events"));
+  mc.push_back(convertToHist(l.yields.at("diboson-sr"),"diboson_mc",";Search Region;Events"));
+  //  mc.push_back(convertToHist(l.yields.at("rare-sr"),"rare_mc",";Search Region;Events"));
   mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Search Region;Events"));
   mc.push_back(convertToHist(z.yields.at("znunu-sr"),"znunu_mc",";Search Region;Events"));
 
@@ -88,20 +82,29 @@ void BkgPredHM_LowMET(){
 
   auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
 
-  vector<TString> bkglabels = {"QCD", "Rare", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
-  vector<TString> datalabel = {"Data"};
-
   auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
     prepHists(vpred, false, false, true);
     prepHists({hdata}, false, false, false, {kBlack});
 
+    // plot raw MC
+    TH1 *hmctotal = nullptr;
+    for(auto &hmc : mc){
+      if (!hmctotal) hmctotal = (TH1*) hmc->Clone();
+      else hmctotal->Add(hmc);
+    }
+    TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
+    hDataRawMC->Divide(hmctotal);
+    hDataRawMC->SetLineWidth(2);
+    prepHists({hDataRawMC}, false, false, false, {kOrange});
+
     auto leg = prepLegends(vpred, bkglabels, "F");
     appendLegends(leg, {hdata}, datalabel, "LP");
+    appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
     leg->SetTextSize(0.03);
 //    leg->SetNColumns(2);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999);
+    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC});
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
@@ -115,16 +118,7 @@ void BkgPredHM_LowMET(){
     output->Close();
   };
 
-  plot(pred, predGraphs, "std_pred_lepplusmet");
   plot(altpred, altgraphs, "std_pred_trad");
-
-  cout << "\n\n Lep+MET \n";
-  for (const auto &b : tc.bkgs){
-    s.printVec(tc.getPrediction(b.first),b.first);
-  }
-  s.printVec(tc.getPrediction(),"total_bkg");
-  cout << "\n Summary Lep+MET \n";
-  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("rare-sr")}, s.yields.at("data-sr"));
 
 
   cout << "\n\n Traditional \n";
@@ -133,5 +127,5 @@ void BkgPredHM_LowMET(){
   }
   s.printVec(lc.getPrediction(),"total_bkg");
   cout << "\n Summary Traditional \n";
-  s.printSummary({z.yields.at("_pred"), alt.yields.at("_pred"), q.yields.at("_pred"), alt.yields.at("rare-sr")}, s.yields.at("data-sr"));
+  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("ttZ-sr"), l.yields.at("diboson-sr")}, s.yields.at("data-sr"));
 }

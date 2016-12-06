@@ -7,7 +7,7 @@
 
 #include "../EstMethods/ZnunuEstimator.hh"
 
-#include "HMParameters.hh"
+#include "SRParameters.hh"
 
 using namespace EstTools;
 
@@ -20,7 +20,7 @@ vector<Quantity> ZnunuPred(){
 
   z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
-  z.phocr_normMap = {};
+  z.phocr_normMap = phoNormMap;
 
   z.pred();
   z.printYields();
@@ -44,7 +44,11 @@ void Yields(){
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void plotSgamma(){
+  TString region = ICHEPCR ? "phocr_ichep" : "phocr";
+
   auto config = phoConfig();
+  config.outputdir = config.outputdir+"/"+region;
+
   config.catMaps = phoCatMap();
   config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
   config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
@@ -55,13 +59,19 @@ void plotSgamma(){
   z.setConfig(config);
 
   vector<TString> mc_samples = {"gjets", "qcd-fake", "qcd-frag", "ttg"};
-  TString data_sample = "singlephoton";
+  TString data_sample = "singlepho";
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
-    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, true, z.config.sel, false, &plotextra);
-
+    TString norm_cut = "";
+    for (const auto &nb : phoNormMap) {
+      if(cat.name.Contains(nb.first)) {
+        norm_cut = nb.second;
+        break;
+      }
+    }
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, true, addCuts({z.config.sel, norm_cut}), false, &plotextra);
   }
 
 }
