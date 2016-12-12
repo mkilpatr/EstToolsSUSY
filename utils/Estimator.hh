@@ -149,7 +149,7 @@ public:
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
 
-      const int nMax = std::thread::hardware_concurrency();
+      const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
       std::unordered_map<std::string, vector<Quantity>> results;
       std::mutex results_mutex;
@@ -568,6 +568,7 @@ public:
           }
           sf = hdata->Integral(1, hsum->GetNbinsX()+1) / hsum->Integral(1, hsum->GetNbinsX()+1);
         }else {
+          cout << " ... using normMap " << norm_cut << endl;
           auto data_inc = getYields(d_sample.tree, d_sample.wgtvar, norm_cut + d_sample.sel);
           vector<Quantity> mc_quantities;
           for (auto &sname : mc_samples){
@@ -576,6 +577,7 @@ public:
           }
           auto mc_inc = Quantity::sum(mc_quantities);
           sf = (data_inc/mc_inc).value;
+          cout << "... normScaleFactor = " << sf << endl;
         }
         // scale the mc hists
         for (auto *hist : mchists) hist->Scale(sf);
