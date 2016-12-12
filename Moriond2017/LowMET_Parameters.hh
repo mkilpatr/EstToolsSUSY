@@ -137,8 +137,7 @@ std::vector<TString> srbins{
   "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",
   "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",
   // ---
-  "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",
-  "lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",
+  "lm_nb1_nivf1_lowmtb_lowptb_met300",
 
   // 2b
   "lm_nb2_lowmtb_lowptisr_lowptb12_met300",
@@ -206,8 +205,7 @@ std::map<TString, std::vector<int>> srMETbins{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       {250, 1000}},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       {250, 1000}},
 
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        {250, 1000}},
-  {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       {250, 1000}},
+  {"lm_nb1_nivf1_lowmtb_lowptb_met300",                 {250, 1000}},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            {250, 1000}},
@@ -291,8 +289,7 @@ std::map<TString, TString> phocrMapping{
   {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",        "lm_nb1_lowmtb_lowptisr_medptb_met300"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       "lm_nb1_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       "lm_nb1_lowmtb_highptisr_medptb_met400"},
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_lowmtb_lowptisr_lowptb_met300"},
-  {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       "lm_nb1_lowmtb_highptisr_lowptb_met400"},
+  {"lm_nb1_nivf1_lowmtb_lowptb_met300",                 "lm_nb1_lowmtb_lowptb_met300"},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
@@ -363,8 +360,7 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",       "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
-  {"lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300",        "lm_nb1_nivf1_lowmtb_lowptisr_lowptb_met300"},
-  {"lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400",       "lm_nb1_nivf1_lowmtb_highptisr_lowptb_met400"},
+  {"lm_nb1_nivf1_lowmtb_lowptb_met300",                 "lm_nb1_nivf1_lowmtb_lowptb_met300"},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",            "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
