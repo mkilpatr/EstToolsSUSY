@@ -71,10 +71,12 @@ vector<Quantity> getYieldVector(const std::unique_ptr<TTree>& intree, TString wg
 
   vector<Quantity> yields;
   for (unsigned i=0; i<bin.nbins; ++i)
-  yields.push_back(getHistBin(&htmp, i+1));
+    yields.push_back(getHistBin(&htmp, i+1));
 #ifdef DEBUG_
-  cout << intree->GetTitle() << ": " << cutstr << ", " << bin.var << ", entries=" << nentries << endl
+  stringstream ss;
+  ss << intree->GetTitle() << ": " << cutstr << ", " << bin.var << ", entries=" << nentries << endl
        << "  --> " << yields << endl;
+  cerr << ss.str();
 #endif
 
   return yields;

@@ -115,6 +115,8 @@ std::map<TString, TString> cutMap = []{
         {"met350",    "met<350"},
         {"met400",    "met<400"},
         {"met450",    "met<450"},
+        {"lowmetormtb",       "(met<250 || mtcsv12met<175)"},
+        {"nbgeq1",    "nbjets>=1"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -175,9 +177,9 @@ std::vector<TString> srbins{
   "hm_nb2_highmtb_nt1_nrt1_nw0_met250",
 
   // 2
-  "hm_nb2_highmtb_nt2_nrt0_nw0_met250",
-  "hm_nb2_highmtb_nt0_nrt2_nw0_met250",
-  "hm_nb2_highmtb_nt0_nrt0_nw2_met250",
+  "hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb",
+  "hm_nb2_lowmtb_nt0_nrt2_nw0_met250",
+  "hm_nb2_lowmtb_nt0_nrt0_nw2_met250",
   //---------- high deltaM ----------
 
 };
@@ -245,9 +247,9 @@ std::map<TString, std::vector<int>> srMETbins{
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  {200, 1000}},
 
   // 2
-  {"hm_nb2_highmtb_nt2_nrt0_nw0_met250",  {200, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt2_nw0_met250",  {200, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt0_nw2_met250",  {200, 1000}},
+  {"hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb", {200, 1000}},
+  {"hm_nb2_lowmtb_nt0_nrt2_nw0_met250",  {200, 1000}},
+  {"hm_nb2_lowmtb_nt0_nrt0_nw2_met250",  {200, 1000}},
   //---------- high deltaM ----------
 
 };
@@ -262,6 +264,7 @@ std::map<TString, TString> normMap{
 
   {"hm_nb1",       createCutString("hmNoDPhi_nb1", cutMap)},
   {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap)},
+  {"hm_nbgeq1",    createCutString("hmNoDPhi_nbgeq1", cutMap)},
 };
 
 // normalize photon to Data after baseline+this cut to calc Sgamma
@@ -272,6 +275,7 @@ std::map<TString, TString> phoNormMap = {
 
   {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
   {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
+  {"hm_nbgeq1",createCutString("hmNoDPhi_nbgeq1", cutMap)},
 };
 
 //std::map<TString, TString> phoNormMap = normMap;
@@ -328,9 +332,9 @@ std::map<TString, TString> phocrMapping{
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
 
   // 2
-  {"hm_nb2_highmtb_nt2_nrt0_nw0_met250",  "hm_nb2_highmtb_met250"},
-  {"hm_nb2_highmtb_nt0_nrt2_nw0_met250",  "hm_nb2_highmtb_met250"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw2_met250",  "hm_nb2_highmtb_met250"},
+  {"hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb", "hm_nbgeq1_lowmetormtb"},
+  {"hm_nb2_lowmtb_nt0_nrt2_nw0_met250",  "hm_nb2_lowmtb_met250"},
+  {"hm_nb2_lowmtb_nt0_nrt0_nw2_met250",  "hm_nb2_lowmtb_met250"},
   //---------- high deltaM ----------
 
 };
@@ -399,9 +403,9 @@ std::map<TString, TString> lepcrMapping {
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
 
   // 2
-  {"hm_nb2_highmtb_nt2_nrt0_nw0_met250",  "hm_nb2_highmtb_met250"},
-  {"hm_nb2_highmtb_nt0_nrt2_nw0_met250",  "hm_nb2_highmtb_met250"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw2_met250",  "hm_nb2_highmtb_met250"},
+  {"hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb", "hm_nbgeq1_lowmetormtb"},
+  {"hm_nb2_lowmtb_nt0_nrt2_nw0_met250",  "hm_nb2_lowmtb_met250"},
+  {"hm_nb2_lowmtb_nt0_nrt0_nw2_met250",  "hm_nb2_lowmtb_met250"},
   //---------- high deltaM ----------
 
 };

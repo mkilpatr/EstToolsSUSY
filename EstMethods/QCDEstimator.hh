@@ -15,7 +15,9 @@ namespace EstTools{
 vector<Quantity> getYieldVectorManual(const std::unique_ptr<TTree>& intree, TString wgtvar, TString sel, const BinInfo &bin, int nBootstrapping){
   assert(intree);
 
+#ifdef DEBUG_
   auto start = chrono::steady_clock::now();
+#endif
 
   auto metGetter = HistogramGetter(bin.var, bin.var, bin.label, bin.nbins, bin.plotbins.data());
   metGetter.setUnderOverflow(false, true);
@@ -25,14 +27,18 @@ vector<Quantity> getYieldVectorManual(const std::unique_ptr<TTree>& intree, TStr
   vector<Quantity> yields;
   for (unsigned i=0; i<bin.nbins; ++i)
   yields.push_back(getHistBin(htmp, i+1));
+
 #ifdef DEBUG_
-  cout << intree->GetTitle() << ": " << wgtvar + "*(" + sel + ")" << ", " << bin.var << ", entries=" << htmp->GetEntries() << endl
+  stringstream ss;
+  ss << intree->GetTitle() << ": " << wgtvar + "*(" + sel + ")" << ", " << bin.var << ", entries=" << htmp->GetEntries() << endl
        << "  --> " << yields << endl;
-#endif
 
   auto end = chrono::steady_clock::now();
   auto diff = end - start;
-  cout << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+  ss << chrono::duration <double, milli> (diff).count() << " ms" << endl;
+
+  cerr << ss.str();
+#endif
 
   return yields;
 }
@@ -52,11 +58,15 @@ public:
     std::unique_ptr<TFile> infile(new TFile(sample.filepath));
     std::unique_ptr<TTree> intree(dynamic_cast<TTree*>(infile->Get(sample.treename)));
     intree->SetTitle(sample.name);
+    vector<Quantity> yields;
     if (nBootstrapping==0){
-      return getYieldVector(intree, sample.wgtvar, sel, bin);
+      yields = getYieldVector(intree, sample.wgtvar, sel, bin);
     }else{
-      return getYieldVectorManual(intree, sample.wgtvar, sel, bin, 50);
+      yields = getYieldVectorManual(intree, sample.wgtvar, sel, bin, 50);
     }
+    intree.reset();
+    infile.reset();
+    return yields;
   }
 
   void naiveTF(){
