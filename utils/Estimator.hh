@@ -195,7 +195,10 @@ public:
       std::unique_ptr<TFile> infile(new TFile(sample.filepath));
       std::unique_ptr<TTree> intree(dynamic_cast<TTree*>(infile->Get(sample.treename)));
       intree->SetTitle(sample.name);
-      return getYieldVector(intree, sample.wgtvar, sel, bin);
+      auto yields = getYieldVector(intree, sample.wgtvar, sel, bin);
+      intree.reset();
+      infile.reset();
+      return yields;
     }else{
       throw std::invalid_argument("BaseEstimator::getYieldVectorWrapper: Bootstrapping not implemented!");
     }
