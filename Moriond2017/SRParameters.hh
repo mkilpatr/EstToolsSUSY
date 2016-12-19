@@ -51,10 +51,10 @@ const TString trigLepCR = " && passtriglepOR";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-//const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-const TString qcdwgt = wgtvar;
-//const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
-const TString qcdvetowgt = lepvetowgt;
+const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
+//const TString qcdwgt = wgtvar;
+const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
+//const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -65,6 +65,7 @@ const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+//const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
 
@@ -85,14 +86,12 @@ std::map<TString, TString> cutMap = []{
         {"nb0",       "nbjets==0"},
         {"nb1",       "nbjets==1"},
         {"nb2",       "nbjets>=2"},
-        {"nbgeq1",    "nbjets>=1"},
         {"nivf0",     "nivf==0"},
         {"nivf1",     "nivf>=1"},
         {"lowptisr",  "ak8isrpt>300 && ak8isrpt<500"},
         {"highptisr", "ak8isrpt>500"},
         {"nj2to5",    "njets>=2 && njets<=5"},
         {"nj6",       "njets>=6"},
-        {"nj5to6",    "njets>=5 && njets<=6"},
         {"nj7",       "njets>=7"},
         {"lowmtb",    "mtcsv12met<175"},
         {"highmtb",   "mtcsv12met>175"},
@@ -121,6 +120,41 @@ std::map<TString, TString> cutMap = []{
     return cmap;
 }();
 
+
+std::map<TString, TString> labelMap{
+  {"lowptisr", R"($300<\ptisr<500$\,GeV)"},
+  {"ntgeq1", R"($\nt\geq1$)"},
+  {"nt2", R"($\nt\geq2$)"},
+  {"nivf0", R"($\nsv=0$)"},
+  {"nivf1", R"($\nsv\geq1$)"},
+  {"nw2", R"($\nw\geq2$)"},
+  {"nj2to5", R"($2\leq\nj<5$)"},
+  {"nb2", R"($\nb\geq2$)"},
+  {"nb1", R"($\nb=1$)"},
+  {"nb0", R"($\nb=0$)"},
+  {"nrt2", R"($\nrt\geq2$)"},
+  {"highptisr", R"($\ptisr>500$\,GeV)"},
+  {"nj7", R"($\nj\geq7$)"},
+  {"highptb", R"($\ptb>70$\,GeV)"},
+  {"hm", R"(high \dm)"},
+  {"nw0", R"($\nw=0$)"},
+  {"nwgeq1", R"($\nw\geq1$)"},
+  {"nw1", R"($\nw=1$)"},
+  {"nrt0", R"($\nrt=0$)"},
+  {"nrt1", R"($\nrt=1$)"},
+  {"lowptb", R"($\ptb<40$\,GeV)"},
+  {"medptb", R"($40<\ptb<70$\,GeV)"},
+  {"nt0", R"($\nt=0$)"},
+  {"lm", R"(low \dm)"},
+  {"lowptb12", R"($\ptbonetwo<80$\,GeV)"},
+  {"highptb12", R"($\ptbonetwo>140$\,GeV)"},
+  {"lowmtb", R"($\mtb<175$~\GeV)"},
+  {"highmtb", R"($\mtb>175$~\GeV)"},
+  {"nt1", R"($\nt=1$)"},
+  {"medptb12", R"($80<\ptbonetwo<140$\,GeV)"},
+  {"nrtgeq1", R"($\nrt\geq1$)"},
+  {"nj6", R"($\nj\geq6$)"},
+};
 
 std::vector<TString> srbins{
   //---------- low deltaM ----------
@@ -158,19 +192,23 @@ std::vector<TString> srbins{
   "hm_nb1_highmtb_nj7_nt0_nrt0_nw0",
   "hm_nb2_highmtb_nj7_nt0_nrt0_nw0",
 
+	// nb1
   // 1 tagged
   "hm_nb1_highmtb_ntgeq1_nrt0_nw0",
-  "hm_nb2_highmtb_nt1_nrt0_nw0",
   "hm_nb1_highmtb_nt0_nrtgeq1_nw0",
+  // 1+1
+  "hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",
+
+	// nb2
+  // 1 tagged
+  "hm_nb2_highmtb_nt1_nrt0_nw0",
   "hm_nb2_highmtb_nt0_nrt1_nw0",
   "hm_nb2_highmtb_nt0_nrt0_nw1",
 
   // 1+1
-  "hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",
   "hm_nb2_highmtb_nt1_nrt0_nw1",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",
   "hm_nb2_highmtb_nt0_nrt1_nw1",
-
   "hm_nb2_highmtb_nt1_nrt1_nw0",
 
   // 2
@@ -230,21 +268,22 @@ std::map<TString, std::vector<int>> srMETbins{
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
 
-  // 1
+  // nb1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nw0",                  {550, 650, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt0_nw0",                     {550, 650, 1000}},
   {"hm_nb1_highmtb_nt0_nrtgeq1_nw0",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw0",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt0_nw1",      {250, 350, 450, 550, 650, 1000}},
-
 
   // 1+1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",               {550, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt0_nw1",                     {550, 1000}},
-
   {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",{250, 350, 450, 550, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw1",      {250, 350, 450, 550, 1000}},
 
+  // nb2
+  {"hm_nb2_highmtb_nt1_nrt0_nw0",                     {550, 650, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt1_nw0",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt0_nw1",      {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nb2_highmtb_nt1_nrt0_nw1",                     {550, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt1_nw1",      {250, 350, 450, 550, 1000}},
   {"hm_nb2_highmtb_nt1_nrt1_nw0",      {250, 350, 450, 1000}},
 
   // 2
@@ -317,20 +356,23 @@ std::map<TString, TString> phocrMapping{
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",  "hm_nb1_highmtb_nj7"},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",  "hm_nb2_highmtb_nj7"},
 
+  // nb1
   // 1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nw0",   "hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt1_nrt0_nw0",      "hm_nb2_highmtb"},
   {"hm_nb1_highmtb_nt0_nrtgeq1_nw0",   "hm_nb1_highmtb"},
+  // 1+1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",  "hm_nb1_highmtb"},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",  "hm_nb1_highmtb"},
+
+  // nb2
+  //1
+  {"hm_nb2_highmtb_nt1_nrt0_nw0",      "hm_nb2_highmtb"},
   {"hm_nb2_highmtb_nt0_nrt1_nw0",      "hm_nb2_highmtb"},
   {"hm_nb2_highmtb_nt0_nrt0_nw1",      "hm_nb2_highmtb"},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",  "hm_nb1_highmtb"},
   {"hm_nb2_highmtb_nt1_nrt0_nw1",        "hm_nb2_highmtb"},
-
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",  "hm_nb1_highmtb"},
   {"hm_nb2_highmtb_nt0_nrt1_nw1",        "hm_nb2_highmtb"},
-
   {"hm_nb2_highmtb_nt1_nrt1_nw0",        "hm_nb2_highmtb"},
 
   // 2
@@ -389,20 +431,22 @@ std::map<TString, TString> lepcrMapping {
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",    "hm_nb1_highmtb_nj7"},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",    "hm_nb2_highmtb_nj7"},
 
+  // nb1
   // 1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nw0",     "hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt1_nrt0_nw0",        "hm_nb2_highmtb"},
   {"hm_nb1_highmtb_nt0_nrtgeq1_nw0",     "hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt1_nw0",        "hm_nb2_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw1",        "hm_nb2_highmtb"},
-
   // 1+1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",  "hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt1_nrt0_nw1",        "hm_nb2_highmtb"},
-
   {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",  "hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt1_nw1",        "hm_nb2_highmtb"},
 
+  // nb2
+  // 1
+  {"hm_nb2_highmtb_nt1_nrt0_nw0",        "hm_nb2_highmtb"},
+  {"hm_nb2_highmtb_nt0_nrt1_nw0",        "hm_nb2_highmtb"},
+  {"hm_nb2_highmtb_nt0_nrt0_nw1",        "hm_nb2_highmtb"},
+  // 1+1
+  {"hm_nb2_highmtb_nt1_nrt0_nw1",        "hm_nb2_highmtb"},
+  {"hm_nb2_highmtb_nt0_nrt1_nw1",        "hm_nb2_highmtb"},
   {"hm_nb2_highmtb_nt1_nrt1_nw0",        "hm_nb2_highmtb"},
 
   // 2
@@ -426,7 +470,7 @@ std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
-  auto crmap = phocrMapping;
+  auto crmap = lepcrMapping;
   for (auto &s : crmap){
     s.second.ReplaceAll("lm_", "lmNoDPhi_");
     s.second.ReplaceAll("hm_", "hmNoDPhi_");
@@ -439,7 +483,17 @@ std::map<TString, TString> qcdcrCuts = []{
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
     return cuts;
 }();
-std::map<TString, TString> qcdcrlabels = phocrlabels;
+std::map<TString, TString> qcd1to1crCuts = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcdcrlabels = lepcrlabels;
 std::map<TString, std::vector<int>> qcdcrMETbins {
   //---------- low deltaM ----------
   // 0b, 0 or >=1 ivf
@@ -476,21 +530,23 @@ std::map<TString, std::vector<int>> qcdcrMETbins {
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
 
+  // nb1
   // 1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nw0",                  {550, 650, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt0_nw0",                     {550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt0_nw1",      {250, 350, 450, 550, 650, 1000}},
   {"hm_nb1_highmtb_nt0_nrtgeq1_nw0",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw0",      {250, 350, 450, 550, 650, 1000}},
-
-
   // 1+1
   {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",               {550, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt0_nw1",                     {550, 1000}},
-
   {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",{250, 350, 450, 550, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw1",      {250, 350, 450, 550, 1000}},
 
+  // nb2
+  // 1
+  {"hm_nb2_highmtb_nt1_nrt0_nw0",                     {550, 650, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt0_nw1",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt1_nw0",      {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nb2_highmtb_nt1_nrt0_nw1",                     {550, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt1_nw1",      {250, 350, 450, 550, 1000}},
   {"hm_nb2_highmtb_nt1_nrt1_nw0",      {250, 350, 450, 1000}},
 
   // 2
@@ -532,7 +588,7 @@ map<TString, Category> lepCatMap(){
 
 map<TString, Category> qcdCatMap(){
   map<TString, Category> cmap;
-  const auto &cuts = ICHEPCR ? srcuts: qcdcrCuts;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
@@ -650,16 +706,18 @@ BaseConfig srConfig(){
   config.addSample("ttZ",         "ttZ",           "ttZ",          lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("diboson",     "Diboson",       "diboson",      lepvetowgt, datasel + trigSR + vetoes);
 
-  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "T2fbd_500_420",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "T2fbd_500_420",  sigwgt, datasel + trigSR + vetoes);
   config.addSample("T2fbd_500_450", "T2fbd(500,450)", "T2fbd_500_450",  sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "T2fbd_500_480",  sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "T2cc_500_490",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "T2fbd_500_480",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "T2cc_500_490",   sigwgt, datasel + trigSR + vetoes);
 
-  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "T2tt_450_250",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "T2tt_450_250",   sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_400_300",  "T2tt(400,300)",  "T2tt_400_300",   sigwgt, datasel + trigSR + vetoes);
   config.addSample("T2tt_700_400",  "T2tt(700,400)",  "T2tt_700_400",   sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "T2tt_1000_1",    sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "T2bW_850_1",     sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "T2bW_550_350",   sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_1000_1",   "T2tt(1000,1)",   "T2tt_1000_1",    sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "T2tt_1100_1",    sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "T2bW_850_1",     sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "T2bW_550_350",   sigwgt, datasel + trigSR + vetoes);
 
 
   COLOR_MAP["T2fbd_500_420"] = kRed;
@@ -763,8 +821,8 @@ map<TString, BinInfo> varDict {
   {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
   {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
   {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-  {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 10, 250, 750)},
-  {"csvj1pt",   BinInfo("csvj1pt/1", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
+  {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  5, 300, 800)},
+  {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
   {"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
   {"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},
   {"drlepisr",  BinInfo("drlepisr", "#DeltaR(lep, j_{1}^{ISR})", 25, 0, 5)},

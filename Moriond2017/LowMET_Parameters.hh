@@ -51,10 +51,10 @@ const TString trigLepCR = " && passtriglepOR";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-//const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-const TString qcdwgt = wgtvar;
-//const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
-const TString qcdvetowgt = lepvetowgt;
+const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
+//const TString qcdwgt = wgtvar;
+const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
+//const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -65,6 +65,7 @@ const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+//const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
 
@@ -85,6 +86,7 @@ std::map<TString, TString> cutMap = []{
         {"nb0",       "nbjets==0"},
         {"nb1",       "nbjets==1"},
         {"nb2",       "nbjets>=2"},
+        {"nbgeq1",    "nbjets>=1"},
         {"nivf0",     "nivf==0"},
         {"nivf1",     "nivf>=1"},
         {"lowptisr",  "ak8isrpt>300 && ak8isrpt<500"},
@@ -103,20 +105,21 @@ std::map<TString, TString> cutMap = []{
         {"nt0",       "nsdtop==0"},
         {"nt1",       "nsdtop==1"},
         {"nt2",       "nsdtop>=2"},
+        {"ntgeq1",    "nsdtop>=1"},
         {"nw0",       "nsdw==0"},
         {"nw1",       "nsdw==1"},
         {"nw2",       "nsdw>=2"},
+        {"nwgeq1",    "nsdw>=1"},
         {"nrt0",      "nrestop==0"},
         {"nrt1",      "nrestop==1"},
         {"nrt2",      "nrestop>=2"},
-        {"nrtge1",    "nrestop>=1"},
+        {"nrtgeq1",   "nrestop>=1"},
         {"met250",    "met<250"},
         {"met300",    "met<300"},
         {"met350",    "met<350"},
         {"met400",    "met<400"},
         {"met450",    "met<450"},
         {"lowmetormtb",       "(met<250 || mtcsv12met<175)"},
-        {"nbgeq1",    "nbjets>=1"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -153,27 +156,31 @@ std::vector<TString> srbins{
 
   //---------- high deltaM ----------
   // low mtb
-  "hm_nb1_lowmtb_nj7_nrtge1_met250",
-  "hm_nb2_lowmtb_nj7_nrtge1_met250",
+  "hm_nb1_lowmtb_nj7_nrtgeq1_met250",
+  "hm_nb2_lowmtb_nj7_nrtgeq1_met250",
 
   // high mtb
   // 0 taggged
   "hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met250",
   "hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met250",
 
+  // nb1
   // 1
-  "hm_nb1_highmtb_nt1_nrt0_nw0_met450",
+  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_met450",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_met250",
+  // 1+1
+  "hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1_met450",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met250",
+
+  // nb2
+  // 1
   "hm_nb2_highmtb_nt1_nrt0_nw0_met450",
-  "hm_nb1_highmtb_nt0_nrt1_nw0_met250",
   "hm_nb2_highmtb_nt0_nrt1_nw0_met250",
   "hm_nb2_highmtb_nt0_nrt0_nw1_met250",
 
   // 1+1
-  "hm_nb1_highmtb_nt1_nrt0_nw1_met450",
   "hm_nb2_highmtb_nt1_nrt0_nw1_met450",
-  "hm_nb1_highmtb_nt0_nrt1_nw1_met250",
   "hm_nb2_highmtb_nt0_nrt1_nw1_met250",
-
   "hm_nb2_highmtb_nt1_nrt1_nw0_met250",
 
   // 2
@@ -221,35 +228,37 @@ std::map<TString, std::vector<int>> srMETbins{
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtge1_met250",       {200, 1000}},
-  {"hm_nb2_lowmtb_nj7_nrtge1_met250",       {200, 1000}},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1_met250",       {200, 1000}},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1_met250",       {200, 1000}},
 
   // high mtb
   // 0 taggged
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met250",  {200, 1000}},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met250",  {200, 1000}},
 
+  // nb1
   // 1
-  {"hm_nb1_highmtb_nt1_nrt0_nw0_met450",      {200, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt0_nw0_met450",      {200, 1000}},
-  {"hm_nb1_highmtb_nt0_nrt1_nw0_met250",  {200, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw0_met250",  {200, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_met450",   {200, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_met250",   {200, 1000}},
+  // 1+1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1_met450",{200, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met250",{200, 1000}},
 
+  // nb2
+  // 1
+  {"hm_nb2_highmtb_nt1_nrt0_nw0_met450",  {200, 1000}},
+  {"hm_nb2_highmtb_nt0_nrt1_nw0_met250",  {200, 1000}},
   {"hm_nb2_highmtb_nt0_nrt0_nw1_met250",  {200, 1000}},
 
   // 1+1
-  {"hm_nb1_highmtb_nt1_nrt0_nw1_met450",  {200, 1000}},
   {"hm_nb2_highmtb_nt1_nrt0_nw1_met450",  {200, 1000}},
-
-  {"hm_nb1_highmtb_nt0_nrt1_nw1_met250",  {200, 1000}},
   {"hm_nb2_highmtb_nt0_nrt1_nw1_met250",  {200, 1000}},
-
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  {200, 1000}},
 
   // 2
-  {"hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb", {200, 1000}},
-  {"hm_nb2_lowmtb_nt0_nrt2_nw0_met250",  {200, 1000}},
-  {"hm_nb2_lowmtb_nt0_nrt0_nw2_met250",  {200, 1000}},
+  {"hm_nbgeq1_nt2_nrt0_nw0_lowmetormtb",  {200, 1000}},
+  {"hm_nb2_lowmtb_nt0_nrt2_nw0_met250",   {200, 1000}},
+  {"hm_nb2_lowmtb_nt0_nrt0_nw2_met250",   {200, 1000}},
   //---------- high deltaM ----------
 
 };
@@ -268,15 +277,18 @@ std::map<TString, TString> normMap{
 };
 
 // normalize photon to Data after baseline+this cut to calc Sgamma
-std::map<TString, TString> phoNormMap = {
-  {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap)},
-  {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap)},
-  {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap)},
+std::map<TString, TString> phoNormMap = []{
+  if (ICHEPCR) return normMap;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap)},
 
-  {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
-  {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
-  {"hm_nbgeq1",createCutString("hmNoDPhi_nbgeq1", cutMap)},
-};
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
+    {"hm_nbgeq1",createCutString("hmNoDPhi_nbgeq1", cutMap)},
+  };
+}();
 
 //std::map<TString, TString> phoNormMap = normMap;
 
@@ -307,28 +319,29 @@ std::map<TString, TString> phocrMapping{
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtge1_met250",       "hm_nb1_lowmtb_nj7_met250"},
-  {"hm_nb2_lowmtb_nj7_nrtge1_met250",       "hm_nb2_lowmtb_nj7_met250"},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1_met250",       "hm_nb1_lowmtb_nj7_met250"},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1_met250",       "hm_nb2_lowmtb_nj7_met250"},
 
   // high mtb
   // 0 taggged
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met250",  "hm_nb1_highmtb_nj7_met250"},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met250",  "hm_nb2_highmtb_nj7_met250"},
 
+  // nb1
   // 1
-  {"hm_nb1_highmtb_nt1_nrt0_nw0_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_met250",  "hm_nb1_highmtb_met250"},
+  // 1+1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met250",  "hm_nb1_highmtb_met250"},
+
   {"hm_nb2_highmtb_nt1_nrt0_nw0_met450",  "hm_nb2_highmtb_met450"},
-  {"hm_nb1_highmtb_nt0_nrt1_nw0_met250",  "hm_nb1_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt0_nw1_met250",  "hm_nb2_highmtb_met250"},
 
   // 1+1
-  {"hm_nb1_highmtb_nt1_nrt0_nw1_met450",  "hm_nb1_highmtb_met450"},
   {"hm_nb2_highmtb_nt1_nrt0_nw1_met450",  "hm_nb2_highmtb_met450"},
-
-  {"hm_nb1_highmtb_nt0_nrt1_nw1_met250",  "hm_nb1_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt1_nw1_met250",  "hm_nb2_highmtb_met250"},
-
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
 
   // 2
@@ -378,28 +391,31 @@ std::map<TString, TString> lepcrMapping {
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtge1_met250",       "hm_nb1_lowmtb_nj7_met250"},
-  {"hm_nb2_lowmtb_nj7_nrtge1_met250",       "hm_nb2_lowmtb_nj7_met250"},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1_met250",       "hm_nb1_lowmtb_nj7_met250"},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1_met250",       "hm_nb2_lowmtb_nj7_met250"},
 
   // high mtb
   // 0 taggged
   {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met250",  "hm_nb1_highmtb_nj7_met250"},
   {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met250",  "hm_nb2_highmtb_nj7_met250"},
 
+  // nb1
   // 1
-  {"hm_nb1_highmtb_nt1_nrt0_nw0_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_met250",  "hm_nb1_highmtb_met250"},
+  // 1+1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1_met450",  "hm_nb1_highmtb_met450"},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met250",  "hm_nb1_highmtb_met250"},
+
+  // nb2
+  // 1
   {"hm_nb2_highmtb_nt1_nrt0_nw0_met450",  "hm_nb2_highmtb_met450"},
-  {"hm_nb1_highmtb_nt0_nrt1_nw0_met250",  "hm_nb1_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt0_nw1_met250",  "hm_nb2_highmtb_met250"},
 
   // 1+1
-  {"hm_nb1_highmtb_nt1_nrt0_nw1_met450",  "hm_nb1_highmtb_met450"},
   {"hm_nb2_highmtb_nt1_nrt0_nw1_met450",  "hm_nb2_highmtb_met450"},
-
-  {"hm_nb1_highmtb_nt0_nrt1_nw1_met250",  "hm_nb1_highmtb_met250"},
   {"hm_nb2_highmtb_nt0_nrt1_nw1_met250",  "hm_nb2_highmtb_met250"},
-
   {"hm_nb2_highmtb_nt1_nrt1_nw0_met250",  "hm_nb2_highmtb_met250"},
 
   // 2
@@ -422,7 +438,7 @@ std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
-  auto crmap = phocrMapping;
+  auto crmap = lepcrMapping;
   for (auto &s : crmap){
     s.second.ReplaceAll("lm_", "lmNoDPhi_");
     s.second.ReplaceAll("hm_", "hmNoDPhi_");
@@ -435,7 +451,17 @@ std::map<TString, TString> qcdcrCuts = []{
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
     return cuts;
 }();
-std::map<TString, TString> qcdcrlabels = phocrlabels;
+std::map<TString, TString> qcd1to1crCuts = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcdcrlabels = lepcrlabels;
 std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
 
 
@@ -470,7 +496,7 @@ map<TString, Category> lepCatMap(){
 
 map<TString, Category> qcdCatMap(){
   map<TString, Category> cmap;
-  const auto &cuts = ICHEPCR ? srcuts: qcdcrCuts;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
