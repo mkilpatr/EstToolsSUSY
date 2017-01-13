@@ -1,5 +1,5 @@
 #include "../utils/EstHelper.hh"
-#include "HMParameters_LowMET.hh"
+#include "LowMET_Parameters.hh"
 #include "TRegexp.h"
 #include "TLatex.h"
 #include <functional>
@@ -8,11 +8,11 @@ using namespace EstTools;
 
 void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_trad.root", TString outputName="/tmp/LowMET/HighMass/HM_validation"){
 
-  vector<TString> bkgs = {"rare_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
-  vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
+  vector<TString> bkgs = {"diboson_pred", "ttZ_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
+  vector<TString> mcs =  {"diboson_mc",   "ttZ_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
   TString data = "data";
 
-  vector<TString> bkglabels = {"Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
+  vector<TString> bkglabels = {"Diboson", "ttZ", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
   vector<TString> datalabel = {"Observed"};
 
   vector<TString> split = {"_"};
@@ -36,9 +36,11 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
     [](TCanvas *c){
       ((TPad*)c->GetListOfPrimitives()->At(0))->cd();
-      drawLine(2,  0.01, 2,  5000);
-      drawLine(4,  0.01, 4,  50000);
-      drawLine(9,  0.01, 9,  2000);
+      drawLine(4,  0.01, 4,  5000);
+      drawLine(9,  0.01, 9,  5000);
+      drawLine(15, 0.01, 15, 2000);
+      drawLine(17, 0.01, 17, 2000);
+      drawLine(19, 0.01, 19, 2000);
       c->cd();
     },
   };
@@ -63,11 +65,11 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     pred.push_back((TH1*)f->Get(b));
   }
   TH1* hdata = (TH1*)f->Get(data);
-  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("pred_total_gr");
+  TGraphAsymmErrors* unc   = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
-  setBinLabels(hdata, dummylabels);
+//  setBinLabels(hdata, dummylabels);
   hdata->GetXaxis()->SetTitle("");
 
   // plot raw MC
@@ -77,10 +79,10 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
     else hmctotal->Add((TH1*)f->Get(mc));
   }
 
-//  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-//  hDataRawMC->Divide(hmctotal);
-//  hDataRawMC->SetLineWidth(2);
-//  prepHists({hDataRawMC}, false, false, false, {kOrange});
+  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
+  hDataRawMC->Divide(hmctotal);
+  hDataRawMC->SetLineWidth(2);
+  prepHists({hDataRawMC}, false, false, false, {kOrange});
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -104,25 +106,27 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
-//    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
+    appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    PLOT_MAX_YSCALE = 10;
+
+    LOG_YMIN = 0.1;
+    PLOT_MAX_YSCALE = 1.2;
     PAD_SPLIT_Y = 0.33;
     PAD_BOTTOM_MARGIN = 0.38;
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc);
-    c->SetCanvasSize(800, 700);
-    drawText(splitlabels.at(ireg), 0.18, 0.69);
-    drawRegionLabels.at(ireg)();
-    drawVerticalLines.at(ireg)(c);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, xlow, xhigh, {}, unc, {hDataRawMC});
+    c->SetCanvasSize(800, 600);
+//    drawText(splitlabels.at(ireg), 0.18, 0.69);
+//    drawRegionLabels.at(ireg)();
+//    drawVerticalLines.at(ireg)(c);
 
-    double xpos = 0.19;
-    for (auto xl : xlabels){
-      drawTLatexNDC(xl, xpos, 0.12, 0.028, 13, 310, 42);
-      xpos += 0.0575;
-    }
+//    double xpos = 0.19;
+//    for (auto xl : xlabels){
+//      drawTLatexNDC(xl, xpos, 0.12, 0.028, 13, 310, 42);
+//      xpos += 0.0575;
+//    }
 
     TString basename = outputName;
     c->SetTitle(basename);

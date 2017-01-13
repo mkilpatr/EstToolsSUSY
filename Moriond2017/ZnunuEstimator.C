@@ -25,6 +25,8 @@ vector<Quantity> ZnunuPred(){
   z.pred();
   z.printYields();
 
+  z.writeRzUnc("/tmp/values_0l_unc_znunu.conf");
+
   z.printTable(false);
 
   return z.yields.at("_pred");
@@ -145,9 +147,9 @@ void ZvsGamma(){
   COLOR_MAP["-nb2"] = kRed-4;
   COLOR_MAP.erase("znunu");
 
-//  config.addSample("photon-nb1",     "#gamma+jets N_{B}=1",             "photoncr/singlephoton",     wgtvar, datasel + trigPhoCR + " && nbjets==1");
-//  config.addSample("photon-nb2",     "#gamma+jets N_{B}#geq2",          "photoncr/singlephoton",     wgtvar, datasel + trigPhoCR + " && nbjets>=2");
-  config.addSample("photon",         "#gamma+jets N_{B}#geq1",          "photoncr/singlephoton",     wgtvar, datasel + trigPhoCR + " && nbjets>=1");
+//  config.addSample("photon-nb1",     "#gamma+jets N_{B}=1",             "photoncr/singlepho",     wgtvar, datasel + trigPhoCR + " && nbjets==1");
+//  config.addSample("photon-nb2",     "#gamma+jets N_{B}#geq2",          "photoncr/singlepho",     wgtvar, datasel + trigPhoCR + " && nbjets>=2");
+  config.addSample("photon",         "#gamma+jets N_{B}#geq1",          "photoncr/singlepho",     wgtvar, datasel + trigPhoCR + " && nbjets>=1");
   config.addSample("gjets",          "#gamma+jets only N_{B}#geq1",     "photoncr/gjets",      wgtvar, datasel + trigPhoCR + " && nbjets>=1");
   config.addSample("znunu-nb1",      "Z#rightarrow#nu#nu N_{B}=1",      "sr/znunu",            wgtvar, datasel + trigSR + vetoes + " && nbjets==1");
   config.addSample("znunu-nb2",      "Z#rightarrow#nu#nu N_{B}#geq2",   "sr/znunu",            wgtvar, datasel + trigSR + vetoes + " && nbjets>=2");
@@ -167,14 +169,63 @@ void ZvsGamma(){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void compIVF(){
 
-void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix = ""){
+  auto config = phoConfig();
+  config.sel = addCuts({baseline, cutMap.at("lm")});
+  config.categories.clear();
+  config.catMaps.clear();
+  config.catMaps["inclusive"] = Category("inclusive", "1==1", "N_{SV}#geq0");
+  config.catMaps["nivf0"] = Category("nivf0", "nivf==0", "N_{SV}=0");
+  config.catMaps["nivf1"] = Category("nivf1", "nivf>=1", "N_{SV}#geq1");
 
-  const TString drbase = "met>200 && njets>=5";
-  std::map<TString, TString> DRNormMap{
-    {"nb0", "nbjets==0"},
-    {"nbgeq1", "nbjets>=1"}
+  BaseEstimator z(config.outputdir);
+  z.setConfig(config);
+
+  vector<TString> vars {"njets", "metgx", "ak8isrpt", "csvj1pt"};
+
+  for (auto v : vars){
+    z.setSelection("nbjets==0", "nb0", "");
+    z.plotComp(varDict.at(v), {"photon", "znunu-sr"}, {"nivf0", "nivf1"}, false);
+    z.setSelection("nbjets==1", "nb1", "");
+    z.plotComp(varDict.at(v), {"photon", "znunu-sr"}, {"nivf0", "nivf1"}, false);
+  }
+
+
+}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCut = "", TString suffix = ""){
+
+  map<TString, TString> nbcutMap{
+    {"nb0",       "nbjets==0"},
+    {"nb1",       "nbjets==1"},
+    {"nb2",       "nbjets>=2"},
+    {"nbgeq0",    "nbjets>=0"},
+    {"nbgeq1",    "nbjets>=1"},
   };
+
+  TString drbase;
+  vector<TString> drNorms;
+  if (region=="hm"){
+    drbase = "njets>=5";
+    drNorms = {"nbgeq1"};
+  }else{
+    drbase = "njets>=2 && ak8isrpt>200 && dphiisrmet>2 && metovsqrtht>10";
+//    drNorms = {"nb0", "nbgeq1"};
+    drNorms = {"nbgeq0"};
+  }
+  std::map<TString, TString> DRNormMap;
+  std::map<TString, TString> labels = {
+      {"nb0", "N_{B} = 0"},
+      {"nbgeq0", "N_{B} #geq 0"},
+      {"nb1", "N_{B} = 1"},
+      {"nbgeq1", "N_{B} #geq 1"},
+      {"nb2", "N_{B} #geq 2"},
+  };
+  for (auto n : drNorms) {
+    DRNormMap[n] = createCutString(n, nbcutMap);
+  }
 
   vector<TString> vars = {"metzg"};
 //  vector<TString> vars = {"mtcsv12met", "njets", "nt", "nw", "metzg"};
@@ -187,6 +238,7 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
     config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
     config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
     config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
+    config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
     ZnunuEstimator z(config);
 
@@ -200,7 +252,7 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
       }
 
       for (auto var : vars){
-        auto phoDataMC = z.plotDataMC(varDict.at(var), {"gjets", "qcd-fake", "qcd-frag"}, "singlephoton", Category::dummy_category(), normalized);
+        auto phoDataMC = z.plotDataMC(varDict.at(var), {"gjets", "qcd-fake", "qcd-frag", "ttg"}, "singlepho", Category::dummy_category(), normalized);
         hists["pho_"+norm.first].push_back(phoDataMC);
       }
     }
@@ -254,9 +306,6 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
     }
   }
 
-  map<TString, TString> labels = {
-      {"nb0", " N_{B} = 0"}, {"nbgeq1", " N_{B} #geq 1"}
-  };
   for (auto &norm : DRNormMap){
 
     for (unsigned i=0; i<vars.size(); ++i){
@@ -269,10 +318,10 @@ void DoubleRatios(bool normalized = true, TString extraCut = "", TString suffix 
 
       auto leg = prepLegends({h0, h1}, {"#gamma+jets", "Z#rightarrowll"});
       auto hDR = makeRatioHists(h1, h0);
-      auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}");
-      drawTLatexNDC("N_{j} #geq 5, " + labels.at(norm.first), 0.2, 0.70, 0.032);
+      auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}", 0.5, 1.499);
+      drawTLatexNDC((region=="hm"?"High #DeltaM, ":"Low #DeltaM, ") +  labels.at(norm.first), 0.2, 0.73, 0.032);
 
-      c->SaveAs(phoConfig().outputdir+"/znunu_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
+      c->SaveAs(phoConfig().outputdir+"/znunu_"+region+"_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
 
       cout << "\n--------\n Double ratios: " << norm.first << endl;
       for (int i=1; i<hDR->GetNbinsX()+1; ++i){
@@ -307,7 +356,7 @@ void plotPhotonInclusive(){
   z.setConfig(config);
 
   vector<TString> mc_samples = {"gjets", "qcd-fake", "qcd-frag", "ttg"};
-  TString data_sample = "singlephoton";
+  TString data_sample = "singlepho";
 
   map<TString, BinInfo> varDict {
     {"met",       BinInfo("met", "#slash{E}_{T}", 16, 250, 800, "GeV")},

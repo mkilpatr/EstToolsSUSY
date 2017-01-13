@@ -6,10 +6,10 @@
 namespace EstTools{
 
 const TString inputdir = "/tmp/trees";
-const TString outputdir = "/tmp/plots/Moriond17";
+const TString outputdir = "/tmp/plots/unblind_18p2ifb";
 
 const TString datadir = ".";
-const TString lumistr = "36.8";
+const TString lumistr = "18.2";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
@@ -67,7 +67,7 @@ const TString sigwgt = lepvetowgt;
 const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (ismc || run<=276811 || (run>=278820 && run<=279931)) && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
@@ -123,41 +123,6 @@ std::map<TString, TString> cutMap = []{
     return cmap;
 }();
 
-
-std::map<TString, TString> labelMap{
-  {"lowptisr", R"($300<\ptisr<500$\,GeV)"},
-  {"ntgeq1", R"($\nt\geq1$)"},
-  {"nt2", R"($\nt\geq2$)"},
-  {"nivf0", R"($\nsv=0$)"},
-  {"nivf1", R"($\nsv\geq1$)"},
-  {"nw2", R"($\nw\geq2$)"},
-  {"nj2to5", R"($2\leq\nj<5$)"},
-  {"nb2", R"($\nb\geq2$)"},
-  {"nb1", R"($\nb=1$)"},
-  {"nb0", R"($\nb=0$)"},
-  {"nrt2", R"($\nrt\geq2$)"},
-  {"highptisr", R"($\ptisr>500$\,GeV)"},
-  {"nj7", R"($\nj\geq7$)"},
-  {"highptb", R"($\ptb>70$\,GeV)"},
-  {"hm", R"(high \dm)"},
-  {"nw0", R"($\nw=0$)"},
-  {"nwgeq1", R"($\nw\geq1$)"},
-  {"nw1", R"($\nw=1$)"},
-  {"nrt0", R"($\nrt=0$)"},
-  {"nrt1", R"($\nrt=1$)"},
-  {"lowptb", R"($\ptb<40$\,GeV)"},
-  {"medptb", R"($40<\ptb<70$\,GeV)"},
-  {"nt0", R"($\nt=0$)"},
-  {"lm", R"(low \dm)"},
-  {"lowptb12", R"($\ptbonetwo<80$\,GeV)"},
-  {"highptb12", R"($\ptbonetwo>140$\,GeV)"},
-  {"lowmtb", R"($\mtb<175$~\GeV)"},
-  {"highmtb", R"($\mtb>175$~\GeV)"},
-  {"nt1", R"($\nt=1$)"},
-  {"medptb12", R"($80<\ptbonetwo<140$\,GeV)"},
-  {"nrtgeq1", R"($\nrt\geq1$)"},
-  {"nj6", R"($\nj\geq6$)"},
-};
 
 std::vector<TString> srbins{
   //---------- low deltaM ----------
