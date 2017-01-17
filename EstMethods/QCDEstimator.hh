@@ -80,6 +80,15 @@ public:
 
     doYieldsCalc({"qcd-sr", "qcd-cr"}, runBootstrapping ? 50 : 0);
 
+    // FIXME
+    for (auto &q : yields.at("qcd-cr")){
+      if (q.value<0.0001){
+        cerr << "MC yields <0.0001!" << endl;
+        q.value = 0.0001;
+        q.error = 0.0001;
+      }
+    }
+
     yields["_QCDTF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
 
   }

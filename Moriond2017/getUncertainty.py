@@ -16,179 +16,321 @@ import ROOT as rt
 rt.gROOT.SetBatch(True)
 
 uncfiles=[
-'values_0l_unc_btag.conf',
-'values_0l_unc_jesunc.conf',
-'values_0l_unc_lepcorr.conf',
-'values_0l_unc_pu.conf',
-'values_0l_unc_qcdsyst.conf',
-'values_0l_unc_rare.conf',
-'values_0l_unc_toppt.conf',
-'values_0l_unc_wtopfrac.conf',
-'values_0l_unc_zgamma.conf',
+'values_wtoptag_syst.conf',
  ]
 
 all_bin_unc_file = 'values_0l_unc_all.conf'
 
-all_samples=('ttbarplusw', 'znunu', 'rare', 'qcd')
-graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_rare_pred_gr', 'Graph_from_qcd_pred_gr')
-table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & \\Rare &  QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
+all_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd')
+graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_ttZ_pred_gr', 'Graph_from_diboson_pred_gr', 'Graph_from_qcd_pred_gr')
+table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & ttZ & Diboson & QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'Graph_from_pred_total_gr'
 
 # ordered bin list
-binlist=('bin_250_nb1_mtb0_nj5',
- 'bin_300_nb1_mtb0_nj5',
- 'bin_400_nb1_mtb0_nj5',
- 'bin_500_nb1_mtb0_nj5',
- 'bin_250_nb1_mtb0_nj7',
- 'bin_300_nb1_mtb0_nj7',
- 'bin_400_nb1_mtb0_nj7',
- 'bin_500_nb1_mtb0_nj7',
- 'bin_250_nb2_mtb0_nj5',
- 'bin_300_nb2_mtb0_nj5',
- 'bin_400_nb2_mtb0_nj5',
- 'bin_500_nb2_mtb0_nj5',
- 'bin_250_nb2_mtb0_nj7',
- 'bin_300_nb2_mtb0_nj7',
- 'bin_400_nb2_mtb0_nj7',
- 'bin_500_nb2_mtb0_nj7',
- 'bin_250_nb1_mtb175_nj5_nt0_nw0',
- 'bin_350_nb1_mtb175_nj5_nt0_nw0',
- 'bin_450_nb1_mtb175_nj5_nt0_nw0',
- 'bin_550_nb1_mtb175_nj5_nt0_nw0',
- 'bin_250_nb1_mtb175_nj7_nt0_nw0',
- 'bin_350_nb1_mtb175_nj7_nt0_nw0',
- 'bin_450_nb1_mtb175_nj7_nt0_nw0',
- 'bin_550_nb1_mtb175_nj7_nt0_nw0',
- 'bin_250_nb1_mtb175_nj5t_nt0_nw1t',
- 'bin_350_nb1_mtb175_nj5t_nt0_nw1t',
- 'bin_450_nb1_mtb175_nj5t_nt0_nw1t',
- 'bin_550_nb1_mtb175_nj5t_nt0_nw1t',
- 'bin_650_nb1_mtb175_nj5t_nt0_nw1t',
- 'bin_250_nb1_mtb175_nj5t_nt1t_nw0',
- 'bin_350_nb1_mtb175_nj5t_nt1t_nw0',
- 'bin_450_nb1_mtb175_nj5t_nt1t_nw0',
- 'bin_550_nb1_mtb175_nj5t_nt1t_nw0',
- 'bin_650_nb1_mtb175_nj5t_nt1t_nw0',
- 'bin_250_nb1_mtb175_nj5t_nt1t_nw1t',
- 'bin_300_nb1_mtb175_nj5t_nt1t_nw1t',
- 'bin_400_nb1_mtb175_nj5t_nt1t_nw1t',
- 'bin_500_nb1_mtb175_nj5t_nt1t_nw1t',
- 'bin_250_nb2_mtb175_nj5_nt0_nw0',
- 'bin_350_nb2_mtb175_nj5_nt0_nw0',
- 'bin_450_nb2_mtb175_nj5_nt0_nw0',
- 'bin_550_nb2_mtb175_nj5_nt0_nw0',
- 'bin_250_nb2_mtb175_nj7_nt0_nw0',
- 'bin_350_nb2_mtb175_nj7_nt0_nw0',
- 'bin_450_nb2_mtb175_nj7_nt0_nw0',
- 'bin_550_nb2_mtb175_nj7_nt0_nw0',
- 'bin_250_nb2_mtb175_nj5t_nt0_nw1t',
- 'bin_350_nb2_mtb175_nj5t_nt0_nw1t',
- 'bin_450_nb2_mtb175_nj5t_nt0_nw1t',
- 'bin_550_nb2_mtb175_nj5t_nt0_nw1t',
- 'bin_650_nb2_mtb175_nj5t_nt0_nw1t',
- 'bin_250_nb2_mtb175_nj5t_nt1t_nw0',
- 'bin_350_nb2_mtb175_nj5t_nt1t_nw0',
- 'bin_450_nb2_mtb175_nj5t_nt1t_nw0',
- 'bin_550_nb2_mtb175_nj5t_nt1t_nw0',
- 'bin_650_nb2_mtb175_nj5t_nt1t_nw0',
- 'bin_250_nb2_mtb175_nj5t_nt1t_nw1t',
- 'bin_300_nb2_mtb175_nj5t_nt1t_nw1t',
- 'bin_400_nb2_mtb175_nj5t_nt1t_nw1t',
- 'bin_500_nb2_mtb175_nj5t_nt1t_nw1t')
+binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_met450to550',
+ 'bin_lm_nb0_nivf0_highptisr_nj2to5_met550to650',
+ 'bin_lm_nb0_nivf0_highptisr_nj2to5_met650to750',
+ 'bin_lm_nb0_nivf0_highptisr_nj2to5_met750toinf',
+ 'bin_lm_nb0_nivf0_highptisr_nj6_met450to550',
+ 'bin_lm_nb0_nivf0_highptisr_nj6_met550to650',
+ 'bin_lm_nb0_nivf0_highptisr_nj6_met650to750',
+ 'bin_lm_nb0_nivf0_highptisr_nj6_met750toinf',
+ 'bin_lm_nb0_nivf1_highptisr_nj2to5_met450to550',
+ 'bin_lm_nb0_nivf1_highptisr_nj2to5_met550to650',
+ 'bin_lm_nb0_nivf1_highptisr_nj2to5_met650to750',
+ 'bin_lm_nb0_nivf1_highptisr_nj2to5_met750toinf',
+ 'bin_lm_nb0_nivf1_highptisr_nj6_met450to550',
+ 'bin_lm_nb0_nivf1_highptisr_nj6_met550to650',
+ 'bin_lm_nb0_nivf1_highptisr_nj6_met650to750',
+ 'bin_lm_nb0_nivf1_highptisr_nj6_met750toinf',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met300to400',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met400to500',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met500to600',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_met600toinf',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_met300to400',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_met400to500',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_met500to600',
+ 'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_met600toinf',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_met450to550',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_met550to650',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_met650to750',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_met750toinf',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_met450to550',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_met550to650',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_met650to750',
+ 'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_met750toinf',
+ 'bin_lm_nb1_nivf1_lowmtb_lowptb_met300to400',
+ 'bin_lm_nb1_nivf1_lowmtb_lowptb_met400to500',
+ 'bin_lm_nb1_nivf1_lowmtb_lowptb_met500toinf',
+ 'bin_lm_nb2_lowmtb_lowptisr_lowptb12_met300to400',
+ 'bin_lm_nb2_lowmtb_lowptisr_lowptb12_met400to500',
+ 'bin_lm_nb2_lowmtb_lowptisr_lowptb12_met500toinf',
+ 'bin_lm_nb2_lowmtb_lowptisr_medptb12_met300to400',
+ 'bin_lm_nb2_lowmtb_lowptisr_medptb12_met400to500',
+ 'bin_lm_nb2_lowmtb_lowptisr_medptb12_met500toinf',
+ 'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_met300to400',
+ 'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_met400to500',
+ 'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_met500toinf',
+ 'bin_lm_nb2_lowmtb_highptisr_lowptb12_met450to550',
+ 'bin_lm_nb2_lowmtb_highptisr_lowptb12_met550to650',
+ 'bin_lm_nb2_lowmtb_highptisr_lowptb12_met650toinf',
+ 'bin_lm_nb2_lowmtb_highptisr_medptb12_met450to550',
+ 'bin_lm_nb2_lowmtb_highptisr_medptb12_met550to650',
+ 'bin_lm_nb2_lowmtb_highptisr_medptb12_met650toinf',
+ 'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_met450to550',
+ 'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_met550to650',
+ 'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_met650toinf',
+ 'bin_hm_nb1_lowmtb_nj7_nrtgeq1_met250to300',
+ 'bin_hm_nb1_lowmtb_nj7_nrtgeq1_met300to400',
+ 'bin_hm_nb1_lowmtb_nj7_nrtgeq1_met400to500',
+ 'bin_hm_nb1_lowmtb_nj7_nrtgeq1_met500toinf',
+ 'bin_hm_nb2_lowmtb_nj7_nrtgeq1_met250to300',
+ 'bin_hm_nb2_lowmtb_nj7_nrtgeq1_met300to400',
+ 'bin_hm_nb2_lowmtb_nj7_nrtgeq1_met400to500',
+ 'bin_hm_nb2_lowmtb_nj7_nrtgeq1_met500toinf',
+ 'bin_hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met250to350',
+ 'bin_hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met350to450',
+ 'bin_hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met450to550',
+ 'bin_hm_nb1_highmtb_nj7_nt0_nrt0_nw0_met550toinf',
+ 'bin_hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met250to350',
+ 'bin_hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met350to450',
+ 'bin_hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met450to550',
+ 'bin_hm_nb2_highmtb_nj7_nt0_nrt0_nw0_met550toinf',
+ 'bin_hm_nb1_highmtb_ntgeq1_nrt0_nw0_met550to650',
+ 'bin_hm_nb1_highmtb_ntgeq1_nrt0_nw0_met650toinf',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_met250to350',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_met350to450',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_met450to550',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_met550to650',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_met650toinf',
+ 'bin_hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1_met550toinf',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met250to350',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met350to450',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met450to550',
+ 'bin_hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1_met550toinf',
+ 'bin_hm_nb2_highmtb_nt1_nrt0_nw0_met550to650',
+ 'bin_hm_nb2_highmtb_nt1_nrt0_nw0_met650toinf',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw0_met250to350',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw0_met350to450',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw0_met450to550',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw0_met550to650',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw0_met650toinf',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw1_met250to350',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw1_met350to450',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw1_met450to550',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw1_met550to650',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw1_met650toinf',
+ 'bin_hm_nb2_highmtb_nt1_nrt0_nw1_met550toinf',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw1_met250to350',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw1_met350to450',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw1_met450to550',
+ 'bin_hm_nb2_highmtb_nt0_nrt1_nw1_met550toinf',
+ 'bin_hm_nb2_highmtb_nt1_nrt1_nw0_met250to350',
+ 'bin_hm_nb2_highmtb_nt1_nrt1_nw0_met350to450',
+ 'bin_hm_nb2_highmtb_nt1_nrt1_nw0_met450toinf',
+ 'bin_hm_nb2_highmtb_nt2_nrt0_nw0_met250toinf',
+ 'bin_hm_nb2_highmtb_nt0_nrt2_nw0_met250toinf',
+ 'bin_hm_nb2_highmtb_nt0_nrt0_nw2_met250toinf')
 
 
 binMap={
-### nb1, low mtb ###
-'nb1_mtb0_nj5': {
-   'cut': 'mtcsv12met<175 && nbjets==1 && njets>=5 && njets<7',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
-'nb1_mtb0_nj7': {
-   'cut': 'mtcsv12met<175 && nbjets==1 && njets>=7',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
-### nb2, low mtb ###
-'nb2_mtb0_nj5': {
-   'cut': 'mtcsv12met<175 && nbjets>=2 && njets>=5 && njets<7',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
-'nb2_mtb0_nj7': {
-   'cut': 'mtcsv12met<175 && nbjets>=2 && njets>=7',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
-### nb1, high mtb ###
-'nb1_mtb175_nj5_nt0_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets==1 && njets>=5 && njets<7 && nsdtopjmewp1loose==0 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 1000]
-    },
-'nb1_mtb175_nj7_nt0_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets==1 && njets>=7 && nsdtopjmewp1loose==0 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 1000]
-    },
-'nb1_mtb175_nj5t_nt0_nw1t': {
-   'cut': 'mtcsv12met>=175 && nbjets==1 && njets>=5 && nsdtopjmewp1loose==0 && nsdwjmewp1loose>=1',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 650, 1000]
-    },
-'nb1_mtb175_nj5t_nt1t_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets==1 && njets>=5 && nsdtopjmewp1loose>=1 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 650, 1000]
-    },
-'nb1_mtb175_nj5t_nt1t_nw1t': {
-   'cut': 'mtcsv12met>=175 && nbjets==1 && njets>=5 && nsdtopjmewp1loose>=1 && nsdwjmewp1loose>=1',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
-### nb2, high mtb ###
-'nb2_mtb175_nj5_nt0_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets>=2 && njets>=5 && njets<7 && nsdtopjmewp1loose==0 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 1000]
-    },
-'nb2_mtb175_nj7_nt0_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets>=2 && njets>=7 && nsdtopjmewp1loose==0 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 1000]
-    },
-'nb2_mtb175_nj5t_nt0_nw1t': {
-   'cut': 'mtcsv12met>=175 && nbjets>=2 && njets>=5 && nsdtopjmewp1loose==0 && nsdwjmewp1loose>=1',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 650, 1000]
-    },
-'nb2_mtb175_nj5t_nt1t_nw0': {
-   'cut': 'mtcsv12met>=175 && nbjets>=2 && njets>=5 && nsdtopjmewp1loose>=1 && nsdwjmewp1loose==0',
-   'var': 'met',
-   'bin': [250, 350, 450, 550, 650, 1000]
-    },
-'nb2_mtb175_nj5t_nt1t_nw1t': {
-   'cut': 'mtcsv12met>=175 && nbjets>=2 && njets>=5 && nsdtopjmewp1loose>=1 && nsdwjmewp1loose>=1',
-   'var': 'met',
-   'bin': [250, 300, 400, 500, 1000]
-    },
+'lm_nb0_nivf0_highptisr_nj2to5': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf==0 && ak8isrpt>500 && njets>=2 && njets<=5',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb0_nivf0_highptisr_nj6': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf==0 && ak8isrpt>500 && njets>=6',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb0_nivf1_highptisr_nj2to5': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf>=1 && ak8isrpt>500 && njets>=2 && njets<=5',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb0_nivf1_highptisr_nj6': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf>=1 && ak8isrpt>500 && njets>=6',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb1_nivf0_lowmtb_lowptisr_lowptb': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && csvj1pt<40',
+  'var': 'met',
+  'bin': [300, 400, 500, 600, 1000]
+  },
+'lm_nb1_nivf0_lowmtb_lowptisr_medptb': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && csvj1pt>40 && csvj1pt<70',
+  'var': 'met',
+  'bin': [300, 400, 500, 600, 1000]
+  },
+'lm_nb1_nivf0_lowmtb_highptisr_lowptb': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>500 && csvj1pt<40',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb1_nivf0_lowmtb_highptisr_medptb': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>500 && csvj1pt>40 && csvj1pt<70',
+  'var': 'met',
+  'bin': [450, 550, 650, 750, 1000]
+  },
+'lm_nb1_nivf1_lowmtb_lowptb': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf>=1 && mtcsv12met<175 && csvj1pt<40',
+  'var': 'met',
+  'bin': [300, 400, 500, 1000]
+  },
+'lm_nb2_lowmtb_lowptisr_lowptb12': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)<80',
+  'var': 'met',
+  'bin': [300, 400, 500, 1000]
+  },
+'lm_nb2_lowmtb_lowptisr_medptb12': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)>80 && (csvj1pt+csvj2pt)<140',
+  'var': 'met',
+  'bin': [300, 400, 500, 1000]
+  },
+'lm_nb2_lowmtb_lowptisr_highptb12_nj7': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)>140 && njets>=7',
+  'var': 'met',
+  'bin': [300, 400, 500, 1000]
+  },
+'lm_nb2_lowmtb_highptisr_lowptb12': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)<80',
+  'var': 'met',
+  'bin': [450, 550, 650, 1000]
+  },
+'lm_nb2_lowmtb_highptisr_medptb12': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)>80 && (csvj1pt+csvj2pt)<140',
+  'var': 'met',
+  'bin': [450, 550, 650, 1000]
+  },
+'lm_nb2_lowmtb_highptisr_highptb12_nj7': {
+  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)>140 && njets>=7',
+  'var': 'met',
+  'bin': [450, 550, 650, 1000]
+  },
+'hm_nb1_lowmtb_nj7_nrtgeq1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met<175 && njets>=7 && nrestop>=1',
+  'var': 'met',
+  'bin': [250, 300, 400, 500, 1000]
+  },
+'hm_nb2_lowmtb_nj7_nrtgeq1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met<175 && njets>=7 && nrestop>=1',
+  'var': 'met',
+  'bin': [250, 300, 400, 500, 1000]
+  },
+'hm_nb1_highmtb_nj7_nt0_nrt0_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && njets>=7 && nsdtop==0 && nrestop==0 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 1000]
+  },
+'hm_nb2_highmtb_nj7_nt0_nrt0_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && njets>=7 && nsdtop==0 && nrestop==0 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 1000]
+  },
+'hm_nb1_highmtb_ntgeq1_nrt0_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop>=1 && nrestop==0 && nsdw==0',
+  'var': 'met',
+  'bin': [550, 650, 1000]
+  },
+'hm_nb1_highmtb_nt0_nrtgeq1_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop==0 && nrestop>=1 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 650, 1000]
+  },
+'hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop>=1 && nrestop==0 && nsdw>=1',
+  'var': 'met',
+  'bin': [550, 1000]
+  },
+'hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop==0 && nrestop>=1 && nsdw>=1',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 1000]
+  },
+'hm_nb2_highmtb_nt1_nrt0_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==0 && nsdw==0',
+  'var': 'met',
+  'bin': [550, 650, 1000]
+  },
+'hm_nb2_highmtb_nt0_nrt1_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==1 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 650, 1000]
+  },
+'hm_nb2_highmtb_nt0_nrt0_nw1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==0 && nsdw==1',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 650, 1000]
+  },
+'hm_nb2_highmtb_nt1_nrt0_nw1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==0 && nsdw==1',
+  'var': 'met',
+  'bin': [550, 1000]
+  },
+'hm_nb2_highmtb_nt0_nrt1_nw1': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==1 && nsdw==1',
+  'var': 'met',
+  'bin': [250, 350, 450, 550, 1000]
+  },
+'hm_nb2_highmtb_nt1_nrt1_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==1 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 350, 450, 1000]
+  },
+'hm_nb2_highmtb_nt2_nrt0_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop>=2 && nrestop==0 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 1000]
+  },
+'hm_nb2_highmtb_nt0_nrt2_nw0': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop>=2 && nsdw==0',
+  'var': 'met',
+  'bin': [250, 1000]
+  },
+'hm_nb2_highmtb_nt0_nrt0_nw2': {
+  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==0 && nsdw>=2',
+  'var': 'met',
+  'bin': [250, 1000]
+  },
 }
 
 labelMap = {
+    'lm': r'low \dm',
+    'hm': r'high \dm',
+    'nb0': r'$\nb=0$',
     'nb1': r'$\nb=1$',
     'nb2': r'$\nb\geq2$',
-    'mtb0': r'$\mtb<175$~\GeV',
-    'mtb175': r'$\mtb>175$~\GeV',
-    'nj5': r'$5\leq\nj<7$',
-    'nj7': r'$nj\geq7$',
-    'nj5t': r'$\nj\geq5$',
+    'nivf0': r'$\nsv=0$',
+    'nivf1': r'$\nsv\geq1$',
+    'lowptisr': r'$300<\ptisr<500$\,GeV',    
+    'highptisr': r'$\ptisr>500$\,GeV',
+    'lowptb': r'$\ptb<40$\,GeV',
+    'medptb': r'$40<\ptb<70$\,GeV',
+    'highptb': r'$\ptb>70$\,GeV',
+    'lowptb12': r'$\ptbonetwo<80$\,GeV',
+    'medptb12': r'$80<\ptbonetwo<140$\,GeV',
+    'highptb12': r'$\ptbonetwo>140$\,GeV',
+    'lowmtb': r'$\mtb<175$~\GeV',
+    'highmtb': r'$\mtb>175$~\GeV',
+    'nj2to5': r'$2\leq\nj<5$',
+    'nj6': r'$\nj\geq6$',
+    'nj7': r'$\nj\geq7$',
     'nt0': r'$\nt=0$',
     'nw0': r'$\nw=0$',
-    'nt1t':r'$\nt\geq1$',
-    'nw1t':r'$\nw\geq1$',
+    'nrt0': r'$\nrt=0$',
+    'nt1': r'$\nt=1$',
+    'nw1': r'$\nw=1$',
+    'nrt1': r'$\nrt=1$',
+    'ntgeq1':r'$\nt\geq1$',
+    'nwgeq1':r'$\nw\geq1$',
+    'nrtgeq1':r'$\nrt\geq1$',
+    'nt2':r'$\nt\geq2$',
+    'nw2':r'$\nw\geq2$',
+    'nrt2':r'$\nrt\geq2$',
     }
-
 
 def addAsymm(e, asymm):
     print e, asymm
@@ -210,15 +352,15 @@ def sumUnc(unc_list):
 
 relUnc={}
 absUnc={}
-absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}}
+absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
 yields={}
 yields_data={}
 statUnc={} #asymm
 statUnc_pieces={} #asymm 
 systUnc={}
-systUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}}
+systUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
 fullUnc={} #asymm
-fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'rare':{}} #asymm
+fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}} #asymm
 allVals = {}
 
 def readRelUnc(config_path):
@@ -356,7 +498,7 @@ def writeFullUnc(pred_file):
     for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
     f.Close()
 
-def makeYieldTable(output='pred_hm.tex'):
+def makeYieldTable(output='pred_sr.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s  = '\\hline\n'
@@ -374,14 +516,15 @@ def makeTable():
     s=''
     ibin=0
     for bin in binlist: 
-        _, met, sec = bin.split('_', 2)
+        sec, met= bin.lstrip('bin_').rsplit('_', 1)
         if sec not in sections:
             sections.append(sec)
             s += chunkHeader(sec)
-        metbins = binMap[sec]['bin']
-        print metbins
-        idx = metbins.index(int(met))
-        metlabel = r'$>%s$'%met if idx==len(metbins)-2 else '$-$'.join([met, str(metbins[idx+1])])
+#         metbins = binMap[sec]['bin']
+#         print metbins
+#         idx = metbins.index(int(met))
+        xlow, xhigh = met.lstrip('met').split('to')
+        metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
         s += '%d & '%ibin
         ibin = ibin+1
         s += metlabel

@@ -13,10 +13,14 @@ void srYields(){
   z.calcYields();
   z.printYields();
 
-//  z.sumYields({"ttbar","ttW", "tW", "wjets"}, "LLB");
-//  z.sumYields({"qcd", "diboson", "ttZ", "ttW", "tW", "znunu", "wjets", "ttbar"}, "Total BKG");
+  z.sumYields({"ttbar","ttW", "tW", "wjets"}, "LLB");
+  z.sumYields({"qcd", "diboson", "ttZ", "ttW", "tW", "znunu", "wjets", "ttbar"}, "Total BKG");
 //  z.printYieldsTable({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_420", "T2fbd_500_450", "T2fbd_500_480", "T2tt_450_250", "T2tt_700_400", "T2tt_1100_1", "T2bW_550_350", "T2bW_850_1"});
 //  z.printYieldsTable({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG"});
+//  z.printYieldsTable({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_450", "T2tt_400_300", "T2tt_700_400", "T2tt_1100_1"});
+
+  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_450", "T2tt_400_300"}, labelMap, "/tmp/yields_lm.tex");
+  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2tt_1000_1", "T2tt_700_400"}, labelMap, "/tmp/yields_hm.tex");
 
 }
 
@@ -51,11 +55,12 @@ void dumpDC(){
 
   BaseEstimator z(config);
   z.dumpDatacardConfig("/tmp/dc.conf");
+//  z.dumpDatacardConfig("/tmp/dc.conf","'");
 }
 
 void testOrthogonality(){
-  auto config = srConfig();
+  auto config = lepConfig();
   BaseEstimator z(config);
-  z.testSROrthogonality();
+  z.testSROrthogonality("ttbar");
 }
 
