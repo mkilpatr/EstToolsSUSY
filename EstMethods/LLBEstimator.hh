@@ -58,68 +58,6 @@ public:
     printVec(yields["_pred"], "Final prediction", true);
   }
 
-  // spits out latex-formatted table for Moriond17 results
-  // design to be consistent with 'results' tables
-  // req's category names starting with either lm_ or hm_
-  // bool parameter can output the tables to two (LM/HM) text files
-  // categories are traversed linearly with no special cases other than 'lm_' or 'hm_' (lm has 1 LLB TF, hm splits it into 2 LLB TFs)
-  void printMoriond17Table(const map<TString, TString> &labelMap,  std::string outFilePrefix = "/tmp/Moriond17_"){
-    Quantity::printStyle = Quantity::LATEX;
-    fstream outStreamLM, outStreamHM; ostringstream outString; // form string in outString, then conditionally write outString to cout or file
-    bool saveToFile = true;
-    if(saveToFile){
-      outStreamLM.open(outFilePrefix+"llb_lm.txt",ios::out);
-      outStreamHM.open(outFilePrefix+"llb_hm.txt",ios::out);
-    }
-
-    // linearly traverse all bins (hm and lm)
-    int ibin = 0;
-    for (const auto &cat_name : config.categories){
-      bool isLM = false;
-      // simple check for any changes in category names which would cause unexpected behavior
-      if(cat_name.Contains("lm_")) { isLM = true; }
-      else if(cat_name.Contains("hm_")) { isLM = false; }
-      else { throw std::runtime_error(TString::Format("LLBEstimator.hh/printMoriond17Table: category name, %s, must start with lm_ or hm_. New categories? Update this function!\n",cat_name.Data())); }
-      const auto & cat = config.catMaps.at(cat_name);
-
-      // latex format for each category header: hline, multicolumn with cat label, hline
-      auto cat_label = translateString(cat_name, labelMap, "_", ", ");
-      int ncols = (isLM) ? 5 : 6; // HM has one extra column for second TF
-      outString << R"(\hline)" << endl << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\)" << endl << R"(\hline)" << endl;
-
-      // a latex comment with raw cat label for clarity
-      outString << " % " << setw(30) << cat.label << endl;
-      //cout << outString.str();
-
-      // latex format for each met bin in the category: search region, met, ----numbers
-      auto metlabels = convertBinRangesToLabels(cat.bin.plotbins, true);
-      for (const auto &p : metlabels){
-        const auto &data = yields["singlelep"].at(ibin);
-        const auto &tf1  = yields["_TF_CR_to_SR_noextrap"].at(ibin);
-        const auto &tf2  = yields["_TF_SR_extrap"].at(ibin);
-        const auto &tf   = yields["_TF"].at(ibin);
-        const auto &pred = yields["_pred"].at(ibin);
-        // if LM, just one TF column. if HM, two TF columns.
-        outString << ibin << " & " << p << " & " << fixed << setprecision(0) << setw(0) << data.value << " & " << fixed << setprecision(3) << setw(10);
-        if(isLM){
-          outString << tf;
-        }else{
-          outString << tf1 << " & " << fixed << setprecision(3) << setw(10) << tf2;
-        }
-        outString << " & " << setprecision(2) << setw(10) << pred << " \\\\" << endl;
-
-        // send it
-        cout << outString.str();
-        if(saveToFile){
-          if(isLM) { outStreamLM << outString.str(); }
-          else { outStreamHM << outString.str(); }
-        }
-        outString.str(""); // reset
-        ibin++;
-      }//for met
-    }//for cat
-  }//for country
-
   void printTable(bool doLM) {
     Quantity::printStyle = Quantity::LATEX;
     int ibin = 0, ibin_nb2 = 0;

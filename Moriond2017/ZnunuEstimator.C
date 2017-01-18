@@ -28,7 +28,11 @@ vector<Quantity> ZnunuPred(){
   z.writeRzUnc("/tmp/values_0l_unc_znunu.conf");
 
   //z.printTable(false);
-  z.printMoriond17Table(labelMap);
+
+  std::map<TString,int> dig;
+  //dig["singlelep"] = 0; // indicate it's data for proper formatting
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/alex_yields_znunu_lm","lm", dig);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/alex_yields_znunu_hm","hm", dig);
 
   return z.yields.at("_pred");
 }

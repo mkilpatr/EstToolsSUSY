@@ -17,7 +17,11 @@ vector<Quantity> QCDPred(){
   z.pred();
   z.naiveTF();
   z.printYields();
-  z.printMoriond17Table(labelMap);
+
+  std::map<TString,int> dig;
+  dig["_DATA"] = 0; // indicate it's data for proper formatting
+  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_lm","lm", dig);
+  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_hm","hm", dig);
 
   return z.yields.at("_pred");
 }
