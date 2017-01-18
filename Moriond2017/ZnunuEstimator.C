@@ -27,7 +27,8 @@ vector<Quantity> ZnunuPred(){
 
   z.writeRzUnc("/tmp/values_0l_unc_znunu.conf");
 
-  z.printTable(false);
+  //z.printTable(false);
+  z.printMoriond17Table(labelMap);
 
   return z.yields.at("_pred");
 }

@@ -63,13 +63,13 @@ public:
   // req's category names starting with either lm_ or hm_
   // bool parameter can output the tables to two (LM/HM) text files
   // categories are traversed linearly with no special cases other than 'lm_' or 'hm_' (lm has 1 LLB TF, hm splits it into 2 LLB TFs)
-  void printMoriond17Table(const map<TString, TString> &labelMap, bool saveToFile = false){
-
+  void printMoriond17Table(const map<TString, TString> &labelMap,  std::string outFilePrefix = "/tmp/Moriond17_"){
     Quantity::printStyle = Quantity::LATEX;
     fstream outStreamLM, outStreamHM; ostringstream outString; // form string in outString, then conditionally write outString to cout or file
+    bool saveToFile = true;
     if(saveToFile){
-      outStreamLM.open("Moriond17_LLB_LM.txt",ios::out);
-      outStreamHM.open("Moriond17_LLB_HM.txt",ios::out);
+      outStreamLM.open(outFilePrefix+"llb_lm.txt",ios::out);
+      outStreamHM.open(outFilePrefix+"llb_hm.txt",ios::out);
     }
 
     // linearly traverse all bins (hm and lm)

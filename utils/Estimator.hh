@@ -104,7 +104,7 @@ public:
   virtual ~BaseEstimator() {}
 
   template<typename T>
-  void printVec(const std::vector<T>& vec, const TString title="", bool printPercents = false, bool printMoreDecimals = false) const{
+  void printVec(const std::vector<T>& vec, const TString title="", bool printPercents = false) const{
     if (title!="")
       cout << title << endl;
     int ibin = 0;
@@ -113,8 +113,7 @@ public:
       cout << setw(30) << cat.name << "\t ";
       for (const auto &b : cat.bin.cuts){
         const auto &quantity = vec.at(ibin++);
-        int dec = printMoreDecimals ? 2 : 4;
-        cout << fixed << setprecision(dec) << setw(10) << quantity << "\t ";
+        cout << fixed << setprecision(2) << setw(10) << quantity << "\t ";
         if (printPercents && std::is_same<T, Quantity>::value)
           cout << " (" << toString(quantity.error/quantity.value*100, 0, true) << "%) ";
       }
@@ -221,7 +220,7 @@ public:
     for (const auto &p : yields){
       const auto &vec = p.second;
       cout << p.first << ": " << fixed << setprecision(2) << Quantity::sum(vec) << endl;
-      printVec(vec,false,true);//HACK last arg precision
+      printVec(vec,false);
     }
   }
 
