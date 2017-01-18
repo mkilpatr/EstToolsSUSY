@@ -31,8 +31,8 @@ vector<Quantity> ZnunuPred(){
 
   std::map<TString,int> dig;
   //dig["singlelep"] = 0; // indicate it's data for proper formatting
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/alex_yields_znunu_lm.tex","lm", dig);
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/alex_yields_znunu_hm.tex","hm", dig);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_lm.tex","lm", dig);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_hm.tex","hm", dig);
 
   return z.yields.at("_pred");
 }

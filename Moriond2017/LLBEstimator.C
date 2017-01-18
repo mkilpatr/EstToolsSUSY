@@ -24,8 +24,8 @@ vector<Quantity> LLBPred(){
 
   std::map<TString,int> dig;
   dig["singlelep"] = 0; // indicate it's data for proper formatting 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_llb_lm.tex", "lm", dig);
-  l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/alex_yields_llb_hm.tex", "hm", dig);
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_lm.tex", "lm", dig);
+  l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", dig);
 
   return l.yields.at("_pred");
 }
