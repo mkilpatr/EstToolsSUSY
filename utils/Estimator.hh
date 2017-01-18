@@ -141,7 +141,7 @@ public:
     // calculate yields for the samples in snames
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
-    // IF sample name ends with "-cr", use cr categories (for now we use this with sr samples to integrate nT/nW in SR regions)
+    // IF sample name ends with "-sr-int", use cr categories (for now we use this with sr samples to integrate nT/nW in SR regions)
     for (auto &sname : sample_names){
       auto start = chrono::steady_clock::now();
 
@@ -149,7 +149,7 @@ public:
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
-      if(sname.EndsWith("-cr")) { catMaps = config.crCatMaps; }
+      if(sname.EndsWith("-sr-int")) { catMaps = config.crCatMaps; }
 
       const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
