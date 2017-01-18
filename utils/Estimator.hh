@@ -104,7 +104,7 @@ public:
   virtual ~BaseEstimator() {}
 
   template<typename T>
-  void printVec(const std::vector<T>& vec, const TString title="", bool printPercents = false) const{
+  void printVec(const std::vector<T>& vec, const TString title="", bool printPercents = false, bool printMoreDecimals = false) const{
     if (title!="")
       cout << title << endl;
     int ibin = 0;
@@ -113,7 +113,8 @@ public:
       cout << setw(30) << cat.name << "\t ";
       for (const auto &b : cat.bin.cuts){
         const auto &quantity = vec.at(ibin++);
-        cout << fixed << setprecision(2) << setw(10) << quantity << "\t ";
+        int dec = printMoreDecimals ? 2 : 4;
+        cout << fixed << setprecision(dec) << setw(10) << quantity << "\t ";
         if (printPercents && std::is_same<T, Quantity>::value)
           cout << " (" << toString(quantity.error/quantity.value*100, 0, true) << "%) ";
       }
@@ -141,6 +142,7 @@ public:
     // calculate yields for the samples in snames
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
+    // IF sample name ends with "-cr", use cr categories (for now we use this with sr samples to integrate nT/nW in SR regions)
     for (auto &sname : sample_names){
       auto start = chrono::steady_clock::now();
 
@@ -148,6 +150,7 @@ public:
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
+      if(sname.EndsWith("-cr")) { catMaps = config.crCatMaps; }
 
       const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
@@ -218,7 +221,7 @@ public:
     for (const auto &p : yields){
       const auto &vec = p.second;
       cout << p.first << ": " << fixed << setprecision(2) << Quantity::sum(vec) << endl;
-      printVec(vec);
+      printVec(vec,false,true);//HACK last arg precision
     }
   }
 

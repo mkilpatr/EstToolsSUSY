@@ -42,11 +42,66 @@ public:
     calcYields();
     sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
     sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+    sumYields({"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr"}, "ttbarplusw-cr");
 
-    yields["_SLep"] = calcSLep();
-    yields["_TF"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
-    yields["_pred"] = yields.at("singlelep") * yields.at("_TF");
+    // _SLep = N(Data,CR)/N(MC,CR)
+    // _TF   = N(MC,SR)/N(MC,CR)
+    // _pred = _TF * N(Data,CR)
+    // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
+    // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
+    yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-cr")/yields.at("ttbarplusw");
+    yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-cr");
+
     printVec(yields["_pred"], "Final prediction", true);
+  }
+
+  void printMoriond17Table(bool saveToFile = false){
+    /*
+    float intLumi     = 1.;
+    ostringstream tmpLumi;
+    tmpLumi << intLumi;
+    TString lumi = tmpLumi.str();
+    */
+    Quantity::printStyle = Quantity::LATEX;
+    fstream outStreamLM, outStreamHM; ostringstream outString;
+    if(saveToFile){
+      outStreamLM.open("Moriond17_LLB_LM.txt",ios::out);
+      outStreamHM.open("Moriond17_LLB_HM.txt",ios::out);
+    }
+    int ibin = 0;
+    for (const auto &cat_name : config.categories){
+      const auto & cat = config.catMaps.at(cat_name);
+      outString << " % " << setw(30) << cat.label << endl;
+      cout << outString.str();
+      if(saveToFile) {
+        if(cat_name.Contains("lm_"))
+          outStreamLM << outString.str();
+        else 
+          outStreamHM << outString.str();
+      }
+      outString.str(""); //reset
+      auto metlabels = convertBinRangesToLabels(cat.bin.plotbins, true);
+      for (const auto &p : metlabels){
+        const auto &data = yields["singlelep"].at(ibin);
+        const auto &tf1  = yields["_TF_CR_to_SR_noextrap"].at(ibin);
+        const auto &tf2  = yields["_TF_SR_extrap"].at(ibin);
+        const auto &tf   = yields["_TF"].at(ibin);
+        const auto &pred = yields["_pred"].at(ibin);
+        outString << ibin << " & " << p << " & " << fixed << setprecision(0) << setw(0) << data.value << " & " << fixed << setprecision(3) << setw(10) << tf1 << " & " << fixed << setprecision(3) << setw(10) << tf2 << " & " << setprecision(2) << setw(10) << pred << " \\\\" << endl;
+        cout << outString.str();
+        if(saveToFile){
+        if(cat_name.Contains("lm_"))
+          outStreamLM << outString.str();
+        else 
+          outStreamHM << outString.str();
+        }
+        outString.str(""); // reset
+        ibin++;
+      }
+    }
   }
 
   void printTable(bool doLM) {
