@@ -250,6 +250,8 @@ public:
 
   }
 
+  // printYieldsTableLatex
+  //
   // Purpose 
   //   spits out latex-formatted table for Moriond17 results. designed so that llb/znunu/qcd/bkgs/results tables are similar.
   // Arguments
@@ -279,6 +281,7 @@ public:
   void printYieldsTableLatex(const vector<TString> &samples, const map<TString, TString> &labelMap, std::string outputfile="/tmp/yields.tex", TString whichCats="all", const map<TString,int>& digits = map<TString,int>()) const{
     ofstream outfile(outputfile);
     Quantity::printStyle = Quantity::LATEX;
+    whichCats.ToLower();
 
     // linearly traverse all bins (lm then hm, currently)
     unsigned ibin = 0;
@@ -292,42 +295,43 @@ public:
 
     int ncols = samples.size()+2; // bin # + MET range + samples
     for (auto &cat_name : config.categories){
-      whichCats.ToLower();
+      // skip it? must be careful and use bool b/c # of met bins varies... can't just 'continue' past category
+      bool skip = false;
+      if(whichCats == "lm" && !cat_name.Contains("lm_")) skip=true; // wanted LM, not LM
+      if(whichCats == "hm" && !cat_name.Contains("hm_")) skip=true; // wanted HM, not HM
       const auto &cat = config.catMaps.at(cat_name);
 
       // latex format for each category header: hline, multicolumn thing with pretty cat label, hline
       auto cat_label = translateString(cat_name, labelMap, "_", ", ");
-      outfile << R"(\hline)" << endl << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\)" << endl << R"(\hline)" << endl;
+      if(!skip) outfile << R"(\hline)" << endl << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\)" << endl << R"(\hline)" << endl;
 
       // a latex comment with raw cat label for clarity
-      outfile << " % " << setw(30) << cat.label << endl;
+      if(!skip) outfile << " % " << setw(30) << cat.label << endl;
 
       // latex format for each met bin row: search region #, met, each sample's yields
       auto metlabels = convertBinRangesToLabels(cat.bin.plotbins, true);
       for (const auto &p : metlabels){
-        // skip it?
-        if(whichCats == "lm" && !cat_name.Contains("lm_")) continue; // wanted LM, not LM
-        if(whichCats == "hm" && !cat_name.Contains("hm_")) continue; // wanted HM, not HM
-
         // search region #, met
-        outfile << ibin << " & " << p;
+        if(!skip) outfile << ibin << " & " << p;
+ 
         // each sample's yields
         int isamp = 0;
         for (const auto &c : samples){
           // what precision to use for this sample's yields?
+          bool isData = c.Contains("data"); // just a guess - see later
           int dig = 2; // default 2 digits
           if(c.Contains("TF")) dig = 3; // transfer factors get 3 digits
           if(digits.count(c)>0) dig = digits.at(c); // user overrides # of digits for this sample
 
           // send it!
-          bool isData = c.Contains("data");
-          outfile << " & \t" << fixed << setprecision(dig);
-          if(isData || dig==0) outfile << setprecision(0)    << yields.at(c).at(ibin).value; // no digits, no uncertainties
-          else                 outfile << setprecision(dig)  << yields.at(c).at(ibin);       // 'dig' digits + uncertainties
-
+          if(!skip) {
+            outfile << " & \t" << fixed << setprecision(dig);
+            if(isData || dig==0) outfile << setprecision(0)    << yields.at(c).at(ibin).value; // no digits, no uncertainties
+            else                 outfile << setprecision(dig)  << yields.at(c).at(ibin);       // 'dig' digits + uncertainties
+          }
           ++isamp;
         }
-        outfile << R"( \\)" << endl;
+        if(!skip) outfile << R"( \\)" << endl;
         ++ibin;
       }//for met
     }//for cats

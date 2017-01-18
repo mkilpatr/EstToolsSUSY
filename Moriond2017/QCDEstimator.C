@@ -20,8 +20,8 @@ vector<Quantity> QCDPred(){
 
   std::map<TString,int> dig;
   dig["_DATA"] = 0; // indicate it's data for proper formatting
-  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_lm","lm", dig);
-  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_hm","hm", dig);
+  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_lm.tex","lm", dig);
+  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_qcd_hm.tex","hm", dig);
 
   return z.yields.at("_pred");
 }
