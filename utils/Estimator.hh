@@ -220,7 +220,7 @@ public:
     for (const auto &p : yields){
       const auto &vec = p.second;
       cout << p.first << ": " << fixed << setprecision(2) << Quantity::sum(vec) << endl;
-      printVec(vec,false);
+      printVec(vec);
     }
   }
 

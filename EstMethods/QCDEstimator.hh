@@ -204,7 +204,7 @@ public:
         const auto &ndata    = yields["_DATA"].at(ibin);
         const auto &tf       = yields["_TF"].at(ibin);
         const auto &pred     = yields["_pred"].at(ibin);
-        outString << ibin << " & " << p << " & " << fixed << setprecision(2) << setw(10) << ndata << " & " << fixed << setprecision(2) << setw(10) << tf << " & " << fixed << setprecision(2) << setw(10) << pred << " \\\\" << endl;
+        outString << ibin << " & " << p << " & " << fixed << setprecision(0) << setw(10) << ndata << " & " << fixed << setprecision(4) << setw(10) << tf << " & " << fixed << setprecision(2) << setw(10) << pred << " \\\\" << endl;
 
         // send it
         cout << outString.str();
