@@ -30,7 +30,7 @@ public:
   }
 
   pair<Quantity, Quantity> calcRzRt(const TString &extraCutForNorm = ""){
-    cerr << "\n--->" << __func__ << endl;
+    cerr << "\n--->" << __func__ << ": " << extraCutForNorm << endl;
 
     TString extra = extraCutForNorm=="" ? "" : " && " + extraCutForNorm;
 
@@ -62,32 +62,38 @@ public:
 
   void calcSgamma(){
 
+    pho_normScale.clear();
+    cerr << "\n--->" << "Calc photon normalization factors..." << endl;
+    auto photon_sample = config.samples.at("photon");
+    auto singlepho_sample = config.samples.at("singlepho");
+    for (const auto &norm : phocr_normMap){
+      TString normCut = norm.second;
+      // norm factor
+      cout << " ... Photon norm cut " << normCut << endl;
+      auto cut = addCuts({config.sel, normCut});
+      auto mc_total = getYields(photon_sample.tree, photon_sample.wgtvar, cut + photon_sample.sel);
+      auto data_total = getYields(singlepho_sample.tree, singlepho_sample.wgtvar, cut + singlepho_sample.sel);
+      pho_normScale[norm.first] = data_total/mc_total;
+      cout << "    ... norm factor ---> " << pho_normScale.at(norm.first) << endl;
+    }
+
     yields["_phoNormScale"] = vector<Quantity>();
     for (auto &cat_name : config.categories){
       cerr << "\n--->" << __func__ << " " << cat_name << endl;
       // find norm category
-      TString normCut = ""; // default to empty: no extra cut
+      TString normKey = ""; // default to empty: no extra cut
       for (const auto &norm : phocr_normMap){
         if (cat_name.BeginsWith(norm.first)){
-          normCut = norm.second;
+          normKey = norm.first;
         }
       }
-      if (normCut != ""){
-        cerr << " ... Using norm cut " << normCut << endl;
-        normCut = " && "+normCut;
+      Quantity norm_factor(1, 0);
+      if (normKey != ""){
+        cout << " ... Using normalization from _" << normKey << "_" << endl;
+        norm_factor = pho_normScale.at(normKey);
       }
-
-      auto photon_sample = config.samples.at("photon");
-      auto singlepho_sample = config.samples.at("singlepho");
-
-      // norm factor
-      auto mc_total = getYields(photon_sample.tree, photon_sample.wgtvar, config.sel + normCut + photon_sample.sel);
-      auto data_total = getYields(singlepho_sample.tree, singlepho_sample.wgtvar, config.sel + normCut + singlepho_sample.sel);
-      auto norm_factor = (data_total/mc_total).value;
-      cout << "    ... norm factor ---> " << norm_factor << endl;
-
       for (unsigned i=0; i<config.catMaps.at(cat_name).bin.nbins; ++i){
-        yields["_phoNormScale"].push_back(norm_factor);
+        yields["_phoNormScale"].emplace_back(norm_factor.value);
       }
     }
 
@@ -115,10 +121,10 @@ public:
     calcSgamma();
 
     // Rz
+    zll_Rz.clear();
     yields["_Rz"] = vector<Quantity>();
-    map<TString, Quantity> rzs;
     for (const auto &norm : zll_normMap){
-      rzs[norm.first] = calcRz(norm.second);
+      zll_Rz[norm.first] = calcRz(norm.second);
     }
 
     for (auto &cat_name : config.categories){
@@ -127,7 +133,7 @@ public:
         // find norm category
         for (const auto &norm : zll_normMap){
           if (cat_name.Contains(norm.first))
-            yields["_Rz"].push_back(rzs.at(norm.first));
+            yields["_Rz"].push_back(zll_Rz.at(norm.first));
         }
       }
     }
@@ -137,6 +143,61 @@ public:
     yields["_pred"] = yields.at("znunu-sr") * yields.at("_Sgamma") * yields.at("_Rz");
     printVec(yields["_pred"], "Final prediction", true);
 
+    cout << " ========== Info for Datacard ==========" << endl;
+    {
+      cout << "Extra weight on znunu [from Rz]:" << endl;
+      bool isFirst = true;
+      for (const auto &norm : zll_normMap){
+        if(isFirst) {isFirst=false;}
+        else cout << "+";
+        cout << zll_Rz.at(norm.first).value << "*(" << norm.second << ")";
+      }
+      cout << endl;
+    }
+
+    {
+      cout << "Extra weight on photon-mc [from Sgamma]:" << endl;
+      bool isFirst = true;
+      for (const auto &norm : phocr_normMap){
+        if(isFirst) {isFirst=false;}
+        else cout << "+";
+        cout << pho_normScale.at(norm.first).value << "*(" << norm.second << ")";
+      }
+      cout << endl;
+    }
+    cout << " ==========      End Info     ==========" << endl;
+
+  }
+
+  void writeRzUnc(std::string output){
+    if (zll_normMap.empty()) { cout << "Need to run prediction first!" << endl; return; }
+
+    cout << "Writing Rz unc to " << output << endl;
+
+    ofstream outfile(output);
+    for (const auto &rz : zll_Rz){
+      outfile << "% " << rz.first << ": " << rz.second << endl;
+    }
+    for (const auto &cat_name : config.categories){
+      const auto & cat = config.catMaps.at(cat_name);
+      TString uncName;
+      double unc = 1;
+      for (const auto &norm : zll_normMap){
+        if (cat_name.Contains(norm.first)){
+          auto rz = zll_Rz.at(norm.first);
+          unc = 1+rz.error/rz.value;
+          uncName = norm.first;
+        }
+      }
+
+      for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
+        auto xlow = cat.bin.plotbins.at(ix);
+        auto binname = "bin_" + toString(xlow,0) + "_" + cat_name;
+        outfile << binname << "\t" << "znunu_rzunc_"+uncName << "\t" << "znunu" << "\t" << unc << endl;
+      }
+    }
+
+    outfile.close();
   }
 
   void printTable(bool doLM) {
@@ -177,6 +238,9 @@ public:
   BaseConfig zllcr_cfg;
   std::map<TString, TString> zll_normMap; // Rz categories, e.g., nb0, nb1, nb2
   std::map<TString, TString> phocr_normMap; // Sgamma normalization cuts (normalize pho mc to data after baseline + extra cut, e.g., nlb0)
+
+  std::map<TString, Quantity> zll_Rz; // zll normalization factors [Rz]
+  std::map<TString, Quantity> pho_normScale; // photon MC normalization factors
 
 };
 

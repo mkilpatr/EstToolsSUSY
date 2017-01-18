@@ -251,6 +251,45 @@ public:
 
   }
 
+  void printYieldsTableLatex(const vector<TString> &samples, const map<TString, TString> &labelMap, std::string outputfile="/tmp/yields.tex") const{
+    // print yields in latex format
+
+    ofstream outfile(outputfile);
+
+    Quantity::printStyle = Quantity::LATEX;
+
+    unsigned ibin = 0;
+
+    outfile << "Search region" << " & \t" << R"($\met$)" << " & \t";
+    for (const auto &c : samples){
+      outfile << c << " & \t";
+    }
+    outfile << R"(\\\hline\hline)" << endl;
+
+    int ncols = samples.size()+2;
+
+    for (auto &cat_name : config.categories){
+      const auto &cat = config.catMaps.at(cat_name);
+      auto cat_label = translateString(cat.name, labelMap, "_", ", ");
+      outfile << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\ \hline \hline)" << endl;
+      const auto &metbins = cat.bin.plotbins;
+      for (unsigned ix=0; ix<metbins.size()-1; ++ix){
+        TString binlabel = toString(metbins.at(ix),0) + "$-$" + toString(metbins.at(ix+1),0);
+        if (ix==metbins.size()-2) binlabel = "$>$"+toString(metbins.at(ix),0);
+        outfile << ibin << " & \t" << binlabel;
+        for (const auto &c : samples){
+          outfile  << " & \t" << fixed << setprecision(2) << yields.at(c).at(ibin);
+        }
+        outfile << R"( \\)" << endl;
+        ++ibin;
+      }
+      outfile << R"(\hline)" << endl;
+    }
+
+    outfile.close();
+  }
+
+
   TH1* getHistogram(const BinInfo& var_info, TString sample, const Category& category){
     // get a histogram of the given sample in the given category
 
@@ -639,7 +678,7 @@ public:
 
   }
 
-  void dumpDatacardConfig(std::string filename){
+  void dumpDatacardConfig(std::string filename, std::string wrapping = ""){
     cerr << "Writing binning definition to file: " << filename << endl;
 
     std::ofstream fout(filename);
@@ -657,7 +696,7 @@ public:
 
     for (const auto &category : config.categories){
       const auto &cat = config.catMaps.at(category);
-      fout << cat.name << ": {" << endl
+      fout << wrapping << cat.name << wrapping << ": {" << endl
            << tab << "'cut': '" + cat.cut + "'," << endl
            << tab << "'var': '" + cat.bin.var + "'," << endl
            << tab << "'bin': [" + vec2str(cat.bin.plotbins) + "]" << endl
@@ -673,8 +712,9 @@ public:
       for (unsigned ib=ia+1; ib<config.categories.size(); ++ib){
         auto sra = config.categories.at(ia);
         auto srb = config.categories.at(ib);
-        cout << "Testing " << sra << " && " << srb << endl;
+        cout << "------\nTesting " << sra << " && " << srb << endl;
         auto cut = addCuts({config.catMaps.at(sra).cut, config.catMaps.at(srb).cut});
+        cout << "---\n" << cut << "\n---\n";
         if (config.samples.at(samp).tree->GetEntries(cut)){
           throw std::logic_error("Found overlap: " + sra + ", " + srb);
         }

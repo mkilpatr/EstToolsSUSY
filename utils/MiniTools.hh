@@ -37,16 +37,21 @@ TString filterString(TString instr){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TString addCuts(const vector<TString>& cuts, TString prefix=""){
-  TString rlt = prefix;
-  for (unsigned i=0; i<cuts.size(); ++i){
+TString joinString(const vector<TString>& vec, TString delimiter){
+  TString rlt = "";
+  for (unsigned i=0; i<vec.size(); ++i){
     if (i==0){
-      rlt = rlt + cuts.at(i);
+      rlt = vec.at(i);
     }else{
-      rlt = rlt + " && " + cuts.at(i);
+      rlt = rlt + delimiter + vec.at(i);
     }
   }
   return rlt;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TString addCuts(const vector<TString>& cuts, TString prefix=""){
+  return prefix + joinString(cuts, " && ");
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,18 +63,23 @@ vector<TString> splitString(const TString &instr, const TString &delimiter){
   return v;
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TString createCutString(TString name, const std::map<TString, TString>& cutMap, TString delimiter="_"){
-  auto keys = splitString(name, delimiter);
-  vector<TString> cuts;
+TString translateString(TString name, const std::map<TString, TString>& strMap, TString splitBy, TString concatBy){
+  auto keys = splitString(name, splitBy);
+  vector<TString> substrs;
   for (auto k : keys){
     try{
-      cuts.push_back(cutMap.at(k));
+      substrs.push_back(strMap.at(k));
     }catch (const std::out_of_range &e) {
-      cerr << "No cut-string for " << k << endl;
+      cerr << "No string mapping for " << k << endl;
       throw e;
     }
   }
-  return addCuts(cuts);
+  return joinString(substrs, concatBy);
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TString createCutString(TString name, const std::map<TString, TString>& cutMap, TString delimiter="_"){
+  return translateString(name, cutMap, delimiter, " && ");
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
