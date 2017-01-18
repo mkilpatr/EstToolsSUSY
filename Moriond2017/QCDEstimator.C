@@ -16,7 +16,7 @@ vector<Quantity> QCDPred(){
 
   z.pred();
   z.naiveTF();
-  //z.printYields();
+  z.printYields();
   z.printMoriond17Table(labelMap);
 
   return z.yields.at("_pred");
