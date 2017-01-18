@@ -20,7 +20,8 @@ vector<Quantity> LLBPred(){
   l.pred();
 
   l.printYields();
-//  l.printTable(false);
+  //l.printTable(true);
+  l.printMoriond17Table(labelMap,true);
 
   return l.yields.at("_pred");
 }
