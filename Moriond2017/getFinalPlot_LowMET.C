@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_trad.root", TString outputName="/tmp/LowMET/HighMass/HM_validation"){
+void getFinalPlot_LowMET(TString inputFile="std_pred_trad_val.root", TString outputName="/tmp/apatters/20170119/validation_18p2ifb/pred"){
 
   vector<TString> bkgs = {"diboson_pred", "ttZ_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"diboson_mc",   "ttZ_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -15,9 +15,10 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
   vector<TString> bkglabels = {"Diboson", "ttZ", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
   vector<TString> datalabel = {"Observed"};
 
-  vector<TString> split = {"_"};
+  vector<TString> split = {"lm_", "hm_"};
   vector<TString> splitlabels = {
-      "",
+    "Low #DeltaM}",
+    "High #DeltaM",
   };
   TLatex tl;
   tl.SetTextSize(0.03);
@@ -128,10 +129,11 @@ void getFinalPlot_LowMET(TString inputFile="/tmp/LowMET/HighMass/sig/std_pred_tr
 //      xpos += 0.0575;
 //    }
 
-    TString basename = outputName;
+    TString basename = outputName + "_" + region;
     c->SetTitle(basename);
     c->Print(basename+".pdf");
     c->Print(basename +".C");
+    c->Print(basename +".root");
 
 
   }
