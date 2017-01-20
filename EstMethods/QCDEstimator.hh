@@ -78,7 +78,7 @@ public:
 
     cerr << "\n--->" << __func__ << endl;
 
-    doYieldsCalc({"qcd-sr", "qcd-cr"}, runBootstrapping ? 50 : 0);
+    doYieldsCalc({"qcd-sr", "qcd-cr", "qcd-sr-int"}, runBootstrapping ? 50 : 0); //AP add qcd-sr-int
 
     // FIXME
     for (auto &q : yields.at("qcd-cr")){
@@ -88,6 +88,10 @@ public:
         q.error = 0.0001;
       }
     }
+
+    std::cout << "Splitting QCD TF" << std::endl;
+    yields["_QCDTF_CR_to_SR_noextrap_nocorr"] = yields.at("qcd-sr-int")/yields.at("qcd-cr"); // split _QCDTF into CR-SR and tags extrapolation
+    yields["_QCDTF_SR_extrap"]                = yields.at("qcd-sr")/yields.at("qcd-sr-int");
 
     yields["_QCDTF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
 
@@ -137,6 +141,7 @@ public:
 
     yields["_SubCorr"] = std::vector<Quantity>();
     yields["_TF"] = std::vector<Quantity>();
+    yields["_QCDTF_CR_to_SR_noextrap"] = std::vector<Quantity>(); // corrected cr-to-sr half of the TF
     for (unsigned i=0; i<vdata.size(); ++i){
       double otherVal = yields.at("otherbkgs").at(i).value;
       double dataVal = vdata.at(i).value;
@@ -146,6 +151,8 @@ public:
       Quantity corr(1-sub, 0); // subtraction unc taken externally (in addition to jetresptail & met integration)
       yields.at("_SubCorr").push_back(corr);
       yields.at("_TF").push_back(yields.at("_QCDTF").at(i) * corr);
+      std::cout << "Correcting the split QCD TF" << std::endl;
+      yields["_QCDTF_CR_to_SR_noextrap"].push_back(yields.at("_QCDTF_CR_to_SR_noextrap_nocorr").at(i) * corr);
     }
 
   }

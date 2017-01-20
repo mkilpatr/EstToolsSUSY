@@ -19,9 +19,6 @@
 
 #define DEBUG_
 
-#define RATIO_YMIN 0
-#define RATIO_YMAX 1.999
-
 // show overall data/MC SF on plot
 //#define SHOW_DATA_MC_RATIO
 
@@ -38,6 +35,9 @@ double PAD_BOTTOM_MARGIN = 0.30;
 double RATIOPLOT_XLABEL_FONTSIZE = 0.10;
 double RATIOPLOT_XLABEL_OFFSET = 0.01;
 double RATIOPLOT_XTITLE_OFFSET = 0.85;
+double RATIO_YMIN = 0.001;
+double RATIO_YMAX = 1.999;
+
 
 double LOG_YMIN = 0.01;
 
@@ -440,7 +440,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {})
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inUncR=nullptr)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
@@ -561,11 +561,10 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
     ratio = getRatioAsymmErrors(h3, hMCNoError);
     ratio->SetLineWidth(h3->GetLineWidth());
-    ratio->Draw("PZ0same");
+    if(!inUncR) ratio->Draw("PZ0same");
   }
 
-
-  TGraphAsymmErrors* hRelUnc = (TGraphAsymmErrors*)unc->Clone();
+  TGraphAsymmErrors* hRelUnc = (inUncR) ? (TGraphAsymmErrors*)inUncR->Clone() : (TGraphAsymmErrors*)unc->Clone();
   for (int i=0; i < hRelUnc->GetN(); ++i){
     auto val = hRelUnc->GetY()[i];
     auto errUp = hRelUnc->GetErrorYhigh(i);
@@ -573,7 +572,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     if (val==0) continue;
     hRelUnc->SetPointEYhigh(i, errUp/val);
     hRelUnc->SetPointEYlow(i, errLow/val);
-    hRelUnc->SetPoint(i, hRelUnc->GetX()[i], 1);
+    hRelUnc->SetPoint(i, hRelUnc->GetX()[i], (!inUncR ? 1 : 0) );
   }
   hRelUnc->SetFillColor(kBlue);
   hRelUnc->SetFillStyle(3013);

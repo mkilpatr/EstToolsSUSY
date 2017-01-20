@@ -141,7 +141,7 @@ public:
     // calculate yields for the samples in snames
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
-    // IF sample name ends with "-sr-int", use cr categories (for now we use this with sr samples to integrate nT/nW in SR regions)
+    // IF sample name ends with "-sr-int", we want to integrate in tops/Ws like the CRs, so use CR categories
     for (auto &sname : sample_names){
       auto start = chrono::steady_clock::now();
 

@@ -786,6 +786,7 @@ BaseConfig qcdConfig(){
 
   // qcdsr
   config.addSample("qcd-sr",         "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
+  config.addSample("qcd-sr-int",     "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
 
   config.sel = baseline;
   config.categories = srbins;
