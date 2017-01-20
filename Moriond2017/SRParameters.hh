@@ -685,7 +685,7 @@ BaseConfig lepConfig(){
   config.addSample("ttZ-sr",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("diboson-sr",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
 
-  // samples for sr categories, integrated like the cr bins
+  // samples for splitting the TF (optional, see l.splitTF)
   config.addSample("ttbar-sr-int",       "t#bar{t}",      "sr/ttbar",           lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("wjets-sr-int",       "W+jets",        "sr/wjets",           lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr-int",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
@@ -786,6 +786,8 @@ BaseConfig qcdConfig(){
 
   // qcdsr
   config.addSample("qcd-sr",         "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
+
+  // samples for splitting the TF, optional (see z.splitTF)
   config.addSample("qcd-sr-int",     "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
 
   config.sel = baseline;

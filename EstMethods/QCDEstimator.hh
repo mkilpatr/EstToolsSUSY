@@ -78,7 +78,9 @@ public:
 
     cerr << "\n--->" << __func__ << endl;
 
-    doYieldsCalc({"qcd-sr", "qcd-cr", "qcd-sr-int"}, runBootstrapping ? 50 : 0); //AP add qcd-sr-int
+    vector<TString> qcdsamp = {"qcd-sr", "qcd-cr"};
+    if(splitTF) qcdsamp.push_back("qcd-sr-int");
+    doYieldsCalc(qcdsamp, runBootstrapping ? 50 : 0);
 
     // FIXME
     for (auto &q : yields.at("qcd-cr")){
@@ -89,9 +91,10 @@ public:
       }
     }
 
-    std::cout << "Splitting QCD TF" << std::endl;
-    yields["_QCDTF_CR_to_SR_noextrap_nocorr"] = yields.at("qcd-sr-int")/yields.at("qcd-cr"); // split _QCDTF into CR-SR and tags extrapolation
-    yields["_QCDTF_SR_extrap"]                = yields.at("qcd-sr")/yields.at("qcd-sr-int");
+    if(splitTF){
+      yields["_QCDTF_CR_to_SR_noextrap_nocorr"] = yields.at("qcd-sr-int")/yields.at("qcd-cr"); // split _QCDTF into CR-SR and tags extrapolation
+      yields["_QCDTF_SR_extrap"]                = yields.at("qcd-sr")/yields.at("qcd-sr-int");
+    }
 
     yields["_QCDTF"] = yields.at("qcd-sr")/yields.at("qcd-cr");
 
@@ -175,6 +178,9 @@ public:
 
   // whether run bootstrapping for QCD uncertainty or not
   bool runBootstrapping = true;
+
+  // whether to split TF when making prediction tables
+  bool splitTF = false;
 
 };
 

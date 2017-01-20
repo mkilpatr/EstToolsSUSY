@@ -42,7 +42,6 @@ public:
     calcYields();
     sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
     sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
-    sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
@@ -52,8 +51,12 @@ public:
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
-    yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
-    yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+
+    if(splitTF){
+      sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
+      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
+      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+    }
 
     printVec(yields["_pred"], "Final prediction", true);
   }
@@ -92,6 +95,8 @@ public:
 
   }
 
+  // whether to split TF when making prediction tables
+  bool splitTF = false;
 
 };
 
