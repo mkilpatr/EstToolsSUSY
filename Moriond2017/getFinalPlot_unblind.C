@@ -6,7 +6,8 @@
 
 using namespace EstTools;
 
-void getFinalPlot_unblind(TString inputFile="/tmp/validation/plots/20170112/unblind_18p2ifb/sig/std_pred_trad.root", TString outputName="/tmp/validation/plots/20170112/unblind_18p2ifb/pred"){
+//void getFinalPlot_unblind(TString inputFile="/tmp/validation/plots/20170112/unblind_18p2ifb/sig/std_pred_trad.root", TString outputName="/tmp/validation/plots/20170112/unblind_18p2ifb/pred"){
+void getFinalPlot_unblind(TString inputFile="std_pred_trad_unblind.root", TString outputName="/tmp/apatters/20170119/unblind_18p2ifb/pred"){
 
   bool plotPulls = true;
 
@@ -15,7 +16,7 @@ void getFinalPlot_unblind(TString inputFile="/tmp/validation/plots/20170112/unbl
   RATIOPLOT_XLABEL_OFFSET = 0.04;
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
-
+  RATIO_YMIN = 0.001; RATIO_YMAX = 2.999;
 
   vector<TString> bkgs = {"diboson_pred", "ttZ_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"diboson_mc",   "ttZ_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -192,10 +193,76 @@ void getFinalPlot_unblind(TString inputFile="/tmp/validation/plots/20170112/unbl
     else hmctotal->Add((TH1*)f->Get(mc));
   }
 
+  // hbkgtotal is total corrected MC. verified central values & unc against plots.
+  // ** necessary to use with ICHEP-cr roots, which lack "bkgtotal_unc_sr" (unc, with asymmetric errors)
+  TH1* hbkgtotal = nullptr;
+  for (auto *h : pred){
+    auto *hmc = (TH1*)h->Clone();
+
+    if (!hbkgtotal) { hbkgtotal = (TH1*)hmc->Clone("hbkgtotal"); }
+    else { hbkgtotal->Add(hmc); }
+
+    if (hmc->GetLineColor()!=kBlack){ hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack); }
+  }
+
   TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
   hDataRawMC->Divide(hmctotal);
   hDataRawMC->SetLineWidth(2);
   prepHists({hDataRawMC}, false, false, false, {kOrange});
+
+  TH1* hPulls = 0;
+  TGraphAsymmErrors* gPulls = 0;
+  TGraphAsymmErrors* gDataUnc = 0;
+
+    if(plotPulls){
+
+      // hPulls (no uncertainties) will replace hDataRawMC as yellow connected line in ratio plot
+      // gPulls (no central values) will replace the shaded blue error bars in the ratio plot __only__
+      hPulls = (TH1*)hdata->Clone("hDataRawMC");
+
+      if(unc) {
+        gPulls = (TGraphAsymmErrors*)unc->Clone(); // asymm errors from systematics, for Moriond17 samples
+      }else{
+        gPulls = new TGraphAsymmErrors(hbkgtotal); // from corrected bkg total histogram ... for ICHEP-cr samples
+      }
+
+      float nbins = (float)gPulls->GetN();
+      std::cout << "Total bins: " << nbins << std::endl;
+
+      hPulls->SetBinContent(hPulls->GetNbinsX()+1, 0.);//safety from overflow
+      hPulls->SetBinContent(0, 0.);
+      gDataUnc = getAsymmErrors(hdata);
+      std::cout << "bin/data/dataunchigh/dataunclow/predi/prediunc/pull/pulllow/pullhigh: " << std::endl;
+      int n1 = 0, n3 = 0, n5 = 0;
+      for(unsigned i = 0; i < nbins; i++){
+        float fdata        = hdata->GetBinContent(i+1); // histos are indexed (1...N)
+        float fdataunchigh = gDataUnc->GetErrorYhigh(i);
+        float fdataunclow  = gDataUnc->GetErrorYlow(i);
+        float fpredi       = gPulls->GetY()[i];
+        float fprediunc    = gPulls->GetErrorY(i); // avg of GetErrorYLow and GetErrorYHigh
+        float pull         = (fdata - fpredi)/fprediunc;
+        float pullhigh     = (fdata - (fpredi - fdataunchigh))/fprediunc;
+        float pulllow      = (fdata - (fpredi + fdataunclow))/fprediunc;
+        std::cout << i << " " <<fdata << " " << fdataunchigh << " " << fdataunclow << " " << fpredi<< " " <<fprediunc<< " " <<pull << " " << pulllow << " " << pullhigh << std::endl;
+        if(abs(pull)>5) std::cout << "** Pull is over 5! " << i << " " << pull << std::endl;
+        if(abs(pull)<1) n1++;
+        if(abs(pull)<3) n3++;
+        if(abs(pull)<5) n5++;
+        hPulls->SetBinContent(i+1, pull);
+        gPulls->SetPoint(i, gPulls->GetX()[i], pull);
+        gPulls->SetPointEYhigh(i, pullhigh - pull);
+        gPulls->SetPointEYlow(i, pull - pulllow);
+      }
+      std::cout << "Pulls within 1, 3, 5: " << n1 << " (" << n1/nbins << "%),  " << n3 << " (" << n3/nbins << "%),  " << n5 << " (" << n5/nbins << "%),  " << std::endl;
+      hDataRawMC = hPulls; // switcharoo
+      hDataRawMC->SetLineWidth(2);
+      prepHists({hDataRawMC}, false, false, false, {kBlack});
+      rawsimlabel.at(0) = "Pull";
+      double maxpull = 5.;
+      RATIO_YMIN = -maxpull + 0.001;
+      RATIO_YMAX = +maxpull - 0.001;
+      ratiolabel = "(D-P)/#sigma(P)";
+    }
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -217,78 +284,16 @@ void getFinalPlot_unblind(TString inputFile="/tmp/validation/plots/20170112/unbl
       ibin += nbins;
     }
 
-  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-  hDataRawMC->Divide(hmctotal);
-  hDataRawMC->SetLineWidth(2);
-  prepHists({hDataRawMC}, false, false, false, {kOrange});
-
-  auto catMap = srCatMap();
-  for (unsigned ireg = 0; ireg < split.size(); ++ireg){
-    auto &region = split.at(ireg);
-    int xlow = 0, xhigh = 0;
-    bool isfirst = true;
-    int ibin = 0;
-    for (auto &cat_name : srbins){
-      auto nbins = catMap.at(cat_name).bin.nbins;
-      if (cat_name.Contains(TRegexp(region))){
-        if (isfirst){
-          isfirst = false;
-          xlow = ibin;
-          xhigh = xlow + nbins;
-        }else{
-          xhigh += nbins;
-        }
-      }
-      ibin += nbins;
-    }
-
-    TH1* hPulls = 0;
-    TGraphAsymmErrors* gPulls = 0;
-    TGraphAsymmErrors* gDataUnc = 0;
-    if(plotPulls){
-      // hPulls (no uncertainties) will replace hDataRawMC as yellow connected line in ratio plot
-      // gPulls (no central values) will replace the shaded blue error bars in the ratio plot __only__
-      hPulls = (TH1*)hdata->Clone("hDataRawMC");
-      gPulls = (TGraphAsymmErrors*)unc->Clone();
-
-      hPulls->SetBinContent(hPulls->GetNbinsX()+1, 0.);//safety from overflow
-      hPulls->SetBinContent(0, 0.);
-      gDataUnc = getAsymmErrors(hdata);
-      for(unsigned i = 0; i < unc->GetN(); i++){
-        float fdata        = hdata->GetBinContent(i+1); // histos are indexed (1...N)
-        float fdataunchigh = gDataUnc->GetErrorYhigh(i);
-        float fdataunclow  = gDataUnc->GetErrorYlow(i);
-        float fpredi       = unc->GetY()[i];
-        float fprediunc    = unc->GetErrorY(i); // avg of GetErrorYLow and GetErrorYHigh
-        float pull         = (fdata - fpredi)/fprediunc;
-        float pullhigh     = (fdata - (fpredi - fdataunchigh))/fprediunc;
-        float pulllow      = (fdata - (fpredi + fdataunclow))/fprediunc;
-        std::cout << "bin/data/dataunchigh/dataunclow/predi/prediunc/pull/pulllow/pullhigh: " << i << " " <<fdata <<$
-        hPulls->SetBinContent(i+1, pull);
-        gPulls->SetPoint(i, gPulls->GetX()[i], pull);
-        gPulls->SetPointEYhigh(i, pullhigh - pull);
-        gPulls->SetPointEYlow(i, pull - pulllow);
-      }
-      hDataRawMC = hPulls; // switcharoo
-      hDataRawMC->SetLineWidth(2);
-      prepHists({hDataRawMC}, false, false, false, {kBlack});
-      rawsimlabel.at(0) = "Pull";
-      double maxpull = 5.;
-      RATIO_YMIN = -maxpull + 0.001;
-      RATIO_YMAX = +maxpull - 0.001;
-      ratiolabel = "(Da-Pr)/#sigma(Pr)";
-    }
-
     PLOT_MAX_YSCALE = plot_ymax_scales.at(ireg);
     LOG_YMIN = plot_log_ymin.at(ireg);
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
-    appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
+    appendLegends(leg, {hDataRawMC}, rawsimlabel, "L");
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc, {hDataRawMC}, gPulls);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, ratiolabel, RATIO_YMIN, RATIO_YMAX, xlow, xhigh, hsigs, unc, {hDataRawMC}, gPulls);
     c->SetCanvasSize(800, 600);
     drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.76, 0.03);
     drawRegionLabels.at(ireg)();
