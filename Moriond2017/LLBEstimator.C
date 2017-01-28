@@ -17,20 +17,19 @@ vector<Quantity> LLBPred(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.splitTF = true;
+  l.splitTF = SPLITTF;
   l.pred();
 
   l.printYields();
-  //l.printTable(true);
 
-  std::map<TString,int> dig;
-  dig["singlelep"] = 0; // indicate it's data for proper formatting 
+  std::map<TString,int> digits;
+  digits["singlelep"] = 0; // indicate it's data for proper formatting
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_lm.tex", "lm", dig); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", dig);
+    l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", dig);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");

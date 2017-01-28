@@ -109,7 +109,7 @@ public:
 
     // Yields
     calcYields();
-    for (auto &q : yields.at("photon")){
+    for (auto &q : yields.at("photon")){//FIXME
       if (q.value<0.0001){
         cerr << "MC yields <0.0001!" << endl;
         q.value = 0.0001;

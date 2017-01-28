@@ -149,7 +149,6 @@ public:
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
-      if(sname.EndsWith("-sr-int")) { catMaps = config.crCatMaps; }
 
       const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
@@ -252,7 +251,7 @@ public:
 
   // printYieldsTableLatex
   //
-  // Purpose 
+  // Purpose
   //   spits out latex-formatted table for Moriond17 results. designed so that llb/znunu/qcd/bkgs/results tables are similar.
   // Arguments
   //   vector<strings> of yields which have already been computed elsewhere, eg yields["TF_"] for LLB.
@@ -313,7 +312,7 @@ public:
       for (const auto &p : metlabels){
         // search region #, met
         if(!skip) outfile << ibin << " & " << p;
- 
+
         // each sample's yields
         int isamp = 0;
         for (const auto &c : samples){
