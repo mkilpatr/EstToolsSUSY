@@ -57,9 +57,10 @@ void plotSgamma(){
   config.outputdir = config.outputdir+"/"+region;
 
   config.catMaps = phoCatMap();
+//  TString phocorrwgt = "*(1.47911-0.000621058*phopt)";
   config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
+  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
+  config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
   config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
   BaseEstimator z(config.outputdir);
@@ -233,7 +234,8 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
   }
 
   vector<TString> vars = {"metzg"};
-//  vector<TString> vars = {"mtcsv12met", "njets", "nt", "nw", "metzg"};
+//  vector<TString> vars = {"ak8isrpt", "njets", "metzg"};
+//  vector<TString> vars = {"origmet"};
   map<TString, vector<TH1*>> hists;
 
   {
@@ -241,8 +243,8 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     auto config = phoConfig();
     config.catMaps = phoCatMap();
     config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-    config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
-    config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
+    config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
+    config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
     config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
     ZnunuEstimator z(config);
