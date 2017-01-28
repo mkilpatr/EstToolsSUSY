@@ -141,6 +141,7 @@ public:
     // calculate yields for the samples in snames
     // use SR categories if no CR categories are defined OR sample name ends with "-sr"
     // otherwise use CR categories
+    // IF sample name ends with "-sr-int", we want to integrate in tops/Ws like the CRs, so use CR categories
     for (auto &sname : sample_names){
       auto start = chrono::steady_clock::now();
 
@@ -148,6 +149,7 @@ public:
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
+      if(sname.EndsWith("-sr-int")) { catMaps = config.crCatMaps; }
 
       const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
@@ -248,43 +250,93 @@ public:
 
   }
 
-  void printYieldsTableLatex(const vector<TString> &samples, const map<TString, TString> &labelMap, std::string outputfile="/tmp/yields.tex") const{
-    // print yields in latex format
+  // printYieldsTableLatex
+  //
+  // Purpose 
+  //   spits out latex-formatted table for Moriond17 results. designed so that llb/znunu/qcd/bkgs/results tables are similar.
+  // Arguments
+  //   vector<strings> of yields which have already been computed elsewhere, eg yields["TF_"] for LLB.
+  //   optionally a filename to save the tex (default /tmp/yields.tex)
+  //   optionally a TString, default "all", indicating whether to do only "lm" or "hm" table, case-insensitive
+  //   optionally a map<String,int> from particular samples (no size requirement) overriding the # of digits displayed in table for those samples
+  // Digits (case-sensitive)
+  //   default is 2, eg 123.12+/-1.11
+  //   if sample string contains "TF" (our usual transfer factor naming) then 3 digits, eg 0.002 +/- 0.001 is encountered in LLB
+  //   if sample string contains "data" or optional argument digits.at(sample string) is zero, give zero digits and no uncertainties, eg 17
+  // Usage for LLB
+  //   std::map<TString,int> dig; // OPTIONAL: to override some samples' digits
+  //   dig["singlelep"] = 0; // indicate "singlelep" yields are data for proper formatting
+  //   // l.yields should already contain all of these yields, typically from a call to l.pred()
+  //   l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/alex_yields_llb_lm.tex", true, dig); // LM table
+  //   l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/alex_yields_llb_hm.tex", false, dig); // HM table
+  //
+  // current format of output .tex, to be copy-pasted into AN/PAS/Paper tables:
+  // \hline
+  // \multicolumn{5}{c}{low \dm, $\nb=0$, $\nsv=0$, $\ptisr>500$\,GeV, $2\leq\nj<5$} \\
+  // \hline
+  // %  lm_nb0_nivf0_highptisr_nj2to5
+  // 0 & 450$-$550 & 1681 &      0.448$\pm$0.012 &     753.12$\pm$27.10 \\
+  // ...etc
 
+  void printYieldsTableLatex(const vector<TString> &samples, const map<TString, TString> &labelMap, std::string outputfile="/tmp/yields.tex", TString whichCats="all", const map<TString,int>& digits = map<TString,int>()) const{
     ofstream outfile(outputfile);
-
     Quantity::printStyle = Quantity::LATEX;
+    whichCats.ToLower();
 
+    // linearly traverse all bins (lm then hm, currently)
     unsigned ibin = 0;
 
-    outfile << "Search region" << " & \t" << R"($\met$)" << " & \t";
+    // latex comment to label columns for user. user makes their own pretty column header.
+    outfile << "% Search region" << " & \t" << R"($\met$)" << " & \t";
     for (const auto &c : samples){
       outfile << c << " & \t";
     }
-    outfile << R"(\\\hline\hline)" << endl;
+    outfile << endl;
 
-    int ncols = samples.size()+2;
-
+    int ncols = samples.size()+2; // bin # + MET range + samples
     for (auto &cat_name : config.categories){
+      // skip it? must be careful and use bool b/c # of met bins varies... can't just 'continue' past category
+      bool skip = false;
+      if(whichCats == "lm" && !cat_name.Contains("lm_")) skip=true; // wanted LM, not LM
+      if(whichCats == "hm" && !cat_name.Contains("hm_")) skip=true; // wanted HM, not HM
       const auto &cat = config.catMaps.at(cat_name);
-      auto cat_label = translateString(cat.name, labelMap, "_", ", ");
-      outfile << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\ \hline \hline)" << endl;
-      const auto &metbins = cat.bin.plotbins;
-      for (unsigned ix=0; ix<metbins.size()-1; ++ix){
-        TString binlabel = toString(metbins.at(ix),0) + "$-$" + toString(metbins.at(ix+1),0);
-        if (ix==metbins.size()-2) binlabel = "$>$"+toString(metbins.at(ix),0);
-        outfile << ibin << " & \t" << binlabel;
-        for (const auto &c : samples){
-          outfile  << " & \t" << fixed << setprecision(2) << yields.at(c).at(ibin);
-        }
-        outfile << R"( \\)" << endl;
-        ++ibin;
-      }
-      outfile << R"(\hline)" << endl;
-    }
 
+      // latex format for each category header: hline, multicolumn thing with pretty cat label, hline
+      auto cat_label = translateString(cat_name, labelMap, "_", ", ");
+      if(!skip) outfile << R"(\hline)" << endl << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\)" << endl << R"(\hline)" << endl;
+
+      // a latex comment with raw cat label for clarity
+      if(!skip) outfile << " % " << setw(30) << cat.label << endl;
+
+      // latex format for each met bin row: search region #, met, each sample's yields
+      auto metlabels = convertBinRangesToLabels(cat.bin.plotbins, true);
+      for (const auto &p : metlabels){
+        // search region #, met
+        if(!skip) outfile << ibin << " & " << p;
+ 
+        // each sample's yields
+        int isamp = 0;
+        for (const auto &c : samples){
+          // what precision to use for this sample's yields?
+          bool isData = c.Contains("data"); // just a guess - see later
+          int dig = 2; // default 2 digits
+          if(c.Contains("TF")) dig = 3; // transfer factors get 3 digits
+          if(digits.count(c)>0) dig = digits.at(c); // user overrides # of digits for this sample
+
+          // send it!
+          if(!skip) {
+            outfile << " & \t" << fixed << setprecision(dig);
+            if(isData || dig==0) outfile << setprecision(0)    << yields.at(c).at(ibin).value; // no digits, no uncertainties
+            else                 outfile << setprecision(dig)  << yields.at(c).at(ibin);       // 'dig' digits + uncertainties
+          }
+          ++isamp;
+        }
+        if(!skip) outfile << R"( \\)" << endl;
+        ++ibin;
+      }//for met
+    }//for cats
     outfile.close();
-  }
+  }//for country!
 
 
   TH1* getHistogram(const BinInfo& var_info, TString sample, const Category& category){

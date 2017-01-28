@@ -658,6 +658,7 @@ BaseConfig lepConfig(){
   config.outputdir = outputdir+"/LLB";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
+  // samples for cr categories
   if (ADD_LEP_TO_MET){
     config.addSample("singlelep",   "Data",          datadir+"/lepcr/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
     config.addSample("ttbar",       "t#bar{t}",      "lepcr/ttbar",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
@@ -674,6 +675,7 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "sr/qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
   }
 
+  // samples for sr categories
   config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar",           lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("wjets-sr",       "W+jets",        "sr/wjets",           lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
@@ -682,6 +684,16 @@ BaseConfig lepConfig(){
 //  config.addSample("rare-sr",        "Rare",          "sr/rare",            lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttZ-sr",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("diboson-sr",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
+
+  // samples for splitting the TF (optional, see l.splitTF)
+  config.addSample("ttbar-sr-int",       "t#bar{t}",      "sr/ttbar",           lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("wjets-sr-int",       "W+jets",        "sr/wjets",           lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("tW-sr-int",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttW-sr-int",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("qcd-sr-int",         "QCD",           "qcd",                lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("rare-sr-int",        "Rare",          "sr/rare",            lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttZ-sr-int",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("diboson-sr-int",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -774,6 +786,9 @@ BaseConfig qcdConfig(){
 
   // qcdsr
   config.addSample("qcd-sr",         "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
+
+  // samples for splitting the TF, optional (see z.splitTF)
+  config.addSample("qcd-sr-int",     "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR);
 
   config.sel = baseline;
   config.categories = srbins;
