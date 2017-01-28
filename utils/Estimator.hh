@@ -358,7 +358,7 @@ public:
     return hist;
   }
 
-  void plotComp(const BinInfo& var_info, const vector<TString> comp_samples, const vector<TString> comp_categories, bool comp_in_samples = true, bool isNormalized = true){
+  void plotComp(const BinInfo& var_info, const vector<TString> comp_samples, const vector<TString> comp_categories, bool comp_in_samples = true, bool isNormalized = true, float logymin = -1, std::function<void(TCanvas*)> *plotextra = nullptr){
     // plot distribution in *var_info.var* for all given samples and categories
     // and compare them between either *samples* or *categories* (in the ratio plot)
 
@@ -422,7 +422,8 @@ public:
     TString RYtitle = comp_in_samples ?
         "#frac{dN(" + (comp_samples.size()==2 ? config.samples.at(comp_samples.back()).label : "...") + ")}{dN(" + config.samples.at(comp_samples.front()).label +")}" :
         "#frac{dN(" + (comp_categories.size()==2 ? config.catMaps.at(comp_categories.back()).label : "...") + ")}{dN(" + config.catMaps.at(comp_categories.front()).label +")}";
-    auto c = drawCompAndRatio(hists, ratioHists, leg, RYtitle);
+    auto c = drawCompAndRatio(hists, ratioHists, leg, RYtitle, RATIO_YMIN, RATIO_YMAX, true, logymin);
+    if (plotextra) (*plotextra)(c);
 //    drawHeader(header_);
     TString plotname = "comp_"+filterString(plotvar)+"_btw_"+(comp_in_samples?"samples":"categories")+"__"+postfix_;
     c->SetTitle(plotname);

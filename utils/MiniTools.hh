@@ -33,7 +33,7 @@ std::string toString(Number value, int precision = 2, bool setFixed = true){
 }
 
 TString filterString(TString instr){
-  return instr.ReplaceAll("/", "_over_").ReplaceAll("*", "_times_");
+  return instr.ReplaceAll(" ", "").ReplaceAll(",", "_").ReplaceAll("/", "_over_").ReplaceAll("*", "_times_").ReplaceAll("(", "_").ReplaceAll(")", "_");
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
