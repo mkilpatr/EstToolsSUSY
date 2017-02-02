@@ -199,7 +199,7 @@ void compIVF(){
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCut = "", TString suffix = ""){
+void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCut = "", TString extraCutDiLep = "", TString suffix = ""){
 
   map<TString, TString> nbcutMap{
     {"nb0",       "nbjets==0"},
@@ -250,7 +250,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     for (auto &norm : DRNormMap){
       if (extraCut != "") {
         z.config.sel = addCuts({drbase, norm.second, extraCut});
-        z.setPostfix("pho_"+norm.first+suffix);
+        z.setPostfix("pho_"+norm.first+"_"+suffix);
       } else{
         z.config.sel = addCuts({drbase, norm.second});
         z.setPostfix("pho_"+norm.first+"_baseline");
@@ -279,9 +279,9 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     for (auto &norm : DRNormMap){
       Quantity RT = (norm.first=="") ? Quantity(1, 0) : z.calcRt(norm.second);
 
-      if (extraCut != "") {
-        z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second, extraCut});
-        z.setPostfix("z_"+norm.first+suffix);
+      if (extraCut != "" || extraCutDiLep != "") {
+        z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second, extraCut, extraCutDiLep});
+        z.setPostfix("z_"+norm.first+"_"+suffix);
       } else{
         z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second});
         z.setPostfix("z_"+norm.first+"_baseline");
@@ -324,9 +324,11 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
       auto leg = prepLegends({h0, h1}, {"#gamma+jets", "Z#rightarrowll"});
       auto hDR = makeRatioHists(h1, h0);
       auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}", 0.5, 1.499);
-      drawTLatexNDC((region=="hm"?"High #DeltaM, ":"Low #DeltaM, ") +  labels.at(norm.first), 0.2, 0.73, 0.032);
+      drawTLatexNDC((region=="hm"?"High #Deltam, ":"Low #Deltam, ") +  labels.at(norm.first), 0.2, 0.73, 0.032);
 
-      c->SaveAs(phoConfig().outputdir+"/znunu_"+region+"_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
+      TString title = "znunu_"+region+"_DR_cmp_"+vars.at(i)+(suffix!=""?"_"+suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first;
+      c->SetTitle(title);
+      c->SaveAs(phoConfig().outputdir+"/"+title+".pdf");
 
       cout << "\n--------\n Double ratios: " << norm.first << endl;
       for (int i=1; i<hDR->GetNbinsX()+1; ++i){
@@ -336,6 +338,22 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
 
     }
   }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void plotDR(bool splitFlavors = false, bool normalized = true){
+
+  DoubleRatios("hm", normalized);
+  DoubleRatios("lm", normalized);
+
+  if (splitFlavors){
+    DoubleRatios("hm", normalized, "", "abs(leptonpdgid)==11", "ZtoEE");
+    DoubleRatios("hm", normalized, "", "abs(leptonpdgid)==13", "ZtoMuMu");
+
+    DoubleRatios("lm", normalized, "", "abs(leptonpdgid)==11", "ZtoEE");
+    DoubleRatios("lm", normalized, "", "abs(leptonpdgid)==13", "ZtoMuMu");
+  }
+
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

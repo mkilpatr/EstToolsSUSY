@@ -51,7 +51,12 @@ TString joinString(const vector<TString>& vec, TString delimiter){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TString addCuts(const vector<TString>& cuts, TString prefix=""){
-  return prefix + joinString(cuts, " && ");
+  vector<TString> cCuts;
+  for (const auto &c : cuts) {
+    if (c.IsWhitespace()) continue; // ignore empty string
+    cCuts.push_back(c);
+  }
+  return prefix + joinString(cCuts, " && ");
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
