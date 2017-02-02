@@ -212,10 +212,10 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
   TString drbase;
   vector<TString> drNorms;
   if (region=="hm"){
-    drbase = "njets>=5";
+    drbase = "met>250 && njets>=5";
     drNorms = {"nbgeq1"};
   }else{
-    drbase = "njets>=2 && ak8isrpt>200 && dphiisrmet>2 && metovsqrtht>10";
+    drbase = "met>250 && njets>=2 && ak8isrpt>200 && dphiisrmet>2 && metovsqrtht>10";
 //    drNorms = {"nb0", "nbgeq1"};
     drNorms = {"nbgeq0"};
   }
@@ -290,7 +290,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
       for (auto var : vars){
         const auto &v = varDict.at(var);
 
-        z.plotDataMC(v, {"dyll", "ttbar"}, "doublelep", Category::dummy_category(), true);
+        z.plotDataMC(v, {"dyll", "ttbar"}, "doublelep", Category::dummy_category(), normalized);
 
         auto hdata = z.getHistogram(v, "doublelep", Category::dummy_category());
         auto hdyll = z.getHistogram(v, "dyll", Category::dummy_category());
@@ -302,7 +302,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
         }
         hdata->Add(httbar, -1);
 
-        double normFactor = hdata->Integral(0, hdata->GetNbinsX()+1)/hdyll->Integral(0, hdyll->GetNbinsX()+1);
+        double normFactor = hdata->Integral(1, hdata->GetNbinsX()+1)/hdyll->Integral(1, hdyll->GetNbinsX()+1);
         if(normalized) hdyll->Scale( normFactor );
         hdata->Divide(hdyll);
 
@@ -416,23 +416,24 @@ void plotZllInclusive(){
   TString data_sample = "doublelep";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 200, 1000, "GeV")},
-//    {"npv",       BinInfo("npv", "Number of Primary Vertices", 40, -0.5, 39.5)},
-//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+    {"met",       BinInfo("met", "#slash{E}_{T}", 12, 200, 800, "GeV")},
+    {"npv",       BinInfo("npv", "Number of Primary Vertices", 50, -0.5, 49.5)},
+    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
+    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+    {"nt",        BinInfo("nsdtop", "N_{t}", 2, -0.5, 1.5)},
+    {"nw",        BinInfo("nsdw",   "N_{W}", 2, -0.5, 1.5)},
+    {"nrt",       BinInfo("nrestop", "N_{res}", 2, -0.5, 1.5)},
+//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
     {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
 //    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
+    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
+    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
 //    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-//    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
-//    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-//    {"dileppt",   BinInfo("dileppt", "p_{T}^{ll} [GeV]", 20, 0, 1000)},
-//    {"dilepmass",   BinInfo("dilepmass", "m_{ll} [GeV]", 16, 70, 110)},
+    {"dileppt",   BinInfo("dileppt", "p_{T}^{ll} [GeV]", 20, 0, 1000)},
+    {"dilepmass",   BinInfo("dilepmass", "m_{ll} [GeV]", 40, 0, 200)},
 //    {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
 //    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
 //    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
@@ -440,10 +441,13 @@ void plotZllInclusive(){
 //    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)}
   };
 
-
   for (auto &var : varDict){
- //     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-    z.plotDataMC(var.second, mc_samples, data_sample, z.config.catMaps.at("on-z"), false, "", false);
+    z.resetSelection();
+    const auto &cat = var.first == "dilepmass" ? Category::dummy_category() : z.config.catMaps.at("on-z");
+    z.setSelection("leptonpdgid==11", "ele", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, cat, false, "", false);
+    z.setSelection("leptonpdgid==13", "mu", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, cat, false, "", false);
   }
 
 }
