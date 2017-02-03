@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_unblind(TString inputFile="std_pred_trad_unblind.root", TString outputName="/tmp/plots/unblind_18p2ifb/pred", bool plotPulls=false){
+void getFinalPlot_unblind(TString inputFile="/tmp/plots/unblind_36p8ifb/sig/std_pred_trad.root", TString outputName="/tmp/plots/unblind_36p8ifb/pred", bool plotPulls=false){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -278,7 +278,7 @@ void getFinalPlot_unblind(TString inputFile="std_pred_trad_unblind.root", TStrin
 //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    auto c = drawStackAndRatio(pred, hdata, leg, true, ratiolabel, RATIO_YMIN, RATIO_YMAX, xlow, xhigh, hsigs, unc, {hDataRawMC}, gPulls);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, ratiolabel, RATIO_YMIN, plotPulls ? RATIO_YMAX : ratioYmax[ireg], xlow, xhigh, hsigs, unc, {hDataRawMC}, gPulls);
     c->SetCanvasSize(800, 600);
     drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.76, 0.03);
     drawRegionLabels.at(ireg)();

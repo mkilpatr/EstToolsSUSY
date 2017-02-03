@@ -6,15 +6,15 @@
 namespace EstTools{
 
 const TString inputdir = "/tmp/trees";
-const TString outputdir = "/tmp/plots/unblind_18p2ifb";
+const TString outputdir = "/tmp/plots/unblind_36p8ifb";
 
 const TString datadir = ".";
-const TString lumistr = "18.2";
+const TString lumistr = "36.8";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*weight*truePUWeight*topptWeight*sdMVAWeight*resTopWeight";
+const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight*topptWeight*sdMVAWeight*resTopWeight";
 //const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
 // photon trigger eff.
@@ -35,6 +35,9 @@ const TString vetoes = " && nvetolep==0 && nvetotau==0";
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
 //const TString lepselwgt  = wgtvar + "*lepselweight";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
+
+// sr weight w/o top/W SF
+const TString lepvetowgt_no_wtopsf = lumistr+"*weight*truePUWeight*btagWeight*topptWeight";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -68,7 +71,7 @@ const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && passjson && (ismc || run<=276811 || (run>=278820 && run<=279931)) && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
@@ -567,7 +570,7 @@ map<TString, Category> qcdCatMap(){
 
 map<TString, Category> zllCatMap{
   {"on-z",  Category("on-z",  "dilepmass > 80 && dilepmass < 100",                      "on Z",   BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))},
-  {"off-z", Category("off-z", "dilepmass > 20 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
+  {"off-z", Category("off-z", "dilepmass > 50 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
 };
 
 
@@ -760,6 +763,17 @@ BaseConfig sigConfig(){
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
+  // raw MC w/o top/W SF
+  config.addSample("znunu-raw-sr",       "Z#rightarrow#nu#nu",   "sr/znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttbar-raw-sr",       "t#bar{t}",      "sr/ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("wjets-raw-sr",       "W+jets",        "sr/wjets",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("tW-raw-sr",          "tW",            "sr/tW",              lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttW-raw-sr",         "ttW",           "sr/ttW",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("qcd-raw-sr",         "QCD",           "sr/qcd-sr",          lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttZ-raw-sr",         "ttZ",           "sr/ttZ",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("diboson-raw-sr",     "Diboson",       "sr/diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+
+
 //  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
 //  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);
 //  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel + trigSR + vetoes);
@@ -777,7 +791,7 @@ map<TString, BinInfo> varDict {
   {"met",       BinInfo("met", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
   {"metgx",       BinInfo("met", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
   {"metzg",       BinInfo("met", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-  {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
+  {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 20, 0, 500, "GeV")},
   {"njets",     BinInfo("njets", "N_{j}", 8, -0.5, 7.5)},
   {"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
   {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
@@ -790,7 +804,7 @@ map<TString, BinInfo> varDict {
   {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
   {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
   {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-  {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  5, 300, 800)},
+  {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
   {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
   {"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
   {"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},

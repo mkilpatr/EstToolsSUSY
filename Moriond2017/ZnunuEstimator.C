@@ -361,17 +361,18 @@ void plotDR(bool splitFlavors = false, bool normalized = true){
 void plotPhotonInclusive(){
   COLOR_MAP.erase("photon");
 
-  auto config = phoConfig();
-  config.outputdir = "/tmp/plots/phocr_inclusive";
-  config.sel = "met>200";
+  auto config = BaseConfig();
+  config.outputdir = outputdir+"/phocr_inclusive";
+  config.sel = "met>200 && njets>=2";
 
   config.categories.clear();
   config.catMaps.clear();
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
+  config.addSample("singlepho",   "Data",           "photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
   config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
+  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
   config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
   config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
@@ -382,24 +383,30 @@ void plotPhotonInclusive(){
   TString data_sample = "singlepho";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 250, 800, "GeV")},
-//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-//    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-//    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
-//    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
+    {"met",       BinInfo("met", "#slash{E}_{T}", 12, 200, 800, "GeV")},
+    {"npv",       BinInfo("npv", "Number of Primary Vertices", 50, -0.5, 49.5)},
+    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
+    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+    {"nt",        BinInfo("nsdtop", "N_{t}", 2, -0.5, 1.5)},
+    {"nw",        BinInfo("nsdw",   "N_{W}", 2, -0.5, 1.5)},
+    {"nrt",       BinInfo("nrestop", "N_{res}", 2, -0.5, 1.5)},
+    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+    {"nivf",      BinInfo("nivf",    "N_{SV}", 3, -0.5, 2.5)},
+    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 2, 0, 1.)},
+    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{3},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"dphij4met", BinInfo("dphij3met", "#Delta#phi(j_{4},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 12, 0, 300)},
+    {"npho20",    BinInfo("npho20", "N_{#gamma, p_{T}>20}", 5, -0.5, 4.5)},
+    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
+    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
+    {"pho2pt",    BinInfo("pho2pt","p_{T}^{2nd #gamma} [GeV]", 20, 0, 400)},
 ////    {"drphotonparton",    BinInfo("drphotonparton", "min#DeltaR(#gamma, q)", 20, 0, 2)},
-//    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-//    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
-//    {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 20, 0, 1000)},
-//    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
+    {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 4, 0, 20)},
+    {"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
+    {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
+    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(CSV_{1}) [GeV]", 8, 20, 100)},
+    {"csvj2pt",   BinInfo("csvj2pt", "p_{T}(CSV_{2}) [GeV]", 8, 20, 100)},
 
 //    {"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
 //    {"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
@@ -413,7 +420,7 @@ void plotPhotonInclusive(){
     z.resetSelection();
     //z.setSelection("njets>=2", "njgeq2", "");
     //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("njets>=5", "njgeq5", "");
+//    z.setSelection("njets>=5", "njgeq5", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
   }
 
@@ -427,6 +434,7 @@ void plotZllInclusive(){
   config.categories = {"on-z"};
 
   config.sel = "met>200 && njets>=5";
+  config.outputdir = outputdir + "/zll_inclusive";
 
   BaseEstimator z(config);
 

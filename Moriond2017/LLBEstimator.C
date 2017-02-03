@@ -24,10 +24,12 @@ vector<Quantity> LLBPred(){
 
   std::map<TString,int> digits;
   digits["singlelep"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap"] = -3;
+  digits["_TF_SR_extrap"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/hqu/yields_llb_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/hqu/yields_llb_hm.tex", "hm", digits);
   }else{
     l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", digits);
   }

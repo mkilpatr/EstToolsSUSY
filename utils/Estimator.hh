@@ -317,15 +317,19 @@ public:
         int isamp = 0;
         for (const auto &c : samples){
           // what precision to use for this sample's yields?
-          bool isData = c.Contains("data"); // just a guess - see later
+          bool printUnc = (!c.Contains("data")); // print unc by default, unless data
           int dig = 2; // default 2 digits
+          if(c.Contains("data")) dig = 0; //0 for data
           if(c.Contains("TF")) dig = 3; // transfer factors get 3 digits
-          if(digits.count(c)>0) dig = digits.at(c); // user overrides # of digits for this sample
+          if(digits.count(c)>0) {
+            dig = abs(digits.at(c)); // user overrides # of digits for this sample
+            if (digits.at(c) <= 0) printUnc = false;  //  if <=0, do not print unc
+          }
 
           // send it!
           if(!skip) {
             outfile << " & \t" << fixed << setprecision(dig);
-            if(isData || dig==0) outfile << setprecision(0)    << yields.at(c).at(ibin).value; // no digits, no uncertainties
+            if(!printUnc)        outfile << setprecision(dig)  << yields.at(c).at(ibin).value; // no uncertainties
             else                 outfile << setprecision(dig)  << yields.at(c).at(ibin);       // 'dig' digits + uncertainties
           }
           ++isamp;

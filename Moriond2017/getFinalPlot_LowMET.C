@@ -17,7 +17,7 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
   vector<TString> datalabel = {"Observed"};
   vector<TString> rawsimlabel = {"Simulation"};
 
-  vector<TString> split = {"lm_", "hm_"};
+  vector<TString> split = {"lm", "hm"};
   vector<TString> splitlabels = {
       "Low #DeltaM",
       "High #DeltaM",

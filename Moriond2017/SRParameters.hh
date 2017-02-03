@@ -14,7 +14,7 @@ const TString lumistr = "36.8";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*weight*truePUWeight*topptWeight*sdMVAWeight*resTopWeight";
+const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight*topptWeight*sdMVAWeight*resTopWeight";
 //const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
 // photon trigger eff.
@@ -39,7 +39,7 @@ const TString vetoes = " && nvetolep==0 && nvetotau==0";
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
-bool SPLITTF = false; // split TF to CR-SR and SR-extrapolation
+bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
 const TString revert_vetoes = " && nvetolep>0 && mtlepmet<100";
 
 // MET+LEP LL method
@@ -603,7 +603,7 @@ map<TString, Category> qcdCatMap(){
 
 map<TString, Category> zllCatMap{
   {"on-z",  Category("on-z",  "dilepmass > 80 && dilepmass < 100",                      "on Z",   BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))},
-  {"off-z", Category("off-z", "dilepmass > 20 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
+  {"off-z", Category("off-z", "dilepmass > 50 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
 };
 
 
