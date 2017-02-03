@@ -149,7 +149,6 @@ public:
       const auto &sample = config.samples.at(sname);
       auto catMaps = (config.crCatMaps.empty() || sname.EndsWith("-sr")) ? config.catMaps : config.crCatMaps;
       auto srCatMaps = config.catMaps;
-      if(sname.EndsWith("-sr-int")) { catMaps = config.crCatMaps; }
 
       const int nMax = std::max(std::thread::hardware_concurrency()*0.8, std::thread::hardware_concurrency()-2.);
       std::atomic<int> nRunning(0);
@@ -252,7 +251,7 @@ public:
 
   // printYieldsTableLatex
   //
-  // Purpose 
+  // Purpose
   //   spits out latex-formatted table for Moriond17 results. designed so that llb/znunu/qcd/bkgs/results tables are similar.
   // Arguments
   //   vector<strings> of yields which have already been computed elsewhere, eg yields["TF_"] for LLB.
@@ -313,20 +312,24 @@ public:
       for (const auto &p : metlabels){
         // search region #, met
         if(!skip) outfile << ibin << " & " << p;
- 
+
         // each sample's yields
         int isamp = 0;
         for (const auto &c : samples){
           // what precision to use for this sample's yields?
-          bool isData = c.Contains("data"); // just a guess - see later
+          bool printUnc = (!c.Contains("data")); // print unc by default, unless data
           int dig = 2; // default 2 digits
+          if(c.Contains("data")) dig = 0; //0 for data
           if(c.Contains("TF")) dig = 3; // transfer factors get 3 digits
-          if(digits.count(c)>0) dig = digits.at(c); // user overrides # of digits for this sample
+          if(digits.count(c)>0) {
+            dig = abs(digits.at(c)); // user overrides # of digits for this sample
+            if (digits.at(c) <= 0) printUnc = false;  //  if <=0, do not print unc
+          }
 
           // send it!
           if(!skip) {
             outfile << " & \t" << fixed << setprecision(dig);
-            if(isData || dig==0) outfile << setprecision(0)    << yields.at(c).at(ibin).value; // no digits, no uncertainties
+            if(!printUnc)        outfile << setprecision(dig)  << yields.at(c).at(ibin).value; // no uncertainties
             else                 outfile << setprecision(dig)  << yields.at(c).at(ibin);       // 'dig' digits + uncertainties
           }
           ++isamp;
@@ -358,7 +361,7 @@ public:
     return hist;
   }
 
-  void plotComp(const BinInfo& var_info, const vector<TString> comp_samples, const vector<TString> comp_categories, bool comp_in_samples = true, bool isNormalized = true){
+  void plotComp(const BinInfo& var_info, const vector<TString> comp_samples, const vector<TString> comp_categories, bool comp_in_samples = true, bool isNormalized = true, float logymin = -1, std::function<void(TCanvas*)> *plotextra = nullptr){
     // plot distribution in *var_info.var* for all given samples and categories
     // and compare them between either *samples* or *categories* (in the ratio plot)
 
@@ -422,7 +425,8 @@ public:
     TString RYtitle = comp_in_samples ?
         "#frac{dN(" + (comp_samples.size()==2 ? config.samples.at(comp_samples.back()).label : "...") + ")}{dN(" + config.samples.at(comp_samples.front()).label +")}" :
         "#frac{dN(" + (comp_categories.size()==2 ? config.catMaps.at(comp_categories.back()).label : "...") + ")}{dN(" + config.catMaps.at(comp_categories.front()).label +")}";
-    auto c = drawCompAndRatio(hists, ratioHists, leg, RYtitle);
+    auto c = drawCompAndRatio(hists, ratioHists, leg, RYtitle, RATIO_YMIN, RATIO_YMAX, true, logymin);
+    if (plotextra) (*plotextra)(c);
 //    drawHeader(header_);
     TString plotname = "comp_"+filterString(plotvar)+"_btw_"+(comp_in_samples?"samples":"categories")+"__"+postfix_;
     c->SetTitle(plotname);

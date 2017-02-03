@@ -27,12 +27,10 @@ vector<Quantity> ZnunuPred(){
 
   z.writeRzUnc("/tmp/values_0l_unc_znunu.conf");
 
-  //z.printTable(false);
-
-  std::map<TString,int> dig;
-  //dig["singlelep"] = 0; // indicate it's data for proper formatting
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_lm.tex","lm", dig);
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_hm.tex","hm", dig);
+  std::map<TString,int> digits;
+  //dig["data"] = 0; // indicate it's data for proper formatting
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_lm.tex","lm", digits);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_hm.tex","hm", digits);
 
   return z.yields.at("_pred");
 }
@@ -57,9 +55,10 @@ void plotSgamma(){
   config.outputdir = config.outputdir+"/"+region;
 
   config.catMaps = phoCatMap();
+//  TString phocorrwgt = "*(1.47911-0.000621058*phopt)";
   config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
+  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
+  config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
   config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
   BaseEstimator z(config.outputdir);
@@ -200,7 +199,7 @@ void compIVF(){
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCut = "", TString suffix = ""){
+void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCut = "", TString extraCutDiLep = "", TString suffix = ""){
 
   map<TString, TString> nbcutMap{
     {"nb0",       "nbjets==0"},
@@ -213,10 +212,10 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
   TString drbase;
   vector<TString> drNorms;
   if (region=="hm"){
-    drbase = "njets>=5";
+    drbase = "met>250 && njets>=5";
     drNorms = {"nbgeq1"};
   }else{
-    drbase = "njets>=2 && ak8isrpt>200 && dphiisrmet>2 && metovsqrtht>10";
+    drbase = "met>250 && njets>=2 && ak8isrpt>200 && dphiisrmet>2 && metovsqrtht>10";
 //    drNorms = {"nb0", "nbgeq1"};
     drNorms = {"nbgeq0"};
   }
@@ -233,7 +232,8 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
   }
 
   vector<TString> vars = {"metzg"};
-//  vector<TString> vars = {"mtcsv12met", "njets", "nt", "nw", "metzg"};
+//  vector<TString> vars = {"ak8isrpt", "njets", "metzg"};
+//  vector<TString> vars = {"origmet"};
   map<TString, vector<TH1*>> hists;
 
   {
@@ -241,8 +241,8 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     auto config = phoConfig();
     config.catMaps = phoCatMap();
     config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-    config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
-    config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
+    config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
+    config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
     config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
     ZnunuEstimator z(config);
@@ -250,7 +250,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     for (auto &norm : DRNormMap){
       if (extraCut != "") {
         z.config.sel = addCuts({drbase, norm.second, extraCut});
-        z.setPostfix("pho_"+norm.first+suffix);
+        z.setPostfix("pho_"+norm.first+"_"+suffix);
       } else{
         z.config.sel = addCuts({drbase, norm.second});
         z.setPostfix("pho_"+norm.first+"_baseline");
@@ -279,9 +279,9 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
     for (auto &norm : DRNormMap){
       Quantity RT = (norm.first=="") ? Quantity(1, 0) : z.calcRt(norm.second);
 
-      if (extraCut != "") {
-        z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second, extraCut});
-        z.setPostfix("z_"+norm.first+suffix);
+      if (extraCut != "" || extraCutDiLep != "") {
+        z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second, extraCut, extraCutDiLep});
+        z.setPostfix("z_"+norm.first+"_"+suffix);
       } else{
         z.config.sel = addCuts({drbase, zllCatMap["on-z"].cut, norm.second});
         z.setPostfix("z_"+norm.first+"_baseline");
@@ -290,7 +290,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
       for (auto var : vars){
         const auto &v = varDict.at(var);
 
-        z.plotDataMC(v, {"dyll", "ttbar"}, "doublelep", Category::dummy_category(), true);
+        z.plotDataMC(v, {"dyll", "ttbar"}, "doublelep", Category::dummy_category(), normalized);
 
         auto hdata = z.getHistogram(v, "doublelep", Category::dummy_category());
         auto hdyll = z.getHistogram(v, "dyll", Category::dummy_category());
@@ -302,7 +302,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
         }
         hdata->Add(httbar, -1);
 
-        double normFactor = hdata->Integral(0, hdata->GetNbinsX()+1)/hdyll->Integral(0, hdyll->GetNbinsX()+1);
+        double normFactor = hdata->Integral(1, hdata->GetNbinsX()+1)/hdyll->Integral(1, hdyll->GetNbinsX()+1);
         if(normalized) hdyll->Scale( normFactor );
         hdata->Divide(hdyll);
 
@@ -324,9 +324,11 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
       auto leg = prepLegends({h0, h1}, {"#gamma+jets", "Z#rightarrowll"});
       auto hDR = makeRatioHists(h1, h0);
       auto c = drawCompAndRatio({h0, h1}, {hDR}, leg, "#frac{Z#rightarrowll}{#gamma+jets}", 0.5, 1.499);
-      drawTLatexNDC((region=="hm"?"High #DeltaM, ":"Low #DeltaM, ") +  labels.at(norm.first), 0.2, 0.73, 0.032);
+      drawTLatexNDC((region=="hm"?"High #Deltam, ":"Low #Deltam, ") +  labels.at(norm.first), 0.2, 0.73, 0.032);
 
-      c->SaveAs(phoConfig().outputdir+"/znunu_"+region+"_DR_cmp_"+vars.at(i)+(extraCut!=""?suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first+".pdf");
+      TString title = "znunu_"+region+"_DR_cmp_"+vars.at(i)+(suffix!=""?"_"+suffix:"_baseline")+"_"+(normalized?"":"normalizedToLumi")+"_"+norm.first;
+      c->SetTitle(title);
+      c->SaveAs(phoConfig().outputdir+"/"+title+".pdf");
 
       cout << "\n--------\n Double ratios: " << norm.first << endl;
       for (int i=1; i<hDR->GetNbinsX()+1; ++i){
@@ -339,21 +341,38 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void plotDR(bool splitFlavors = false, bool normalized = true){
+
+  DoubleRatios("hm", normalized);
+  DoubleRatios("lm", normalized);
+
+  if (splitFlavors){
+    DoubleRatios("hm", normalized, "", "abs(leptonpdgid)==11", "ZtoEE");
+    DoubleRatios("hm", normalized, "", "abs(leptonpdgid)==13", "ZtoMuMu");
+
+    DoubleRatios("lm", normalized, "", "abs(leptonpdgid)==11", "ZtoEE");
+    DoubleRatios("lm", normalized, "", "abs(leptonpdgid)==13", "ZtoMuMu");
+  }
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void plotPhotonInclusive(){
   COLOR_MAP.erase("photon");
 
-  auto config = phoConfig();
-  config.outputdir = "/tmp/plots/phocr_inclusive";
-  config.sel = "met>200";
+  auto config = BaseConfig();
+  config.outputdir = outputdir+"/phocr_inclusive";
+  config.sel = "met>200 && njets>=2";
 
   config.categories.clear();
   config.catMaps.clear();
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
+  config.addSample("singlepho",   "Data",           "photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
   config.addSample("gjets",       "#gamma+jets",    "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR);
+  config.addSample("qcd-fake",    "Fake",           "photoncr/qcd-fake",   phowgt, datasel + trigPhoCR + phoBadEventRemoval);
   config.addSample("qcd-frag",    "Fragmentation",  "photoncr/qcd-frag",   phowgt, datasel + trigPhoCR);
   config.addSample("ttg",         "t#bar{t}#gamma", "photoncr/ttg",        phowgt, datasel + trigPhoCR);
 
@@ -364,24 +383,30 @@ void plotPhotonInclusive(){
   TString data_sample = "singlepho";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 250, 800, "GeV")},
-//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-//    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-//    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
-//    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
+    {"met",       BinInfo("met", "#slash{E}_{T}", 12, 200, 800, "GeV")},
+    {"npv",       BinInfo("npv", "Number of Primary Vertices", 50, -0.5, 49.5)},
+    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
+    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+    {"nt",        BinInfo("nsdtop", "N_{t}", 2, -0.5, 1.5)},
+    {"nw",        BinInfo("nsdw",   "N_{W}", 2, -0.5, 1.5)},
+    {"nrt",       BinInfo("nrestop", "N_{res}", 2, -0.5, 1.5)},
+    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+    {"nivf",      BinInfo("nivf",    "N_{SV}", 3, -0.5, 2.5)},
+    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 2, 0, 1.)},
+    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{3},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"dphij4met", BinInfo("dphij3met", "#Delta#phi(j_{4},#slash{E}_{T})", vector<double>{0, 0.15, 0.5, 1})},
+    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 12, 0, 300)},
+    {"npho20",    BinInfo("npho20", "N_{#gamma, p_{T}>20}", 5, -0.5, 4.5)},
+    {"phopt",     BinInfo("phopt", "p_{T}^{#gamma} [GeV]", 16, 0, 800)},
+    {"phoeta",    BinInfo("phoeta", "#eta_{#gamma}", 25, -2.5, 2.5)},
+    {"pho2pt",    BinInfo("pho2pt","p_{T}^{2nd #gamma} [GeV]", 20, 0, 400)},
 ////    {"drphotonparton",    BinInfo("drphotonparton", "min#DeltaR(#gamma, q)", 20, 0, 2)},
-//    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-//    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
-//    {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 20, 0, 1000)},
-//    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
+    {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 4, 0, 20)},
+    {"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
+    {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
+    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(CSV_{1}) [GeV]", 8, 20, 100)},
+    {"csvj2pt",   BinInfo("csvj2pt", "p_{T}(CSV_{2}) [GeV]", 8, 20, 100)},
 
 //    {"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
 //    {"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
@@ -395,7 +420,7 @@ void plotPhotonInclusive(){
     z.resetSelection();
     //z.setSelection("njets>=2", "njgeq2", "");
     //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("njets>=5", "njgeq5", "");
+//    z.setSelection("njets>=5", "njgeq5", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
   }
 
@@ -409,6 +434,7 @@ void plotZllInclusive(){
   config.categories = {"on-z"};
 
   config.sel = "met>200 && njets>=5";
+  config.outputdir = outputdir + "/zll_inclusive";
 
   BaseEstimator z(config);
 
@@ -416,23 +442,24 @@ void plotZllInclusive(){
   TString data_sample = "doublelep";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 200, 1000, "GeV")},
-//    {"npv",       BinInfo("npv", "Number of Primary Vertices", 40, -0.5, 39.5)},
-//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+    {"met",       BinInfo("met", "#slash{E}_{T}", 12, 200, 800, "GeV")},
+    {"npv",       BinInfo("npv", "Number of Primary Vertices", 50, -0.5, 49.5)},
+    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 16, 0, 800, "GeV")},
+    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
+    {"nt",        BinInfo("nsdtop", "N_{t}", 2, -0.5, 1.5)},
+    {"nw",        BinInfo("nsdw",   "N_{W}", 2, -0.5, 1.5)},
+    {"nrt",       BinInfo("nrestop", "N_{res}", 2, -0.5, 1.5)},
+//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
     {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
 //    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
 //    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
+    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
+    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
 //    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-//    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
-//    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-//    {"dileppt",   BinInfo("dileppt", "p_{T}^{ll} [GeV]", 20, 0, 1000)},
-//    {"dilepmass",   BinInfo("dilepmass", "m_{ll} [GeV]", 16, 70, 110)},
+    {"dileppt",   BinInfo("dileppt", "p_{T}^{ll} [GeV]", 20, 0, 1000)},
+    {"dilepmass",   BinInfo("dilepmass", "m_{ll} [GeV]", 40, 0, 200)},
 //    {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
 //    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
 //    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
@@ -440,10 +467,13 @@ void plotZllInclusive(){
 //    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)}
   };
 
-
   for (auto &var : varDict){
- //     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-    z.plotDataMC(var.second, mc_samples, data_sample, z.config.catMaps.at("on-z"), false, "", false);
+    z.resetSelection();
+    const auto &cat = var.first == "dilepmass" ? Category::dummy_category() : z.config.catMaps.at("on-z");
+    z.setSelection("leptonpdgid==11", "ele", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, cat, false, "", false);
+    z.setSelection("leptonpdgid==13", "mu", "");
+    z.plotDataMC(var.second, mc_samples, data_sample, cat, false, "", false);
   }
 
 }

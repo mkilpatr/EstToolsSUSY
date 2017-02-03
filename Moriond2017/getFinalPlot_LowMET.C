@@ -6,9 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputName="/tmp/apatters/20170122/"){
-
-  bool plotPulls = true;
+void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputName="/tmp/plots/validation", bool plotPulls=false){
 
   vector<TString> bkgs = {"diboson_pred", "ttZ_pred", "qcd_pred", "znunu_pred", "ttbarplusw_pred"};
   vector<TString> mcs =  {"diboson_mc",   "ttZ_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -19,45 +17,22 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
   vector<TString> datalabel = {"Observed"};
   vector<TString> rawsimlabel = {"Simulation"};
 
-  vector<TString> split = {"lm_", "hm_"};
+  vector<TString> split = {"lm", "hm"};
   vector<TString> splitlabels = {
-    "Low #DeltaM}",
-    "High #DeltaM",
+      "Low #DeltaM",
+      "High #DeltaM",
   };
   TLatex tl;
   tl.SetTextSize(0.03);
   tl.SetTextAlign(11);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){
-      tl.DrawLatexNDC(0.18, 0.71, "M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV");
-      tl.DrawLatexNDC(0.2, 0.65, "N_{b}=1");
-      tl.DrawLatexNDC(0.31, 0.65, "N_{b}#geq2");
-      tl.DrawLatexNDC(0.58, 0.71, "M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV");
-      tl.DrawLatexNDC(0.52, 0.65, "N_{b}=1");
-      tl.DrawLatexNDC(0.80, 0.65, "N_{b}#geq2");
-    },
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
-    [](TCanvas *c){
-      ((TPad*)c->GetListOfPrimitives()->At(0))->cd();
-      drawLine(4,  0.01, 4,  5000);
-      drawLine(9,  0.01, 9,  5000);
-      drawLine(15, 0.01, 15, 2000);
-      drawLine(17, 0.01, 17, 2000);
-      drawLine(19, 0.01, 19, 2000);
-      c->cd();
-    },
   };
 
 
   vector<TString> xlabels {
-    "5-6j", "#geq7j",
-    "5-6j", "#geq7j",
-    "0W, 0t, 5-6j", "0W, 0t, #geq7j",
-    "#geq1W, 0t", "0W, #geq1t", "#geq1W, #geq1t",
-    "0W, 0T, 5-6j", "0W, 0t, #geq7j",
-    "#geq1W, 0t", "0W, #geq1t", "#geq1W, #geq1t",
   };
 
   vector<TString> dummylabels(xlabels.size(), "");
@@ -74,7 +49,7 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
 
   prepHists(pred, false, false, true);
   prepHists({hdata}, false, false, false, {kBlack});
-//  setBinLabels(hdata, dummylabels);
+  //  setBinLabels(hdata, dummylabels);
   hdata->GetXaxis()->SetTitle("");
 
   // plot raw MC
@@ -84,75 +59,74 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
     else hmctotal->Add((TH1*)f->Get(mc));
   }
 
-  // hbkgtotal is total corrected MC. verified central values & unc against plots. 
-  // ** necessary to use with ICHEP-cr roots, which lack "bkgtotal_unc_sr" (unc, with asymmetric errors)
-  TH1* hbkgtotal = nullptr;
-  for (auto *h : pred){
-    auto *hmc = (TH1*)h->Clone();
-
-    if (!hbkgtotal) { hbkgtotal = (TH1*)hmc->Clone("hbkgtotal"); }
-    else { hbkgtotal->Add(hmc); }
-
-    if (hmc->GetLineColor()!=kBlack){ hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack); }
-  }
-
   TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
   hDataRawMC->Divide(hmctotal);
   hDataRawMC->SetLineWidth(2);
   prepHists({hDataRawMC}, false, false, false, {kOrange});
-  RATIO_YMIN = 0.001; RATIO_YMAX = 2.999;
 
+  TGraphAsymmErrors* gPulls = 0;
+  if(plotPulls){
     TH1* hPulls = 0;
-    TGraphAsymmErrors* gPulls = 0;
     TGraphAsymmErrors* gDataUnc = 0;
-    if(plotPulls){
 
-      // hPulls (no uncertainties) will replace hDataRawMC as yellow connected line in ratio plot
-      // gPulls (no central values) will replace the shaded blue error bars in the ratio plot __only__
-      hPulls = (TH1*)hdata->Clone("hDataRawMC");
-      
-      if(unc) {
-        gPulls = (TGraphAsymmErrors*)unc->Clone(); // asymm errors from systematics, for Moriond17 samples
-      }else{
-        gPulls = new TGraphAsymmErrors(hbkgtotal); // from corrected bkg total histogram ... for ICHEP-cr samples
-      }
-      float nbins = (float)gPulls->GetN();
-      std::cout << "Total bins: " << nbins << std::endl;
+    // hbkgtotal is total corrected MC. verified central values & unc against plots.
+    // ** necessary to use with ICHEP-cr roots, which lack "bkgtotal_unc_sr" (unc, with asymmetric errors)
+    TH1* hbkgtotal = nullptr;
+    for (auto *h : pred){
+      auto *hmc = (TH1*)h->Clone();
 
-      hPulls->SetBinContent(hPulls->GetNbinsX()+1, 0.);//safety from overflow
-      hPulls->SetBinContent(0, 0.);
-      gDataUnc = getAsymmErrors(hdata);
-      std::cout << "bin/data/dataunchigh/dataunclow/predi/prediunc/pull/pulllow/pullhigh: " << std::endl;
-      int n1 = 0, n3 = 0, n5 = 0;
-      for(unsigned i = 0; i < nbins; i++){
-        float fdata        = hdata->GetBinContent(i+1); // histos are indexed (1...N)
-        float fdataunchigh = gDataUnc->GetErrorYhigh(i);
-        float fdataunclow  = gDataUnc->GetErrorYlow(i);
-        float fpredi       = gPulls->GetY()[i];
-        float fprediunc    = gPulls->GetErrorY(i); // avg of GetErrorYLow and GetErrorYHigh
-        float pull         = (fdata - fpredi)/fprediunc;
-        float pullhigh     = (fdata - (fpredi - fdataunchigh))/fprediunc;
-        float pulllow      = (fdata - (fpredi + fdataunclow))/fprediunc;
-        std::cout << i << " " <<fdata << " " << fdataunchigh << " " << fdataunclow << " " << fpredi<< " " <<fprediunc<< " " <<pull << " " << pulllow << " " << pullhigh << std::endl;
-        if(abs(pull)>5) std::cout << "** Pull is over 5! " << i << " " << pull << std::endl;
-        if(abs(pull)<1) n1++;
-        if(abs(pull)<3) n3++;
-        if(abs(pull)<5) n5++;
-        hPulls->SetBinContent(i+1, pull);
-        gPulls->SetPoint(i, gPulls->GetX()[i], pull);
-        gPulls->SetPointEYhigh(i, pullhigh - pull);
-        gPulls->SetPointEYlow(i, pull - pulllow);
-      }
-      std::cout << "Pulls within 1, 3, 5: " << n1 << " (" << n1/nbins << "%),  " << n3 << " (" << n3/nbins << "%),  " << n5 << " (" << n5/nbins << "%),  " << std::endl;
-      hDataRawMC = hPulls; // switcharoo
-      hDataRawMC->SetLineWidth(2);
-      prepHists({hDataRawMC}, false, false, false, {kBlack});
-      rawsimlabel.at(0) = "Pull";
-      double maxpull = 5.;
-      RATIO_YMIN = -maxpull + 0.001;
-      RATIO_YMAX = +maxpull - 0.001;
-      ratiolabel = "(D-P)/#sigma(P)";
+      if (!hbkgtotal) { hbkgtotal = (TH1*)hmc->Clone("hbkgtotal"); }
+      else { hbkgtotal->Add(hmc); }
+
+      if (hmc->GetLineColor()!=kBlack){ hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack); }
     }
+
+    // hPulls (no uncertainties) will replace hDataRawMC as yellow connected line in ratio plot
+    // gPulls (no central values) will replace the shaded blue error bars in the ratio plot __only__
+    hPulls = (TH1*)hdata->Clone("hDataRawMC");
+
+    if(unc) {
+      gPulls = (TGraphAsymmErrors*)unc->Clone(); // asymm errors from systematics, for Moriond17 samples
+    }else{
+      gPulls = new TGraphAsymmErrors(hbkgtotal); // from corrected bkg total histogram ... for ICHEP-cr samples
+    }
+    float nbins = (float)gPulls->GetN();
+    std::cout << "Total bins: " << nbins << std::endl;
+
+    hPulls->SetBinContent(hPulls->GetNbinsX()+1, 0.);//safety from overflow
+    hPulls->SetBinContent(0, 0.);
+    gDataUnc = getAsymmErrors(hdata);
+    std::cout << "bin/data/dataunchigh/dataunclow/predi/prediunc/pull/pulllow/pullhigh: " << std::endl;
+    int n1 = 0, n3 = 0, n5 = 0;
+    for(unsigned i = 0; i < nbins; i++){
+      float fdata        = hdata->GetBinContent(i+1); // histos are indexed (1...N)
+      float fdataunchigh = gDataUnc->GetErrorYhigh(i);
+      float fdataunclow  = gDataUnc->GetErrorYlow(i);
+      float fpredi       = gPulls->GetY()[i];
+      float fprediunc    = gPulls->GetErrorY(i); // avg of GetErrorYLow and GetErrorYHigh
+      float pull         = (fdata - fpredi)/fprediunc;
+      float pullhigh     = (fdata - (fpredi - fdataunchigh))/fprediunc;
+      float pulllow      = (fdata - (fpredi + fdataunclow))/fprediunc;
+      std::cout << i << " " <<fdata << " " << fdataunchigh << " " << fdataunclow << " " << fpredi<< " " <<fprediunc<< " " <<pull << " " << pulllow << " " << pullhigh << std::endl;
+      if(abs(pull)>5) std::cout << "** Pull is over 5! " << i << " " << pull << std::endl;
+      if(abs(pull)<1) n1++;
+      if(abs(pull)<3) n3++;
+      if(abs(pull)<5) n5++;
+      hPulls->SetBinContent(i+1, pull);
+      gPulls->SetPoint(i, gPulls->GetX()[i], pull);
+      gPulls->SetPointEYhigh(i, pullhigh - pull);
+      gPulls->SetPointEYlow(i, pull - pulllow);
+    }
+    std::cout << "Pulls within 1, 3, 5: " << n1 << " (" << n1/nbins << "%),  " << n3 << " (" << n3/nbins << "%),  " << n5 << " (" << n5/nbins << "%),  " << std::endl;
+    hDataRawMC = hPulls; // switcharoo
+    hDataRawMC->SetLineWidth(2);
+    prepHists({hDataRawMC}, false, false, false, {kBlack});
+    rawsimlabel.at(0) = "Pull";
+    double maxpull = 5.;
+    RATIO_YMIN = -maxpull + 0.001;
+    RATIO_YMAX = +maxpull - 0.001;
+    ratiolabel = "(D-P)/#sigma(P)";
+  }
 
 
   auto catMap = srCatMap();
@@ -183,7 +157,7 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
     appendLegends(leg, {hDataRawMC}, rawsimlabel, "L");
-  //  leg->SetTextSize(0.03);
+//  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
     auto c = drawStackAndRatio(pred, hdata, leg, true, ratiolabel, RATIO_YMIN, RATIO_YMAX, xlow, xhigh, {}, unc, {hDataRawMC}, gPulls);
@@ -203,12 +177,7 @@ void getFinalPlot_LowMET(TString inputFile="std_pred_trad.root", TString outputN
     c->SetTitle(basename);
     c->Print(basename+".pdf");
     c->Print(basename +".C");
-    c->Print(basename +".root");
-
 
   }
-
-
-
 
 }

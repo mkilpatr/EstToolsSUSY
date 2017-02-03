@@ -88,7 +88,7 @@ void BkgPredHM_LowMET(){
     prepHists(vpred, false, false, true);
     prepHists({hdata}, false, false, false, {kBlack});
 
-    // plot raw MC
+    // plot raw MC - w/ SF
     TH1 *hmctotal = nullptr;
     for(auto &hmc : mc){
       if (!hmctotal) hmctotal = (TH1*) hmc->Clone();
@@ -99,13 +99,27 @@ void BkgPredHM_LowMET(){
     hDataRawMC->SetLineWidth(2);
     prepHists({hDataRawMC}, false, false, false, {kOrange});
 
+    // plot raw MC - w/o top/W SF
+    TH1 *hmcnosf = nullptr;
+    vector<TString> mcnosf = {"znunu-raw-sr","ttbar-raw-sr","wjets-raw-sr","tW-raw-sr","ttW-raw-sr","qcd-raw-sr","ttZ-raw-sr","diboson-raw-sr"};
+    for (auto &sname : mcnosf){
+      auto hmc = convertToHist(s.yields.at(sname), sname, ";Search Region;Events");
+      if (!hmcnosf) hmcnosf = (TH1*)hmc->Clone();
+      else hmcnosf->Add(hmc);
+    }
+    TH1* hDataMCNoSF = (TH1*)hdata->Clone("hDataMCNoSF");
+    hDataMCNoSF->Divide(hmcnosf);
+    hDataMCNoSF->SetLineWidth(2);
+    prepHists({hDataMCNoSF}, false, false, false, {kPink-2});
+
     auto leg = prepLegends(vpred, bkglabels, "F");
     appendLegends(leg, {hdata}, datalabel, "LP");
     appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
+    appendLegends(leg, {hDataMCNoSF}, {"MC (w/o top/W SF)"}, "L");
     leg->SetTextSize(0.03);
 //    leg->SetNColumns(2);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC});
+    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC, hDataMCNoSF});
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
@@ -116,6 +130,7 @@ void BkgPredHM_LowMET(){
     for (auto *h : vpred) h->Write();
     for (auto *g : vgraphs) g->Write();
     for (auto *h : mc)   h->Write();
+    hDataMCNoSF->Write();
     hdata->Write();
     output->Close();
   };

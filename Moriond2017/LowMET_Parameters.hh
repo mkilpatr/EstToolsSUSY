@@ -14,7 +14,7 @@ const TString lumistr = "36.8";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*weight*topptWeight*sdMVAWeight*resTopWeight";
+const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight*topptWeight*sdMVAWeight*resTopWeight";
 //const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
 // photon trigger eff.
@@ -36,6 +36,9 @@ const TString vetoes = " && nvetolep==0 && nvetotau==0";
 //const TString lepselwgt  = wgtvar + "*lepselweight";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
+// sr weight w/o top/W SF
+const TString lepvetowgt_no_wtopsf = lumistr+"*weight*truePUWeight*btagWeight*topptWeight";
+
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
@@ -54,10 +57,10 @@ const TString trigLepCR = " && passtriglepOR";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-//const TString qcdwgt = wgtvar;
-const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
-//const TString qcdvetowgt = lepvetowgt;
+//const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
+const TString qcdwgt = wgtvar;
+//const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
+const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -66,6 +69,7 @@ const TString sigwgt = lepvetowgt;
 // triggers
 const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
+const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
@@ -512,7 +516,7 @@ map<TString, Category> qcdCatMap(){
 
 map<TString, Category> zllCatMap{
   {"on-z",  Category("on-z",  "dilepmass > 80 && dilepmass < 100",                      "on Z",   BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))},
-  {"off-z", Category("off-z", "dilepmass > 20 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
+  {"off-z", Category("off-z", "dilepmass > 50 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
 };
 
 
@@ -528,7 +532,7 @@ BaseConfig phoConfig(){
 
   config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
 
-  config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt, datasel + trigPhoCR);
+  config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt, datasel + trigPhoCR + phoBadEventRemoval);
 //  config.addSample("photon",      "Photon",         "photoncr/gjets",      phowgt, datasel + trigPhoCR);
   config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt, datasel + trigSR + vetoes);
 
@@ -607,7 +611,7 @@ BaseConfig lepConfig(){
 BaseConfig srConfig(){
   BaseConfig     config;
 
-  config.inputdir = inputdir;
+  config.inputdir = inputdir+"/sr";
   config.outputdir = outputdir+"/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
@@ -704,6 +708,17 @@ BaseConfig sigConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
+
+  // raw MC w/o top/W SF
+  config.addSample("znunu-raw-sr",       "Z#rightarrow#nu#nu",   "sr/znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttbar-raw-sr",       "t#bar{t}",      "sr/ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("wjets-raw-sr",       "W+jets",        "sr/wjets",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("tW-raw-sr",          "tW",            "sr/tW",              lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttW-raw-sr",         "ttW",           "sr/ttW",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("qcd-raw-sr",         "QCD",           "sr/qcd-sr",          lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttZ-raw-sr",         "ttZ",           "sr/ttZ",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("diboson-raw-sr",     "Diboson",       "sr/diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+
 
 //  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
 //  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);

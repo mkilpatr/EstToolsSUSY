@@ -13,21 +13,22 @@ vector<Quantity> QCDPred(){
   QCDEstimator z(config);
 
 //  z.runBootstrapping = false;
-  z.splitTF = true;
+  z.splitTF = SPLITTF;
 
   z.pred();
   z.naiveTF();
   z.printYields();
 
-  std::map<TString,int> dig;
-  dig["_DATA"] = 0; // indicate it's data for proper formatting
+  std::map<TString,int> digits;
+  digits["_DATA"] = 0; // indicate it's data for proper formatting
+  digits["_QCDTF_CR_to_SR_noextrap"] = -3;
+  digits["_QCDTF_SR_extrap"] = -3;
 
+  z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/hqu/yields_qcd_lm.tex","lm", digits); //LM
   if(z.splitTF){
-    z.printYieldsTableLatex({"_DATA", "_TF", "_QCDTF_CR_to_SR_noextrap", "_QCDTF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_qcd_lm.tex","lm", dig);
-    z.printYieldsTableLatex({"_DATA", "_TF", "_QCDTF_CR_to_SR_noextrap", "_QCDTF_SR_extrap", "_pred"}, labelMap, "/tmp/yields_qcd_hm.tex","hm", dig);
+    z.printYieldsTableLatex({"_DATA", "_TF", "_QCDTF_CR_to_SR_noextrap", "_QCDTF_SR_extrap", "_pred"}, labelMap, "/tmp/hqu/yields_qcd_hm.tex","hm", digits);
   }else{
-    z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/yields_qcd_lm.tex","lm", dig);
-    z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/yields_qcd_hm.tex","hm", dig);
+    z.printYieldsTableLatex({"_DATA", "_TF", "_pred"}, labelMap, "/tmp/yields_qcd_hm.tex","hm", digits);
   }
 
   return z.yields.at("_pred");

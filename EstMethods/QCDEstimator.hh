@@ -144,18 +144,23 @@ public:
 
     yields["_SubCorr"] = std::vector<Quantity>();
     yields["_TF"] = std::vector<Quantity>();
-    yields["_QCDTF_CR_to_SR_noextrap"] = std::vector<Quantity>(); // corrected cr-to-sr half of the TF
+    if (splitTF){
+      yields["_QCDTF_CR_to_SR_noextrap"] = std::vector<Quantity>(); // corrected cr-to-sr half of the TF
+    }
     for (unsigned i=0; i<vdata.size(); ++i){
       double otherVal = yields.at("otherbkgs").at(i).value;
       double dataVal = vdata.at(i).value;
       if (dataVal<10) dataVal = yields.at("qcd-withveto-cr").at(i).value + otherVal;
+      dataVal = std::max(0.0001, dataVal); // FIXME
       double sub = otherVal/dataVal;
 //      Quantity corr(1-sub, sub*(1-sub)); // 100% unc on the subtraction: FIXME?
       Quantity corr(1-sub, 0); // subtraction unc taken externally (in addition to jetresptail & met integration)
       yields.at("_SubCorr").push_back(corr);
       yields.at("_TF").push_back(yields.at("_QCDTF").at(i) * corr);
-      std::cout << "Correcting the split QCD TF" << std::endl;
-      yields["_QCDTF_CR_to_SR_noextrap"].push_back(yields.at("_QCDTF_CR_to_SR_noextrap_nocorr").at(i) * corr);
+      if (splitTF){
+        std::cout << "Correcting the split QCD TF" << std::endl;
+        yields["_QCDTF_CR_to_SR_noextrap"].push_back(yields.at("_QCDTF_CR_to_SR_noextrap_nocorr").at(i) * corr);
+      }
     }
 
   }

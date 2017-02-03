@@ -19,8 +19,8 @@ void srYields(){
 //  z.printYieldsTable({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG"});
 //  z.printYieldsTable({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_450", "T2tt_400_300", "T2tt_700_400", "T2tt_1100_1"});
 
-  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_450", "T2tt_400_300"}, labelMap, "/tmp/yields_lm.tex");
-  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2tt_1000_1", "T2tt_700_400"}, labelMap, "/tmp/yields_hm.tex");
+  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2fbd_500_450", "T2tt_400_300"}, labelMap, "/tmp/hqu/yields_lm.tex", "lm");
+  z.printYieldsTableLatex({"LLB", "znunu", "qcd", "ttZ", "diboson", "Total BKG", "T2tt_1000_1", "T2tt_700_400"}, labelMap, "/tmp/hqu/yields_hm.tex", "hm");
 
 }
 
