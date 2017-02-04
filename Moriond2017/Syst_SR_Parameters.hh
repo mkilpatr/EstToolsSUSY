@@ -19,7 +19,7 @@ TString restopwgt = "resTopWeight";
 
 // lumi and base weight
 TString wgtvar(){
-  return lumistr+"*weight*topptWeight*"+sdmvawgt+"*"+restopwgt;
+  return lumistr+"*weight*truePUWeight*btagWeight*topptWeight*"+sdmvawgt+"*"+restopwgt;
 }
 //TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
@@ -60,10 +60,10 @@ const TString trigLepCR = " && passtriglepOR";
 TString onelepcrwgt() {return lepselwgt();}
 
 // qcd weights
-TString qcdwgt() {return wgtvar() + "*qcdRespTailWeight";}
-//const TString qcdwgt = wgtvar;
-TString qcdvetowgt() {return lepvetowgt() + "*qcdRespTailWeight";}
-//const TString qcdvetowgt = lepvetowgt;
+//TString qcdwgt() {return wgtvar() + "*qcdRespTailWeight";}
+TString qcdwgt() {return wgtvar();}
+//TString qcdvetowgt() {return lepvetowgt() + "*qcdRespTailWeight";}
+TString qcdvetowgt() {return lepvetowgt();}
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -72,6 +72,7 @@ TString sigwgt() {return lepvetowgt();}
 // triggers
 const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
+const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
@@ -571,7 +572,7 @@ map<TString, Category> qcdCatMap(){
 
 map<TString, Category> zllCatMap{
   {"on-z",  Category("on-z",  "dilepmass > 80 && dilepmass < 100",                      "on Z",   BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))},
-  {"off-z", Category("off-z", "dilepmass > 20 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
+  {"off-z", Category("off-z", "dilepmass > 50 && (dilepmass < 80 || dilepmass > 100)",  "off Z",  BinInfo("met", "#slash{E}_{T}^{ll}", vector<double>{200, 1000}, "GeV"))}
 };
 
 
@@ -587,7 +588,7 @@ BaseConfig phoConfig(){
 
   config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
 
-  config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt(), datasel + trigPhoCR);
+  config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt(), datasel + trigPhoCR + phoBadEventRemoval);
 //  config.addSample("photon",      "Photon",         "photoncr/gjets",      phowgt, datasel + trigPhoCR);
   config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt(), datasel + trigSR + vetoes);
 
