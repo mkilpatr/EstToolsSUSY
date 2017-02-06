@@ -19,7 +19,7 @@ TString restopwgt = "resTopWeight";
 
 // lumi and base weight
 TString wgtvar(){
-  return lumistr+"*weight*topptWeight*"+sdmvawgt+"*"+restopwgt;
+  return lumistr+"*weight*truePUWeight*btagWeight*topptWeight*"+sdmvawgt+"*"+restopwgt;
 }
 //TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
@@ -28,14 +28,14 @@ TString phowgt() { return wgtvar(); }
 //TString phowgt = wgtvar + "*qcdRespTailWeight";
 
 // No Lepton SF
-TString lepvetowgt() {return wgtvar();}
-TString lepselwgt()  {return wgtvar();}
-const TString vetoes = " && nvetolep==0 && nvetotau==0";
+//TString lepvetowgt() {return wgtvar();}
+//TString lepselwgt()  {return wgtvar();}
+//const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-//const TString lepvetowgt = wgtvar + "*leptnpweightHM*lepvetoweightHM";
-//const TString lepselwgt  = wgtvar + "*leptnpweightHM";
-//const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
+TString lepvetowgt() { return wgtvar() + "*(leptnpweightLM*lepvetoweightLM*(njets<5 || nbjets<1) + leptnpweightHM*lepvetoweightHM*(njets>=5 && nbjets>=1))"; }
+TString lepselwgt()  { return wgtvar() + "*(leptnpweightLM*(njets<5 || nbjets<1) + leptnpweightHM*(njets>=5 && nbjets>=1))"; }
+const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -61,9 +61,9 @@ TString onelepcrwgt() {return lepselwgt();}
 
 // qcd weights
 TString qcdwgt() {return wgtvar() + "*qcdRespTailWeight";}
-//const TString qcdwgt = wgtvar;
+//TString qcdwgt() {return wgtvar();}
 TString qcdvetowgt() {return lepvetowgt() + "*qcdRespTailWeight";}
-//const TString qcdvetowgt = lepvetowgt;
+//TString qcdvetowgt() {return lepvetowgt();}
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -73,7 +73,7 @@ TString sigwgt() {return lepvetowgt();}
 const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99 && (origmet/calomet<5)";
 //const TString qcdSpikeRemovals = " && (!(run==1 && lumi==46160 && event==331634716)) && (!(run==1 && lumi==91626 && event==208129617))";
 const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
 
