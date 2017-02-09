@@ -191,8 +191,9 @@ public:
       }
 
       for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
-        auto xlow = cat.bin.plotbins.at(ix);
-        auto binname = "bin_" + toString(xlow,0) + "_" + cat_name;
+        auto xlow = toString(cat.bin.plotbins.at(ix), 0);
+        auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
+        auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
         outfile << binname << "\t" << "znunu_rzunc_"+uncName << "\t" << "znunu" << "\t" << unc << endl;
       }
     }

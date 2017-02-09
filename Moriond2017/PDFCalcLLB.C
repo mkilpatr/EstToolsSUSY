@@ -2,15 +2,19 @@
 #include "SRParameters.hh"
 #include "../utils/JsonHelper.h"
 
+#include <algorithm>
+
 using namespace EstTools;
 
-// Procedure: Entries 9-108 in the systweights vector correspond to pdf variations at fixed alpha_S, 109 and 110 correspond to variations of alpha_S. For the pdf variations, we take the standard deviation of the 100 variations, then add in quadrature the maximum alpha_S variation. In order to factor out the effects on the cross section, yields should be normalized to the inclusive yield. To be done properly, input trees should have no pre-selection
-// Entry 0 is the nominal
-const unsigned SYSWGT_BEGIN = 0, SYSWGT_END = 111; // [BEGIN, END)
+/* Procedure:
+ * Entry 0 is the norminal
+ * Scale Uncertainty: take the envelop of entries {1, 2, 3, 4, 6, 8}
+ * For NNPDF set:
+ * Entries [10, 109] are the pdf variations (9 is nominal)
+ * Take the RMS or [(84th) - (16th)]/2
+ */
 
-const std::string process = "ttZ";
-//const std::string process = "diboson";
-
+const unsigned SYSWGT_BEGIN = 0, SYSWGT_END = 110; // [BEGIN, END)
 
 BaseConfig baseConfig(){
   BaseConfig config;
@@ -28,23 +32,23 @@ class VarCalculator{
 public:
 
   VarCalculator(unsigned low, unsigned high) : low_(low), high_(high){
-    outputName_ = "pdf_var_"+process+".json";
+    outputName_ = "pdf_var_LLB.json";
   }
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   void runVariations(){
     readNormalization();
 
-    varYields.clear();
+    varTFs.clear();
     for (unsigned isys = low_; isys < high_; ++isys){
-      auto tf = getYields(isys);
-      varYields[to_string(isys)] = tf;
+      auto tf = getTF(isys);
+      varTFs[to_string(isys)] = tf;
     }
-    JsonHelper::dumpJson(outputName_, json(varYields));
+    JsonHelper::dumpJson(outputName_, json(varTFs));
   }
 
-  // varYields["isys"]: tf for the isys'th variation
-  map<string, vector<double>> varYields;
+  // varTFs["isys"]: tf for the isys'th variation
+  map<string, vector<double>> varTFs;
 
 private:
   unsigned low_, high_; // range [low, high)
@@ -57,8 +61,9 @@ private:
     reNormMap.clear();
 
     BaseConfig config;
-    config.inputdir = "/data/hqu/trees/20170205_pdfSyst/sr";
-    config.addSample(process, process, process, "weight", "");
+    config.inputdir = "/data/hqu/trees/20170205_pdfSyst";
+    config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar",        "weight", "");
+    config.addSample("wjets",       "W+jets",        "sr/wjets",        "weight", "");
 
     for (const auto &s : config.samples){
       TH1* hsys = (TH1*)s.second.infile->Get("hsys");
@@ -75,70 +80,77 @@ private:
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   BaseConfig varConfig(TString varWgt){
 
-    auto config = baseConfig();
+    BaseConfig config;
+    config.inputdir = "/data/hqu/trees/20170205_pdfSyst";
+    config.outputdir = outputdir+"/LLB";
 
-    config.addSample(process,   process,   process,   lumistr+"*weight*"+varWgt,   datasel + trigSR + " && nvetolep==0 && nvetotau==0");
+    config.sel = baseline;
+    config.categories = srbins;
+    config.catMaps = srCatMap();
+    config.crCatMaps = lepCatMap();
+
+    config.addSample("ttbar",          "t#bar{t}",      "sr/ttbar",        lepselwgt+"*"+varWgt,  datasel + trigSR + revert_vetoes);
+    config.addSample("wjets",          "W+jets",        "sr/wjets",        lepselwgt+"*"+varWgt,  datasel + trigSR + revert_vetoes);
+    config.addSample("tW",             "tW",            "sr/tW",           lepselwgt,             datasel + trigSR + revert_vetoes);
+    config.addSample("ttW",            "ttW",           "sr/ttW",          lepselwgt,             datasel + trigSR + revert_vetoes);
+
+    config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar",        lepvetowgt+"*"+varWgt, datasel + trigSR + vetoes);
+    config.addSample("wjets-sr",       "W+jets",        "sr/wjets",        lepvetowgt+"*"+varWgt, datasel + trigSR + vetoes);
+    config.addSample("tW-sr",          "tW",            "sr/tW",           lepvetowgt,            datasel + trigSR + vetoes);
+    config.addSample("ttW-sr",         "ttW",           "sr/ttW",          lepvetowgt,            datasel + trigSR + vetoes);
 
     return config;
   }
 
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  std::vector<double> getYields(int idx){
+  std::vector<double> getTF(int idx){
     cerr << "\n--->" << __func__  << "-- idx = " << idx << endl;
 
     TString syswgtvar = TString::Format("systweights[%d]",idx);
-
-    vector<Quantity> yields;
+    double ttbarNorm = reNormMap.at("ttbar").at(idx);
+    double wjetsNorm = reNormMap.at("wjets").at(idx);
 
     auto config = varConfig(syswgtvar);
     BaseEstimator z(config);
     z.calcYields();
-    z.printYields();
-    for (const auto &samp : config.samples){
-      double norm = reNormMap.at(samp.first.Data()).at(idx);
-      cout << "--> norm: " << norm << endl;
-      if (yields.empty())
-        yields = z.yields.at(samp.first) * norm;
-      else
-        yields = yields + z.yields.at(samp.first) * norm;
-    }
+    auto sr = z.yields.at("ttbar-sr")*ttbarNorm + z.yields.at("wjets-sr")*wjetsNorm + z.yields.at("tW-sr") + z.yields.at("ttW-sr");
+    auto cr = z.yields.at("ttbar")*ttbarNorm + z.yields.at("wjets")*wjetsNorm + z.yields.at("tW") + z.yields.at("ttW");
+    auto tf = sr/cr;
+    cout << tf << endl;
 
     for (auto &s : config.samples){
       delete s.second.tree;
     }
 
-    vector<double> rlt;
-    for (auto q:yields) rlt.push_back(std::max(q.value, 1.e-6));
-    cout << rlt << endl;
-
-    return rlt;
+    vector<double> tfval;
+    for (auto &q : tf) tfval.push_back(std::max(q.value, 0.));
+    return tfval;
   }
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 };
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+// ---------------------
 class VarReader{
 
 public:
 
-  void read(std::string input = "pdf_var_"+process+".json"){
+  void read(std::string input = "pdf_var_LLB.json"){
     json j;
     ifstream infile;
     infile.open(input);
     infile >> j;
     infile.close();
-//    cerr << "here" << endl;
+    cerr << "here" << endl;
 //    auto tfMap = j.get< map<std::string, vector<double>> >();
-    varYields.clear();
+    varTFs.clear();
     for (unsigned isys=SYSWGT_BEGIN; isys<SYSWGT_END; ++isys){
-//      cout << j.at(to_string(isys)) << endl;
-      varYields.push_back(j.at(to_string(isys)).get<vector<double>>());
+      cout << j.at(to_string(isys)) << endl;
+      varTFs.push_back(j.at(to_string(isys)).get<vector<double>>());
     }
   }
 
-  vector<vector<double>> varYields;
+  vector<vector<double>> varTFs;
 
 };
 
@@ -149,15 +161,15 @@ public:
 
   enum PdfUncType {MC, RMS, HESSIAN};
 
-  UncCalculator(std::string input = "pdf_var_"+process+".json"){
+  UncCalculator(std::string input = "pdf_var_LLB.json"){
     VarReader r;
     r.read(input);
-    varYields = r.varYields;
+    varTFs = r.varTFs;
   }
 
-  vector<double> calcPDFUnc(PdfUncType pdfuncType, unsigned i_begin=9, unsigned i_end=108){
+  vector<double> calcPDFUnc(PdfUncType pdfuncType, unsigned i_begin=10, unsigned i_end=110){
 
-    auto nominal_yields = varYields.at(0);
+    auto nominal_tf = varTFs.at(0);
     vector<double> relUncs;
 
     auto config = baseConfig();
@@ -165,10 +177,10 @@ public:
 
     for (unsigned ibin=0; ibin<nbins; ++ibin){
       vector<double> ensemble;
-      double nominal = nominal_yields.at(ibin);
+      double nominal = nominal_tf.at(ibin);
       for (unsigned isys=i_begin; isys<i_end; ++isys){
-        const auto &yld = varYields.at(isys);
-        ensemble.push_back(yld.at(ibin));
+        const auto &tfs = varTFs.at(isys);
+        ensemble.push_back(tfs.at(ibin));
       }
       double unc = 0;
       switch (pdfuncType) {
@@ -190,7 +202,7 @@ public:
   }
 
   vector<double> calcScaleUnc(vector<unsigned> indices = {1, 2, 3, 4, 6, 8}){
-    auto nominal_yields = varYields.at(0);
+    auto nominal_tf = varTFs.at(0);
     vector<double> relUncs;
 
     auto config = baseConfig();
@@ -198,11 +210,11 @@ public:
 
     for (unsigned ibin=0; ibin<nbins; ++ibin){
       vector<double> ensemble;
-      double nominal = nominal_yields.at(ibin);
+      double nominal = nominal_tf.at(ibin);
       for (auto idx : indices){
-        const auto &tfs = varYields.at(idx);
+        const auto &tfs = varTFs.at(idx);
         ensemble.push_back(tfs.at(ibin));
-//        cerr << "~~~" << ibin << "~~~" << tfs.at(ibin) << endl;
+        cerr << "~~~" << ibin << "~~~" << tfs.at(ibin) << endl;
       }
       double unc = getScaleUnc(ensemble);
       relUncs.push_back(1+unc/nominal);
@@ -211,31 +223,8 @@ public:
 
   }
 
-  vector<double> calcAlphaSUnc(vector<unsigned> indices = {109, 110}){
-    auto nominal_yields = varYields.at(0);
-    vector<double> relUncs;
-
-    auto config = baseConfig();
-    auto nbins = config.nbins();
-
-    for (unsigned ibin=0; ibin<nbins; ++ibin){
-      vector<double> ensemble;
-      double nominal = nominal_yields.at(ibin);
-      for (auto idx : indices){
-        const auto &tfs = varYields.at(idx);
-        ensemble.push_back(tfs.at(ibin));
-        cerr << "~~~" << ibin << "~~~" << tfs.at(ibin) << endl;
-      }
-      double unc = getAlphaSUnc(nominal, ensemble);
-      relUncs.push_back(1+unc/nominal);
-    }
-    return relUncs;
-
-  }
-
-
-  void writeUncFiles(vector<double> uncs, string uncType = "pdfscale", string base_filename = "values_unc_", string sample = process){
-    string fn = base_filename + uncType + "_" + sample + ".conf";
+  void writeUncFiles(vector<double> uncs, string uncType, string base_filename = "values_unc_", string sample = "ttbarplusw"){
+    string fn = base_filename + uncType + "_LLB.conf";
     ofstream outfile;
     outfile.open(fn);
 
@@ -257,7 +246,7 @@ public:
 
   }
 
-  vector<vector<double>> varYields;
+  vector<vector<double>> varTFs;
 
 private:
   double getPDFUncMC(vector<double> vec){
@@ -292,17 +281,7 @@ private:
     return unc;
   }
 
-  double getAlphaSUnc(double nominal, const vector<double> &vec){
-    double maxunc = -1;
-    for (auto v : vec){
-      double df = fabs(v-nominal);
-      if (df>maxunc) maxunc = df;
-    }
-    return maxunc;
-  }
-
 };
-
 
 
 void PDFUncertainties(){
@@ -314,33 +293,17 @@ void PDFUncertainties(){
   auto pdfunc_rms = unc->calcPDFUnc(UncCalculator::RMS);
   unc->writeUncFiles(pdfunc_rms, "pdfunc_rms");
 
+//  auto pdfunc_hessian = unc->calcPDFUnc(UncCalculator::HESSIAN);
+//  unc->writeUncFiles(pdfunc_hessian, "pdfunc_hessian");
+
   auto scaleunc = unc->calcScaleUnc();
   unc->writeUncFiles(scaleunc, "scaleunc");
-
-  auto asunc = unc->calcAlphaSUnc();
-  unc->writeUncFiles(asunc, "alphasunc");
-
-  auto sqr = [](double v){return (v-1)*(v-1);};
-
-//  vector<double> combineduncs;
-//  for (unsigned i=0; i<pdfunc.size(); ++i){
-//    double u = std::sqrt(sqr(pdfunc.at(i)) + sqr(scaleunc.at(i)) + sqr(asunc.at(i))) + 1;
-//    combineduncs.push_back(u);
-//  }
-//  unc->writeUncFiles(combineduncs, "pdfscale");
-
-  vector<double> pdfasunc;
-  for (unsigned i=0; i<pdfunc.size(); ++i){
-    double u = std::sqrt(sqr(pdfunc.at(i)) + sqr(asunc.at(i))) + 1;
-    pdfasunc.push_back(u);
-  }
-  unc->writeUncFiles(pdfasunc, "pdfasunc");
-
 }
 
 
-void PDFCalcTTZ(){
+void PDFCalcLLB(){
   VarCalculator v(SYSWGT_BEGIN, SYSWGT_END);
   v.runVariations();
   PDFUncertainties();
 }
+

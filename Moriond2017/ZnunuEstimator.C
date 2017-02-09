@@ -29,8 +29,8 @@ vector<Quantity> ZnunuPred(){
 
   std::map<TString,int> digits;
   //dig["data"] = 0; // indicate it's data for proper formatting
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_lm.tex","lm", digits);
-  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/yields_znunu_hm.tex","hm", digits);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/hqu/yields_znunu_lm.tex","lm", digits);
+  z.printYieldsTableLatex({"znunu-sr", "_Rz", "_Sgamma", "_pred"}, labelMap, "/tmp/hqu/yields_znunu_hm.tex","hm", digits);
 
   return z.yields.at("_pred");
 }
@@ -335,6 +335,30 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
         cout << hDR->GetBinLowEdge(i) << "->" << hDR->GetBinLowEdge(i+1) << ": " << getHistBin(hDR, i) << endl;
       }
 
+      if (vars.at(i)!="metzg") continue;
+      std::string outfile_path = ("/tmp/values_unc_zgammadiff_" + region + ".conf").Data();
+      cout << "\n\n Write unc to " << outfile_path << endl;
+      ofstream outfile(outfile_path);
+      auto config = phoConfig();
+      unsigned ibin = 0;
+      for (auto &cat_name : config.categories){
+        auto &cat = config.catMaps.at(cat_name);
+        for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
+          auto xlow = toString(cat.bin.plotbins.at(ix), 0);
+          auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
+          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          std::string uncType = "znunu_zgammadiff", bkg = "znunu";
+          double val = 1;
+          for (unsigned i=1; i<=hDR->GetNbinsX(); ++i){
+            if(i==hDR->GetNbinsX() || hDR->GetBinLowEdge(i+1)>cat.bin.plotbins.at(ix)){
+              val = hDR->GetBinContent(i); break;
+            }
+          }
+          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << val << endl;
+          ++ibin;
+        }
+      }
+      outfile.close();
 
     }
   }

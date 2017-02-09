@@ -16,14 +16,29 @@ import ROOT as rt
 rt.gROOT.SetBatch(True)
 
 uncfiles=[
-'values_wtoptag_syst.conf',
+ 'values_unc_btag.conf',
+ 'values_unc_jes.conf',
+ 'values_unc_lepton.conf',
+ 'values_unc_pdfasunc_diboson.conf',
+ 'values_unc_pdfasunc_ttZ.conf',
+ 'values_unc_pdfunc_LLB.conf',
+ 'values_unc_pu.conf',
+ 'values_unc_qcdsyst.conf',
+ 'values_unc_scaleunc_diboson.conf',
+ 'values_unc_scaleunc_LLB.conf',
+ 'values_unc_scaleunc_ttZ.conf',
+ 'values_unc_toppt.conf',
+ 'values_unc_wtopfrac.conf',
+ 'values_unc_wtoptag.conf',
+ 'values_unc_zgammadiff_hm.conf',
+ 'values_unc_zgammadiff_lm.conf',
  ]
 
 all_bin_unc_file = 'values_0l_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd')
 graph_names=('Graph_from_ttbarplusw_pred_gr', 'Graph_from_znunu_pred_gr', 'Graph_from_ttZ_pred_gr', 'Graph_from_diboson_pred_gr', 'Graph_from_qcd_pred_gr')
-table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & ttZ & Diboson & QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
+table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & rare & QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'Graph_from_pred_total_gr'
 
@@ -529,7 +544,13 @@ def makeTable():
         ibin = ibin+1
         s += metlabel
         for bkg in list(all_samples)+['bkg']:
+            if bkg == 'diboson': continue
             n, e_low, e_up = allVals[bin][bkg]
+            if bkg == 'ttZ':
+                n1, e1_low, e1_up = allVals[bin]["diboson"]
+                n += n1
+                e_low = sumUnc([e_low, e1_low])
+                e_up  = sumUnc([e_up, e1_up])
             s += formatPrediction(n,e_low,e_up)
         n, e = yields_data[bin]
         s += ' & ' + str(int(n))
@@ -565,7 +586,7 @@ def chunkHeader(sec):
     ''' Put together the mega-bin chunk header. '''
     cats = sec.split('_')
     labs = [labelMap[c] for c in cats]
-    ncolumn = len(all_samples)+4
+    ncolumn = len(all_samples)+3
     s  = '\\hline\n'
     s += '\\multicolumn{'+str(ncolumn)+'}{c}{'
     s += ', '.join(labs)
