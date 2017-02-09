@@ -24,7 +24,7 @@ vector<Quantity> getZnunuPred(){
   z.phocr_normMap = phoNormMap;
   z.pred();
   z.printYields();
-  return z.yields.at("_pred");
+  return z.yields.at("_TF");
 }
 
 vector<Quantity> getQCDPred(){
@@ -33,7 +33,7 @@ vector<Quantity> getQCDPred(){
   q.runBootstrapping = false;
   q.pred();
   q.printYields();
-  return q.yields.at("_pred");
+  return q.yields.at("_TF");
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
@@ -45,7 +45,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   return {
-    {"ttbarplusw", l.yields.at("_pred")},
+    {"ttbarplusw", l.yields.at("_TF")},
     {"ttZ",        l.yields.at("ttZ-sr")},
     {"diboson",    l.yields.at("diboson-sr")},
   };

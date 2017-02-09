@@ -7,6 +7,7 @@
 #include <thread>
 #include <mutex>
 #include <atomic>
+#include <math.h>
 
 using namespace std;
 #endif
@@ -247,6 +248,155 @@ public:
       }
     }
 
+  }
+
+  // printUncsTableLatex
+  //  * as of AN-16-437/SUS-16-049, works with all uncs and unc files
+  //
+  // Purpose
+  //   same as printYieldsTableLatex but reads uncertainty files instead of samples (they're the columns)
+  // Args
+  //   uncs is map from uncType (eg ttbarNorm) to filename (eg value_0l_ttbarNorm.conf)
+  //   order is the chosen uncTypes and their order
+  //   combineNames is a map from uncType (eg sdMVAWeight_PS) to a combination name (eg merged_other)
+  //   whichCats is "all", "lm", or "hm", for which table you want.
+  // Format
+  //   expects file format: binname uncType bkg value
+  //   bin_lm_nb0_nivf0_highptisr_nj2to5_met450to550   ttbarNorm       qcd     1.00805
+  //
+  void printUncsTableLatex(vector<TString> &order, vector<pair<TString,TString>> &combineNames, map<TString, vector<TString>> &uncs, const map<TString, TString> &labelMap, TString focusBkg, TString inputdir="/tmp/", TString outputfile="/tmp/uncs_table.tex", TString whichCats="all") const {
+    bool dbg = true;
+    whichCats.ToLower();
+
+    map<TString, map<TString, float>> unc_bin_value; // uncertainty name / bin name / uncertainty value, eg ttbarNorm/bin_catname_100to200/1.20
+
+    for(const auto &uncPair : uncs){
+      TString uncName = uncPair.first;
+      for(const TString uncfile : uncPair.second){
+        //TString uncfile = uncPair.second;
+        if(dbg) std::cout << std::endl << TString::Format("[printUncsTableLatex] Reading uncType %s, bkg %s, from file %s/%s", uncName.Data(), focusBkg.Data(), inputdir.Data(),uncfile.Data()) << std::endl << std::endl;
+        ifstream func(inputdir+"/"+uncfile);
+        if(func.fail()) throw std::invalid_argument(TString::Format("Could not open file %s/%s for reading uncertainties.", inputdir.Data(),uncfile.Data()));
+        TString binname, uncType, bkg;
+        float unc;
+        std::string line;
+        while(getline(func, line)){
+          if( (line[0] == '#') || (line[0] == '%') || line.empty()) continue;
+          stringstream(line) >> binname >> uncType >> bkg >> unc;
+
+          //if(dbg) std::cout << "read the raw ntuple from file: " << binname << " " << uncType << " " << bkg << " " << unc << std::endl;
+          if(!bkg.Contains(focusBkg)) continue; // some files like 'all' can have commas like signal,diboson
+          if(!uncType.BeginsWith(uncName)) continue; // some QCD files have uncTypes like qcd_bkgsubunc_lm_nb1
+          //if(!binname.Contains("met") && (binname != "all")) { // some QCD files are missing 'met' in their binname [FIXED]
+          //  Int_t lastDash = binname.Last('_')+1;
+          //  Int_t len = binname.Length();
+          //  binname.Replace(lastDash,0,"met",3);
+          //}
+          //if(dbg) std::cout << "read: " << binname << " " << uncName << " " << bkg << " " << unc << std::endl;
+          if(binname != "all"){
+            unc_bin_value[uncName][binname] = unc;
+          }else{
+            // need to update all bins. "all" only happens once.
+            for (auto &cat_name : config.categories){
+              const auto &cat = config.catMaps.at(cat_name);
+              for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
+                auto xlow = toString(cat.bin.plotbins.at(ix), 0);
+                auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
+                auto tmpbinname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+                unc_bin_value[uncName][tmpbinname] = unc;
+                //if(dbg) std::cout << "encounted ALL, so filling: " << tmpbinname << " " << uncName << " " << bkg << " " << unc << std::endl;
+              }
+            }
+          }
+        }
+        if(unc_bin_value.size() == 0) {
+          //std::cout << TString::Format("[printUncsTableLatex] Cannot find any bins in %s corresponding to uncType %s and bkg %s",uncfile.Data(),uncName.Data(),focusBkg.Data());
+          throw std::invalid_argument(TString::Format("[printUncsTableLatex] Cannot find any bins in %s corresponding to uncType %s and bkg %s",
+                                                       uncfile.Data(),uncName.Data(),focusBkg.Data()));
+        }
+      }//file
+    }//uncPair
+
+    // update unc_bin_value with combinations
+    for(const auto &combPair : combineNames) {
+      TString addMeIn  = combPair.first;  // to be added in to combination
+      TString combName = combPair.second; // combination name
+      //if(dbg) std::cout << "Adding in combination: " << addMeIn << " to " << combName << std::endl;
+      if(!unc_bin_value.count(combName)) {
+        unc_bin_value[combName] = unc_bin_value[addMeIn]; // first time, create in likeness of this existing unc
+      }else{
+        // combine two bin-value maps in unc_bin_value: combName = combName ++ addMeIn
+        for(auto &bin_value : unc_bin_value[combName]){
+          TString bin    = bin_value.first;
+          float value    = bin_value.second; // existing value
+          float addValue = unc_bin_value[addMeIn][bin]; // to be added in
+          float newValue = 1.+sqrt( pow((value-1.),2) + pow((addValue-1.),2) );
+          unc_bin_value[combName][bin] = newValue;
+          //if(dbg) std::cout << TString::Format("Combining %s to %s , values in bin %s are %.3f + %.3f = %.3f",addMeIn.Data(),combName.Data(),bin.Data(),value,addValue,newValue) << std::endl;
+        }
+      }
+    }
+
+    ofstream outfile(outputfile);
+    Quantity::printStyle = Quantity::LATEX;
+
+    // latex comment to label columns for user. user makes their own pretty column header.
+    outfile << "% Search region" << " & \t" << R"($\met$)" << " & \t";
+    for (const auto &uncName : order){
+      outfile << uncName << " & \t";
+    }
+    outfile << endl;
+
+    // linearly traverse all bins (lm then hm, currently)
+    unsigned ibin = 0;
+    int ncols = order.size()+2; // bin # + MET range + uncs
+    for (auto &cat_name : config.categories){
+      // skip it? must be careful and use bool b/c # of met bins varies... can't just 'continue' past category
+      bool skip = false;
+      if(whichCats == "lm" && !cat_name.Contains("lm_")) skip=true; // wanted LM, not LM
+      if(whichCats == "hm" && !cat_name.Contains("hm_")) skip=true; // wanted HM, not HM
+      const auto &cat = config.catMaps.at(cat_name);
+
+      //if(dbg) if(!skip) std::cout << "Printing category " << cat_name << " into file " << outputfile << std::endl;
+      // latex format for each category header: hline, multicolumn thing with pretty cat label, hline
+      auto cat_label = translateString(cat_name, labelMap, "_", ", ");
+      if(!skip) outfile << R"(\hline)" << endl << R"(\multicolumn{)"+to_string(ncols)+R"(}{c}{)" + cat_label + R"(} \\)" << endl << R"(\hline)" << endl;
+
+      // a latex comment with raw cat label for clarity
+      if(!skip) outfile << " % " << setw(30) << cat.label << endl;
+
+      // for each met bin, give format: bin #, met label, columns
+      auto metlabels = convertBinRangesToLabels(cat.bin.plotbins, true);
+      for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
+        auto metlabel = metlabels[ix];
+        if(!skip) outfile << ibin << " & " << metlabel;
+        auto xlow = toString(cat.bin.plotbins.at(ix), 0);
+        auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
+        auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+
+        // each unc's value
+        for (const auto &uncName : order){
+          //if(dbg) std::cout << "Printing uncName for bin : " << uncName << " " << binname << std::endl;
+          float unc = unc_bin_value[uncName][binname];
+          if(!skip) outfile << " & \t" << fixed << setprecision(0);
+          if(std::isnan(unc)) std::cout << TString::Format("received NaN in bin %s of uncName %s",binname.Data(),uncName.Data()) << std::endl;
+
+          // check if excessive or not read at all (bin missing from file)
+          if(unc < -2 || unc > 2) {
+            if(!skip) outfile << R"(100 \%)";
+          }else if(unc == 0){
+            if(!skip) outfile << "  -   ";
+          }else{
+            int roundUnc = round((unc-1.0)*100);
+            if(!skip) outfile << roundUnc << R"( \% )";
+          }
+        }
+
+        if(!skip) outfile << R"( \\)" << endl;
+        ++ibin;
+      }//for met
+    }//for cats
+    outfile.close();
   }
 
   // printYieldsTableLatex

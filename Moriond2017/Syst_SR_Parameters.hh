@@ -14,12 +14,30 @@ const TString lumistr = "36.8";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
-TString sdmvawgt = "sdMVAWeight";
+// systematics weights
+TString sdmvawgt = "sdMVAWeight"; // top/W
 TString restopwgt = "resTopWeight";
+
+TString puwgt = "truePUWeight"; // PU
+
+TString tnpwgtlm = "leptnpweightLM"; // tnp (el/mu)
+TString tnpwgthm = "leptnpweightHM";
+
+TString vetowgtlm = "lepvetoweightLM"; // lep (tau)
+TString selwgtlm = "lepselweightLM";
+TString vetowgthm = "lepvetoweightHM";
+TString selwgthm = "lepselweightHM";
+
+TString btagwgt = "btagWeight"; // btag
+TString btagfastwgt = "btagFastSimWeight";
+
+TString topptwgt = "topptWeight"; // toppt
+
+TString mcwgt = "weight"; // ttbarnorm / wjetsnorm
 
 // lumi and base weight
 TString wgtvar(){
-  return lumistr+"*weight*truePUWeight*btagWeight*topptWeight*"+sdmvawgt+"*"+restopwgt;
+  return lumistr+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+topptwgt+"*"+sdmvawgt+"*"+restopwgt;
 }
 //TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
@@ -33,8 +51,8 @@ TString phowgt() { return wgtvar(); }
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-TString lepvetowgt() { return wgtvar() + "*(leptnpweightLM*lepvetoweightLM*(njets<5 || nbjets<1) + leptnpweightHM*lepvetoweightHM*(njets>=5 && nbjets>=1))"; }
-TString lepselwgt()  { return wgtvar() + "*(leptnpweightLM*(njets<5 || nbjets<1) + leptnpweightHM*(njets>=5 && nbjets>=1))"; }
+TString lepvetowgt() { return wgtvar() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(njets<5 || nbjets<1) + "+tnpwgthm+"*"+vetowgthm+"*(njets>=5 && nbjets>=1))"; }
+TString lepselwgt()  { return wgtvar() + "*("+tnpwgtlm+"*(njets<5 || nbjets<1) + "+tnpwgthm+"*(njets>=5 && nbjets>=1))"; }
 const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF

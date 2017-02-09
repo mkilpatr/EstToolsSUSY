@@ -128,6 +128,18 @@ public:
     return normvec;
   }
 
+  static std::vector<Quantity> combineUpDownUncs(const std::vector<Quantity> &up, const std::vector<Quantity> &down){
+    // input need to be relative unc: "up/nominal", "down/nominal"
+    assert(up.size() == down.size());
+    std::vector<Quantity> unc;
+    for (unsigned i=0; i<up.size(); ++i){
+      double sign = (up[i].value >= 1) ? 1 : -1; // take the sign based on the up variation
+      double val = 0.5 * (std::abs(up[i].value-1) + std::abs(1-down[i].value)); // take the avg of abs. diff.
+      unc.emplace_back(1 + sign * val, 0); // don't forget to plus 1
+    }
+    return unc;
+  }
+
   Quantity& setSqrtN(bool setAtLeastOne = false){
     if (setAtLeastOne && value<1){
       value = 1;
