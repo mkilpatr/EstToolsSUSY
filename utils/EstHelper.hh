@@ -225,6 +225,10 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   bool isFirst = true;
   for (auto *h : hists){
     h->SetLineWidth(3);
+    h->GetXaxis()->SetTitleFont(42);
+    h->GetYaxis()->SetTitleFont(42);
+    h->GetXaxis()->SetLabelFont(42);
+    h->GetYaxis()->SetLabelFont(42);
     if (isFirst){
       isFirst = false;
       h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
@@ -236,6 +240,9 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
 #endif
   }
   if (leg) leg->Draw();
+#ifdef TDR_STYLE_
+  CMS_lumi(c, 4, 10);
+#endif
   return c;
 }
 
@@ -267,6 +274,10 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 #endif
   }
   if (leg) leg->Draw();
+#ifdef TDR_STYLE_
+  CMS_lumi(c, 4, 10);
+#endif
+
   return c;
 }
 

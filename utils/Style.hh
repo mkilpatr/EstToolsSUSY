@@ -28,8 +28,6 @@
 #include <Math/QuantFuncMathCore.h>
 
 #define TDR_STYLE_
-#define TDR_EXTRA_LABEL_ "Preliminary"
-//#define TDR_EXTRA_LABEL_ "Supplementary"
 
 using namespace std;
 #endif
@@ -37,6 +35,8 @@ using namespace std;
 namespace EstTools{
 
 TString getLumi();
+
+TString TDR_EXTRA_LABEL_ = "Preliminary";
 
 std::map<TString, Color_t> COLOR_MAP = {
     {"data",      kBlack},
