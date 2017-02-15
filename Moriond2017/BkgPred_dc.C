@@ -7,13 +7,14 @@
 
 #include <fstream>
 
-#include "SRParameters_dcTest_Simple.hh"
 #include "../utils/json.hpp"
 using json = nlohmann::json;
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
+#include "SRParameters_dc.hh"
+
 
 using namespace EstTools;
 
@@ -84,12 +85,27 @@ void BkgPred_dcTest(){
     yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
   }
 
+  // manually fix any zero/negative yields
+  for (auto &s : yieldsMap){
+    if (s.first.find("data")!=std::string::npos) continue; // ignore data
+    double default_value = 1e-6;
+    for (auto &b : s.second){
+      auto &v = b.second;
+      if (v.size() && v.front()<=0){
+        cout << "fixing " << s.first << "," << b.first << " from " << v.front() << " to " << default_value << endl;
+        v.front() = default_value;
+        v.back()  = default_value;
+      }
+    }
+  }
+
   json j;
+  j["signals"] = signals;
   j["binlist"] = binlist;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open("/tmp/testAll.json");
+  jout.open(outputdir+"BkgPred_dc.json");
   jout << j.dump(2);
   jout.close();
 
