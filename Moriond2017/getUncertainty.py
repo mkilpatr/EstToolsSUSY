@@ -19,6 +19,7 @@ uncfiles=[
  'values_unc_btag.conf',
  'values_unc_jes.conf',
  'values_unc_lepton.conf',
+ 'values_unc_metres.conf',
  'values_unc_pdfasunc_diboson.conf',
  'values_unc_pdfasunc_ttZ.conf',
  'values_unc_pdfunc_LLB.conf',
@@ -30,8 +31,7 @@ uncfiles=[
  'values_unc_toppt.conf',
  'values_unc_wtopfrac.conf',
  'values_unc_wtoptag.conf',
- 'values_unc_zgammadiff_hm.conf',
- 'values_unc_zgammadiff_lm.conf',
+ 'values_unc_zgammadiff.conf',
  ]
 
 all_bin_unc_file = 'values_0l_unc_all.conf'
