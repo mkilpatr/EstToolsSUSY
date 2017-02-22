@@ -118,6 +118,9 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_wtopfrac.conf"){
           if (val>2 || std::isnan(val)) {
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
             val = 2;
+          }else if (val<0.5){
+            cout << "Invalid unc, set to -100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
+            val = 0.001;
           }
           outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << val << endl;
           ++ibin;
