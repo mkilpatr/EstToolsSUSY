@@ -116,20 +116,24 @@ public:
     yields["_SubNormCorr"] = std::vector<Quantity>();
     unsigned ibin = 0;
     for (auto &cat_name : config.categories){
-      const auto & cat = config.catMaps.at(cat_name);
+
+      // use CR map, because we want to correct ttbarplusw in CR (i.e., w/o top/W cut)
+      // dphi cut specified in sample definition
+      const auto & crCat = config.crCatMaps.at(cat_name);
+      const auto & srCat = config.catMaps.at(cat_name);
 
       auto samp = config.samples.at("data-norm");
-      auto norm_sel = config.sel + " && " + cat.cut + " && " + cat.bin.var + ">" + toString(cat.bin.plotbins.front()) + samp.sel;
-      auto norm_datayield = getYields(samp.tree, samp.wgtvar, norm_sel);
+      auto norm_sel = config.sel + " && " + crCat.cut + " && " + crCat.bin.var + ">" + toString(crCat.bin.plotbins.front());
+      auto norm_datayield = getYields(samp.tree, samp.wgtvar, norm_sel + samp.sel);
       Quantity norm_bkgtotal(0, 0);
       for (auto &s : norm_samples){
         samp = config.samples.at(s);
-        norm_bkgtotal = norm_bkgtotal + getYields(samp.tree, samp.wgtvar, norm_sel);
+        norm_bkgtotal = norm_bkgtotal + getYields(samp.tree, samp.wgtvar, norm_sel + samp.sel);
       }
       Quantity norm_factor = norm_datayield / norm_bkgtotal;
       cerr << endl << "~~~" << cat_name << ": data(norm) = " << norm_datayield << ", total bkg (norm) = " << norm_bkgtotal << endl << endl;
 
-      for (auto &c : cat.bin.cuts){
+      for (auto &c : srCat.bin.cuts){
         yields.at("_SubNormCorr").push_back(norm_factor);
         yields.at("otherbkgs-noznunu").at(ibin) = yields.at("otherbkgs-noznunu").at(ibin) * norm_factor;
         ++ibin;
@@ -180,6 +184,14 @@ public:
     printVec(yields["_pred"], "QCD prediction", true);
 
   }
+
+  void prepDatacard(){
+    convertYields("qcd-withveto-sr",  "",       "qcd");
+    convertYields("qcd-withveto-cr",  "qcdcr",  "qcdcr_qcd");
+    convertYields("otherbkgs",        "qcdcr",  "qcdcr_otherbkgs");
+    convertYields("data-cr",          "qcdcr",  "qcdcr_data");
+  }
+
 
   // whether run bootstrapping for QCD uncertainty or not
   bool runBootstrapping = true;

@@ -10,9 +10,9 @@
 #include "Syst_SR_Parameters.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
-#include "../EstMethods/LLBEstimator.hh"
-#include "../EstMethods/ZnunuEstimator.hh"
-#include "../EstMethods/QCDEstimator.hh"
+#include "../../EstMethods/LLBEstimator.hh"
+#include "../../EstMethods/ZnunuEstimator.hh"
+#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
@@ -52,16 +52,16 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystTopW(std::string outfile_path = "values_wtoptag_syst.conf"){
+void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
 //  vector<TString> sdmvaSyst = {"sdMVAWeight", "sdMVAWeight_STATS_UP"};
 //  vector<TString> resTopSyst = {"resTopWeight", "resTopWeight_STATS_UP"};
 
-  vector<TString> sdmvaSystMistag = {"sdMVAWeight_MISTAG_STATS_W", "sdMVAWeight_MISTAG_STATS_T", "sdMVAWeight_MISTAG_NB"};
-  vector<TString> resTopSystMistag = {"resTopWeight_MISTAG_STATS", "resTopWeight_MISTAG_NB"};
+  vector<TString> sdmvaSystMistag = {"sdMVAWeight_MISTAG_STATS_W", "sdMVAWeight_MISTAG_STATS_T", "sdMVAWeight_MISTAG_NB", "sdMVAWeight_MISTAG_PS"};
+  vector<TString> resTopSystMistag = {"resTopWeight_MISTAG_STATS", "resTopWeight_MISTAG_NB", "resTopWeight_MISTAG_PS"};
 
   vector<TString> sdmvaSystEff = {"sdMVAWeight_STATS_W", "sdMVAWeight_STATS_T", "sdMVAWeight_PS", "sdMVAWeight_GEN", "sdMVAWeight_MISTAG_UP_W", "sdMVAWeight_MISTAG_UP_T"};
-  vector<TString> resTopSystEff = {"resTopWeight_STATS", "resTopWeight_PS", "resTopWeight_GEN", "resTopWeight_MISTAG_UP"};
+  vector<TString> resTopSystEff = {"resTopWeight_STATS", "resTopWeight_PS", "resTopWeight_GEN", "resTopWeight_MISTAG_UP", "resTopWeight_NMATCH"};
 
 
   vector<TString> bkgnames  = {"qcd", "znunu", "diboson", "ttZ", "ttbarplusw"};
@@ -70,16 +70,18 @@ void SystTopW(std::string outfile_path = "values_wtoptag_syst.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
+  inputdir = "/data/hqu/trees/20170221_wtopSyst";
+
   // nominal
   {
-    sys_name = "nominal"; sdmvawgt = "sdMVAWeight"; restopwgt = "resTopWeight";
+    sys_name = "nominal";
     proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // mistag: relevat for all bkgs
+  // mistag: relevant for all bkgs
   for (auto &sdsyst : sdmvaSystMistag){
     sys_name = sdsyst; sdmvawgt = sdsyst; restopwgt = "resTopWeight";
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << restopwgt << "======\n\n";
@@ -124,14 +126,22 @@ void SystTopW(std::string outfile_path = "values_wtoptag_syst.conf"){
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.crCatMaps.at(cat_name);
+        auto &cat = config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType = sPair.first;
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << (uncs.at(ibin).value>2 || std::isnan(uncs.at(ibin).value) ? 2 : uncs.at(ibin).value) << endl;
+          double val = uncs.at(ibin).value;
+          if (val>2 || std::isnan(val)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
+            val = 2;
+          }else if (val<0.5){
+            cout << "Invalid unc, set to -100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
+            val = 0.001;
+          }
+          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << val << endl;
           ++ibin;
         }
       }

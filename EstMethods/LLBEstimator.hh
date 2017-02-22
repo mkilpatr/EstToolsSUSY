@@ -61,6 +61,12 @@ public:
     printVec(yields["_pred"], "Final prediction", true);
   }
 
+  void prepDatacard(){
+    convertYields("ttbarplusw-sr",  "",       "ttbarplusw");
+    convertYields("ttbarplusw",     "lepcr",  "lepcr_ttbarplusw");
+    convertYields("singlelep",      "lepcr",  "lepcr_data");
+  }
+
   void printTable(bool doLM) {
     Quantity::printStyle = Quantity::LATEX;
     int ibin = 0, ibin_nb2 = 0;

@@ -9,6 +9,8 @@
 #include <atomic>
 #include <math.h>
 
+#define ESTTOOLS_MULTITHREAD
+
 using namespace std;
 #endif
 
@@ -29,7 +31,7 @@ public:
   }
 
   virtual ~IEstimator() {
-//////    TH1::AddDirectory(kFALSE); // Detach the histograms from the file: problematic
+//    TH1::AddDirectory(kFALSE); // Detach the histograms from the file: problematic
     if (fout_) fout_->Close();
   }
 
@@ -77,7 +79,7 @@ public:
       fout_ = new TFile(outputdir_ + "/" + outputfile_, "RECREATE");
     fout_->cd();
     TH1* hnew = (TH1*) h->Clone();
-    hnew->Write(name, TObject::kOverwrite);
+    fout_->WriteTObject(hnew, name, "Overwrite");
   }
 
 public:
@@ -174,13 +176,18 @@ public:
         --nRunning;
       };
 
+#ifdef ESTTOOLS_MULTITHREAD
       std::vector<std::thread> pool;
       for (auto &cat_name : config.categories){
         while(nRunning>=nMax) { std::this_thread::sleep_for(std::chrono::seconds(1)); }
         pool.emplace_back(calcOne, cat_name);
       }
       for (auto && t : pool) t.join();
-
+#else
+      for (auto &cat_name : config.categories){
+        calcOne(cat_name);
+      }
+#endif
       yields[sname] = vector<Quantity>();
       for (auto &cat_name : config.categories){
         yields[sname].insert(yields[sname].end(), results.at(cat_name.Data()).begin(), results.at(cat_name.Data()).end());
@@ -502,7 +509,7 @@ public:
 
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
-    auto samp = config.samples.at(sample);
+    const auto &samp = config.samples.at(sample);
     auto hname = filterString(plotvar) + "_" + sample + "_" + category.name + "_" + postfix_;
     auto hist = getHist(samp.tree, plotvar, samp.wgtvar, cut + samp.sel, hname, title, var_info.plotbins);
     prepHists({hist});
@@ -527,7 +534,7 @@ public:
     for (unsigned isamp=0; isamp<comp_samples.size(); ++isamp){
       TH1* hRef = nullptr;
       auto sname = comp_samples.at(isamp);
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       for (unsigned icat=0; icat<comp_categories.size(); ++icat){
         auto cat = config.catMaps.at(comp_categories.at(icat));
         auto hname = filterString(plotvar) + "_" + sname + "_" + cat.name + "_" + postfix_;
@@ -601,7 +608,7 @@ public:
     TH1D* hRef = nullptr;
     for (unsigned isamp=0; isamp<comp_samples.size(); ++isamp){
       auto sname = comp_samples.at(isamp);
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = num_var + "_over_" + denom_var + "_" + sname + "_" + postfix_;
       auto cut = config.sel + TString(selection_=="" ? "" : " && "+selection_);
       auto hnum = getHist(sample.tree, num_var, sample.wgtvar, cut + sample.sel, hname, title, num.plotbins);
@@ -654,7 +661,7 @@ public:
 
     TH1 *hbkgtotal = nullptr;
     for (const auto &sname : mc_samples){
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
       auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
       prepHists({hist}, false, true, true);
@@ -672,7 +679,7 @@ public:
     double totalbkg = hbkgtotal->Integral(1, hbkgtotal->GetNbinsX()+1);
 
     for (const auto &sname : signal_samples){
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
       auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
       prepHists({hist});
@@ -714,7 +721,7 @@ public:
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
     for (auto &sname : mc_samples){
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
       auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
       prepHists({hist});
@@ -733,7 +740,7 @@ public:
     }
 
     for (auto &sname : sig_sample){
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
       auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
       prepHists({hist});
@@ -783,18 +790,18 @@ public:
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
     TH1 *hdata = nullptr;
-    Sample d_sample;
+    const Sample* d_sample;
     if (data_sample!=""){
-      d_sample = config.samples.at(data_sample);
+      d_sample = &config.samples.at(data_sample);
       auto hname = filterString(plotvar) + "_" + data_sample + "_" + category.name + "_" + postfix_;
-      hdata = getHist(d_sample.tree, plotvar, d_sample.wgtvar, cut + d_sample.sel, hname, title, var_info.plotbins);
+      hdata = getHist(d_sample->tree, plotvar, d_sample->wgtvar, cut + d_sample->sel, hname, title, var_info.plotbins);
       prepHists({hdata});
       if (saveHists_) saveHist(hdata);
-      addLegendEntry(leg, hdata, d_sample.label, "LP");
+      addLegendEntry(leg, hdata, d_sample->label, "LP");
     }
 
     for (auto &sname : mc_samples){
-      auto sample = config.samples.at(sname);
+      const auto& sample = config.samples.at(sname);
       auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
       auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
       prepHists({hist});
@@ -817,10 +824,10 @@ public:
           sf = hdata->Integral(1, hsum->GetNbinsX()+1) / hsum->Integral(1, hsum->GetNbinsX()+1);
         }else {
           cout << " ... using normMap " << norm_cut << endl;
-          auto data_inc = getYields(d_sample.tree, d_sample.wgtvar, norm_cut + d_sample.sel);
+          auto data_inc = getYields(d_sample->tree, d_sample->wgtvar, norm_cut + d_sample->sel);
           vector<Quantity> mc_quantities;
           for (auto &sname : mc_samples){
-            auto sample = config.samples.at(sname);
+            const auto& sample = config.samples.at(sname);
             mc_quantities.push_back(getYields(sample.tree, sample.wgtvar, norm_cut + sample.sel));
           }
           auto mc_inc = Quantity::sum(mc_quantities);
@@ -925,8 +932,54 @@ public:
     }
   }
 
+  void convertYields(TString sname, TString crName = "", std::string outputProcessName=""){
+    vector<Quantity> vec;
+    try{
+      vec = yields.at(sname);
+    }catch(const std::out_of_range &e){
+      cerr << "[Estimator::convertYields] Cannot find " << sname << " in yields!" << endl;
+      throw e;
+    }
+
+    bool isCR = (crName != "");
+    bool fillBinlist = binlist.empty(); // only fill binlist once
+    bool fillBinMap  = isCR && binMap.empty(); // only fill binMap once
+    std::string procname = outputProcessName=="" ? sname.Data() : outputProcessName;
+    std_yields[procname] = map<std::string, vector<double>>();
+    int ibin = -1;
+    for (const auto &cat_name : config.categories){
+      const auto &srCat = config.catMaps.at(cat_name);
+      const auto &cat   = isCR ? config.crCatMaps.at(cat_name) : srCat;
+      TString crbinname = "";
+      for (unsigned ix = 0; ix<srCat.bin.nbins; ++ix){
+        ++ibin; // always increment ibin: global bin number is determined by sr bins
+        if (isCR && ix>=cat.bin.nbins) {
+          // for CRs w/ met integration
+        }else{
+          auto bincat = (isCR ? crName + "_" + TString(config.crMapping.at(cat_name)).ReplaceAll("NoDPhi_","_") : cat_name);
+          auto binname = "bin_" + bincat + "_" + cat.bin.binnames.at(ix);
+          if (isCR) crbinname = binname;
+          const auto &q = vec.at(ibin);
+          std_yields[procname][binname.Data()] = {q.value, q.error};
+        }
+
+        auto srbinname = "bin_" + cat_name + "_" + srCat.bin.binnames.at(ix);
+        if (fillBinlist){
+          binlist.push_back(srbinname.Data());
+        }
+        if (fillBinMap && crbinname!=""){
+          // update binMap
+          binMap[srbinname.Data()] = crbinname.Data();
+        }
+      }
+    }
+  }
+
 public:
   map<TString, vector<Quantity>> yields;  // stores yields of all bins in all categories for each sample
+  map<std::string, map<std::string, vector<double>>> std_yields; // process -> {bin -> (val, err)}
+  map<std::string, std::string> binMap; // sr -> cr rate params
+  vector<std::string> binlist; // sr binlist
 
 };
 

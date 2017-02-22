@@ -25,7 +25,7 @@ vector<Quantity> ZnunuPred(){
   z.pred();
   z.printYields();
 
-  z.writeRzUnc("/tmp/values_0l_unc_znunu.conf");
+  z.writeRzUnc("/tmp/values_unc_znunu.conf");
 
   std::map<TString,int> digits;
   //dig["data"] = 0; // indicate it's data for proper formatting
@@ -342,6 +342,7 @@ void DoubleRatios(TString region = "hm", bool normalized = true, TString extraCu
       auto config = phoConfig();
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
+        if (!cat_name.Contains(region)) continue;
         auto &cat = config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);

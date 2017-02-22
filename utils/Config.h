@@ -37,7 +37,8 @@ struct BinInfo{
   TString unit;   // unit of the variable (if exist)
 
   vector<TString> cuts;         // cut strings for getting yields
-  vector<TString> plotnames;    // name for each bin (filename compatible), e.g., met250to300
+  vector<TString> binnames;     // name for each bin (used for datacard), e.g., met250to300, or met500toinf
+  vector<TString> plotnames;    // name for each bin (filename compatible), e.g., met250to300, or metgeq500
   vector<TString> plotlabels;   // label for each bin (for plot legends), e.g., N_{j}#geq5
   vector<double>  plotbins;     // vector of bin edges for making histograms
   unsigned nbins = 0;           // number of bins (i.e., size of cust, plotnames, plotlabels, and *plotbins.size()-1*)
@@ -71,9 +72,11 @@ struct BinInfo{
       Number lower = bins.at(i), upper = bins.at(i+1);
       if (i==bins.size()-2){
         cuts.push_back(var + ">=" + to_string(lower));
+        binnames.push_back(var + to_string(int(lower)) + "toinf");
         plotnames.push_back(var + "geq" + to_string(lower));
         plotlabels.push_back(label + "#geq" + to_string(lower));
       }else{
+        binnames.push_back(var + to_string(int(lower)) + "to" + to_string(int(upper)));
         if (std::is_integral<Number>::value && upper==(lower+1)){
           cuts.push_back(var + "==" + to_string(lower));
           plotnames.push_back(var + to_string(lower));
@@ -141,24 +144,67 @@ struct Category{
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-struct Sample{
+class Sample{
   // struct to store information of a sample (ROOT trees)
 
+public:
+  Sample() : tree(nullptr) {}
+  Sample(TString name, TString label, TString fname, TString filepath, TString wgtvar, TString sel = "") :
+    name(name), label(label), fname(fname), filepath(filepath), wgtvar(wgtvar), sel(sel), tree(nullptr) {
+    TDirectory::TContext ctxt; // Will restore gDirectory to its 'current' value at the end of this scope
+    infile.reset(new TFile(filepath));
+    assert(infile);
+    infile->GetObject(treename, tree);
+    assert(tree);
+    tree->SetTitle(name);
+  }
+  Sample(const Sample &o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
+      infile(o.infile) {}
+  Sample(Sample &&o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
+      infile(std::move(o.infile)) {}
+
+  Sample &operator=(const Sample &o){
+    if (this != &o){
+      name = o.name;
+      label = o.label;
+      fname = o.fname;
+      wgtvar = o.wgtvar;
+      sel = o.sel;
+      filepath = o.filepath;
+      treename = o.treename;
+      infile = o.infile;
+      tree = o.tree;
+    }
+    return *this;
+  }
+  // implement move
+  Sample &operator=(Sample &&o){
+    if (this != &o){
+      name = o.name;
+      label = o.label;
+      fname = o.fname;
+      wgtvar = o.wgtvar;
+      sel = o.sel;
+      filepath = o.filepath;
+      treename = o.treename;
+      infile = std::move(o.infile);
+      tree = o.tree;
+    }
+    return *this;
+  }
+
+  TString name;   // name of the sample
   TString label;  // plotting label for the sample, e.g., t#bar{t}
   TString fname;  // filename
   TString wgtvar; // weight variable for getting yields/plotting
   TString sel;    // sample-specific selection string
 
-  TString name;
   TString filepath;
   TString treename = "Events";
-
-  TFile*  infile; // the root file
   TTree*  tree;   // the tree
 
-  Sample() : infile(nullptr), tree(nullptr) {}
-  Sample(TString label, TString fname, TString wgtvar, TString sel = "") :
-    label(label), fname(fname), wgtvar(wgtvar), sel(sel), infile(nullptr), tree(nullptr) {}
+private:
+  std::shared_ptr<TFile> infile; // the root file
 
 };
 
@@ -180,16 +226,8 @@ struct BaseConfig {
     // addSample("ttbar",     "t#bar{t}",    "lepcr/ttbar-mg",                                   "2.3*weight",      "nvetolep>0");
     //     *key of the map*   *plot label*   *filepath (postfix "_tree.root" added by default)*  *weight variable*  *extra selection*
 
-    Sample sample(label, file, wgtvar, extraCut);
-    TString filepath = inputdir+"/"+sample.fname+"_tree.root";
-    sample.name = name;
-    sample.filepath = filepath;
-    sample.infile = TFile::Open(filepath);
-    assert(sample.infile);
-    sample.tree = (TTree*)sample.infile->Get("Events");
-    assert(sample.tree);
-    sample.tree->SetTitle(name);
-    samples[name] = sample;
+    TString filepath = inputdir+"/"+file+"_tree.root";
+    samples.emplace(name, Sample(name, label, file, filepath, wgtvar, extraCut));
 
     cerr << "### Open file " << filepath << " as *" << name << "*" << endl;
   }
@@ -208,6 +246,8 @@ struct BaseConfig {
     samples.clear();
     categories.clear();
     catMaps.clear();
+    crCatMaps.clear();
+    crMapping.clear();
     nbins_ = 0;
   }
 
@@ -222,6 +262,7 @@ public:
   vector<TString> categories;       // category names (use vector to *keep the order*)
   map<TString, Category> catMaps;   // map from category names to the Category struct
   map<TString, Category> crCatMaps; // map from category names to the Category struct for the control region
+  map<TString, TString>  crMapping; // map from SR name to CR name
 
   TString inputdir;                 // location of ROOT trees
   TString outputdir;                // location of output plots

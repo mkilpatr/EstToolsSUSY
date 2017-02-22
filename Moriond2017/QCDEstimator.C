@@ -38,6 +38,7 @@ vector<Quantity> QCDPred(){
 
 void plotQCDCR(){
   auto config = qcdConfig();
+  config.catMaps = config.crCatMaps;
 
   BaseEstimator z(config.outputdir);
   z.setConfig(config);

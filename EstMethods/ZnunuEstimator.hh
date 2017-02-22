@@ -169,6 +169,16 @@ public:
 
   }
 
+  void prepDatacard(){
+    yields["_znunu-scaled"] = vector<Quantity>();
+    for (unsigned i=0; i<yields.at("znunu-sr").size(); ++i){
+      yields.at("_znunu-scaled").push_back( yields.at("znunu-sr").at(i) * yields.at("_Rz").at(i).value ); // discard Rz unc!
+    }
+    convertYields("_znunu-scaled",  "",       "znunu");
+    convertYields("_photon-scaled", "phocr",  "phocr_gjets");
+    convertYields("singlepho",      "phocr",  "phocr_data");
+  }
+
   void writeRzUnc(std::string output){
     if (zll_normMap.empty()) { cout << "Need to run prediction first!" << endl; return; }
 
