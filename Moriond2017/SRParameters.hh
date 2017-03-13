@@ -5,11 +5,11 @@
 
 namespace EstTools{
 
-const TString inputdir = "/tmp/trees";
-const TString outputdir = "/tmp/plots/Moriond17";
+const TString inputdir = "/data/hqu/trees/20170227_results";
+const TString outputdir = "/tmp/hqu/plots/20170227_results/Moriond17";
 
 const TString datadir = ".";
-const TString lumistr = "36.8";
+const TString lumistr = "35.9";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
@@ -61,8 +61,8 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-//const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
-const TString sigwgt = lepvetowgt;
+const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(nivf>=1) + 1.0*(nivf==0))";
+//const TString sigwgt = lepvetowgt;
 
 // triggers
 const TString trigSR = " && (passmetmht || ismc)";
@@ -134,7 +134,7 @@ std::map<TString, TString> labelMap{
   {"nivf0", R"($\nsv=0$)"},
   {"nivf1", R"($\nsv\geq1$)"},
   {"nw2", R"($\nw\geq2$)"},
-  {"nj2to5", R"($2\leq\nj<5$)"},
+  {"nj2to5", R"($2\leq\nj\leq5$)"},
   {"nb2", R"($\nb\geq2$)"},
   {"nb1", R"($\nb=1$)"},
   {"nb0", R"($\nb=0$)"},
@@ -161,6 +161,42 @@ std::map<TString, TString> labelMap{
   {"nrtgeq1", R"($\nrt\geq1$)"},
   {"nj6", R"($\nj\geq6$)"},
 };
+
+std::map<TString, TString> plotLabelMap{
+  {"lowptisr", R"(300 < p_{T}(ISR) < 500)"},
+  {"ntgeq1", R"(N_{t} #geq 1)"},
+  {"nt2", R"(N_{t} #geq 2)"},
+  {"nivf0", R"(N_{SV} = 0)"},
+  {"nivf1", R"(N_{SV} #geq 1)"},
+  {"nw2", R"(N_{W} #geq 2)"},
+  {"nj2to5", R"(2 #leq N_{j} #leq 5)"},
+  {"nb2", R"(N_{b} #geq 2)"},
+  {"nb1", R"(N_{b} = 1)"},
+  {"nb0", R"(N_{b} = 0)"},
+  {"nrt2", R"(N_{res} #geq 2)"},
+  {"highptisr", R"(p_{T}(ISR) > 500)"},
+  {"nj7", R"(N_{j} #geq 7)"},
+  {"highptb", R"(p_{T}(b) > 70)"},
+  {"hm", R"(high #Deltam)"},
+  {"nw0", R"(N_{W} = 0)"},
+  {"nwgeq1", R"(N_{W} #geq 1)"},
+  {"nw1", R"(N_{W} = 1)"},
+  {"nrt0", R"(N_{res} = 0)"},
+  {"nrt1", R"(N_{res} = 1)"},
+  {"lowptb", R"(p_{T}(b) < 40)"},
+  {"medptb", R"(40 < p_{T}(b) < 70)"},
+  {"nt0", R"(N_{t} = 0)"},
+  {"lm", R"(low #Deltam)"},
+  {"lowptb12", R"(p_{T}(b_{12}) < 80)"},
+  {"highptb12", R"(p_{T}(b_{12}) > 140)"},
+  {"lowmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175)"},
+  {"highmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) > 175)"},
+  {"nt1", R"(N_{t} = 1)"},
+  {"medptb12", R"(80 < p_{T}(b_{12}) < 140)"},
+  {"nrtgeq1", R"(N_{res} #geq 1)"},
+  {"nj6", R"(N_{j} #geq 6)"},
+};
+
 
 std::vector<TString> srbins{
   //---------- low deltaM ----------
@@ -711,31 +747,32 @@ BaseConfig lepConfig(){
 BaseConfig srConfig(){
   BaseConfig     config;
 
-  config.inputdir = inputdir+"/sr";
+  config.inputdir = inputdir;
   config.outputdir = outputdir+"/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ttbar",       "t#bar{t}",      "ttbar",        lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("wjets",       "W+jets",        "wjets",        lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("znunu",       "Z#rightarrow#nu#nu", "znunu",   lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("qcd",         "QCD",           "qcd-sr",       lepvetowgt, datasel + trigSR + vetoes + qcdSpikeRemovals);
-  config.addSample("tW",          "tW",            "tW",           lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttW",         "ttW",           "ttW",          lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttZ",         "ttZ",           "ttZ",          lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("diboson",     "Diboson",       "diboson",      lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar",        lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("wjets",       "W+jets",        "sr/wjets",        lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("znunu",       "Z#rightarrow#nu#nu", "sr/znunu",   lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("qcd",         "QCD",           "sr/qcd-sr",       lepvetowgt, datasel + trigSR + vetoes + qcdSpikeRemovals);
+  config.addSample("tW",          "tW",            "sr/tW",           lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttW",         "ttW",           "sr/ttW",          lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttZ",         "ttZ",           "sr/ttZ",          lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("diboson",     "Diboson",       "sr/diboson",      lepvetowgt, datasel + trigSR + vetoes);
 
-//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "T2fbd_500_420",  sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "T2fbd_500_450",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "T2fbd_500_480",  sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "T2cc_500_490",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "signals/T2fbd_500_420",  sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "signals/T2fbd_500_450",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "signals/T2fbd_500_480",  sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "signals/T2cc_500_490",   sigwgt, datasel + trigSR + vetoes);
 
-//  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "T2tt_450_250",   sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_400_300",  "T2tt(400,300)",  "T2tt_400_300",   sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_700_400",  "T2tt(700,400)",  "T2tt_700_400",   sigwgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_1000_1",   "T2tt(1000,1)",   "T2tt_1000_1",    sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "T2tt_1100_1",    sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "T2bW_850_1",     sigwgt, datasel + trigSR + vetoes);
-//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "T2bW_550_350",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "signals/T2tt_450_250",   sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_400_300",  "T2tt(400,300)",  "signals/T2tt_400_300",   sigwgt, datasel + trigSR + vetoes); //FIXME
+    config.addSample("T2tt_400_300",  "T2tt(425,300)",  "signals/T2tt_425_300",   sigwgt, datasel + trigSR + vetoes); //FIXME
+  config.addSample("T2tt_700_400",  "T2tt(700,400)",  "signals/T2tt_700_400",   sigwgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_1000_1",   "T2tt(1000,1)",   "signals/T2tt_1000_1",    sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "signals/T2tt_1100_1",    sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "signals/T2bW_850_1",     sigwgt, datasel + trigSR + vetoes);
+//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "signals/T2bW_550_350",   sigwgt, datasel + trigSR + vetoes);
 
 
   COLOR_MAP["T2fbd_500_420"] = kRed;
