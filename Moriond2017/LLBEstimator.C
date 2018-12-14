@@ -27,11 +27,38 @@ vector<Quantity> LLBPred(){
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/hqu/yields_llb_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "/tmp/hqu/yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "/tmp/yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+  }
+
+  return l.yields.at("_pred");
+}
+
+vector<Quantity> LLBPredComparison(){
+
+  auto llbcfg = lepConfig();
+  LLBEstimator l(llbcfg);
+  l.splitTF = SPLITTF;
+  l.predComparison();
+
+  l.printYields();
+
+  std::map<TString,int> digits;
+  digits["singlelep"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap"] = -3;
+  digits["_TF_SR_extrap"] = -3;
+  digits["singlelep-2017"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap-2017"] = -3;
+  digits["_TF_SR_extrap-2017"] = -3;
+
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
+  if(l.splitTF){
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2017", "_TF-2017", "_TF_CR_to_SR_noextrap-2017", "_TF_SR_extrap-2017", "_pred-2017", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+  }else{
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
