@@ -39,9 +39,18 @@ vector<Quantity> LLBPred(){
 
 vector<Quantity> LLBPredComparison(){
 
+  std::cout << "line 42" << std::endl;
   auto llbcfg = lepConfig();
+  std::cout << "line 42" << std::endl;
   LLBEstimator l(llbcfg);
+  std::cout << "line 42" << std::endl;
   l.splitTF = SPLITTF;
+  std::cout << "line 42" << std::endl;
+  l.isDphiCut = isDphiCut;
+  std::cout << "line 42" << std::endl;
+  std::cout << std::endl;
+  std::cout << "DphiCut: " << isDphiCut << std::endl;
+  std::cout << std::endl;
   l.predComparison();
 
   l.printYields();
@@ -54,11 +63,19 @@ vector<Quantity> LLBPredComparison(){
   digits["_TF_CR_to_SR_noextrap-2017"] = -3;
   digits["_TF_SR_extrap-2017"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
+  std::string dphitop;
+  if(l.isDphiCut) dphitop = "dphitop07_";
+  else            dphitop = "";
+
+  std::cout << std::endl;
+  std::cout << "DphiCut: " << dphitop << std::endl;
+  std::cout << std::endl;
+
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_" + dphitop + "lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2017", "_TF-2017", "_TF_CR_to_SR_noextrap-2017", "_TF_SR_extrap-2017", "_pred-2017", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2017", "_TF-2017", "_TF_CR_to_SR_noextrap-2017", "_TF_SR_extrap-2017", "_pred-2017", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + dphitop + "hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_" + dphitop + "hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
