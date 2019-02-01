@@ -15,6 +15,7 @@
 #include <set>
 #include <TTreeFormula.h>
 
+#include "json.hpp"
 #include "MiniTools.hh"
 
 #define DEBUG_

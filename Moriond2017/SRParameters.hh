@@ -5,11 +5,13 @@
 
 namespace EstTools{
 
-const TString inputdir = "/data/hqu/trees/20170227_results";
-const TString outputdir = "/tmp/hqu/plots/20170227_results/Moriond17";
+const TString inputdir = "../../macros/run/plots_19_01_05_0LSR";
+const TString outputdir = ".";
 
-const TString datadir = ".";
+const TString datadir = "../plots_19_01_05_0LSR";
+const TString datadir_2017 = "../plots_18_11_28_0LSR2017";
 const TString lumistr = "35.9";
+const TString lumistr_2017 = "41.37";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
