@@ -81,13 +81,9 @@ public:
 
     // Yields
     calcYields();
-    //sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
-    //sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
-    //sumYields({"ttbar-2017", "wjets-2017", "tW", "ttW"}, "ttbarplusw-2017");
-    //sumYields({"ttbar-sr-2017", "wjets-sr-2017", "tW-sr", "ttW-sr"}, "ttbarplusw-sr-2017");
-    sumYields({"ttbar", "wjets"}, "ttbarplusw");
-    sumYields({"ttbar-sr", "wjets-sr"}, "ttbarplusw-sr");
-    sumYields({"ttbar-2017", "wjets-2017"}, "ttbarplusw-2017");
+    sumYields({"ttbar",         "wjets"},         "ttbarplusw");
+    sumYields({"ttbar-sr",      "wjets-sr"},      "ttbarplusw-sr");
+    sumYields({"ttbar-2017",    "wjets-2017"},    "ttbarplusw-2017");
     sumYields({"ttbar-sr-2017", "wjets-sr-2017"}, "ttbarplusw-sr-2017");
 
     // _SLep = N(Data,CR)/N(MC,CR)
@@ -96,24 +92,31 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
-    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
     yields["_SLep-2017"] = calcSLep2017(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]                        = yields.at("ttbarplusw-sr")     /yields.at("ttbarplusw");
     yields["_TF-2017"]                   = yields.at("ttbarplusw-sr-2017")/yields.at("ttbarplusw-2017");
+    yields["_pred"]                      = yields.at("singlelep") * yields.at("_TF");
     yields["_pred-2017"]                 = yields.at("singlelep-2017") * yields.at("_TF-2017");
     yields["_TF_Comp"]			 = yields.at("_TF")/yields.at("_TF-2017");
 
     if(splitTF){
       //sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
-      sumYields({"ttbar-sr-int", "wjets-sr-int"}, "ttbarplusw-sr-int");
-      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
-      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
-      //sumYields({"ttbar-sr-int-2017", "wjets-sr-int-2017", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int-2017");
+      sumYields({"ttbar-sr-int",      "wjets-sr-int"},      "ttbarplusw-sr-int");
       sumYields({"ttbar-sr-int-2017", "wjets-sr-int-2017"}, "ttbarplusw-sr-int-2017");
+      yields["_TF_CR_to_SR_noextrap"]      = yields.at("ttbarplusw-sr-int")     /yields.at("ttbarplusw");
       yields["_TF_CR_to_SR_noextrap-2017"] = yields.at("ttbarplusw-sr-int-2017")/yields.at("ttbarplusw-2017");
-      yields["_TF_SR_extrap-2017"]         = yields.at("ttbarplusw-sr-2017")/yields.at("ttbarplusw-sr-int-2017");
-      yields["_TF_CR_to_SR_noextrap_Comp"] = yields.at("_TF_CR_to_SR_noextrap")/yields.at("_TF_CR_to_SR_noextrap-2017");
-      yields["_TF_SR_extrap_Comp"]	   = yields.at("_TF_SR_extrap")/yields.at("_TF_SR_extrap-2017");
+      yields["_TF_CR_to_SR_noextrap_Comp"] = yields.at("_TF_CR_to_SR_noextrap") /yields.at("_TF_CR_to_SR_noextrap-2017");
+      yields["_TF_SR_extrap"]              = yields.at("ttbarplusw-sr")         /yields.at("ttbarplusw-sr-int");
+      yields["_TF_SR_extrap-2017"]         = yields.at("ttbarplusw-sr-2017")    /yields.at("ttbarplusw-sr-int-2017");
+      yields["_TF_SR_extrap_Comp"]	   = yields.at("_TF_SR_extrap")         /yields.at("_TF_SR_extrap-2017");
+      std::cout << std::endl;
+      std::cout << "_TF_SR_extrap-2017: " << yields["_TF_SR_extrap-2017"] << std::endl;
+      std::cout << std::endl;
+      std::cout << "yields for _TF_SR_extrap-2017: " << std::endl;
+      std::cout << yields.at("ttbarplusw-sr-2017") << "/" << std::endl;
+      std::cout << yields.at("ttbarplusw-sr-int-2017") << std::endl;
+      std::cout << std::endl;
+      //sumYields({"ttbar-sr-int-2017", "wjets-sr-int-2017", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int-2017");
     }
 
     printVec(yields["_pred"], "Final prediction", true);

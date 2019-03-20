@@ -9,17 +9,17 @@ const TString inputdir = "../../macros/run/plots_19_01_05_0LSR";
 const TString outputdir = ".";
 
 const TString datadir = ".";
-const TString datadir_2017 = "../plots_19_01_05_0LSR17";
+const TString datadir_2017 = "../plots_19_02_08_0LSR17";
+const TString datadir_2017_wjets = "../plots_19_03_06_0LSR17";
 const TString lumistr = "35.9";
 const TString lumistr_2017 = "41.37";
-//const TString lumistr = "41.37";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*weight*truePUWeight*btagWeight*topptWeight*sdMVAWeight*resTopWeight";
+const TString wgtvar = lumistr+"*weight";
 //const TString wgtvar = lumistr+"*weight*PUScale2017Reco*btagWeight";
-const TString wgtvar_2017 = lumistr_2017+"*weight*truePUWeight*btagWeight";
+const TString wgtvar_2017 = lumistr_2017+"*weight";
 //const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
 // photon trigger eff.
@@ -32,11 +32,11 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt = wgtvar + "*(leptnpweightLM*lepvetoweightLM*(njets<5 || nbjets<1) + leptnpweightHM*lepvetoweightHM*(njets>=5 && nbjets>=1))";
-const TString lepselwgt  = wgtvar + "*(leptnpweightLM*(njets<5 || nbjets<1) + leptnpweightHM*(njets>=5 && nbjets>=1))";
-const TString lepvetowgt_2017 = wgtvar_2017 + "*(leptnpweightLM*lepvetoweightLM*(njets<5 || nbjets<1) + leptnpweightHM*lepvetoweightHM*(njets>=5 && nbjets>=1))";
-const TString lepselwgt_2017  = wgtvar_2017 + "*(leptnpweightLM*(njets<5 || nbjets<1) + leptnpweightHM*(njets>=5 && nbjets>=1))";
-const TString vetoes = " && Pass_LeptonVeto == 1";
+const TString lepvetowgt =      wgtvar      + "*(leptnpweightLM*lepvetoweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*lepvetoweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_2017 = wgtvar_2017 + "*(leptnpweightLM*lepvetoweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*lepvetoweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgt  =      wgtvar      + "*(leptnpweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgt_2017  = wgtvar_2017 + "*(leptnpweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && nvetolep==0 && (nvetotau==0 || (ismc && npromptgentau>0))";
 
 // 1LCR Lepton SF
@@ -48,14 +48,12 @@ const TString vetoes = " && Pass_LeptonVeto == 1";
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-bool isDphiCut = true; //Adding bool to add dphiCut > 0.7
-const TString revert_vetoes = " && Pass_Lepton == 0 && mtlepmet<100";
-//const TString revert_vetoes = " && nvetolep>0 && mtlepmet<100";
+bool isDphiCut = false; //Adding bool to add dphiCut > 0.7
+const TString revert_vetoes = " && !Pass_Lepton && Stop0l_MtLepMET<100";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && nvetolep==1 && mtlepmet<100 && origmet>100";
-//const TString lepcrsel = " && nprimlep==1 && mtlepmet<100 && origmet>100";
+const TString lepcrsel = " && !Pass_Lepton && Stop0l_MtLepMET<100 && MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -71,7 +69,7 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(nivf>=1) + 1.0*(nivf==0))";
+const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
 //const TString sigwgt = lepvetowgt;
 
 // triggers
@@ -79,67 +77,65 @@ const TString trigSR = " && (passmetmht || ismc)";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_Baseline && ";
-//const TString datasel = " && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99 && (origmet/calomet<5)";
-//const TString datasel = " && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99 && (origmet/calomet<5)";
-//const TString datasel = " && passjetid && passjson && (passmetfilters || process==10) && j1chEnFrac>0.1 && j1chEnFrac<0.99";
+const TString datasel = " && Pass_JetID && Pass_EventFilter ";
 const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
-const TString dphi_invert = " && (dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)";
-const TString dphi_cut = " && ( ((mtcsv12met<175 && nsdtop==0 && nsdw==0 && nrestop==0) && (dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15)) || (!(mtcsv12met<175 && nsdtop==0 && nsdw==0 && nrestop==0) && (dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
+const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
+const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.5 && Jet_dPhiMET[2]>0.5 && Jet_dPhiMET[3]>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "met>250 && njets>=2";
+const TString baseline = "Pass_MET && Pass_Stop0l_nJets20";
+//const TString baseline = "met>250 && Stop0l_nJets>=2";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-        {"lmNoDPhi",  "ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10"},
-        {"dPhiLM",    "dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15"},
-        {"hmNoDPhi",  "njets>=5 && nbjets>=1"},
-        {"dPhiHM",    "dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5"},
-        {"invertDPhi","(dphij1met<0.1 || dphij2met<0.1 || dphij3met<0.1)"},
+        {"lmNoDPhi",  "Stop0l_ISRJetPt>200 && dphiisrmet>2 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && metovsqrtht>10"},
+        {"dPhiLM",    "Pass_dPhiMETLowDM"},
+        {"hmNoDPhi",  "Stop0l_Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
+        {"dPhiHM",    "Pass_dPhiMETHighDM"},
+        {"invertDPhi","(Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)"},
 
-        {"nb0",       "nbjets==0"},
-        {"nb1",       "nbjets==1"},
-        {"nb2",       "nbjets>=2"},
-        {"nbeq2",     "nbjets==2"},
-        {"nb3",       "nbjets>=3"},
-        {"nivf0",     "nivf==0"},
-        {"nivf1",     "nivf>=1"},
-        {"lowptisr",  "ak8isrpt>300 && ak8isrpt<500"},
-        {"highptisr", "ak8isrpt>500"},
-        {"nj2to5",    "njets>=2 && njets<=5"},
-        {"nj6",       "njets>=6"},
-        {"nj7",       "njets>=7"},
-        {"lowmtb",    "mtcsv12met<175"},
-        {"highmtb",   "mtcsv12met>175"},
-        {"lowptb",    "csvj1pt<40"},
-        {"medptb",    "csvj1pt>40 && csvj1pt<70"},
-        {"highptb",   "csvj1pt>70"},
-        {"lowptb12",  "(csvj1pt+csvj2pt)<80"},
-        {"medptb12",  "(csvj1pt+csvj2pt)>80 && (csvj1pt+csvj2pt)<140"},
-        {"highptb12", "(csvj1pt+csvj2pt)>140"},
-        {"nt0",       "nsdtop==0"},
-        {"nt1",       "nsdtop==1"},
-        {"nt2",       "nsdtop==2"},
-        {"ntgeq1",    "nsdtop>=1"},
-        {"nw0",       "nsdw==0"},
-        {"nw1",       "nsdw==1"},
-        {"nw2",       "nsdw==2"},
-        {"nwgeq1",    "nsdw>=1"},
-        {"nrt0",      "nrestop==0"},
-        {"nrt1",      "nrestop==1"},
-        {"nrt2",      "nrestop==2"},
-        {"nrtgeq1",   "nrestop>=1"},
-	{"nrtntnwgeq3", "(nsdtop+nrestop+nsdw) >= 3"},
-	{"htlt1000",    "ht<1000"},	
-	{"ht1000to1500",    "ht>1000 && ht<1500"},	
-	{"htgt1500",    "ht>1500"},	
-	{"htlt1300",    "ht<1300"},	
-	{"htgt1300",    "ht>1300"},	
-	{"dphitop",     "dphisrt12>0.7"},
+        {"nb0",       "Stop0l_nbtags==0"},
+        {"nb1",       "Stop0l_nbtags==1"},
+        {"nb2",       "Stop0l_nbtags>=2"},
+        {"nbeq2",     "Stop0l_nbtags==2"},
+        {"nb3",       "Stop0l_nbtags>=3"},
+        {"nivf0",     "Stop0l_nSoftb==0"},
+        {"nivf1",     "Stop0l_nSoftb>=1"},
+        {"lowptisr",  "Stop0l_ISRJetPt>300 && Stop0l_ISRJetPt<500"},
+        {"highptisr", "Stop0l_ISRJetPt>500"},
+        {"nj2to5",    "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
+        {"nj6",       "Stop0l_nJets>=6"},
+        {"nj7",       "Stop0l_nJets>=7"},
+        {"lowmtb",    "Stop0l_Mtb<175"},
+        {"highmtb",   "Stop0l_Mtb>175"},
+        {"lowptb",    "Jet_btagStop0l_pt[0]<40"},
+        {"medptb",    "Jet_btagStop0l_pt[0]>40 && Jet_btagStop0l_pt[0]<70"},
+        {"highptb",   "Jet_btagStop0l_pt[0]>70"},
+        {"lowptb12",  "(Jet_btagStop0l_pt[0]+Jet_btagStop0l_pt[1])<80"},
+        {"medptb12",  "(Jet_btagStop0l_pt[0]+Jet_btagStop0l_pt[1])>80 && (Jet_btagStop0l_pt[0]+Jet_btagStop0l_pt[1])<140"},
+        {"highptb12", "(Jet_btagStop0l_pt[0]+Jet_btagStop0l_pt[1])>140"},
+        {"nt0",       "Stop0l_nTop==0"},
+        {"nt1",       "Stop0l_nTop==1"},
+        {"nt2",       "Stop0l_nTop==2"},
+        {"ntgeq1",    "Stop0l_nTop>=1"},
+        {"nw0",       "Stop0l_nW==0"},
+        {"nw1",       "Stop0l_nW==1"},
+        {"nw2",       "Stop0l_nW==2"},
+        {"nwgeq1",    "Stop0l_nW>=1"},
+        {"nrt0",      "Stop0l_nResolved==0"},
+        {"nrt1",      "Stop0l_nResolved==1"},
+        {"nrt2",      "Stop0l_nResolved==2"},
+        {"nrtgeq1",   "Stop0l_nResolved>=1"},
+	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
+	{"htlt1000",    "Stop0l_HT<1000"},	
+	{"ht1000to1500",    "Stop0l_HT>1000 && Stop0l_HT<1500"},	
+	{"htgt1500",    "Stop0l_HT>1500"},	
+	{"htlt1300",    "Stop0l_HT<1300"},	
+	{"htgt1300",    "Stop0l_HT>1300"},	
+	//{"dphitop",     "dphisrt12>0.7"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -524,8 +520,8 @@ std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     
     for (auto name : srbins){
-      if((!name.Contains("lm") && !name.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) name+="_dphitop";
-      std::cout << "name: " << name << std::endl;
+      //if((!name.Contains("lm") && !name.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) name+="_dphitop";
+      //std::cout << "name: " << name << std::endl;
       cuts[name] = createCutString(name, cutMap);
     }
     return cuts;
@@ -534,8 +530,8 @@ std::map<TString, TString> srcuts = []{
 std::map<TString, TString> srlabels = []{
     std::map<TString, TString> cmap;
     for (auto s: srbins){
-      if((!s.Contains("lm") && !s.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) s+="_dphitop";
-      std::cout << "s: " << s << std::endl;
+      //if((!s.Contains("lm") && !s.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) s+="_dphitop";
+      //std::cout << "s: " << s << std::endl;
       cmap[s] = s;
     }
     return cmap;
@@ -1080,7 +1076,7 @@ std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : lepcrMapping){
       TString sr2crCut = sr2cr.first;
-      if((!sr2cr.first.Contains("lm") && !sr2cr.first.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) sr2crCut+="_dphitop";
+      //if((!sr2cr.first.Contains("lm") && !sr2cr.first.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) sr2crCut+="_dphitop";
       cuts[sr2crCut] = createCutString(sr2cr.second, cutMap);
     }
     return cuts;
@@ -1184,7 +1180,7 @@ map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
     auto nameMet = name;
-    if((!name.Contains("lm") && !name.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) name+="_dphitop";
+    //if((!name.Contains("lm") && !name.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) name+="_dphitop";
     cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo("met", "#slash{E}_{T}", srMETbins.at(nameMet), "GeV"));
   }
   return cmap;
@@ -1209,12 +1205,12 @@ map<TString, Category> lepCatMap(){
   //if(isDphiCut) labels = ICHEPCR ? srlabels: lepcrDphiToplabels;
   for (auto &name : srbins){
     //if((!name.Contains("lm") && !name.Contains("nj7_nt0_nrt0_nw0")) && isDphiCut) name+="_dphitop";
-    std::cout << "name: " << name << std::endl;
-    std::cout << "cutName: " << cuts.at(name) << std::endl;
-    std::cout << "labelName: " << labels.at(name) << std::endl;
+    //std::cout << "name: " << name << std::endl;
+    //std::cout << "cutName: " << cuts.at(name) << std::endl;
+    //std::cout << "labelName: " << labels.at(name) << std::endl;
     //std::cout << "METName: " << lepcrMETDphiTopbins.at(name).first << std::endl;
-    if(isDphiCut) cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", varlabel, lepcrMETbins.at(name), "GeV"));
-    else          cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", varlabel, lepcrMETDphiTopbins.at(name), "GeV"));
+    if(!isDphiCut) cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", varlabel, lepcrMETbins.at(name), "GeV"));
+    else           cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("met", varlabel, lepcrMETDphiTopbins.at(name), "GeV"));
   }
   return cmap;
 }
@@ -1290,46 +1286,46 @@ BaseConfig lepConfig(){
 
   // samples for cr categories
   if (ADD_LEP_TO_MET){
-    config.addSample("singlelep",   "Data",          datadir+"/lepcr/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
+    config.addSample("singlelep",   "Data",          datadir+"/lepcr/singlelep", "1.0",    datasel + trigLepCR + lepcrsel);
     config.addSample("ttbar",       "t#bar{t}",      "lepcr/ttbar",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
     config.addSample("wjets",       "W+jets",        "lepcr/wjets",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("tW",          "tW",            "lepcr/tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("ttW",         "ttW",           "lepcr/ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    //config.addSample("tW",          "tW",            "lepcr/tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    //config.addSample("ttW",         "ttW",           "lepcr/ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",   "Data",          datadir+"/sr/met",    "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("singlelep-2017",   "Data",     datadir_2017+"/sr/met",    "1.0",     datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar",           lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("wjets",       "W+jets",        "sr/wjets",           lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar",  lepselwgt_2017, datasel + trigSR + revert_vetoes);
-    config.addSample("wjets-2017",  "W+jets",        datadir_2017+"/sr/wjets",  lepselwgt_2017, datasel + trigSR + revert_vetoes);
-    config.addSample("tW",          "tW",            "sr/tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("ttW",         "ttW",           "sr/ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",   "Data",          datadir+"/sr/met",         "1.0",                 datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep-2017",   "Data",     datadir_2017+"/sr/met",    "1.0",                 datasel + trigSR + revert_vetoes);
+    config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar",                       lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("wjets",       "W+jets",        "sr/wjets",                       lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("ttbar-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar_goodPU",  lepselwgt_2017, datasel + trigSR + revert_vetoes);
+    config.addSample("wjets-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepselwgt_2017, datasel + trigSR + revert_vetoes);
+    //config.addSample("tW",          "tW",            "sr/tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
+    //config.addSample("ttW",         "ttW",           "sr/ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
 //    config.addSample("qcd",         "QCD",           "sr/qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
   }
 
   // samples for sr categories
-  config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar",                lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("wjets-sr",       "W+jets",        "sr/wjets",                lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttbar-sr-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar",  lepvetowgt_2017, datasel + trigSR + vetoes);
-  config.addSample("wjets-sr-2017",  "W+jets",        datadir_2017+"/sr/wjets",  lepvetowgt_2017, datasel + trigSR + vetoes);
-  config.addSample("tW-sr",          "tW",            "sr/tW",                   lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttW-sr",         "ttW",           "sr/ttW",                  lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar",                       lepvetowgt,      datasel + trigSR + vetoes);
+  config.addSample("wjets-sr",       "W+jets",        "sr/wjets",                       lepvetowgt,      datasel + trigSR + vetoes);
+  config.addSample("ttbar-sr-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar_goodPU",  lepvetowgt_2017, datasel + trigSR + vetoes);
+  config.addSample("wjets-sr-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepvetowgt_2017, datasel + trigSR + vetoes);
+  //config.addSample("tW-sr",          "tW",            "sr/tW",                   lepvetowgt, datasel + trigSR + vetoes);
+  //config.addSample("ttW-sr",         "ttW",           "sr/ttW",                  lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("qcd-sr",         "QCD",           "qcd",                     lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("rare-sr",        "Rare",          "sr/rare",                 lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttZ-sr",         "ttZ",           "sr/ttZ",                  lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("diboson-sr",     "Diboson",       "sr/diboson",              lepvetowgt, datasel + trigSR + vetoes);
+  //config.addSample("ttZ-sr",         "ttZ",           "sr/ttZ",                  lepvetowgt, datasel + trigSR + vetoes);
+  //config.addSample("diboson-sr",     "Diboson",       "sr/diboson",              lepvetowgt, datasel + trigSR + vetoes);
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
-    config.addSample("ttbar-sr-int",       "t#bar{t}",      "sr/ttbar",           lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("wjets-sr-int",       "W+jets",        "sr/wjets",           lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("ttbar-sr-int-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar",  lepvetowgt_2017, datasel + trigSR + vetoes);
-    config.addSample("wjets-sr-int-2017",  "W+jets",        datadir_2017+"/sr/wjets",  lepvetowgt_2017, datasel + trigSR + vetoes);
-    config.addSample("tW-sr-int",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("ttW-sr-int",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("ttZ-sr-int",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("diboson-sr-int",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
+    config.addSample("ttbar-sr-int",       "t#bar{t}",      "sr/ttbar",                       lepvetowgt,      datasel + trigSR + vetoes);
+    config.addSample("wjets-sr-int",       "W+jets",        "sr/wjets",                       lepvetowgt,      datasel + trigSR + vetoes);
+    config.addSample("ttbar-sr-int-2017",  "t#bar{t}",      datadir_2017+"/sr/ttbar_goodPU",  lepvetowgt_2017, datasel + trigSR + vetoes);
+    config.addSample("wjets-sr-int-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepvetowgt_2017, datasel + trigSR + vetoes);
+    //config.addSample("tW-sr-int",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
+    //config.addSample("ttW-sr-int",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
+    //config.addSample("ttZ-sr-int",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
+    //config.addSample("diboson-sr-int",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
   }
 
   config.sel = baseline;
