@@ -52,11 +52,11 @@ bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
 bool isDphiCut = false; //Adding bool to add dphiCut > 0.7
-const TString revert_vetoes = " && nLeptonVeto == 1 && Stop0l_MtLepMET<100";
+const TString revert_vetoes = " && Pass_LLCR";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && nLeptonVeto == 1 && Stop0l_MtLepMET<100 && MET_pt>100";
+const TString lepcrsel = " && Pass_LLCR && MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -83,7 +83,8 @@ const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 //const TString datasel = " && Pass_Baseline";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_dPhiMETLowDM";
 const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
-const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
+//const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
+const TString dphi_invert = " && Pass_QCDCR"; 
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.5 && Jet_dPhiMET[2]>0.5 && Jet_dPhiMET[3]>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
@@ -94,8 +95,7 @@ const TString baseline = "Pass_MET && Pass_NJets20";
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-        //{"lmNoDPhi",  "Stop0l_ISRJetPt>200 && dphiisrmet>2 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && metovsqrtht>10"},
-        {"lmNoDPhi",  "Stop0l_ISRJetPt>200 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0"},
+        {"lmNoDPhi",  "Stop0l_ISRJetPt>200 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10"},
         {"dPhiLM",    "Pass_dPhiMETLowDM"},
         {"hmNoDPhi",  "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",    "Pass_dPhiMETHighDM"},
@@ -1282,11 +1282,8 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",   "Data",          "met",         "1.0",                 datasel + trigSR + revert_vetoes);
-    //config.addSample("singlelep-2017",   "Data",     datadir_2017+"/met",    "1.0",                 datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      "ttbar",                       lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("wjets",       "W+jets",        "wjets",                       lepselwgt,      datasel + trigSR + revert_vetoes);
-    //config.addSample("ttbar-2017",  "t#bar{t}",      datadir_2017+"/ttbar_goodPU",  lepselwgt_2017, datasel + trigSR + revert_vetoes);
-    //config.addSample("wjets-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepselwgt_2017, datasel + trigSR + revert_vetoes);
     config.addSample("tW",          "tW",            "tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("ttW",         "ttW",           "ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
 //    config.addSample("qcd",         "QCD",           "qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
@@ -1295,11 +1292,8 @@ BaseConfig lepConfig(){
   // samples for sr categories
   config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",                       lepvetowgt,      datasel + trigSR + vetoes);
   config.addSample("wjets-sr",       "W+jets",        "wjets",                       lepvetowgt,      datasel + trigSR + vetoes);
-  //config.addSample("ttbar-sr-2017",  "t#bar{t}",      datadir_2017+"/ttbar_goodPU",  lepvetowgt_2017, datasel + trigSR + vetoes);
-  //config.addSample("wjets-sr-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepvetowgt_2017, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "tW",                   lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "ttW",                  lepvetowgt, datasel + trigSR + vetoes);
-//  config.addSample("qcd-sr",         "QCD",           "qcd",                     lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("rare-sr",        "Rare",          "rare",                 lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttZ-sr",         "ttZ",           "ttZ",                  lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("diboson-sr",     "Diboson",       "diboson",              lepvetowgt, datasel + trigSR + vetoes);
@@ -1308,8 +1302,6 @@ BaseConfig lepConfig(){
   if (SPLITTF){
     config.addSample("ttbar-sr-int",       "t#bar{t}",      "ttbar",                       lepvetowgt,      datasel + trigSR + vetoes);
     config.addSample("wjets-sr-int",       "W+jets",        "wjets",                       lepvetowgt,      datasel + trigSR + vetoes);
-    //config.addSample("ttbar-sr-int-2017",  "t#bar{t}",      datadir_2017+"/ttbar_goodPU",  lepvetowgt_2017, datasel + trigSR + vetoes);
-    //config.addSample("wjets-sr-int-2017",  "W+jets",        datadir_2017_wjets+"/wjets",      lepvetowgt_2017, datasel + trigSR + vetoes);
     config.addSample("tW-sr-int",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("ttW-sr-int",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("ttZ-sr-int",         "ttZ",           "ttZ",             lepvetowgt, datasel + trigSR + vetoes);
@@ -1386,33 +1378,33 @@ BaseConfig qcdConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   // qcdcr
-  config.addSample("data-cr",     "Data",             datadir+"/sr/met",  "1.0",      datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd-cr",      "QCD",              "sr/qcd-cr",       qcdwgt,      datasel + trigSR + dphi_invert + qcdSpikeRemovals);
+  config.addSample("data-cr",     "Data",             datadir+"/met",  "1.0",      datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("qcd-cr",      "QCD",              "qcd",       qcdwgt,      datasel + trigSR + dphi_invert + qcdSpikeRemovals);
 
-  config.addSample("qcd-withveto-cr",  "QCD",         "sr/qcd-cr",       qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert + qcdSpikeRemovals);
-  config.addSample("qcd-withveto-sr",  "QCD",         "sr/qcd-sr",       qcdvetowgt,  datasel + trigSR + vetoes + qcdSpikeRemovals);
+  config.addSample("qcd-withveto-cr",  "QCD",         "qcd",       qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert + qcdSpikeRemovals);
+  config.addSample("qcd-withveto-sr",  "QCD",         "qcd",       qcdvetowgt,  datasel + trigSR + vetoes + qcdSpikeRemovals);
 
   // qcdcr: other bkg subtraction
-  config.addSample("ttbar-cr",       "t#bar{t}",      "sr/ttbar",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("wjets-cr",       "W+jets",        "sr/wjets",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("tW-cr",          "tW",            "sr/tW",           lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("ttW-cr",         "ttW",           "sr/ttW",          lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("znunu-cr",       "Znunu",         "sr/znunu",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("ttbar-cr",       "t#bar{t}",      "ttbar",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("wjets-cr",       "W+jets",        "wjets",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("tW-cr",          "tW",            "tW",           lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("ttW-cr",         "ttW",           "ttW",          lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
+  config.addSample("znunu-cr",       "Znunu",         "znunu",        lepvetowgt,  datasel + trigSR + vetoes + dphi_invert);
 
   // onelepcr: norm correction for other bkg subtraction
-  config.addSample("data-norm",      "Data",          datadir+"/sr/met", "1.0",       datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("ttbar-norm",     "t#bar{t}",      "sr/ttbar",        lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("wjets-norm",     "W+jets",        "sr/wjets",        lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("tW-norm",        "tW",            "sr/tW",           lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("ttW-norm",       "ttW",           "sr/ttW",          lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("qcd-norm",       "QCD",           "sr/qcd-sr",       lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut + qcdSpikeRemovals);
+  config.addSample("data-norm",      "Data",          datadir+"/met", "1.0",       datasel + trigSR + revert_vetoes + dphi_cut);
+  config.addSample("ttbar-norm",     "t#bar{t}",      "ttbar",        lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
+  config.addSample("wjets-norm",     "W+jets",        "wjets",        lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
+  config.addSample("tW-norm",        "tW",            "tW",           lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
+  config.addSample("ttW-norm",       "ttW",           "ttW",          lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut);
+  config.addSample("qcd-norm",       "QCD",           "qcd",       lepselwgt,   datasel + trigSR + revert_vetoes + dphi_cut + qcdSpikeRemovals);
 
   // qcdsr
-  config.addSample("qcd-sr",         "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR + qcdSpikeRemovals);
+  config.addSample("qcd-sr",         "QCD",           "qcd",       qcdwgt,      datasel + trigSR + qcdSpikeRemovals);
 
   // samples for splitting the TF, optional (see z.splitTF)
   if (SPLITTF){
-    config.addSample("qcd-sr-int",     "QCD",           "sr/qcd-sr",       qcdwgt,      datasel + trigSR + dphi_cut + qcdSpikeRemovals);
+    config.addSample("qcd-sr-int",     "QCD",           "qcd",       qcdwgt,      datasel + trigSR + dphi_cut + qcdSpikeRemovals);
   }
 
   config.sel = baseline;
@@ -1458,7 +1450,7 @@ map<TString, BinInfo> varDict {
   {"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
   {"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
   {"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-  {"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
+  {"metovsqrtht",BinInfo("Stop0l_METSig", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
   {"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
   {"dphiisrmet_fine",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
   {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
