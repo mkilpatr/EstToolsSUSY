@@ -308,7 +308,7 @@ void lepcrYields(){
 
 void plot1LepInclusive(){
   auto config = lepConfig();
-  config.sel = "met>200";
+  config.sel = "MET_pt > 200";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -322,38 +322,44 @@ void plot1LepInclusive(){
   TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {
-//    {"met",       BinInfo("met", "#slash{E}_{T}", 16, 0, 800, "GeV")},
-//    {"origmet",   BinInfo("origmet", "Original #slash{E}_{T}", 40, 0, 400, "GeV")},
-//    {"njets",     BinInfo("njets", "N_{j}", 12, -0.5, 11.5)},
-//    {"ncttstd",   BinInfo("ncttstd", "N_{CTT}", 3, -0.5, 2.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-//    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-//    {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 16, 0, 800)},
-//    {"leptoneta", BinInfo("leptoneta", "#eta_{lep}", 25, -2.5, 2.5)},
-//    {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-//    {"lp",  BinInfo("lp", "L_{P}", 40, -2, 2.)},
+    //{"norm",      BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{0, 1000}, "GeV")},
+    {"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+    //{"metgx",       BinInfo("MET_pt", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
+    //{"metzg",       BinInfo("MET_pt", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
+    //{"origmet",   BinInfo("MET_pt", "Original #slash{E}_{T}", 20, 0, 500, "GeV")},
+    {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 8, -0.5, 7.5)},
+    //{"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
+    //{"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
+    //{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+    //{"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
+    //{"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
+    //{"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
+    //{"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
+    //{"dphiisrmet_fine",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
+    //{"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
+    //{"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
+    //{"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
+    //{"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
+    //{"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
+    //{"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
+    //{"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},
+    //{"drlepisr",  BinInfo("drlepisr", "#DeltaR(lep, j_{1}^{ISR})", 25, 0, 5)},
 
-    {"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
-    {"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
-    {"j1csv_wp",    BinInfo("j1csv/1", "CSV(j_{1})", vector<double>{0, 0.460, 0.800, 1})},
-    {"j2csv_wp",    BinInfo("j2csv/1", "CSV(j_{2})", vector<double>{0, 0.460, 0.800, 1})},
-    {"b1csv",    BinInfo("b1csv", "CSV(b_{1})", 20, 0, 1)},
-    {"b2csv",    BinInfo("b2csv", "CSV(b_{2})", 20, 0, 1)},
+    //{"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
+    //{"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
+    //{"j1csv_wp",    BinInfo("j1csv/1", "CSV(j_{1})", vector<double>{0, 0.460, 0.800, 1})},
+    //{"j2csv_wp",    BinInfo("j2csv/1", "CSV(j_{2})", vector<double>{0, 0.460, 0.800, 1})},
+    //{"b1csv",    BinInfo("b1csv", "CSV(b_{1})", 20, 0, 1)},
+    //{"b2csv",    BinInfo("b2csv", "CSV(b_{2})", 20, 0, 1)},
 
   };
 
   for (auto &var : varDict){
 
     z.resetSelection();
-    z.setSelection("njets>=2", "njgeq2", "");
+    z.setSelection("Stop0l_nJets>=2", "njgeq2", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("njets>=5", "njgeq5", "");
+    z.setSelection("Stop0l_nJets>=5", "njgeq5", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
 
 //      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);

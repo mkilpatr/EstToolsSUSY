@@ -6,7 +6,7 @@
 namespace EstTools{
 
 //const TString inputdir = "../../macros/run/plots_19_01_05_0LSR";
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_041919/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_050119/";
 const TString outputdir = ".";
 
 const TString datadir = ".";
@@ -18,7 +18,7 @@ const TString lumistr_2017 = "41.82";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight";
+const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight";
 //const TString wgtvar = lumistr+"*weight*PUScale2017Reco*btagWeight";
 const TString wgtvar_2017 = lumistr_2017+"*weight";
 //const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
