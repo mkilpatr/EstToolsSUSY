@@ -37,12 +37,36 @@ vector<Quantity> LLBPred(){
   return l.yields.at("_pred");
 }
 
+vector<Quantity> LLBInclusivePred(){
+
+  auto llbcfg = lepConfig();
+  LLBEstimator l(llbcfg);
+  l.splitTF = SPLITTF;
+  l.pred();
+
+  l.printYields();
+
+  std::map<TString,int> digits;
+  digits["singlelep"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap"] = -3;
+  digits["_TF_SR_extrap"] = -3;
+
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm_Inc_2018.tex", "lm", digits); // LM
+  if(l.splitTF){
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm_Inc_2018.tex", "hm", digits);
+  }else{
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm_Inc_2018.tex", "hm", digits);
+  }
+
+  return l.yields.at("_pred");
+}
+
 vector<Quantity> LLBPredComparison(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  l.isDphiCut = isDphiCut;
+  l.isValidate = isValidate;
   l.predComparison();
 
   l.printYields();
@@ -51,21 +75,21 @@ vector<Quantity> LLBPredComparison(){
   digits["singlelep"] = 0; // indicate it's data for proper formatting
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
-  digits["singlelep-2017"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2017"] = -3;
-  digits["_TF_SR_extrap-2017"] = -3;
+  digits["singlelep-2018"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap-2018"] = -3;
+  digits["_TF_SR_extrap-2018"] = -3;
 
-  std::string dphitop;
-  if(l.isDphiCut) dphitop = "dphitop07_";
-  else            dphitop = "";
+  std::string isvalidate;
+  if(l.isValidate) isvalidate = "validate_";
+  else            isvalidate = "";
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_" + dphitop + "lm.tex", "lm", digits); // LM
-  //l.printYieldsTableLatex({"_TF", "_TF-2017", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + dphitop + "lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2018", "_TF-2018", "_pred-2018", "_TF_Comp"}, labelMap, "yields_llb_" + isvalidate + "lm.tex", "lm", digits); // LM
+  //l.printYieldsTableLatex({"_TF", "_TF-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2017", "_TF-2017", "_TF_CR_to_SR_noextrap-2017", "_TF_SR_extrap-2017", "_pred-2017", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + dphitop + "hm.tex", "hm", digits);
-    //l.printYieldsTableLatex({"_TF", "_TF-2017", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + dphitop + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2018", "_TF-2018", "_TF_CR_to_SR_noextrap-2018", "_TF_SR_extrap-2018", "_pred-2018", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + isvalidate + "hm.tex", "hm", digits);
+    //l.printYieldsTableLatex({"_TF", "_TF-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2017", "_TF-2017", "_pred-2017", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + dphitop + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2018", "_TF-2018", "_pred-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -76,9 +100,10 @@ vector<Quantity> LLBPredComparison(){
 
 void plotLepCR(){
   auto config = lepConfig();
-  config.catMaps = lepCatMap();
+  config.catMaps = isValidate ? lepCatMapValidate() : lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2018";
+  region = isValidate ? region + "_validate" : region;
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -308,7 +333,8 @@ void lepcrYields(){
 
 void plot1LepInclusive(){
   auto config = lepConfig();
-  config.sel = "MET_pt > 200";
+  //config.sel = "MET_pt > 200";
+  config.sel = baseline;
 
   config.categories.clear();
   config.catMaps.clear();
@@ -327,7 +353,7 @@ void plot1LepInclusive(){
     //{"metgx",       BinInfo("MET_pt", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
     //{"metzg",       BinInfo("MET_pt", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
     //{"origmet",   BinInfo("MET_pt", "Original #slash{E}_{T}", 20, 0, 500, "GeV")},
-    {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 8, -0.5, 7.5)},
+    {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
     //{"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
     //{"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
     //{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
@@ -357,9 +383,13 @@ void plot1LepInclusive(){
   for (auto &var : varDict){
 
     z.resetSelection();
-    z.setSelection("Stop0l_nJets>=2", "njgeq2", "");
+    //z.setSelection("Stop0l_nJets>=2", "njgeq2_2018", "");
+    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+    //z.setSelection("Stop0l_nJets>=5", "njgeq5_2018", "");
+    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+    z.setSelection("Pass_LLCR_lowDM", "njgeq2_2018", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("Stop0l_nJets>=5", "njgeq5", "");
+    z.setSelection("Pass_LLCR_highDM", "njgeq5_2018", "");
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
 
 //      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);

@@ -165,7 +165,7 @@ public:
 
   // whether to split TF when making prediction tables
   bool splitTF = false;
-  bool isDphiCut = false;
+  bool isValidate = false;
 };
 
 
