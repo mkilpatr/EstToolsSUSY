@@ -18,6 +18,7 @@ vector<Quantity> LLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
+  l.isValidate = isValidate;
   l.pred();
 
   l.printYields();
@@ -27,11 +28,15 @@ vector<Quantity> LLBPred(){
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
+  std::string isvalidate;
+  if(l.isValidate) isvalidate = "validate_";
+  else            isvalidate = "";
+
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -51,11 +56,11 @@ vector<Quantity> LLBInclusivePred(){
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm_Inc_2018.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm_Inc_2016.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm_Inc_2018.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm_Inc_2016.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm_Inc_2018.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm_Inc_2016.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -75,21 +80,19 @@ vector<Quantity> LLBPredComparison(){
   digits["singlelep"] = 0; // indicate it's data for proper formatting
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
-  digits["singlelep-2018"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2018"] = -3;
-  digits["_TF_SR_extrap-2018"] = -3;
+  digits["singlelep-2016"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap-2016"] = -3;
+  digits["_TF_SR_extrap-2016"] = -3;
 
   std::string isvalidate;
   if(l.isValidate) isvalidate = "validate_";
   else            isvalidate = "";
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2018", "_TF-2018", "_pred-2018", "_TF_Comp"}, labelMap, "yields_llb_" + isvalidate + "lm.tex", "lm", digits); // LM
-  //l.printYieldsTableLatex({"_TF", "_TF-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_" + isvalidate + "lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2018", "_TF-2018", "_TF_CR_to_SR_noextrap-2018", "_TF_SR_extrap-2018", "_pred-2018", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + isvalidate + "hm.tex", "hm", digits);
-    //l.printYieldsTableLatex({"_TF", "_TF-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2016", "_TF-2016", "_TF_CR_to_SR_noextrap-2016", "_TF_SR_extrap-2016", "_pred-2016", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + isvalidate + "hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2018", "_TF-2018", "_pred-2018", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -102,7 +105,7 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = isValidate ? lepCatMapValidate() : lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2018";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2016";
   region = isValidate ? region + "_validate" : region;
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
@@ -348,51 +351,34 @@ void plot1LepInclusive(){
   TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {
-    //{"norm",      BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{0, 1000}, "GeV")},
-    {"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-    //{"metgx",       BinInfo("MET_pt", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-    //{"metzg",       BinInfo("MET_pt", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-    //{"origmet",   BinInfo("MET_pt", "Original #slash{E}_{T}", 20, 0, 500, "GeV")},
+    //{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
     {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
-    //{"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
-    //{"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-    //{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-    //{"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
-    //{"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-    //{"metovsqrtht",BinInfo("metovsqrtht", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
-    //{"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-    //{"dphiisrmet_fine",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
-    //{"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-    //{"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
-    //{"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-    //{"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
-    //{"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
-    //{"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
-    //{"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},
-    //{"drlepisr",  BinInfo("drlepisr", "#DeltaR(lep, j_{1}^{ISR})", 25, 0, 5)},
-
-    //{"j1csv",    BinInfo("j1csv", "CSV(j_{1})", 20, 0, 1)},
-    //{"j2csv",    BinInfo("j2csv", "CSV(j_{2})", 20, 0, 1)},
-    //{"j1csv_wp",    BinInfo("j1csv/1", "CSV(j_{1})", vector<double>{0, 0.460, 0.800, 1})},
-    //{"j2csv_wp",    BinInfo("j2csv/1", "CSV(j_{2})", vector<double>{0, 0.460, 0.800, 1})},
-    //{"b1csv",    BinInfo("b1csv", "CSV(b_{1})", 20, 0, 1)},
-    //{"b2csv",    BinInfo("b2csv", "CSV(b_{2})", 20, 0, 1)},
+    //{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 
   };
+  vector< pair< TString, TString> > jetpt_bin = {
+	make_pair("Jet_pt[0] > 30 && Jet_pt[0] < 50", "j1pt30to50"),
+	make_pair("Jet_pt[0] > 50 && Jet_pt[0] < 100", "j1pt50to100"),
+						};
 
-  for (auto &var : varDict){
+  for(int iJ = 0; iJ != jetpt_bin.size(); iJ++){
+    for (auto &var : varDict){
 
-    z.resetSelection();
-    //z.setSelection("Stop0l_nJets>=2", "njgeq2_2018", "");
-    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    //z.setSelection("Stop0l_nJets>=5", "njgeq5_2018", "");
-    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("Pass_LLCR_lowDM", "njgeq2_2018", "");
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-    z.setSelection("Pass_LLCR_highDM", "njgeq5_2018", "");
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      z.resetSelection();
+      //z.setSelection("Stop0l_nJets>=2", "njgeq2_2016", "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      //z.setSelection("Stop0l_nJets>=5", "njgeq5_2016", "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      z.setSelection("Pass_LLCR_lowDM && " + jetpt_bin[iJ].first, "njgeq2_" + jetpt_bin[iJ].second, "");
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      z.setSelection("Pass_LLCR_highDM && " + jetpt_bin[iJ].first, "njgeq5_" + jetpt_bin[iJ].second, "");
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      //z.setSelection("Pass_LLCR_lowDM", "njgeq2_2016", "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
+      //z.setSelection("Pass_LLCR_highDM", "njgeq5_2016", "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
 
-//      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);
+    }
   }
 
 }
