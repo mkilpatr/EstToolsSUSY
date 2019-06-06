@@ -129,7 +129,6 @@ public:
     vector<TString> snames;
     for (const auto &s : config.samples){
 	snames.push_back(s.first);
-	std::cout << "snames: " << s.first << std::endl;
     }
     doYieldsCalc(snames);
   }

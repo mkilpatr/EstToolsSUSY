@@ -36,7 +36,7 @@ const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtag
 const TString lepselwgt  =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 //const TString lepvetowgt =      wgtvar      + "*(leptnpweightLM*lepvetoweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*lepvetoweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 //const TString lepselwgt  =      wgtvar      + "*(leptnpweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-const TString vetoes = " && Pass_LeptonVeto";
+const TString vetoes = " && Pass_LeptonVeto && Pass_dPhiMETLowDM";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -48,11 +48,11 @@ bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
 bool isValidate = true; //Adding bool to add dphiCut > 0.7
-const TString revert_vetoes = " && Pass_LLCR";
+const TString revert_vetoes = " && Pass_LLCR && Pass_dPhiMETLowDM";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Pass_LLCR && MET_pt>100";
+const TString lepcrsel = " && Pass_LLCR && MET_pt>100 && Pass_dPhiMETLowDM";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -76,7 +76,7 @@ const TString trigSR = "";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_dPhiMETLowDM";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio";
 //const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_dPhiMETLowDM && Pass_HEMVeto20";
 const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
 //const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
