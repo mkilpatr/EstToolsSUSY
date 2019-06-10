@@ -5,7 +5,7 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_051319/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_060719/";
 const TString outputdir = "LowMET";
 
 const TString datadir = ".";
@@ -15,7 +15,6 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
 const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight";
-//const TString wgtvar = lumistr+"*weight*topptWeight*truePUWeight*btagWeight";
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -29,7 +28,7 @@ const TString phowgt = wgtvar;
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString lepselwgt  =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-const TString vetoes = " && Pass_LeptonVeto && Pass_dPhiMETLowDM";
+const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -43,12 +42,11 @@ const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*puWeight*BT
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-bool isValidate = true; //Adding bool to add dphiCut > 0.7
-const TString revert_vetoes = " && Pass_LLCR && Pass_dPhiMETLowDM";
+const TString revert_vetoes = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Pass_LLCR && MET_pt>100 && Pass_dPhiMETLowDM";
+const TString lepcrsel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100 && MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -58,14 +56,14 @@ const TString trigLepCR = " && passtriglepOR";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-//const TString qcdwgt = wgtvar;
-const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
-//const TString qcdvetowgt = lepvetowgt;
+//const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
+const TString qcdwgt = wgtvar;
+//const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
+const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
-//const TString sigwgt = lepvetowgt;
+//const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
+const TString sigwgt = lepvetowgt;
 
 // triggers
 const TString trigSR = "";
@@ -74,9 +72,9 @@ const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && 
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio";
 //const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_dPhiMETLowDM && Pass_HEMVeto20";
-const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
-//const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
-const TString dphi_invert = " && Pass_QCDCR";
+//const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
+const TString qcdSpikeRemovals = "";
+const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
 //const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.5 && Jet_dPhiMET[2]>0.5 && Jet_dPhiMET[3]>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && MET_pt < 400) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && MET_pt > 400) && (Pass_dPhiMET && !(min(Jet_dPhiMET[0], min(Jet_dPhiMET[1], Jet_dPhiMET[2]) < 0.15)))) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMET && !Pass_dPhiMETHighDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
@@ -475,7 +473,9 @@ std::map<TString, TString> qcdcrMapping =[]{
   auto crmap = lepcrMapping;
   for (auto &s : crmap){
     s.second.ReplaceAll("lm_", "lmNoDPhi_");
+    s.second.ReplaceAll("lmVal_", "lmNoDPhi_");
     s.second.ReplaceAll("hm_", "hmNoDPhi_");
+    s.second.ReplaceAll("hmVal_", "hmNoDPhi_");
   }
   return crmap;
 }();
@@ -490,7 +490,9 @@ std::map<TString, TString> qcd1to1crCuts = []{
     for (auto name : srbins){
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("lmVal_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
+      crname.ReplaceAll("hmVal_", "hmNoDPhi_");
       cuts[name] = createCutString(crname, cutMap);
     }
     return cuts;

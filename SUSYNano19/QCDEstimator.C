@@ -12,7 +12,7 @@ vector<Quantity> QCDPred(){
 
   QCDEstimator z(config);
 
-//  z.runBootstrapping = false;
+  z.runBootstrapping = false;
   z.splitTF = SPLITTF;
 
   z.pred();

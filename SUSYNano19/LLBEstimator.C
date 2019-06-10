@@ -18,7 +18,6 @@ vector<Quantity> LLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  l.isValidate = isValidate;
   l.pred();
 
   l.printYields();
@@ -28,15 +27,11 @@ vector<Quantity> LLBPred(){
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
 
-  std::string isvalidate;
-  if(l.isValidate) isvalidate = "validate_";
-  else            isvalidate = "";
-
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_" +  isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -71,7 +66,6 @@ vector<Quantity> LLBPredComparison(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  l.isValidate = isValidate;
   l.predComparison();
 
   l.printYields();
@@ -84,15 +78,11 @@ vector<Quantity> LLBPredComparison(){
   digits["_TF_CR_to_SR_noextrap-2016"] = -3;
   digits["_TF_SR_extrap-2016"] = -3;
 
-  std::string isvalidate;
-  if(l.isValidate) isvalidate = "validate_";
-  else            isvalidate = "";
-
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_" + isvalidate + "lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2016", "_TF-2016", "_TF_CR_to_SR_noextrap-2016", "_TF_SR_extrap-2016", "_pred-2016", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_" + isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred", "singlelep-2016", "_TF-2016", "_TF_CR_to_SR_noextrap-2016", "_TF_SR_extrap-2016", "_pred-2016", "_TF_Comp", "_TF_CR_to_SR_noextrap_Comp", "_TF_SR_extrap_Comp"}, labelMap, "yields_llb_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_xsec_" + isvalidate + "hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred", "singlelep-2016", "_TF-2016", "_pred-2016", "_TF_Comp"}, labelMap, "yields_llb_xsec_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -103,10 +93,9 @@ vector<Quantity> LLBPredComparison(){
 
 void plotLepCR(){
   auto config = lepConfig();
-  config.catMaps = isValidate ? lepCatMapValidate() : lepCatMap();
+  config.catMaps = lepCatMap();
 
   TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2016";
-  region = isValidate ? region + "_validate" : region;
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 

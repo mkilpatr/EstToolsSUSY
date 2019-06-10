@@ -34,25 +34,26 @@ const TString phowgt = wgtvar;
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString lepselwgt  =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-//const TString lepvetowgt =      wgtvar      + "*(leptnpweightLM*lepvetoweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*lepvetoweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-//const TString lepselwgt  =      wgtvar      + "*(leptnpweightLM*(Stop0l_nJets<5 || Stop0l_nbtags<1) + leptnpweightHM*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-const TString vetoes = " && Pass_LeptonVeto && Pass_dPhiMETLowDM";
+const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
 //const TString lepselwgt  = wgtvar + "*lepselweight";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
+// sr weight w/o top/W SF
+const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-bool isValidate = true; //Adding bool to add dphiCut > 0.7
-const TString revert_vetoes = " && Pass_LLCR && Pass_dPhiMETLowDM";
+const TString revert_vetoes = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Pass_LLCR && MET_pt>100 && Pass_dPhiMETLowDM";
+const TString lepcrsel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100 && MET_pt>100";
+
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -76,13 +77,12 @@ const TString trigSR = "";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID";
+//const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio";
 //const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_dPhiMETLowDM && Pass_HEMVeto20";
 const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
-//const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
-const TString dphi_invert = " && Pass_QCDCR"; 
+const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.5 && Jet_dPhiMET[2]>0.5 && Jet_dPhiMET[3]>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
-const TString dphi_cut_validate = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && MET_pt < 400) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && MET_pt > 400) && (Pass_dPhiMET && !(min(Jet_dPhiMET[0], min(Jet_dPhiMET[1], Jet_dPhiMET[2]) < 0.15)))) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMET && !Pass_dPhiMETHighDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
 // search regions and control regions
@@ -97,8 +97,6 @@ std::map<TString, TString> cutMap = []{
         {"hmNoDPhi",  "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",    "Pass_dPhiMETHighDM"},
         {"invertDPhi","(Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)"},
-        {"dPhiMedLM", "Pass_dPhiMET && !(min(Jet_dPhiMET[0], min(Jet_dPhiMET[1], Jet_dPhiMET[2]) < 0.15))"},
-	{"dPhiMedHM", "Pass_dPhiMET && !Pass_dPhiMETHighDM"},
 
         {"nb0",       "Stop0l_nbtags==0"},
         {"nb1",       "Stop0l_nbtags==1"},
@@ -145,8 +143,6 @@ std::map<TString, TString> cutMap = []{
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
-    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
-    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -365,71 +361,6 @@ std::vector<TString> srbins{
 
 };
 
-std::vector<TString> srbinsValidate{
-  //---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  "lm_nb0_nivf0_highptisr_nj2to5",
-  "lm_nb0_nivf0_highptisr_nj6",
-  "lm_nb0_nivf1_highptisr_nj2to5",
-  "lm_nb0_nivf1_highptisr_nj6",
-
-  // 1b, 0 or >=1 ivf
-  "lm_nb1_nivf0_lowmtb_lowptisr_lowptb",
-  "lm_nb1_nivf0_lowmtb_lowptisr_medptb",
-  "lm_nb1_nivf0_lowmtb_highptisr_lowptb",
-  "lm_nb1_nivf0_lowmtb_highptisr_medptb",
-  // ---
-  "lm_nb1_nivf1_lowmtb_lowptb",
-
-  // 2b
-  "lm_nb2_lowmtb_lowptisr_lowptb12",
-  "lm_nb2_lowmtb_lowptisr_medptb12",
-  "lm_nb2_lowmtb_lowptisr_highptb12_nj7",
-  "lm_nb2_lowmtb_highptisr_lowptb12",
-  "lm_nb2_lowmtb_highptisr_medptb12",
-  "lm_nb2_lowmtb_highptisr_highptb12_nj7",
-
-  // Additional from Hui
-  // 0b
-  "lmVal_nb0_lowmtb_nivf0_highptisr",
-  "lmVal_nb0_lowmtb_nivf1_highptisr",
-  "lmVal_nbgeq1_lowmtb_nivf0_medptisr",
-  "lmVal_nbgeq1_lowmtb_nivf1_medptisr",
-  //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  "hmVal_nb1_lowmtb_nj7_nrtgeq1",
-  "hmVal_nb2_lowmtb_nj7_nrtgeq1",
-
-  // high mtb
-  // 0 taggged
-  "hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0",
-  "hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0",
-
-	// nb1
-  // 1 tagged
-  "hmVal_nb1_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb1_highmtb_nt0_nrt0_nw1",
-  "hmVal_nb1_highmtb_nt0_nrt1_nw0",
-
-  // 1+1
-  "hmVal_nb1_highmtb_nrtntnwgeq2",
-
-	// nb2
-  // 1 tagged
-  "hmVal_nb2_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb2_highmtb_nt0_nrt0_nw1",
-  "hmVal_nb2_highmtb_nt0_nrt1_nw0",
-
-  // 1+1
-  "hmVal_nb2_highmtb_nrtntnwgeq2",
-  
-  //---------- high deltaM ----------
-
-};
-
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     
@@ -444,26 +375,6 @@ std::map<TString, TString> srcuts = []{
 std::map<TString, TString> srlabels = []{
     std::map<TString, TString> cmap;
     for (auto s: srbins){
-      //std::cout << "s: " << s << std::endl;
-      cmap[s] = s;
-    }
-    return cmap;
-}();
-
-std::map<TString, TString> srcutsValidate = []{
-    std::map<TString, TString> cuts;
-    
-    for (auto name : srbinsValidate){
-      //std::cout << "name: " << name << std::endl;
-      cuts[name] = createCutString(name, cutMap);
-      //std::cout << cuts[name].first << " " << cuts[name].second << endl;	
-    }
-    return cuts;
-}();
-
-std::map<TString, TString> srlabelsValidate = []{
-    std::map<TString, TString> cmap;
-    for (auto s: srbinsValidate){
       //std::cout << "s: " << s << std::endl;
       cmap[s] = s;
     }
@@ -579,71 +490,6 @@ std::map<TString, std::vector<int>> srMETbins{
 
   // 3
   {"hm_nb3_highmtb_nrtntnwgeq3",                   {250, 400, 1000}},
-  
-  //---------- high deltaM ----------
-
-};
-
-std::map<TString, std::vector<int>> srMETbinsValidate{
-  //---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5", 		{250, 400}},
-  {"lm_nb0_nivf0_highptisr_nj6", 		{250, 400}},
-  {"lm_nb0_nivf1_highptisr_nj2to5", 		{250, 400}},
-  {"lm_nb0_nivf1_highptisr_nj6", 		{250, 400}},
-
-  // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb", 	{250, 300}},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb", 	{250, 300}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb", 	{250, 400}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb", 	{250, 400}},
-  // ---
-  {"lm_nb1_nivf1_lowmtb_lowptb", 		{250, 300}},
-
-  // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12", 		{250, 300}},
-  {"lm_nb2_lowmtb_lowptisr_medptb12", 		{250, 300}},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7", 	{250, 300}},
-  {"lm_nb2_lowmtb_highptisr_lowptb12", 		{250, 400}},
-  {"lm_nb2_lowmtb_highptisr_medptb12", 		{250, 400}},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7", 	{250, 400}},
-
-  // Additional from Hui
-  // 0b
-  {"lmVal_nb0_lowmtb_nivf0_highptisr", 		{400, 1000}},
-  {"lmVal_nb0_lowmtb_nivf1_highptisr", 		{400, 1000}},
-  {"lmVal_nbgeq1_lowmtb_nivf0_medptisr", 		{300, 1000}},
-  {"lmVal_nbgeq1_lowmtb_nivf1_medptisr", 		{300, 1000}},
-  //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  {"hmVal_nb1_lowmtb_nj7_nrtgeq1", 		{250, 400, 1000}},
-  {"hmVal_nb2_lowmtb_nj7_nrtgeq1", 		{250, 400, 1000}},
-
-  // high mtb
-  // 0 taggged
-  {"hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0", 		{250, 400, 1000}},
-
-	// nb1
-  // 1 tagged
-  {"hmVal_nb1_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
-
-  // 1+1
-  {"hmVal_nb1_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
-
-	// nb2
-  // 1 tagged
-  {"hmVal_nb2_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
-
-  // 1+1
-  {"hmVal_nb2_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
   
   //---------- high deltaM ----------
 
@@ -864,72 +710,6 @@ std::map<TString, TString> lepcrMapping {
   //---------- high deltaM ----------
 };
 
-std::map<TString, TString> lepcrMappingValidate{
-  //---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5",        "lm_nb0_nivf0_highptisr_nj2to5"},
-  {"lm_nb0_nivf0_highptisr_nj6",           "lm_nb0_nivf0_highptisr_nj6"},
-  {"lm_nb0_nivf1_highptisr_nj2to5",        "lm_nb0_nivf1_highptisr_nj2to5"},
-  {"lm_nb0_nivf1_highptisr_nj6",           "lm_nb0_nivf1_highptisr_nj6"},
-                                            
-  // 1b, 0 or >=1 ivf                     
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",  "lm_nb1_nivf0_lowmtb_lowptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",  "lm_nb1_nivf0_lowmtb_lowptisr_medptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb", "lm_nb1_nivf0_lowmtb_highptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb", "lm_nb1_nivf0_lowmtb_highptisr_medptb"},
-  // ---                                 
-  {"lm_nb1_nivf1_lowmtb_lowptb",           "lm_nb1_nivf1_lowmtb_lowptb"},
-                                            
-  // 2b                                 
-  {"lm_nb2_lowmtb_lowptisr_lowptb12",      "lm_nb2_lowmtb_lowptisr_lowptb12"},
-  {"lm_nb2_lowmtb_lowptisr_medptb12",      "lm_nb2_lowmtb_lowptisr_medptb12"},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7", "lm_nb2_lowmtb_lowptisr_highptb12_nj7"},
-  {"lm_nb2_lowmtb_highptisr_lowptb12",     "lm_nb2_lowmtb_highptisr_lowptb12"},
-  {"lm_nb2_lowmtb_highptisr_medptb12",     "lm_nb2_lowmtb_highptisr_medptb12"},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7","lm_nb2_lowmtb_highptisr_highptb12_nj7"},
-                                            
-  // Additional from Hui               
-  // 0b                               
-  {"lmVal_nb0_lowmtb_nivf0_highptisr",     "lmVal_nb0_lowmtb_nivf0_highptisr"},
-  {"lmVal_nb0_lowmtb_nivf1_highptisr",     "lmVal_nb0_lowmtb_nivf1_highptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
-  //---------- low deltaM ---------- 
-                                            
-                                            
-  //---------- high deltaM ---------- 
-  // low mtb                         
-  {"hmVal_nb1_lowmtb_nj7_nrtgeq1",            "hmVal_nb1_lowmtb_nj7_nrtgeq1"},
-  {"hmVal_nb2_lowmtb_nj7_nrtgeq1",            "hmVal_nb2_lowmtb_nj7_nrtgeq1"},
-                                            
-  // high mtb                       
-  // 0 taggged                     
-  {"hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0"},
-                                            
-        // nb1                    
-  // 1 tagged                    
-  {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb_nt0_nrt0_nw1"},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb_nt0_nrt1_nw0"},
-                                            
-  // 1+1                        
-  {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb_nrtntnwgeq2"},
-                                            
-        // nb2                 
-  // 1 tagged                 
-  {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb_nt0_nrt0_nw1"},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb_nt0_nrt1_nw0"},
-                                            
-  // 1+1                     
-  {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb_nrtntnwgeq2"},         
-  
-  //---------- high deltaM ----------
-
-};
-
-
 std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : lepcrMapping){
@@ -939,19 +719,8 @@ std::map<TString, TString> lepcrCuts = []{
     return cuts;
 }();
 
-std::map<TString, TString> lepcrCutsValidate = []{
-    std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMappingValidate){
-      TString sr2crCut = sr2cr.first;
-      cuts[sr2crCut] = createCutString(sr2cr.second, cutMap);
-    }
-    return cuts;
-}();
-
 std::map<TString, TString> lepcrlabels = lepcrMapping;
-std::map<TString, TString> lepcrlabelsValidate = lepcrMappingValidate;
 std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
-std::map<TString, std::vector<int>> lepcrMETbinsValidate = srMETbinsValidate;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
@@ -1097,15 +866,6 @@ map<TString, Category> srCatMap(){
   return cmap;
 }
 
-map<TString, Category> srCatMapValidate(){
-  map<TString, Category> cmap;
-  for (auto &name : srbinsValidate){
-    auto nameMet = name;
-    cmap[name] = Category(name, srcutsValidate.at(name), srlabelsValidate.at(name), BinInfo("MET_pt", "#slash{E}_{T}", srMETbinsValidate.at(nameMet), "GeV"));
-  }
-  return cmap;
-}
-
 map<TString, Category> phoCatMap(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
@@ -1124,18 +884,6 @@ map<TString, Category> lepCatMap(){
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
-  }
-  return cmap;
-}
-
-map<TString, Category> lepCatMapValidate(){
-  TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
-  map<TString, Category> cmap;
-  //map<TString, TString> labels;
-  const auto &cuts = ICHEPCR ? srcutsValidate: lepcrCutsValidate;
-  const auto &labels = ICHEPCR ? srlabelsValidate: lepcrlabelsValidate;
-  for (auto &name : srbinsValidate){
-    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbinsValidate.at(name), "GeV"));
   }
   return cmap;
 }
@@ -1246,15 +994,9 @@ BaseConfig lepConfig(){
   }
 
   config.sel = baseline;
-  if(isValidate){ 
-	config.categories = srbinsValidate;
-	config.catMaps = srCatMapValidate();
-	config.crCatMaps = lepCatMapValidate();
-  } else{
-	config.categories = srbins;
-	config.catMaps = srCatMap();
-	config.crCatMaps = lepCatMap();
-  }
+  config.categories = srbins;
+  config.catMaps = srCatMap();
+  config.crCatMaps = lepCatMap();
 
   return config;
 }
