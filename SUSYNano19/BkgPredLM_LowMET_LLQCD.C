@@ -7,14 +7,14 @@
 
 #include <fstream>
 
-#include "LowMET_HM_Parameters.hh"
+#include "LowMET_LM_Parameters.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
-void BkgPredHM_LowMET_LLQCD(){
+void BkgPredLM_LowMET_LLQCD(){
   auto start = chrono::steady_clock::now();
 
   auto qcdcfg = qcdConfig();
@@ -116,7 +116,7 @@ void BkgPredHM_LowMET_LLQCD(){
     output->Close();
   };
 
-  plot(altpred, altgraphs, "std_pred_trad_HM");
+  plot(altpred, altgraphs, "std_pred_trad_LM");
 
 
   cout << "\n\n Traditional \n";

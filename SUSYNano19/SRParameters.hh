@@ -5,7 +5,7 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_051319/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_061319/";
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_051319/";
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2018_051419/";
 const TString outputdir = ".";
@@ -114,12 +114,12 @@ std::map<TString, TString> cutMap = []{
         {"nj7",       "Stop0l_nJets>=7"},
         {"lowmtb",    "Stop0l_Mtb<175"},
         {"highmtb",   "Stop0l_Mtb>175"},
-        {"lowptb",    "Jet_btagStop0l_pt1<40"},
-        {"medptb",    "Jet_btagStop0l_pt1>40 && Jet_btagStop0l_pt1<70"},
-        {"highptb",   "Jet_btagStop0l_pt1>70"},
-        {"lowptb12",  "(Jet_btagStop0l_pt1+Jet_btagStop0l_pt2)<80"},
-        {"medptb12",  "(Jet_btagStop0l_pt1+Jet_btagStop0l_pt2)>80 && (Jet_btagStop0l_pt1+Jet_btagStop0l_pt2)<140"},
-        {"highptb12", "(Jet_btagStop0l_pt1+Jet_btagStop0l_pt2)>140"},
+        {"lowptb",    "Stop0l_Ptb<40"},
+        {"medptb",    "Stop0l_Ptb>40 && Stop0l_Ptb<70"},
+        {"highptb",   "Stop0l_Ptb>70"},
+        {"lowptb12",  "Stop0l_Ptb<80"},
+        {"medptb12",  "Stop0l_Ptb>80 && Stop0l_Ptb<140"},
+        {"highptb12", "Stop0l_Ptb>140"},
         {"nt0",       "Stop0l_nTop==0"},
         {"nt1",       "Stop0l_nTop==1"},
         {"nt2",       "Stop0l_nTop==2"},
