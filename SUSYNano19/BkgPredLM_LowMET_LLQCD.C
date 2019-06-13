@@ -63,6 +63,7 @@ void BkgPredLM_LowMET_LLQCD(){
   s.calcYields();
 
   auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
+  std::cout << s.yields.at("data-sr") << std::endl;
 
   auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
