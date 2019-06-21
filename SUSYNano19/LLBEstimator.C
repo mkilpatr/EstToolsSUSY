@@ -233,7 +233,7 @@ void srYields(){
   config.addSample("znunu-sr",       "znunu",         "znunu",           lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("T1tttt-sr",	     "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_100", lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes);
 
   config.addSample("ttbar-sr-iso",       "t#bar{t}",      "ttbar",        lepvetowgt, datasel + trigSR + vetoes_iso);
   config.addSample("wjets-sr-iso",       "W+jets",        "wjets",        lepvetowgt, datasel + trigSR + vetoes_iso);
@@ -243,7 +243,7 @@ void srYields(){
   config.addSample("znunu-sr-iso",       "znunu",         "znunu",           lepvetowgt, datasel + trigSR + vetoes_iso);
   config.addSample("T1tttt-sr-iso",	 "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes_iso);
   config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)","T2tt_500_100", lepvetowgt, datasel + trigSR + vetoes_iso);
+  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes_iso);
 //  config.addSample("ww-sr",          "WW",            "sr/ww",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("wz-sr",          "WZ",            "sr/wz",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("zz-sr",          "ZZ",            "sr/zz",              lepvetowgt, datasel + trigSR + vetoes);
@@ -266,6 +266,9 @@ void srYields(){
   //z.printYieldsTable({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr", "Total BKG", "T1tttt-sr", "T2tt_850_100-sr", "T2tt_500_325-sr"});
   //z.printYieldsTable({"ttbar-sr-iso", "wjets-sr-iso", "tW-sr-iso", "ttW-sr-iso", "qcd-sr-iso", "znunu-sr-iso", "Total BKG ISO", "T1tttt-sr-iso", "T2tt_850_100-sr-iso", "T2tt_500_325-sr-iso"});
   z.printYieldsTableLatex({"Total BKG", "Total BKG ISO", "T1tttt-sr", "T1tttt-sr-iso", "T2tt_850_100-sr", "T2tt_850_100-sr-iso", "T2tt_500_325-sr", "T2tt_500_325-sr-iso"}, labelMap, "yields_sr_hm_2016.tex", "hm", digits);
+
+  //z.plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
+
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
