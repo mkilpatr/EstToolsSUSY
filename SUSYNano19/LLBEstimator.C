@@ -234,40 +234,16 @@ void srYields(){
   config.addSample("T1tttt-sr",	     "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes);
-
-  config.addSample("ttbar-sr-iso",       "t#bar{t}",      "ttbar",        lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("wjets-sr-iso",       "W+jets",        "wjets",        lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("tW-sr-iso",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("ttW-sr-iso",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("qcd-sr-iso",         "QCD",           "qcd",    lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("znunu-sr-iso",       "znunu",         "znunu",           lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T1tttt-sr-iso",	 "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes_iso);
 //  config.addSample("ww-sr",          "WW",            "sr/ww",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("wz-sr",          "WZ",            "sr/wz",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("zz-sr",          "ZZ",            "sr/zz",              lepvetowgt, datasel + trigSR + vetoes);
 
-  std::map<TString,int> digits;
-  digits["Total BKG"] = -3; // indicate it's data for proper formatting
-  digits["Total BKG ISO"] = -3;
-  digits["T1tttt-sr"] = -3;
-  digits["T2tt_850_100-sr"] = -3;
-  digits["T2tt_500_325-sr"] = -3;
-  digits["T1tttt-sr-iso"] = -3;
-  digits["T2tt_850_100-sr-iso"] = -3;
-  digits["T2tt_500_325-sr-iso"] = -3;
 
   BaseEstimator z(config);
 
   z.calcYields();
   z.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr"}, "Total BKG");
-  z.sumYields({"ttbar-sr-iso", "wjets-sr-iso", "tW-sr-iso", "ttW-sr-iso", "qcd-sr-iso", "znunu-sr-iso"}, "Total BKG ISO");
-  //z.printYieldsTable({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr", "Total BKG", "T1tttt-sr", "T2tt_850_100-sr", "T2tt_500_325-sr"});
-  //z.printYieldsTable({"ttbar-sr-iso", "wjets-sr-iso", "tW-sr-iso", "ttW-sr-iso", "qcd-sr-iso", "znunu-sr-iso", "Total BKG ISO", "T1tttt-sr-iso", "T2tt_850_100-sr-iso", "T2tt_500_325-sr-iso"});
-  z.printYieldsTableLatex({"Total BKG", "Total BKG ISO", "T1tttt-sr", "T1tttt-sr-iso", "T2tt_850_100-sr", "T2tt_850_100-sr-iso", "T2tt_500_325-sr", "T2tt_500_325-sr-iso"}, labelMap, "yields_sr_hm_2016.tex", "hm", digits);
-
-  //z.plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
+  z.printYieldsTable({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr", "Total BKG", "T1tttt-sr", "T2tt_850_100-sr", "T2tt_500_325-sr"});
 
 }
 
@@ -302,9 +278,12 @@ void lepcrYields(){
 void plot1LepInclusive(){
   auto config = lepConfig();
   //config.sel = "MET_pt > 200";
-  //TString LLCR_high = " && Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM && Stop0l_nVetoElecMuon == 1";
-  TString LLCR_high = " && Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
-  config.sel = baseline + LLCR_high;
+  TString LLCR = "Pass_dPhiMETLowDM";
+  TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
+  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  //TString LepSel = " && Stop0l_nVetoElecMuon > 0 && Stop0l_MtLepMET < 100";
+  TString LepSel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
+  config.sel = baseline + datasel + trigSR + LepSel;
 
   config.categories.clear();
   config.catMaps.clear();
@@ -314,45 +293,44 @@ void plot1LepInclusive(){
   BaseEstimator z(config.outputdir);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-tau", "wjets-tau", "tW-tau", "ttW-tau"};
-  TString data_sample = "singlelep-tau";
+  vector<TString> mc_samples = {"ttbar-inc", "wjets-inc", "tW-inc", "ttW-inc"};
+  //TString data_sample = "singlelep-inc";
+  vector<TString> data_sample = {"singlelep-inc", "singlelep_HEM-inc"};
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+    //{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
     {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
     //{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 
   };
-  vector< pair< TString, TString> > jetpt_bin = {
-	make_pair("Jet_pt[0] > 30 && Jet_pt[0] < 50", "j1pt30to50"),
-	make_pair("Jet_pt[0] > 50 && Jet_pt[0] < 100", "j1pt50to100"),
+  vector< pair< TString, TString> > npv_bin = {
+	make_pair(" && 1 == 1", 				"_allPU"),
+	//make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
+	//make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
+	//make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
+	//make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
+	//make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
 						};
 
-  //for(int iJ = 0; iJ != jetpt_bin.size(); iJ++){
+  for(int iPU = 0; iPU != npv_bin.size(); iPU++){
     for (auto &var : varDict){
 
       z.resetSelection();
-      //z.setSelection("Stop0l_nJets>=2", "njgeq2_2016", "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      //z.setSelection("Stop0l_nJets>=5", "njgeq5_2016", "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      //z.setSelection("Pass_LLCR_lowDM && " + jetpt_bin[iJ].first, "njgeq2_" + jetpt_bin[iJ].second, "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      //z.setSelection("Pass_LLCR_highDM && " + jetpt_bin[iJ].first, "njgeq5_" + jetpt_bin[iJ].second, "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      //#z.setSelection("Pass_LLCR_lowDM", "njgeq2_2016", "");
-      //#z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      z.setSelection(config.sel + " && (Stop0l_nVetoElecMuon == 1 || nTauMVA_71 == 1)", "njgeq5_taumvaLep_2016", "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      z.setSelection(config.sel + " && (Stop0l_nVetoElecMuon == 1 || Stop0l_nIsoTracksHad == 1)", "njgeq5_isotrkLep_2016", "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      z.setSelection(config.sel + " && nTauMVA_71 == 1", "njgeq5_taumva_2016", "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-      z.setSelection(config.sel + " && Stop0l_nIsoTracksHad == 1", "njgeq5_isotrk_2016", "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", false);
-
+      z.setSelection(LLCR + npv_bin[iPU].first, "llcr_custom_2016" + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_custom_hm_2016" + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_custom_lm_2016" + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      
+      //z.setSelection("Pass_LLCR" + npv_bin[iPU].first, "llcr_2016" + npv_bin[iPU].second, "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      //z.setSelection("Pass_LLCR_highDM" + npv_bin[iPU].first, "llcr_hm_2016" + npv_bin[iPU].second, "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      //z.setSelection("Pass_LLCR_lowDM" + npv_bin[iPU].first, "llcr_lm_2016" + npv_bin[iPU].second, "");
+      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
     }
-  //}
+  }
 
 }
 

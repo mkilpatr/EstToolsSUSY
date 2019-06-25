@@ -165,6 +165,7 @@ public:
 
   // whether to split TF when making prediction tables
   bool splitTF = false;
+  bool data2018 = false;
 };
 
 

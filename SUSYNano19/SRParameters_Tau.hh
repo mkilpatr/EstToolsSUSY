@@ -83,7 +83,7 @@ const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && 
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID";
 //const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_HEMVeto20";
-const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
+const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && (Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.15 && Jet_dPhiMET[2]>0.15)) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Jet_dPhiMET[0]>0.5 && Jet_dPhiMET[1]>0.5 && Jet_dPhiMET[2]>0.5 && Jet_dPhiMET[3]>0.5)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
@@ -1142,7 +1142,7 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
+  //config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
   config.addSample("znunu-raw-sr",       "Z#rightarrow#nu#nu",   "znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
   config.addSample("ttbar-raw-sr",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
@@ -1152,6 +1152,15 @@ BaseConfig sigConfig(){
   config.addSample("qcd-raw-sr",         "QCD",           "qcd",          lepvetowgt_no_wtopsf, datasel + trigSR + vetoes + qcdSpikeRemovals);
   config.addSample("ttZ-raw-sr",         "ttZ",           "ttZ",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
   config.addSample("diboson-raw-sr",     "Diboson",       "diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+
+  config.addSample("znunu-raw-sr-iso",       "Z#rightarrow#nu#nu",   "znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("ttbar-raw-sr-iso",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("wjets-raw-sr-iso",       "W+jets",        "wjets",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("tW-raw-sr-iso",          "tW",            "tW",              lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("ttW-raw-sr-iso",         "ttW",           "ttW",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("qcd-raw-sr-iso",         "QCD",           "qcd",          lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso + qcdSpikeRemovals);
+  config.addSample("ttZ-raw-sr-iso",         "ttZ",           "ttZ",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("diboson-raw-sr-iso",     "Diboson",       "diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
 
   config.addSample("T1tttt-sr",          "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("T2tt_850_100-sr",    "T2tt(850, 100)",    "T2tt_850_100",    lepvetowgt, datasel + trigSR + vetoes);

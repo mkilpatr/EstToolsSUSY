@@ -860,7 +860,104 @@ public:
       return nullptr;
   }
 
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, const vector<TString> data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+    // make DataMC plots with the given cateogory selection
+    // possible to normalize MC to Data with a different selection (set by *norm_cut*)
+
+    vector<TH1*> mchists;
+    auto leg = initLegend();
+
+    TString plotvar = var_info.var;
+    TString title = ";"
+        + var_info.label + (var_info.unit=="" ? "" : " ["+var_info.unit + "]") +";"
+        + "Events";
+    TString RYTitle = "N_{obs}/N_{exp}";
+
+    auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
+
+    TH1 *hdata = nullptr;
+    const Sample* d_sample;
+    if (data_sample.size() != 0){
+      TH1 *hdata_buff = nullptr;
+      for (auto &sname : data_sample){
+        d_sample = &config.samples.at(sname);
+        auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
+        hdata_buff = getHist(d_sample->tree, plotvar, d_sample->wgtvar, cut + d_sample->sel, hname, title, var_info.plotbins);
+	if(!hdata) hdata = (TH1*) hdata_buff->Clone();
+	else	   hdata->Add(hdata_buff);
+      }
+      prepHists({hdata});
+      if (saveHists_) saveHist(hdata);
+      addLegendEntry(leg, hdata, d_sample->label, "LP");
+    }
+
+    for (auto &sname : mc_samples){
+      const auto& sample = config.samples.at(sname);
+      auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
+      auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
+      prepHists({hist});
+      if (saveHists_) saveHist(hist);
+      mchists.push_back(hist);
+      hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+
+      addLegendEntry(leg, hist, sample.label, "F");
+    }
+
+    if (hdata){
+      if (norm_to_data){
+        double sf = 1;
+        // calc sf
+        if (norm_cut==""){
+          auto hsum = (TH1*)mchists.front()->Clone("hsum");
+          for (unsigned i=1; i<mchists.size(); ++i){
+            hsum->Add(mchists.at(i));
+          }
+          sf = hdata->Integral(1, hsum->GetNbinsX()+1) / hsum->Integral(1, hsum->GetNbinsX()+1);
+        }else {
+          cout << " ... using normMap " << norm_cut << endl;
+          auto data_inc = getYields(d_sample->tree, d_sample->wgtvar, norm_cut + d_sample->sel);
+          vector<Quantity> mc_quantities;
+          for (auto &sname : mc_samples){
+            const auto& sample = config.samples.at(sname);
+            mc_quantities.push_back(getYields(sample.tree, sample.wgtvar, norm_cut + sample.sel));
+          }
+          auto mc_inc = Quantity::sum(mc_quantities);
+          sf = (data_inc/mc_inc).value;
+          cout << "... normScaleFactor = " << sf << endl;
+        }
+        // scale the mc hists
+        for (auto *hist : mchists) hist->Scale(sf);
+      }
+    }
+
+    TCanvas *c = nullptr;
+    if (hdata){
+      c = drawStackAndRatio(mchists, hdata, leg, plotlog);
+    }else{
+      c = drawStack(mchists, {}, plotlog, leg);
+    }
+
+    if (plotextra) (*plotextra)(c);
+
+    TString plotname = filterString(plotvar)+"_DataMC_"+category.name+"__"+postfix_;
+    c->SetTitle(plotname);
+    savePlot(c, plotname);
+
+    if (hdata)
+      return makeRatioHists(hdata, sumHists(mchists, "bkgtotal"));
+    else
+      return nullptr;
+  }
+
   void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+    // make Data/MC plots for all categories
+    for (auto category : config.categories){
+      const auto &cat = config.catMaps.at(category);
+      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra);
+    }
+  }
+
+  void plotDataMC(const vector<TString> mc_samples, const vector<TString> data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);
