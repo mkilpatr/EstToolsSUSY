@@ -39,7 +39,6 @@ double RATIOPLOT_XTITLE_OFFSET = 0.85;
 double RATIO_YMIN = 0;
 double RATIO_YMAX = 1.999;
 
-
 double LOG_YMIN = 0.01;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

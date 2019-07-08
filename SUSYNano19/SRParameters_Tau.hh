@@ -6,23 +6,19 @@
 namespace EstTools{
 
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_061319/";
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/tau_SFComp_2016_061919/"; //Checking LL background with tau MVA
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/tau_SFComp_2016_062319/"; //Checking LL background with tau MVA
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_051319/";
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2018_051419/";
 const TString outputdir = ".";
 
 const TString datadir = ".";
-const TString lumistr = "35.922"; //Units are in pb
-//const TString lumistr = "41.82"; 
-//const TString lumistr = "27.980";
-//const TString lumistr = "59.898";
+const TString lumistr = "137.64"; //Units are in pb
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight"; //2016
-//const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight"; //2017
-//const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight"; //2018
+const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight"; //2017
+const TString wgtvarISR = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*ISRWeight"; //2017
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -36,6 +32,8 @@ const TString phowgt = wgtvar;
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString lepselwgt  =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgtISR =   wgtvarISR   + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgtISR  =   wgtvarISR   + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 //const TString vetoes = " && Pass_LeptonVeto";
 const TString vetoes = " && Stop0l_nVetoElecMuon == 0 && nTauMVA_71 == 0";
 const TString vetoes_iso = " && Stop0l_nVetoElecMuon == 0 && Stop0l_nIsoTracksHad == 0";
@@ -46,7 +44,8 @@ const TString vetoes_iso = " && Stop0l_nVetoElecMuon == 0 && Stop0l_nIsoTracksHa
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_no_wtopsf    = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_no_wtopsfISR = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -970,13 +969,13 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",   "Data",          "met",             "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar",       "t#bar{t}",      "ttbar",           lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("ttbar",       "t#bar{t}",      "ttbar",           lepselwgtISR,   datasel + trigSR + revert_vetoes);
     config.addSample("wjets",       "W+jets",        "wjets",           lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("tW",          "tW",            "tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("ttW",         "ttW",           "ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
 //    config.addSample("qcd",         "QCD",           "qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
     config.addSample("singlelep-iso",   "Data",          "met",             "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar-iso",       "t#bar{t}",      "ttbar",           lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("ttbar-iso",       "t#bar{t}",      "ttbar",           lepselwgtISR,   datasel + trigSR + revert_vetoes);
     config.addSample("wjets-iso",       "W+jets",        "wjets",           lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("tW-iso",          "tW",            "tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
     config.addSample("ttW-iso",         "ttW",           "ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
@@ -984,14 +983,14 @@ BaseConfig lepConfig(){
   }
 
   // samples for sr categories
-  config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",                lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",                lepvetowgtISR, datasel + trigSR + vetoes);
   config.addSample("wjets-sr",       "W+jets",        "wjets",                lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "tW",                   lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "ttW",                  lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("rare-sr",        "Rare",          "rare",                 lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttZ-sr",         "ttZ",           "ttZ",                  lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("diboson-sr",     "Diboson",       "diboson",              lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttbar-sr-iso",       "t#bar{t}",      "ttbar",                lepvetowgt, datasel + trigSR + vetoes_iso);
+  config.addSample("ttbar-sr-iso",       "t#bar{t}",      "ttbar",                lepvetowgtISR, datasel + trigSR + vetoes_iso);
   config.addSample("wjets-sr-iso",       "W+jets",        "wjets",                lepvetowgt, datasel + trigSR + vetoes_iso);
   config.addSample("tW-sr-iso",          "tW",            "tW",                   lepvetowgt, datasel + trigSR + vetoes_iso);
   config.addSample("ttW-sr-iso",         "ttW",           "ttW",                  lepvetowgt, datasel + trigSR + vetoes_iso);
@@ -1001,13 +1000,13 @@ BaseConfig lepConfig(){
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
-    config.addSample("ttbar-sr-int",       "t#bar{t}",      "ttbar",           lepvetowgt, datasel + trigSR + vetoes);
+    config.addSample("ttbar-sr-int",       "t#bar{t}",      "ttbar",           lepvetowgtISR, datasel + trigSR + vetoes);
     config.addSample("wjets-sr-int",       "W+jets",        "wjets",           lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("tW-sr-int",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("ttW-sr-int",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("ttZ-sr-int",         "ttZ",           "ttZ",             lepvetowgt, datasel + trigSR + vetoes);
     config.addSample("diboson-sr-int",     "Diboson",       "diboson",         lepvetowgt, datasel + trigSR + vetoes);
-    config.addSample("ttbar-sr-int-iso",       "t#bar{t}",      "ttbar",           lepvetowgt, datasel + trigSR + vetoes_iso);
+    config.addSample("ttbar-sr-int-iso",       "t#bar{t}",      "ttbar",           lepvetowgtISR, datasel + trigSR + vetoes_iso);
     config.addSample("wjets-sr-int-iso",       "W+jets",        "wjets",           lepvetowgt, datasel + trigSR + vetoes_iso);
     config.addSample("tW-sr-int-iso",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes_iso);
     config.addSample("ttW-sr-int-iso",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes_iso);
@@ -1055,12 +1054,12 @@ BaseConfig srConfig(){
 ////  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "signals/T2bW_850_1",     sigwgt, datasel + trigSR + vetoes);
 ////  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "signals/T2bW_550_350",   sigwgt, datasel + trigSR + vetoes);
 
-  config.addSample("T1tttt-sr",      "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T1tttt-sr-iso",      "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes_iso);
+  config.addSample("T1tttt-sr",      "T1tttt(2000, 100)", "T1tttt_2000_100", "10*"+lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T1tttt-sr-iso",      "T1tttt(2000, 100)", "T1tttt_2000_100", "10*"+lepvetowgt, datasel + trigSR + vetoes_iso);
+  config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)","T2tt_850_100", lepvetowgtISR, datasel + trigSR + vetoes_iso);
+  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)","T2tt_500_325", lepvetowgtISR, datasel + trigSR + vetoes_iso);
   COLOR_MAP["T1tttt-sr"] = kRed;
   COLOR_MAP["T2tt_850_100-sr"] = kBlue;
   COLOR_MAP["T2tt_500_325-sr"] = kBlack;
@@ -1145,7 +1144,7 @@ BaseConfig sigConfig(){
   //config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel + trigSR + vetoes);
 
   config.addSample("znunu-raw-sr",       "Z#rightarrow#nu#nu",   "znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
-  config.addSample("ttbar-raw-sr",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
+  config.addSample("ttbar-raw-sr",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsfISR, datasel + trigSR + vetoes);
   config.addSample("wjets-raw-sr",       "W+jets",        "wjets",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
   config.addSample("tW-raw-sr",          "tW",            "tW",              lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
   config.addSample("ttW-raw-sr",         "ttW",           "ttW",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
@@ -1154,7 +1153,7 @@ BaseConfig sigConfig(){
   config.addSample("diboson-raw-sr",     "Diboson",       "diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes);
 
   config.addSample("znunu-raw-sr-iso",       "Z#rightarrow#nu#nu",   "znunu",    lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
-  config.addSample("ttbar-raw-sr-iso",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
+  config.addSample("ttbar-raw-sr-iso",       "t#bar{t}",      "ttbar",           lepvetowgt_no_wtopsfISR, datasel + trigSR + vetoes_iso);
   config.addSample("wjets-raw-sr-iso",       "W+jets",        "wjets",           lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
   config.addSample("tW-raw-sr-iso",          "tW",            "tW",              lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
   config.addSample("ttW-raw-sr-iso",         "ttW",           "ttW",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
@@ -1162,12 +1161,12 @@ BaseConfig sigConfig(){
   config.addSample("ttZ-raw-sr-iso",         "ttZ",           "ttZ",             lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
   config.addSample("diboson-raw-sr-iso",     "Diboson",       "diboson",         lepvetowgt_no_wtopsf, datasel + trigSR + vetoes_iso);
 
-  config.addSample("T1tttt-sr",          "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_850_100-sr",    "T2tt(850, 100)",    "T2tt_850_100",    lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_500_325-sr",    "T2tt(500, 325)",    "T2tt_500_325",    lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T1tttt-sr-iso",      "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)",    "T2tt_850_100",    lepvetowgt, datasel + trigSR + vetoes_iso);
-  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)",    "T2tt_500_325",    lepvetowgt, datasel + trigSR + vetoes_iso);
+  config.addSample("T1tttt-sr",          "T1tttt(2000, 100)", "T1tttt_2000_100", "10*"+lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T2tt_850_100-sr",    "T2tt(850, 100)",    "T2tt_850_100",    lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T2tt_500_325-sr",    "T2tt(500, 325)",    "T2tt_500_325",    lepvetowgtISR, datasel + trigSR + vetoes);
+  config.addSample("T1tttt-sr-iso",      "T1tttt(2000, 100)", "T1tttt_2000_100", "10*"+lepvetowgtISR, datasel + trigSR + vetoes_iso);
+  config.addSample("T2tt_850_100-sr-iso","T2tt(850, 100)",    "T2tt_850_100",    lepvetowgtISR, datasel + trigSR + vetoes_iso);
+  config.addSample("T2tt_500_325-sr-iso","T2tt(500, 325)",    "T2tt_500_325",    lepvetowgtISR, datasel + trigSR + vetoes_iso);
   
   config.sel = baseline;
   config.categories = srbins;

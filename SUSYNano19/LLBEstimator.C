@@ -8,6 +8,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
 #include "SRParameters.hh"
+//#include "SRParameters_LM.hh"
 
 using namespace EstTools;
 
@@ -225,15 +226,15 @@ void srYields(){
   config.crCatMaps.clear();
 
   config.samples.clear();
-  config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",        lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",        lepvetowgt+"*ISRWeight", datasel + trigSR + vetoes);
   config.addSample("wjets-sr",       "W+jets",        "wjets",        lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("tW-sr",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("ttW-sr",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("qcd-sr",         "QCD",           "qcd",    lepvetowgt, datasel + trigSR + vetoes);
   config.addSample("znunu-sr",       "znunu",         "znunu",           lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T1tttt-sr",	     "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("T1tttt-sr",	     "T1tttt(2000, 100)", "T1tttt_2000_100", lepvetowgt+"*ISRWeight", datasel + trigSR + vetoes);
+  config.addSample("T2tt_850_100-sr","T2tt(850, 100)","T2tt_850_100", lepvetowgt+"*ISRWeight", datasel + trigSR + vetoes);
+  config.addSample("T2tt_500_325-sr","T2tt(500, 325)","T2tt_500_325", lepvetowgt+"*ISRWeight", datasel + trigSR + vetoes);
 //  config.addSample("ww-sr",          "WW",            "sr/ww",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("wz-sr",          "WZ",            "sr/wz",              lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("zz-sr",          "ZZ",            "sr/zz",              lepvetowgt, datasel + trigSR + vetoes);
@@ -241,9 +242,16 @@ void srYields(){
 
   BaseEstimator z(config);
 
+  std::map<TString,int> digits;
+  digits["Total BKG"] = -3;
+  digits["T1tttt-sr"] = -3;
+  digits["T2tt_850_100-sr"] = -3;
+  digits["T2tt_500_325-sr"] = -3;
+
   z.calcYields();
   z.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr"}, "Total BKG");
   z.printYieldsTable({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr", "Total BKG", "T1tttt-sr", "T2tt_850_100-sr", "T2tt_500_325-sr"});
+  z.printYieldsTableLatex({"Total BKG", "T1tttt-sr", "T2tt_850_100-sr", "T2tt_500_325-sr"}, labelMap, "yields_llb_hm_raw.tex", "hm", digits);
 
 }
 
@@ -254,12 +262,12 @@ void lepcrYields(){
   auto config = lepConfig();
 
   config.samples.clear();
-  config.addSample("singlelep",   "Data",          "lepcr/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
-  config.addSample("ttbar",       "t#bar{t}",      "lepcr/ttbar",        lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("wjets",       "W+jets",        "lepcr/wjets",        lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("tW",          "tW",            "lepcr/tW",              lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("ttW",         "ttW",           "lepcr/ttW",             lepselwgt, datasel + trigLepCR + lepcrsel);
-  config.addSample("qcd",         "QCD",           "lepcr/qcd",             lepselwgt, datasel + trigLepCR + lepcrsel);
+  config.addSample("singlelep",   "Data",          "met",       		"1.0",     datasel + trigLepCR + lepcrsel);
+  config.addSample("ttbar",       "t#bar{t}",      "ttbar",        		lepselwgt+"*ISRWeight", datasel + trigLepCR + lepcrsel);
+  config.addSample("wjets",       "W+jets",        "wjets",        		lepselwgt, datasel + trigLepCR + lepcrsel);
+  config.addSample("tW",          "tW",            "tW",              		lepselwgt, datasel + trigLepCR + lepcrsel);
+  config.addSample("ttW",         "ttW",           "ttW",             		lepselwgt, datasel + trigLepCR + lepcrsel);
+  config.addSample("qcd",         "QCD",           "qcd",             		lepselwgt, datasel + trigLepCR + lepcrsel);
 //  config.addSample("ww",          "WW",            "sr/ww",                 lepselwgt, datasel + trigLepCR + lepcrsel);
 //  config.addSample("wz",          "WZ",            "sr/wz",                 lepselwgt, datasel + trigLepCR + lepcrsel);
 //  config.addSample("zz",          "ZZ",            "sr/zz",                 lepselwgt, datasel + trigLepCR + lepcrsel);
@@ -269,7 +277,22 @@ void lepcrYields(){
   z.calcYields();
   z.printYields();
   z.sumYields({"ttbar", "wjets", "tW", "ttW", "qcd"}, "Total BKG");
+  z.sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw-cr");
   z.printYieldsTable({"ttbar", "wjets", "tW", "ttW", "qcd", "Total BKG", "singlelep"});
+
+  vector<TH1*> mc;
+  mc.push_back(convertToHist(z.yields.at("ttbar"),"ttbar_cr",";Search Region;Events"));
+  mc.push_back(convertToHist(z.yields.at("wjets"),"wjets",";Search Region;Events"));
+  mc.push_back(convertToHist(z.yields.at("tW"),"tW_cr",";Search Region;Events"));
+  mc.push_back(convertToHist(z.yields.at("ttW"),"ttWcr",";Search Region;Events"));
+  mc.push_back(convertToHist(z.yields.at("ttbarplusw-cr"),"ttbarplusw_cr",";Search Region;Events"));
+  
+  auto hdata = convertToHist(z.yields.at("singlelep"),"data",";Search Region;Events");
+
+  TFile *output = new TFile(z.config.outputdir+"/llcr_yields.root", "RECREATE");
+  for (auto *h : mc)   h->Write();
+  hdata->Write();
+  output->Close();
 
 }
 
@@ -284,6 +307,7 @@ void plot1LepInclusive(){
   //TString LepSel = " && Stop0l_nVetoElecMuon > 0 && Stop0l_MtLepMET < 100";
   TString LepSel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
   config.sel = baseline + datasel + trigSR + LepSel;
+  //config.sel = "Pass_LLCR";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -294,8 +318,8 @@ void plot1LepInclusive(){
   z.setConfig(config);
 
   vector<TString> mc_samples = {"ttbar-inc", "wjets-inc", "tW-inc", "ttW-inc"};
-  //TString data_sample = "singlelep-inc";
-  vector<TString> data_sample = {"singlelep-inc", "singlelep_HEM-inc"};
+  TString data_sample = "singlelep-inc";
+  //vector<TString> data_sample = {"singlelep-inc", "singlelep_HEM-inc"};
 
   map<TString, BinInfo> varDict {
     //{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
