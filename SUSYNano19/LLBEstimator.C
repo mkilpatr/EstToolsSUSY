@@ -44,7 +44,7 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2016";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2018";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -303,11 +303,8 @@ void plot1LepInclusive(){
   //config.sel = "MET_pt > 200";
   TString LLCR = "Pass_dPhiMETLowDM";
   TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
-  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
-  //TString LepSel = " && Stop0l_nVetoElecMuon > 0 && Stop0l_MtLepMET < 100";
-  TString LepSel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
-  config.sel = baseline + datasel + trigSR + LepSel;
-  //config.sel = "Pass_LLCR";
+  TString LLCR_HM = "Stop0l_nJets30>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  config.sel = "Pass_LLCR && Stop0l_nJets30>=2";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -317,42 +314,33 @@ void plot1LepInclusive(){
   BaseEstimator z(config.outputdir);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-inc", "wjets-inc", "tW-inc", "ttW-inc"};
-  TString data_sample = "singlelep-inc";
-  //vector<TString> data_sample = {"singlelep-inc", "singlelep_HEM-inc"};
+  vector<TString> mc_samples = {"ttbar", "wjets", "tW", "ttW"};
+  TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {
-    //{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-    {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
-    //{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"njets",     BinInfo("Stop0l_nJets30", "N_{j}", 11, -0.5, 10.5)},
+	{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 
   };
   vector< pair< TString, TString> > npv_bin = {
 	make_pair(" && 1 == 1", 				"_allPU"),
-	//make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
-	//make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
-	//make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
-	//make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
-	//make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
-						};
+	make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
+	make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
+	make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
+	make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
+	make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
+  };
 
   for(int iPU = 0; iPU != npv_bin.size(); iPU++){
     for (auto &var : varDict){
-
       z.resetSelection();
-      z.setSelection(LLCR + npv_bin[iPU].first, "llcr_custom_2016" + npv_bin[iPU].second, "");
+      z.setSelection("Pass_LLCR" + npv_bin[iPU].first, "llcr_njets30_2018" + npv_bin[iPU].second, "");
       z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_custom_hm_2016" + npv_bin[iPU].second, "");
+      z.setSelection("Pass_LLCR_highDM && Stop0l_nJets30>=5" + npv_bin[iPU].first, "llcr_njets30_hm_2018" + npv_bin[iPU].second, "");
       z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_custom_lm_2016" + npv_bin[iPU].second, "");
+      z.setSelection("Pass_LLCR_lowDM" + npv_bin[iPU].first, "llcr_njets30_lm_2018" + npv_bin[iPU].second, "");
       z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      
-      //z.setSelection("Pass_LLCR" + npv_bin[iPU].first, "llcr_2016" + npv_bin[iPU].second, "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      //z.setSelection("Pass_LLCR_highDM" + npv_bin[iPU].first, "llcr_hm_2016" + npv_bin[iPU].second, "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      //z.setSelection("Pass_LLCR_lowDM" + npv_bin[iPU].first, "llcr_lm_2016" + npv_bin[iPU].second, "");
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
     }
   }
 
