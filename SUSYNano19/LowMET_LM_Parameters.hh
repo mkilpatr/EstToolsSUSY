@@ -5,7 +5,8 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_062419/";
+//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_062419/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_071719/";
 const TString outputdir = "LowMET";
 
 const TString datadir = ".";
@@ -42,11 +43,11 @@ const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*puWeight*BT
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-const TString revert_vetoes = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100";
+const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && nLeptonVeto > 0 && Stop0l_MtLepMET < 100 && MET_pt>100";
+const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";

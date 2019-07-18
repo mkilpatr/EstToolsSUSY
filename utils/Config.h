@@ -140,6 +140,7 @@ struct Category{
   static Category dummy_category(){
     return Category("", "(1==1)", "");
   }
+  
 };
 
 

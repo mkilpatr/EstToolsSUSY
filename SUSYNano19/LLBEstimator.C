@@ -7,8 +7,8 @@
 
 #include "../EstMethods/LLBEstimator.hh"
 
-#include "SRParameters.hh"
-//#include "SRParameters_LM.hh"
+//#include "SRParameters.hh"
+#include "SRParameters_Inc.hh"
 
 using namespace EstTools;
 
@@ -44,7 +44,7 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2018";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_2017";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -303,8 +303,11 @@ void plot1LepInclusive(){
   //config.sel = "MET_pt > 200";
   TString LLCR = "Pass_dPhiMETLowDM";
   TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
-  TString LLCR_HM = "Stop0l_nJets30>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
-  config.sel = "Pass_LLCR && Stop0l_nJets30>=2";
+  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  TString LLCR30 = "Stop0l_nJets30>=2 && Pass_dPhiMETLowDM30";
+  TString LLCR30_LM = "Stop0l_nJets30>=2 && Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM30";
+  TString LLCR30_HM = "Stop0l_nJets30>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM30";
+  config.sel = baseline + " && Stop0l_nJets >= 2";
 
   config.categories.clear();
   config.catMaps.clear();
@@ -314,33 +317,98 @@ void plot1LepInclusive(){
   BaseEstimator z(config.outputdir);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar", "wjets", "tW", "ttW"};
+  vector<TString> mc_samples = {"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson", "qcd"};
+  vector<TString> mc_samples30 = {"ttbar30", "wjets30", "tW30", "ttW30", "ttZ30", "diboson30", "qcd30"};
   TString data_sample = "singlelep";
+  vector<TString> mc_samples_HEM = {"ttbar-HEM", "wjets-HEM", "tW-HEM", "ttW-HEM", "ttZ-HEM", "diboson-HEM", "qcd-HEM"};
+  vector<TString> mc_samples30_HEM = {"ttbar30-HEM", "wjets30-HEM", "tW30-HEM", "ttW30-HEM", "ttZ30-HEM", "diboson30-HEM", "qcd30-HEM"};
+  TString data_sample_preHEM    = "singlelep-preHEM";
+  TString data_sample_postHEM   = "singlelep-postHEM";
+  TString data_sample30_preHEM  = "singlelep30-preHEM";
+  TString data_sample30_postHEM = "singlelep30-postHEM";
+  TString data_sample_RunBtoE   = "singlelep-RunBtoE";
+  TString data_sample_RunF      = "singlelep-RunF";
+  TString data_sample30_RunBtoE = "singlelep30-RunBtoE";
+  TString data_sample30_RunF    = "singlelep30-RunF";
 
   map<TString, BinInfo> varDict {
 	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"njets",     BinInfo("Stop0l_nJets30", "N_{j}", 11, -0.5, 10.5)},
+	{"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
 	{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
-
+	{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
   };
   vector< pair< TString, TString> > npv_bin = {
 	make_pair(" && 1 == 1", 				"_allPU"),
-	make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
-	make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
-	make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
-	make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
-	make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
+	//make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
+	//make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
+	//make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
+	//make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
+	//make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
   };
 
+  TString plotName_1 = "", plotName_2 = "";
+  if(is2017){
+    plotName_1 = "_RunBtoE_2017";
+    plotName_2 = "_RunF_2017";
+  } else if(is2018){
+    plotName_1 = "_PreHEM_2018";
+    plotName_2 = "_PostHEM_2018";
+  }
+
+  std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+  std::function<void(TCanvas*)> plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
+  //for(int iPU = 0; iPU != npv_bin.size(); iPU++){
+  //  for (auto &var : varDict){
+  //    z.resetSelection();
+  //    TString data_sample_ = "";
+  //    if(is2017)      data_sample_ = data_sample_RunBtoE;
+  //    else if(is2018) data_sample_ = data_sample_preHEM;
+  //    else	      data_sample_ = data_sample;
+  //    TString data_sample30_ = "";
+  //    if(is2017)      data_sample30_ = data_sample30_RunBtoE;
+  //    else if(is2018) data_sample30_ = data_sample30_preHEM;
+  //    else	      data_sample30_ = data_sample;
+  //    z.setSelection(LLCR + npv_bin[iPU].first, "llcr" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+  //    z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_hm" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+  //    z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_lm" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+
+  //    z.setSelection(LLCR30 + npv_bin[iPU].first, "llcr_njets30" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+  //    z.setSelection(LLCR30_HM + npv_bin[iPU].first, "llcr_njets30_hm" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+  //    z.setSelection(LLCR30_LM + npv_bin[iPU].first, "llcr_njets30_lm" + plotName_1 + npv_bin[iPU].second, "");
+  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+
+  //  }
+  //}
+  
   for(int iPU = 0; iPU != npv_bin.size(); iPU++){
     for (auto &var : varDict){
-      z.resetSelection();
-      z.setSelection("Pass_LLCR" + npv_bin[iPU].first, "llcr_njets30_2018" + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      z.setSelection("Pass_LLCR_highDM && Stop0l_nJets30>=5" + npv_bin[iPU].first, "llcr_njets30_hm_2018" + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
-      z.setSelection("Pass_LLCR_lowDM" + npv_bin[iPU].first, "llcr_njets30_lm_2018" + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true);
+      TString data_sample_ = "";
+      if(is2017)      data_sample_ = data_sample_RunF;
+      else if(is2018) data_sample_ = data_sample_postHEM;
+      else	      data_sample_ = data_sample;
+      TString data_sample30_ = "";
+      if(is2017)      data_sample30_ = data_sample30_RunF;
+      else if(is2018) data_sample30_ = data_sample30_postHEM;
+      else	      data_sample30_ = data_sample;
+      z.setSelection(LLCR + npv_bin[iPU].first, "llcr" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+      z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_hm" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+      z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_lm" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+
+      z.setSelection(LLCR30 + npv_bin[iPU].first, "llcr_njets30" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+      z.setSelection(LLCR30_HM + npv_bin[iPU].first, "llcr_njets30_hm" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+      z.setSelection(LLCR30_LM + npv_bin[iPU].first, "llcr_njets30_lm" + plotName_2 + npv_bin[iPU].second, "");
+      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+
     }
   }
 
