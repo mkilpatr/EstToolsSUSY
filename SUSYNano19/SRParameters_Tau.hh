@@ -98,7 +98,7 @@ std::map<TString, TString> cutMap = []{
         {"dPhiLM",    "Pass_dPhiMETLowDM"},
         {"hmNoDPhi",  "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",    "Pass_dPhiMETHighDM"},
-        {"invertDPhi","(Jet_dPhiMET[0]<0.1 || Jet_dPhiMET[1]<0.1 || Jet_dPhiMET[2]<0.1)"},
+        {"invertDPhi","Pass_dPhiQCD"},
 
         {"nb0",       "Stop0l_nbtags==0"},
         {"nb1",       "Stop0l_nbtags==1"},
