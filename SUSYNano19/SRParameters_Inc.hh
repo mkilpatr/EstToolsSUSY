@@ -12,18 +12,28 @@ const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/
 const TString outputdir = ".";
 
 const TString datadir = ".";
-const TString lumistr = "35.922"; //Units are in pb
+//const TString lumistr = "35.922"; //Units are in pb
 //2017
 //const TString lumistr = "41.817";
+const TString lumistr = "28.290";
 //2018 
 //const TString lumistr = "59.898";
-//const TString lumistr = "38.8296";
+//const TString lumistr = "21.0684";
+
+const TString lumi2017RunBtoE = "28.290";
+const TString lumi2017RunF    = "13.527";
+const TString lumi2018PreHEM  = "21.0684";
+const TString lumi2018PostHEM = "38.8296";
+
+TString process = "pre";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight"; //2016
-//const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight"; //2018
+//const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight"; //2016
+const TString wgtvar_RunBtoE = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight"; //2017
+const TString wgtvar_RunF = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight"; //2017
+const TString wgtvar = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight"; //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -35,8 +45,12 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
-const TString lepselwgt  =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt =      	wgtvar      	+ "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgt  =      	wgtvar      	+ "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_RunF =         wgtvar_RunF     + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepselwgt_RunF  =         wgtvar_RunF     + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -85,9 +99,9 @@ const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_HEMVeto20";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20";
 const TString datasel30 = " && Pass_EventFilter && Pass_HT30 && Pass_JetID && Pass_CaloMETRatio";
-const TString datasel30HEM = " && Pass_EventFilter && Pass_HT30 && Pass_JetID && Pass_CaloMETRatio && Pass_HEMVeto20";
+const TString datasel30HEM = " && Pass_EventFilter && Pass_HT30 && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto30";
 const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -1009,6 +1023,21 @@ BaseConfig lepConfig(){
   config.outputdir = outputdir+"/LLB";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
+  TString lepselwgt_1 = "";
+  if(process == "pre"){
+    if(is2017){ 
+      lepselwgt_1 = lepselwgt_RunBtoE;
+    } else if(is2018){
+      lepselwgt_1 = lepselwgt;
+    }
+  } else if(process == "post"){
+    if(is2017){ 
+      lepselwgt_1 = lepselwgt_RunF;
+    } else if(is2018){
+      lepselwgt_1 = lepselwgt;
+    }
+  }
+
   // samples for cr categories
   if (ADD_LEP_TO_MET){
     config.addSample("singlelep",   "Data",          datadir+"/lepcr/singlelep", "1.0",    datasel + trigLepCR + lepcrsel);
@@ -1023,17 +1052,59 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",   "Data",          "met",             "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep30", "Data",          "met",             "1.0",          datasel30 + trigSR + revert_vetoes);
+    if(is2018){
+      if(process == "pre"){
+        config.addSample("singlelep-preHEM",   	"Data PreHEM",          "met_PreHEM",             "1.0",          datasel + trigSR + revert_vetoes);
+        config.addSample("singlelep30-preHEM", 	"Data PreHEM",          "met_PreHEM",             "1.0",          datasel30 + trigSR + revert_vetoes);
+      } else if(process == "post"){
+        config.addSample("singlelep-postHEM",  	"Data PostHEM",         "met_PostHEM",            "1.0",          dataselHEM + trigSR + revert_vetoes);
+        config.addSample("singlelep30-postHEM",	"Data PostHEM",         "met_PostHEM",            "1.0",          datasel30HEM + trigSR + revert_vetoes);
+      }
+    }
+    else if(is2017){
+      config.addSample("singlelep-RunBtoE",   	"Data RunBtoE",          "met_RunBtoE",             "1.0",          datasel + trigSR + revert_vetoes);
+      config.addSample("singlelep-RunF",  	"Data RunF",         	 "met_RunF",                "1.0",          datasel + trigSR + revert_vetoes);
+      config.addSample("singlelep30-RunBtoE", 	"Data RunBtoE",          "met_RunBtoE",             "1.0",          datasel30 + trigSR + revert_vetoes);
+      config.addSample("singlelep30-RunF",	"Data RunF",         	 "met_RunF",                "1.0",          datasel30 + trigSR + revert_vetoes);
+    }
     if(is2016){
       config.addSample("ttbar",         "t#bar{t}",      "ttbar",           lepselwgt+"*ISRWeight",      datasel + trigSR + revert_vetoes);
     }else{
-      config.addSample("ttbar",         "t#bar{t}",      "ttbar",           lepselwgt,    datasel + trigSR + revert_vetoes);
+      config.addSample("ttbar",         "t#bar{t}",      "ttbar",           lepselwgt_1,    datasel + trigSR + revert_vetoes);
+      config.addSample("ttbar30",       "t#bar{t}",      "ttbar",           lepselwgt_1,    datasel30 + trigSR + revert_vetoes);
+      if(is2018 && process == "post"){
+        config.addSample("ttbar-HEM",     "t#bar{t}",      "ttbar",           lepselwgt_1,    dataselHEM + trigSR + revert_vetoes);
+        config.addSample("ttbar30-HEM",   "t#bar{t}",      "ttbar",           lepselwgt_1,    datasel30HEM + trigSR + revert_vetoes);
+      }
     }
-    config.addSample("wjets",           "W+jets",        "wjets",           lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("tW",              "tW",            "tW",              lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("ttW",             "ttW",           "ttW",             lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("ttZ",             "ttZ",           "ttZ",             lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("diboson",         "Diboson",       "diboson",         lepselwgt,      datasel + trigSR + revert_vetoes);
-    config.addSample("qcd",             "QCD",           "qcd",             lepselwgt,      datasel + trigSR + revert_vetoes);
+    config.addSample("wjets",           "W+jets",        "wjets",           lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("tW",              "tW",            "tW",              lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("ttW",             "ttW",           "ttW",             lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("ttZ",             "ttZ",           "ttZ",             lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("diboson",         "Diboson",       "diboson",         lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("qcd",             "QCD",           "qcd",             lepselwgt_1,      datasel + trigSR + revert_vetoes);
+    config.addSample("wjets30",         "W+jets",        "wjets",           lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+    config.addSample("tW30",            "tW",            "tW",              lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+    config.addSample("ttW30",           "ttW",           "ttW",             lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+    config.addSample("ttZ30",           "ttZ",           "ttZ",             lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+    config.addSample("diboson30",       "Diboson",       "diboson",         lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+    config.addSample("qcd30",           "QCD",           "qcd",             lepselwgt_1,      datasel30 + trigSR + revert_vetoes);
+
+    if(is2018 && process == "post"){
+      config.addSample("wjets-HEM",       "W+jets",        "wjets",           lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("tW-HEM",          "tW",            "tW",              lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("ttW-HEM",         "ttW",           "ttW",             lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("ttZ-HEM",         "ttZ",           "ttZ",             lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("diboson-HEM",     "Diboson",       "diboson",         lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("qcd-HEM",         "QCD",           "qcd",             lepselwgt_1,      dataselHEM + trigSR + revert_vetoes);
+      config.addSample("wjets30-HEM",     "W+jets",        "wjets",           lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+      config.addSample("tW30-HEM",        "tW",            "tW",              lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+      config.addSample("ttW30-HEM",       "ttW",           "ttW",             lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+      config.addSample("ttZ30-HEM",       "ttZ",           "ttZ",             lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+      config.addSample("diboson30-HEM",   "Diboson",       "diboson",         lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+      config.addSample("qcd30-HEM",       "QCD",           "qcd",             lepselwgt_1,      datasel30HEM + trigSR + revert_vetoes);
+    }
   }
 
   // samples for sr categories

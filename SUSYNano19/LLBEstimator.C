@@ -54,7 +54,7 @@ void plotLepCR(){
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
-    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", true, &plotextra);
   }
 
 }
@@ -346,71 +346,94 @@ void plot1LepInclusive(){
 	//make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
   };
 
-  TString plotName_1 = "", plotName_2 = "";
-  if(is2017){
-    plotName_1 = "_RunBtoE_2017";
-    plotName_2 = "_RunF_2017";
-  } else if(is2018){
-    plotName_1 = "_PreHEM_2018";
-    plotName_2 = "_PostHEM_2018";
+  TString data_sample_ = "", data_sample30_ = "";
+  vector<TString> mc_samples_, mc_samples30_;
+  TString plotName = "";
+  if(process == "pre"){
+      if(is2017){
+        plotName = "_RunBtoE_2017";
+      } else if(is2018){
+        plotName = "_PreHEM_2018";
+      }
+
+      if(is2017){
+        data_sample_ = data_sample_RunBtoE;
+	mc_samples_  = mc_samples;
+      } else if(is2018){
+	data_sample_ = data_sample_preHEM;
+	mc_samples_  = mc_samples;
+      } else{
+	data_sample_ = data_sample;
+	mc_samples_  = mc_samples;
+      }
+      if(is2017){
+        data_sample30_ = data_sample30_RunBtoE;
+	mc_samples30_  = mc_samples30;
+      } else if(is2018){
+	data_sample30_ = data_sample30_preHEM;
+	mc_samples30_  = mc_samples30;
+      } else{
+	data_sample30_ = data_sample;
+	mc_samples30_  = mc_samples;
+      }
+  } else if(process == "post"){
+      if(is2017){
+        plotName = "_RunF_2017";
+      } else if(is2018){
+        plotName = "_PostHEM_2018";
+      }
+
+      if(is2017){
+        data_sample_ = data_sample_RunF;
+        mc_samples_  = mc_samples;
+      } else if(is2018){
+        data_sample_ = data_sample_postHEM;
+        mc_samples_  = mc_samples_HEM;
+      } else{
+        data_sample_ = data_sample;
+        mc_samples_  = mc_samples;
+      }
+      if(is2017){
+        data_sample30_ = data_sample30_RunF;
+        mc_samples30_  = mc_samples30;
+      } else if(is2018){
+        data_sample30_ = data_sample30_postHEM;
+        mc_samples30_  = mc_samples30_HEM;
+      } else{
+        data_sample30_ = data_sample;
+        mc_samples30_  = mc_samples;
+      }
   }
 
-  std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
-  std::function<void(TCanvas*)> plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
-  //for(int iPU = 0; iPU != npv_bin.size(); iPU++){
-  //  for (auto &var : varDict){
-  //    z.resetSelection();
-  //    TString data_sample_ = "";
-  //    if(is2017)      data_sample_ = data_sample_RunBtoE;
-  //    else if(is2018) data_sample_ = data_sample_preHEM;
-  //    else	      data_sample_ = data_sample;
-  //    TString data_sample30_ = "";
-  //    if(is2017)      data_sample30_ = data_sample30_RunBtoE;
-  //    else if(is2018) data_sample30_ = data_sample30_preHEM;
-  //    else	      data_sample30_ = data_sample;
-  //    z.setSelection(LLCR + npv_bin[iPU].first, "llcr" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
-  //    z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_hm" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
-  //    z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_lm" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
-
-  //    z.setSelection(LLCR30 + npv_bin[iPU].first, "llcr_njets30" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
-  //    z.setSelection(LLCR30_HM + npv_bin[iPU].first, "llcr_njets30_hm" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
-  //    z.setSelection(LLCR30_LM + npv_bin[iPU].first, "llcr_njets30_lm" + plotName_1 + npv_bin[iPU].second, "");
-  //    z.plotDataMC(var.second, mc_samples30, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
-
-  //  }
-  //}
-  
+  //std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+  //std::function<void(TCanvas*)> plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
+  std::function<void(TCanvas*)> plotextra;
+  std::function<void(TCanvas*)> plotextra30;
   for(int iPU = 0; iPU != npv_bin.size(); iPU++){
     for (auto &var : varDict){
-      TString data_sample_ = "";
-      if(is2017)      data_sample_ = data_sample_RunF;
-      else if(is2018) data_sample_ = data_sample_postHEM;
-      else	      data_sample_ = data_sample;
-      TString data_sample30_ = "";
-      if(is2017)      data_sample30_ = data_sample30_RunF;
-      else if(is2018) data_sample30_ = data_sample30_postHEM;
-      else	      data_sample30_ = data_sample;
-      z.setSelection(LLCR + npv_bin[iPU].first, "llcr" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
-      z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_hm" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
-      z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_lm" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples_HEM, data_sample_, Category::dummy_category(), false, "", false, &plotextra);
+      z.resetSelection();
+      z.setSelection(LLCR + npv_bin[iPU].first, "llcr" + plotName + npv_bin[iPU].second, "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples_, data_sample_, Category::dummy_category(), false, "", true, &plotextra);
+      z.setSelection(LLCR_HM + npv_bin[iPU].first, "llcr_hm" + plotName + npv_bin[iPU].second, "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR HM N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples_, data_sample_, Category::dummy_category(), false, "", true, &plotextra);
+      z.setSelection(LLCR_LM + npv_bin[iPU].first, "llcr_lm" + plotName + npv_bin[iPU].second, "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR LM N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples_, data_sample_, Category::dummy_category(), false, "", true, &plotextra);
 
-      z.setSelection(LLCR30 + npv_bin[iPU].first, "llcr_njets30" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
-      z.setSelection(LLCR30_HM + npv_bin[iPU].first, "llcr_njets30_hm" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
-      z.setSelection(LLCR30_LM + npv_bin[iPU].first, "llcr_njets30_lm" + plotName_2 + npv_bin[iPU].second, "");
-      z.plotDataMC(var.second, mc_samples30_HEM, data_sample30_, Category::dummy_category(), false, "", false, &plotextra30);
+      z.setSelection(LLCR30 + npv_bin[iPU].first, "llcr_njets30" + plotName + npv_bin[iPU].second, "");
+      plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples30_, data_sample30_, Category::dummy_category(), false, "", true, &plotextra30);
+      z.setSelection(LLCR30_HM + npv_bin[iPU].first, "llcr_njets30_hm" + plotName + npv_bin[iPU].second, "");
+      plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR HM N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples30_, data_sample30_, Category::dummy_category(), false, "", true, &plotextra30);
+      z.setSelection(LLCR30_LM + npv_bin[iPU].first, "llcr_njets30_lm" + plotName + npv_bin[iPU].second, "");
+      plotextra30 = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR LM N_{j}(p_{T} #geq 30)", 0.2, 0.72); };
+      z.plotDataMC(var.second, mc_samples30_, data_sample30_, Category::dummy_category(), false, "", true, &plotextra30);
 
     }
   }
-
+  
 }
 
