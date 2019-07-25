@@ -252,13 +252,6 @@ std::map<TString, TString> plotLabelMap{
   {"hmNoDPhi",    R"(high #Delta m)"},
 };
 
-std::vector<TString> srbinsInc{
-  "lm_lmNoDPhi",
-  "hm_hmNoDPhi",
-};
-
-
-
 std::vector<TString> srbins{
   //---------- low deltaM ----------
   // 0b, 0 or >=1 ivf
@@ -384,12 +377,6 @@ std::map<TString, TString> srlabels = []{
     }
     return cmap;
 }();
-
-std::map<TString, std::vector<int>> srMETIncbins{
-  {"lm_lmNoDPhi",			{200, 1000}},
-  {"hm_hmNoDPhi",			{200, 1000}},
-
-};
 
 std::map<TString, std::vector<int>> srMETbins{
   //---------- low deltaM ----------
@@ -646,12 +633,6 @@ std::map<TString, TString> phocrCuts = []{
 std::map<TString, TString> phocrlabels = phocrMapping;
 
 std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
-
-std::map<TString, TString> lepcrIncMapping{
-  {"lm_lmNoDPhi",			"lm_lmNoDPhi"},
-  {"hm_hmNoDPhi",			"hm_hmNoDPhi"},
-
-};
 
 std::map<TString, TString> lepcrMapping {
   //---------- low deltaM ----------
