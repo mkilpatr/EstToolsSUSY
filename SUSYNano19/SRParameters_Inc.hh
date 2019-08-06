@@ -5,17 +5,17 @@
 
 namespace EstTools{
 
-//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_062419/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_073019/";
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/tau_SFComp_2016_062319/"; //Checking LL background with tau MVA
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_072419/";
-//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2018_071519/";
+//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_072419/";
+//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2018_072419/";
 const TString outputdir = ".";
 
 const TString datadir = ".";
-//const TString lumistr = "35.922"; //Units are in pb
+const TString lumistr = "35.922"; //Units are in pb
 //2017
 //const TString lumistr = "41.817";
-const TString lumistr = "28.290";
+//const TString lumistr = "13.527";
 //2018 
 //const TString lumistr = "59.898";
 //const TString lumistr = "21.0684";
@@ -64,8 +64,8 @@ const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trig
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
-bool is2016 = false;
-bool is2017 = true;
+bool is2016 = true;
+bool is2017 = false;
 bool is2018 = false;
 
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
@@ -84,10 +84,10 @@ const TString trigLepCR = " && passtriglepOR";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
-//const TString qcdwgt = wgtvar;
-const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
-//const TString qcdvetowgt = lepvetowgt;
+//const TString qcdwgt = wgtvar + "*qcdRespTailWeight";
+const TString qcdwgt = wgtvar;
+//const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
+const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
@@ -102,7 +102,7 @@ const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_C
 const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20 && Stop0l_noMuonJet";
 const TString datasel30 = " && Pass_EventFilter && Pass_HT30 && Pass_JetID && Pass_CaloMETRatio && Stop0l_noMuonJet";
 const TString datasel30HEM = " && Pass_EventFilter && Pass_HT30 && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto30 && Stop0l_noMuonJet";
-const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
+const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 

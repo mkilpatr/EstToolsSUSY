@@ -5,9 +5,8 @@
 
 namespace EstTools{
 
-//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_062419/";
-//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/tau_SFComp_2016_062319/"; //Checking LL background with tau MVA
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_071519/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_073019/";
+//const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2017_071519/";
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2018_071519/";
 const TString outputdir = ".";
 
@@ -50,8 +49,8 @@ const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trig
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
-bool is2016 = false;
-bool is2017 = true;
+bool is2016 = true;
+bool is2017 = false;
 bool is2018 = false;
 
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
@@ -76,8 +75,10 @@ const TString qcdvetowgt = lepvetowgt + "*qcdRespTailWeight";
 //const TString qcdvetowgt = lepvetowgt;
 
 // signal weights
-//const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
+//const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight";
+//const TString siglepselwgt = lepselwgt + "*btagFastSimWeight*isrWeightTight";
 const TString sigwgt = lepvetowgt;
+const TString siglepselwgt = lepselwgt;
 
 // triggers
 const TString trigSR = " && Pass_trigger_MET";
@@ -1519,19 +1520,19 @@ BaseConfig lepConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   if (ADD_LEP_TO_MET){
-    config.addSample("singlelep",   "Data",          datadir+"/lepcr/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
-    config.addSample("ttbar",       "t#bar{t}",      "lepcr/ttbar",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("wjets",       "W+jets",        "lepcr/wjets",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("tW",          "tW",            "lepcr/tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("ttW",         "ttW",           "lepcr/ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
-//    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    config.addSample("singlelep",   "Data",          datadir+"/singlelep",       "1.0",     datasel + trigLepCR + lepcrsel);
+    config.addSample("ttbar",       "t#bar{t}",      "ttbar",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    config.addSample("wjets",       "W+jets",        "wjets",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    config.addSample("tW",          "tW",            "tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
+    config.addSample("ttW",         "ttW",           "ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
+//    config.addSample("qcd",         "QCD",           "qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",   "Data",          datadir+"/sr/met",    "1.0",     datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar",       "t#bar{t}",      "sr/ttbar",           lepselwgt, datasel + trigSR + revert_vetoes);
-    config.addSample("wjets",       "W+jets",        "sr/wjets",           lepselwgt, datasel + trigSR + revert_vetoes);
-    config.addSample("tW",          "tW",            "sr/tW",              lepselwgt, datasel + trigSR + revert_vetoes);
-    config.addSample("ttW",         "ttW",           "sr/ttW",             lepselwgt, datasel + trigSR + revert_vetoes);
-//    config.addSample("qcd",         "QCD",           "sr/qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",   "Data",          datadir+"/met",    "1.0",     datasel + trigSR + revert_vetoes);
+    config.addSample("ttbar",       "t#bar{t}",      "ttbar",           lepselwgt+"*ISRWeight", datasel + trigSR + revert_vetoes);
+    config.addSample("wjets",       "W+jets",        "wjets",           lepselwgt, datasel + trigSR + revert_vetoes);
+    config.addSample("tW",          "tW",            "tW",              lepselwgt, datasel + trigSR + revert_vetoes);
+    config.addSample("ttW",         "ttW",           "ttW",             lepselwgt, datasel + trigSR + revert_vetoes);
+//    config.addSample("qcd",         "QCD",           "qcd",             lepselwgt, datasel + trigSR + revert_vetoes);
 
     // add signals in lepcr
     for (const auto &sig : signals){
@@ -1539,14 +1540,14 @@ BaseConfig lepConfig(){
     }
   }
 
-  config.addSample("ttbar-sr",       "t#bar{t}",      "sr/ttbar",           lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("wjets-sr",       "W+jets",        "sr/wjets",           lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("tW-sr",          "tW",            "sr/tW",              lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttW-sr",         "ttW",           "sr/ttW",             lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttbar-sr",       "t#bar{t}",      "ttbar",           lepvetowgt+"*ISRWeight", datasel + trigSR + vetoes);
+  config.addSample("wjets-sr",       "W+jets",        "wjets",           lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("tW-sr",          "tW",            "tW",              lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttW-sr",         "ttW",           "ttW",             lepvetowgt, datasel + trigSR + vetoes);
 //  config.addSample("qcd-sr",         "QCD",           "qcd",                lepvetowgt, datasel + trigSR + vetoes);
-//  config.addSample("rare-sr",        "Rare",          "sr/rare",            lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("ttZ-sr",         "ttZ",           "sr/ttZ",             lepvetowgt, datasel + trigSR + vetoes);
-  config.addSample("diboson-sr",     "Diboson",       "sr/diboson",         lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("rare-sr",        "Rare",          "rare",            lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("ttZ-sr",         "ttZ",           "ttZ",             lepvetowgt, datasel + trigSR + vetoes);
+  config.addSample("diboson-sr",     "Diboson",       "diboson",         lepvetowgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -1641,27 +1642,74 @@ std::vector<TString> mergedSRbins{
 
   // nb1
   // 1 tagged
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nw0",
+  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",
+  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",
+  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",
+  "hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",
+  "hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",
+  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",
+
   // 1+1
   "hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",
+  "hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",
   "hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",
 
   // nb2
   // 1 tagged
-  "hm_nb2_highmtb_nt1_nrt0_nw0",
-  "hm_nb2_highmtb_nt0_nrt1_nw0",
-  "hm_nb2_highmtb_nt0_nrt0_nw1",
+  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",
+  "hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",
+  "hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",
+  "hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",
 
-  // 1+1
-  "hm_nb2_highmtb_nt1_nrt0_nw1",
-  "hm_nb2_highmtb_nt0_nrt1_nw1",
-  "hm_nb2_highmtb_nt1_nrt1_nw0",
+  // 1+1eq
+  "hm_nbeq2_highmtb_nt1_nrt0_nw1",
+  "hm_nbeq2_highmtb_nt0_nrt1_nw1",
+  "hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",
 
   // 2
-  "hm_nb2_highmtb_nt2_nrt0_nw0",
-  "hm_nb2_highmtb_nt0_nrt2_nw0",
-  "hm_nb2_highmtb_nt0_nrt0_nw2",
+  "hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nt0_nrt0_nw2",
+
+  // 3
+  "hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",
+  "hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",
+
+  // nb3
+  //1 tagged
+  "hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",
+  "hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",
+  "hm_nb3_highmtb_nt0_nrt0_nw1",
+  "hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",
+  "hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",
+
+  //1+1
+  "hm_nb3_highmtb_nt1_nrt0_nw1",
+  "hm_nb3_highmtb_nt0_nrt1_nw1",
+  "hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",
+  "hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",
+
+  //2
+  "hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",
+  "hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",
+  "hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",
+  "hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",
+  "hm_nb3_highmtb_nt0_nrt0_nw2",
+
+  // 3
+  "hm_nb3_highmtb_nrtntnwgeq3",
+  
   //---------- high deltaM ----------
 };
 
@@ -1706,36 +1754,82 @@ std::map<TString, std::vector<int>> mergedSRMETbins{
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",        {250, 300, 400, 500, 1000}},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",        {250, 300, 400, 500, 1000}},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
 
   // high mtb
   // 0 taggged
-  {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
-  {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",  {250, 350, 450, 550, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nw0",              {250, 350, 450, 550, 1000}},
+  {"hm_nb2_highmtb_nj7_nt0_nrt0_nw0",              {250, 350, 450, 550, 1000}},
 
   // nb1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0",                  {550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",               {550, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",{250, 350, 450, 550, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
 
   // nb2
-  {"hm_nb2_highmtb_nt1_nrt0_nw0",                     {550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw0",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt0_nw1",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nb2_highmtb_nt1_nrt0_nw1",                     {550, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt1_nw1",      {250, 350, 450, 550, 1000}},
-  {"hm_nb2_highmtb_nt1_nrt1_nw0",      {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
 
   // 2
-  {"hm_nb2_highmtb_nt2_nrt0_nw0",      {250, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt2_nw0",      {250, 1000}},
-  {"hm_nb2_highmtb_nt0_nrt0_nw2",      {250, 1000}},
+  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",       {250, 450, 600, 1000}},
+  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",       {250, 450, 600, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",       {250, 450, 600, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",       {250, 450, 600, 1000}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",                {250, 1000}},
+
+  // 3
+  {"hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",        {250, 400, 1000}},
+  {"hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",        {250, 400, 1000}},
+
+	// nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
+
+  //1+1
+  {"hm_nb3_highmtb_nt1_nrt0_nw1",                  {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw1",                  {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",         {250, 350, 500, 1000}},
+  {"hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",         {250, 350, 500, 1000}},
+
+  //2
+  {"hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",         {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",         {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",         {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",         {250, 500, 1000}},
+  {"hm_nb3_highmtb_nt0_nrt0_nw2",                  {250, 1000}},
+
+  // 3
+  {"hm_nb3_highmtb_nrtntnwgeq3",                   {250, 400, 1000}},
+  
   //---------- high deltaM ----------
 
 };

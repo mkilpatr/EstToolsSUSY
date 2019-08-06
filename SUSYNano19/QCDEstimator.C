@@ -1,7 +1,8 @@
 #include "../EstMethods/QCDEstimator.hh"
 
 //#include "SRParameters.hh"
-#include "SRParameters_qcd_small.hh"
+//#include "SRParameters_qcd_small.hh"
+#include "SRParameters_Inc.hh"
 
 using namespace EstTools;
 
@@ -52,44 +53,42 @@ void plotQCDCR(){
 
 void plotQCDInclusive(){
   auto config = qcdConfig();
+  //BaseEstimator z(config);
 
-  config.sel = "Stop0l_nJets>=2 && MET_pt>250 && Stop0l_METSig>10";
-//  config.addSample("qcd",  "QCD",      "qcd-4bd/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-  config.addSample("qcd",  "QCD",      "qcd",          wgtvar,  datasel + trigSR + vetoes + dphi_invert);
-
-//  config.addSample("qcd",  "QCD",      "qcd-std/qcd",          qcdvetowgt,  datasel + trigSR + vetoes + dphi_invert);
-
-
-  BaseEstimator z(config);
-
-  vector<TString> mc_samples = {"qcd", "ttbar-cr", "wjets-cr", "tW-cr"};
+  vector<TString> mc_samples = {"qcd-cr", "ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr"};
   TString data_sample = "data-cr";
 
   map<TString, BinInfo> varDict {
-    {"met",       BinInfo("MET_pt", "#slash{E}_{T}", 16, 0, 800, "GeV")},
-    {"ht",        BinInfo("Stop0l_HT",  "H_{T}", 100, 0, 2000, "GeV")},
-//    {"j1chef",    BinInfo("j1chEnFrac",  "j1chEnFrac", 20, 0, 1, "GeV")},
+    //{"met",       BinInfo("MET_pt", "#slash{E}_{T}", 16, 0, 800, "GeV")},
+    //{"ht",        BinInfo("Stop0l_HT",  "H_{T}", 100, 0, 2000, "GeV")},
     {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 12, -0.5, 11.5)},
-//    {"nt",        BinInfo("nsdtoploose", "N_{t}", 2, -0.5, 1.5)},
-//    {"nw",        BinInfo("nsdwloose", "N_{W}", 2, -0.5, 1.5)},
-//    {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-//    {"nbjets",    BinInfo("nbjets",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-//    {"dphij1met", BinInfo("dphij1met", "#Delta#phi(j_{1},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij2met", BinInfo("dphij2met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"dphij3met", BinInfo("dphij3met", "#Delta#phi(j_{2},#slash{E}_{T})", 32, 0, 3.2)},
-//    {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-//    {"metovsqrtht",BinInfo("Stop0l_METSig", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
-//    {"dphij1lmet",BinInfo("dphij1lmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-//    {"njl",       BinInfo("njl", "N_{j}^{ISR}", 5, -0.5, 4.5)},
-//    {"j1lpt",     BinInfo("j1lpt", "p_{T}(j_{1}^{ISR}) [GeV]", 20, 0, 1000)},
-//    {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)}
-
   };
 
-
-
+  TString QCDCR    = "1 == 1";
+  TString QCDCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10";
+  TString QCDCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1";
+  config.sel = baseline + " && Stop0l_nJets >= 2";
+  
+  config.categories.clear();
+  config.catMaps.clear();
+  config.categories.push_back("dummy");
+  config.catMaps["dummy"] = Category::dummy_category();
+  
+  BaseEstimator z(config.outputdir);
+  z.setConfig(config);
+  
+  std::function<void(TCanvas*)> plotextra;
   for (auto &var : varDict){
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false);
+    z.resetSelection();
+    z.setSelection(QCDCR, "qcdcr", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("QCDCR N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(QCDCR_LM, "qcdcr_lm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("QCDCR LM N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(QCDCR_HM, "qcdcr_hm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("QCDCR HM N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
   }
 
 }

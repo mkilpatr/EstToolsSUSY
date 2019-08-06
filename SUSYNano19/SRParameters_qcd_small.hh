@@ -5,7 +5,7 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_072419/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_073019/";
 const TString outputdir = ".";
 
 const TString datadir = ".";
@@ -24,6 +24,8 @@ const TString phowgt = wgtvar;
 //const TString lepvetowgt = wgtvar;
 //const TString lepselwgt  = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
+
+TString process = "pre";
 
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      wgtvar      + "*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";

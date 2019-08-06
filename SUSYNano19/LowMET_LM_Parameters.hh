@@ -6,7 +6,7 @@
 namespace EstTools{
 
 //const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_062419/";
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_071819/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/nanoaod_all_skim_2016_073019/";
 const TString outputdir = "LowMET";
 
 const TString datadir = ".";
@@ -75,7 +75,7 @@ const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_C
 //const TString qcdSpikeRemovals = " && (!(lumi==40062 && event==91000735))";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
-const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (!Pass_dPhiMET && !Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
+const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
 // search regions and control regions
@@ -91,7 +91,7 @@ std::map<TString, TString> cutMap = []{
         {"hmNoDPhi",  "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",    "Pass_dPhiMETHighDM"},
         {"invertDPhi","Pass_dPhiQCD"},
-        {"dPhiMedLM", "!Pass_dPhiMET && !Pass_dPhiMETMedDM"},
+        {"dPhiMedLM", "Pass_dPhiMETMedDM"},
 	{"dPhiMedHM", "Pass_dPhiMET && !Pass_dPhiMETHighDM"},
 
         {"nb0",       "Stop0l_nbtags==0"},
