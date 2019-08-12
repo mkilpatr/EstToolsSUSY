@@ -30,11 +30,11 @@ vector<Quantity> LLBPred(){
   digits["_TF_CR_to_SR_noextrap"] = -3;
   digits["_TF_SR_extrap"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -57,6 +57,28 @@ void plotLepCR(){
     const auto &cat = z.config.catMaps.at(category);
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", true, &plotextra);
+  }
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void plotLepCRAllEras(){
+  auto config = lepConfig();
+  config.catMaps = lepCatMap();
+
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_allEras";
+  BaseEstimator z(config.outputdir+"/"+region);
+  z.setConfig(config);
+
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM", "wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM", 
+				"tW-2016", "tW-2017RunBtoE", "tW-2017RunF", "tW-2018preHEM", "tW-2018postHEM", "ttW-2016", "ttW-2017RunBtoE", "ttW-2017RunF", "ttW-2018preHEM", "ttW-2018postHEM"};
+  vector<TString> data_sample = {"singlelep-2016", "singlelep-2017RunBtoE", "singlelep-2017RunF", "singlelep-2018preHEM", "singlelep-2018postHEM"};
+
+  for (auto category : z.config.categories){
+    const auto &cat = z.config.catMaps.at(category);
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
 
 }
