@@ -73,7 +73,7 @@ void plotLepCRAllEras(){
 
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM", "wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM", 
 				"tW-2016", "tW-2017RunBtoE", "tW-2017RunF", "tW-2018preHEM", "tW-2018postHEM", "ttW-2016", "ttW-2017RunBtoE", "ttW-2017RunF", "ttW-2018preHEM", "ttW-2018postHEM"};
-  vector<TString> data_sample = {"singlelep-2016", "singlelep-2017RunBtoE", "singlelep-2017RunF", "singlelep-2018preHEM", "singlelep-2018postHEM"};
+  TString data_sample = "singlelep";
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);

@@ -32,9 +32,9 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "/tmp/validation/plots/fullPredOnly/sig/std_pred_trad.root";
+  TString predFile = "sig/std_pred_trad.root";
 //  TString predFile_statOnly = "/tmp/validation/plots/fullPredOnly/sig/std_pred_trad_orig.root";
-  TString predFile_ichepcr = "/tmp/validation/plots/fullPredOnly_ichepcr/sig/std_pred_trad.root";
+  TString predFile_ichepcr = "sig/std_pred_trad.root";
 //  TString output  = "";
 
   TFile *fpred = TFile::Open(predFile);

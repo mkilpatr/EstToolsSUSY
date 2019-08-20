@@ -35,29 +35,6 @@ public:
 
   }
 
-  vector<Quantity> calcSLepAllEras(){
-    // calculate correction factors from single lepton control regions
-
-    cerr << "\n--->" << __func__ << endl;
-
-    auto data_2016 = yields.at("singlelep-2016");
-    auto data_2017RunBtoE = yields.at("singlelep-2017RunBtoE");
-    auto data_2017RunF = yields.at("singlelep-2017RunF");
-    auto data_2018preHEM = yields.at("singlelep-2018preHEM");
-    auto data_2018postHEM = yields.at("singlelep-2018postHEM");
-    vector<Quantity> data;
-    for(unsigned int d = 0; d != data_2016.size(); d++){
-	data.push_back(data_2016[d] + data_2017RunBtoE[d] + data_2017RunF[d] + data_2018preHEM[d] + data_2018postHEM[d]);
-    }
-    Quantity::removeZeroes(data, 0.001, 1.8);
-    auto mc   = yields.at("ttbarplusw");
-
-    auto s_lep = data / mc;
-    cout << "    ---> " << s_lep << endl;
-    return s_lep;
-
-  }
-
   void pred(){
     cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
 
@@ -101,13 +78,15 @@ public:
     sumYields({"ttW-2016-sr", "ttW-2017RunBtoE-sr", "ttW-2017RunF-sr", "ttW-2018preHEM-sr", "ttW-2018postHEM-sr"}, "ttW-sr");
     sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
 
-    sumYields({"singlelep-2016", "singlelep-2017RunBtoE", "singlelep-2017RunF", "singlelep-2018preHEM", "singlelep-2018postHEM"}, "singlelep");
+    sumYields({"ttZ-2016-sr", "ttZ-2017RunBtoE-sr", "ttZ-2017RunF-sr", "ttZ-2018preHEM-sr", "ttZ-2018postHEM-sr"}, "ttZ-sr");
+    sumYields({"diboson-2016-sr", "diboson-2017RunBtoE-sr", "diboson-2017RunF-sr", "diboson-2018preHEM-sr", "diboson-2018postHEM-sr"}, "diboson-sr");
+
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
     // _pred = _TF * N(Data,CR)
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
-    yields["_SLep"] = calcSLepAllEras(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
@@ -123,53 +102,6 @@ public:
 
     printVec(yields["_pred"], "Final prediction", true);
   }
-
-  //void predComparison(){
-  //  cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
-
-  //  // Yields
-  //  calcYields();
-  //  sumYields({"ttbar",         "wjets"},         "ttbarplusw");
-  //  sumYields({"ttbar-sr",      "wjets-sr"},      "ttbarplusw-sr");
-  //  sumYields({"ttbar-2017",    "wjets-2017"},    "ttbarplusw-2017");
-  //  sumYields({"ttbar-sr-2017", "wjets-sr-2017"}, "ttbarplusw-sr-2017");
-
-  //  // _SLep = N(Data,CR)/N(MC,CR)
-  //  // _TF   = N(MC,SR)/N(MC,CR)
-  //  // _pred = _TF * N(Data,CR)
-  //  // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
-  //  // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
-  //  yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-  //  yields["_SLep-2017"] = calcSLep2017(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-  //  yields["_TF"]                        = yields.at("ttbarplusw-sr")     /yields.at("ttbarplusw");
-  //  yields["_TF-2017"]                   = yields.at("ttbarplusw-sr-2017")/yields.at("ttbarplusw-2017");
-  //  yields["_pred"]                      = yields.at("singlelep") * yields.at("_TF");
-  //  yields["_pred-2017"]                 = yields.at("singlelep-2017") * yields.at("_TF-2017");
-  //  yields["_TF_Comp"]			 = yields.at("_TF")/yields.at("_TF-2017");
-
-  //  if(splitTF){
-  //    //sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
-  //    sumYields({"ttbar-sr-int",      "wjets-sr-int"},      "ttbarplusw-sr-int");
-  //    sumYields({"ttbar-sr-int-2017", "wjets-sr-int-2017"}, "ttbarplusw-sr-int-2017");
-  //    yields["_TF_CR_to_SR_noextrap"]      = yields.at("ttbarplusw-sr-int")     /yields.at("ttbarplusw");
-  //    yields["_TF_CR_to_SR_noextrap-2017"] = yields.at("ttbarplusw-sr-int-2017")/yields.at("ttbarplusw-2017");
-  //    yields["_TF_CR_to_SR_noextrap_Comp"] = yields.at("_TF_CR_to_SR_noextrap") /yields.at("_TF_CR_to_SR_noextrap-2017");
-  //    yields["_TF_SR_extrap"]              = yields.at("ttbarplusw-sr")         /yields.at("ttbarplusw-sr-int");
-  //    yields["_TF_SR_extrap-2017"]         = yields.at("ttbarplusw-sr-2017")    /yields.at("ttbarplusw-sr-int-2017");
-  //    yields["_TF_SR_extrap_Comp"]	   = yields.at("_TF_SR_extrap")         /yields.at("_TF_SR_extrap-2017");
-  //    std::cout << std::endl;
-  //    std::cout << "_TF_SR_extrap-2017: " << yields["_TF_SR_extrap-2017"] << std::endl;
-  //    std::cout << std::endl;
-  //    std::cout << "yields for _TF_SR_extrap-2017: " << std::endl;
-  //    std::cout << yields.at("ttbarplusw-sr-2017") << "/" << std::endl;
-  //    std::cout << yields.at("ttbarplusw-sr-int-2017") << std::endl;
-  //    std::cout << std::endl;
-  //    //sumYields({"ttbar-sr-int-2017", "wjets-sr-int-2017", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int-2017");
-  //  }
-
-  //  printVec(yields["_pred"], "Final prediction", true);
-  //  printVec(yields["_pred-2017"], "Final prediction-2017", true);
-  //}
 
   void prepDatacard(){
     convertYields("ttbarplusw-sr",  "",       "ttbarplusw");

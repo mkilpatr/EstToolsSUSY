@@ -54,7 +54,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 
 void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "znunu", "diboson", "ttZ", "ttbarplusw"};
+  vector<TString> bkgnames  = {"diboson", "ttZ", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -62,29 +62,29 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   // nominal
   {
-    inputdir = "/uscms/home/hqu/nobackup/trees/20170206_lepSF";
+    //inputdir = ".";
     sys_name = "nominal";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   // jes - up
   {
-    inputdir = "/uscms/home/hqu/nobackup/trees/20170207_syst/jesup";
-    sys_name = "jes_UP";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //inputdir = "jesup";
+    sys_name = "JESUp";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
-    inputdir = "/uscms/home/loukas/nobackup/Moriond17_SystTrees/trees/20170207_syst/jesdown";
-    sys_name = "jes_DOWN";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //inputdir = "jesdown";
+    sys_name = "JESDown";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -97,12 +97,12 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_DOWN")) continue; // ignore down: processed at the same time as up
+      if(sPair.first.EndsWith("Down")) continue; // ignore down: processed at the same time as up
       vector<Quantity> uncs;
 
-      if(sPair.first.EndsWith("_UP")){
+      if(sPair.first.EndsWith("Up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_UP", "_DOWN");
+        auto name_down = TString(sPair.first).ReplaceAll("Up", "Down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
       }else{
@@ -116,7 +116,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType = TString(sPair.first).ReplaceAll("_UP", ""); // get rid of "up"
+          auto uncType = TString(sPair.first).ReplaceAll("Up", ""); // get rid of "up"
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
           double val = uncs.at(ibin).value;
           if (val>2 || std::isnan(val)) {
