@@ -64,6 +64,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   {
     //inputdir = ".";
     sys_name = "nominal";
+    EstTools::jes_postfix = "";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
@@ -74,6 +75,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   {
     //inputdir = "jesup";
     sys_name = "JESUp";
+    EstTools::jes_postfix = "_JESUp";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
@@ -83,6 +85,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   {
     //inputdir = "jesdown";
     sys_name = "JESDown";
+    EstTools::jes_postfix = "_JESDown";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();

@@ -39,7 +39,7 @@ vector<Quantity> getQCDPred(){
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.predAllEras();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -70,9 +70,9 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - heavy up
+  // btag - up
   {
-    sys_name = "b_heavy_Up";
+    sys_name = "b_Up";
     btagwgt = "BTagWeight_Up";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -80,9 +80,9 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - heavy down
+  // btag - down
   {
-    sys_name = "b_heavy_Down";
+    sys_name = "b_Down";
     btagwgt = "BTagWeight_Down";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();

@@ -12,7 +12,7 @@
 //#include "SRParameters_Tau_HM_1.hh"
 //#include "SRParameters_Tau_HM_2.hh"
 //#include "SRParameters_Tau_HM_3.hh"
-#include "SRParameters_Tau_HM_4.hh"
+#include "SRParameters.hh"
 //#include "LowMET_HM_Parameters.hh"
 
 #include "../EstMethods/LLBEstimator.hh"

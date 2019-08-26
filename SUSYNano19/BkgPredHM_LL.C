@@ -31,7 +31,7 @@ void BkgPredHM_LL(){
   EstTools::ADD_LEP_TO_MET = false;
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.predAllEras();
+  l.pred();
   l.printYields();
 cout << "Made it here 3" << endl;
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));

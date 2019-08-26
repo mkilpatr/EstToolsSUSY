@@ -29,12 +29,10 @@ TString restopwgt = "resTopWeight";
 
 TString puwgt = "puWeight"; // PU
 
-//TString tnpwgtlm = "leptnpweightLM"; // tnp (el/mu)
-//TString tnpwgthm = "leptnpweightHM";
-TString tnpwgtlm = "1"; // tnp (el/mu)
-TString tnpwgthm = "1";
-TString vetowgtlm = "1";
-TString vetowgthm = "1";
+//TString tnpwgt = "Muon_LooseSF"; // tnp (el/mu)
+//TString vetowgt = "Electron_VetoSF";
+TString tnpwgt = "1"; // tnp (el/mu)
+TString vetowgt = "1";
 
 TString btagwgt = "BTagWeight"; // btag
 
@@ -55,23 +53,25 @@ TString wgtvar_postHEM(){ return lumistr_2018PostHEM+"*"+mcwgt+"*"+puwgt+"*"+bta
 TString phowgt() { return wgtvar(); }
 //TString phowgt = wgtvar + "*qcdRespTailWeight";
 
+TString jes_postfix = "";
+
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
 //TString lepselwgt()  {return wgtvar();}
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-TString lepvetowgt() 	     { return wgtvar() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*"+vetowgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepselwgt()  	     { return wgtvar() + "*("+tnpwgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*"+vetowgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() + "*("+tnpwgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepvetowgt_RunF()    { return wgtvar_RunF() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*"+vetowgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepselwgt_RunF()     { return wgtvar_RunF() + "*("+tnpwgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepvetowgt_preHEM()  { return wgtvar_preHEM() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*"+vetowgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepselwgt_preHEM()   { return wgtvar_preHEM() + "*("+tnpwgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepvetowgt_postHEM() { return wgtvar_postHEM() + "*("+tnpwgtlm+"*"+vetowgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*"+vetowgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-TString lepselwgt_postHEM()  { return wgtvar_postHEM() + "*("+tnpwgtlm+"*(Stop0l_nJets<5 || Stop0l_nbtags<1) + "+tnpwgthm+"*(Stop0l_nJets>=5 && Stop0l_nbtags>=1))"; }
-const TString vetoes = " && Pass_LeptonVeto";
+TString lepvetowgt() 	     { return wgtvar() + "*("+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepselwgt()  	     { return wgtvar() + "*("+tnpwgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() + "*("+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() + "*("+tnpwgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepvetowgt_RunF()    { return wgtvar_RunF() + "*("+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepselwgt_RunF()     { return wgtvar_RunF() + "*("+tnpwgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepvetowgt_preHEM()  { return wgtvar_preHEM() + "*("+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepselwgt_preHEM()   { return wgtvar_preHEM() + "*("+tnpwgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepvetowgt_postHEM() { return wgtvar_postHEM() + "*("+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*"+vetowgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString lepselwgt_postHEM()  { return wgtvar_postHEM() + "*("+tnpwgt+"*(Stop0l_nJets"+jes_postfix+"<5 || Stop0l_nbtags"+jes_postfix+"<1) + "+tnpwgt+"*(Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1))"; }
+TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -81,11 +81,11 @@ const TString vetoes = " && Pass_LeptonVeto";
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
-const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
+TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100"; }
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
+TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -105,71 +105,71 @@ TString qcdvetowgt() {return lepvetowgt();}
 TString sigwgt() {return lepvetowgt();}
 
 // triggers
-const TString trigSR = " && Pass_trigger_MET";
-const TString trigPhoCR = " && passtrigphoOR && origmet<200";
-const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
-const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20";
-const TString qcdSpikeRemovals = "";
-const TString dphi_invert = " && Pass_dPhiQCD";
-const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
+TString trigSR = " && Pass_trigger_MET";
+TString trigPhoCR = " && passtrigphoOR && origmet<200";
+TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
+TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
+TString datasel = " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20"+jes_postfix+"))";
+TString dataselHEM = " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && Pass_exHEMVeto20"+jes_postfix+"";
+TString qcdSpikeRemovals = "";
+TString dphi_invert = " && Pass_dPhiQCD";
+TString dphi_cut = " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_MET && Pass_NJets20";
+TString baseline = "Pass_MET"+jes_postfix+" && Pass_NJets20"+jes_postfix+"";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-	{"lmNoDPhi",    "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10"},
-        {"dPhiLM",      "Pass_dPhiMETLowDM"},
-        {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
-        {"dPhiHM",      "Pass_dPhiMETHighDM"},
+	{"lmNoDPhi",    "Stop0l_ISRJetPt"+jes_postfix+">300 && Stop0l_Mtb"+jes_postfix+" < 175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0 && Stop0l_METSig"+jes_postfix+">10"},
+        {"dPhiLM",      "Pass_dPhiMETLowDM"+jes_postfix+""},
+        {"hmNoDPhi",    "Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1"},
+        {"dPhiHM",      "Pass_dPhiMETHighDM"+jes_postfix+""},
         {"invertDPhi",  "Pass_dPhiQCD"},
  
-        {"nb0",         "Stop0l_nbtags==0"},
-        {"nb1",         "Stop0l_nbtags==1"},
-        {"nbgeq1",      "Stop0l_nbtags>=1"},
-        {"nb2",         "Stop0l_nbtags>=2"},
-        {"nbeq2",       "Stop0l_nbtags==2"},
-        {"nb3",         "Stop0l_nbtags>=3"},
-        {"nivf0",       "Stop0l_nSoftb==0"},
-        {"nivf1",       "Stop0l_nSoftb>=1"},
-        {"lowptisr",    "Stop0l_ISRJetPt>300 && Stop0l_ISRJetPt<500"},
-        {"medptisr",    "Stop0l_ISRJetPt>300"},
-        {"highptisr",   "Stop0l_ISRJetPt>500"},
-        {"nj2to5",      "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
-        {"nj6",         "Stop0l_nJets>=6"},
-        {"nj7",         "Stop0l_nJets>=7"},
-        {"lowmtb",      "Stop0l_Mtb<175"},
-        {"highmtb",     "Stop0l_Mtb>175"},
-        {"lowptb",      "Stop0l_Ptb<40"},
-        {"medptb",      "Stop0l_Ptb>40 && Stop0l_Ptb<70"},
-        {"highptb",     "Stop0l_Ptb>70"},
-        {"lowptb12",    "Stop0l_Ptb<80"},
-        {"medptb12",    "Stop0l_Ptb>80 && Stop0l_Ptb<140"},
-        {"highptb12",   "Stop0l_Ptb>140"},
-        {"nt0",         "Stop0l_nTop==0"},
-        {"nt1",         "Stop0l_nTop==1"},
-        {"nt2",         "Stop0l_nTop==2"},
-        {"ntgeq1",      "Stop0l_nTop>=1"},
-        {"nw0",         "Stop0l_nW==0"},
-        {"nw1",         "Stop0l_nW==1"},
-        {"nw2",         "Stop0l_nW==2"},
-        {"nwgeq1",      "Stop0l_nW>=1"},
-        {"nrt0",        "Stop0l_nResolved==0"},
-        {"nrt1",        "Stop0l_nResolved==1"},
-        {"nrt2",        "Stop0l_nResolved==2"},
-        {"nrtgeq1",     "Stop0l_nResolved>=1"},
-        {"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
-        {"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
-        {"htlt1000",    "Stop0l_HT<1000"},
-        {"ht1000to1500","Stop0l_HT>1000 && Stop0l_HT<1500"},
-        {"htgt1500",    "Stop0l_HT>1500"},
-        {"htlt1300",    "Stop0l_HT<1300"},
-        {"htgt1300",    "Stop0l_HT>1300"},
+        {"nb0",         "Stop0l_nbtags"+jes_postfix+"==0"},
+        {"nb1",         "Stop0l_nbtags"+jes_postfix+"==1"},
+        {"nbgeq1",      "Stop0l_nbtags"+jes_postfix+">=1"},
+        {"nb2",         "Stop0l_nbtags"+jes_postfix+">=2"},
+        {"nbeq2",       "Stop0l_nbtags"+jes_postfix+"==2"},
+        {"nb3",         "Stop0l_nbtags"+jes_postfix+">=3"},
+        {"nivf0",       "Stop0l_nSoftb"+jes_postfix+"==0"},
+        {"nivf1",       "Stop0l_nSoftb"+jes_postfix+">=1"},
+        {"lowptisr",    "Stop0l_ISRJetPt"+jes_postfix+">300 && Stop0l_ISRJetPt"+jes_postfix+"<500"},
+        {"medptisr",    "Stop0l_ISRJetPt"+jes_postfix+">300"},
+        {"highptisr",   "Stop0l_ISRJetPt"+jes_postfix+">500"},
+        {"nj2to5",      "Stop0l_nJets"+jes_postfix+">=2 && Stop0l_nJets"+jes_postfix+"<=5"},
+        {"nj6",         "Stop0l_nJets"+jes_postfix+">=6"},
+        {"nj7",         "Stop0l_nJets"+jes_postfix+">=7"},
+        {"lowmtb",      "Stop0l_Mtb"+jes_postfix+"<175"},
+        {"highmtb",     "Stop0l_Mtb"+jes_postfix+">175"},
+        {"lowptb",      "Stop0l_Ptb"+jes_postfix+"<40"},
+        {"medptb",      "Stop0l_Ptb"+jes_postfix+">40 && Stop0l_Ptb"+jes_postfix+"<70"},
+        {"highptb",     "Stop0l_Ptb"+jes_postfix+">70"},
+        {"lowptb12",    "Stop0l_Ptb"+jes_postfix+"<80"},
+        {"medptb12",    "Stop0l_Ptb"+jes_postfix+">80 && Stop0l_Ptb"+jes_postfix+"<140"},
+        {"highptb12",   "Stop0l_Ptb"+jes_postfix+">140"},
+        {"nt0",         "Stop0l_nTop"+jes_postfix+"==0"},
+        {"nt1",         "Stop0l_nTop"+jes_postfix+"==1"},
+        {"nt2",         "Stop0l_nTop"+jes_postfix+"==2"},
+        {"ntgeq1",      "Stop0l_nTop"+jes_postfix+">=1"},
+        {"nw0",         "Stop0l_nW"+jes_postfix+"==0"},
+        {"nw1",         "Stop0l_nW"+jes_postfix+"==1"},
+        {"nw2",         "Stop0l_nW"+jes_postfix+"==2"},
+        {"nwgeq1",      "Stop0l_nW"+jes_postfix+">=1"},
+        {"nrt0",        "Stop0l_nResolved"+jes_postfix+"==0"},
+        {"nrt1",        "Stop0l_nResolved"+jes_postfix+"==1"},
+        {"nrt2",        "Stop0l_nResolved"+jes_postfix+"==2"},
+        {"nrtgeq1",     "Stop0l_nResolved"+jes_postfix+">=1"},
+        {"nrtntnwgeq2", "(Stop0l_nTop"+jes_postfix+"+Stop0l_nResolved"+jes_postfix+"+Stop0l_nW"+jes_postfix+") >= 2"},
+        {"nrtntnwgeq3", "(Stop0l_nTop"+jes_postfix+"+Stop0l_nResolved"+jes_postfix+"+Stop0l_nW"+jes_postfix+") >= 3"},
+        {"htlt1000",    "Stop0l_HT"+jes_postfix+"<1000"},
+        {"ht1000to1500","Stop0l_HT"+jes_postfix+">1000 && Stop0l_HT"+jes_postfix+"<1500"},
+        {"htgt1500",    "Stop0l_HT"+jes_postfix+">1500"},
+        {"htlt1300",    "Stop0l_HT"+jes_postfix+"<1300"},
+        {"htgt1300",    "Stop0l_HT"+jes_postfix+">1300"},
 
     };
 
