@@ -22,10 +22,10 @@ void BkgPredLM_LowMET_LL(){
 
   auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs){
     for(const auto &s : bkgnames){
-      hists.push_back(convertToHist(c.getPrediction(s), s, ";Search Region;Events"));
-      graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s), s+"_gr", ";Search Region;Events"));
+      hists.push_back(convertToHist(c.getPrediction(s), s, ";Low #Deltam Validation Region;Events"));
+      graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s), s+"_gr", ";Low #Deltam Validation Region;Events"));
     }
-    graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(), "pred_total_gr", ";Search Region;Events"));
+    graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(), "pred_total_gr", ";Low #Deltam Validation Region;Events"));
   };
 
   // traditional method for LLB
@@ -46,13 +46,13 @@ void BkgPredLM_LowMET_LL(){
   convert(lc, altpred, altgraphs);
 
   vector<TH1*> mc;
-  mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Search Region;Events"));
+  mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Low #Deltam Validation Region;Events"));
 
   auto sigcfg = sigConfig();
   BaseEstimator s(sigcfg);
   s.calcYields();
 
-  auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
+  auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Low #Deltam Validation Region;Events");
 
   auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
@@ -72,9 +72,13 @@ void BkgPredLM_LowMET_LL(){
 
     // plot raw MC - w/o top/W SF
     TH1 *hmcnosf = nullptr;
-    vector<TString> mcnosf = {"znunu-raw-sr","ttbar-raw-sr","wjets-raw-sr","tW-raw-sr","ttW-raw-sr","qcd-raw-sr","ttZ-raw-sr","diboson-raw-sr"};
+    vector<TString> mcnosf = {"znunu-2016-raw-sr","ttbar-2016-raw-sr","wjets-2016-raw-sr","tW-2016-raw-sr","ttW-2016-raw-sr","qcd-2016-raw-sr","ttZ-2016-raw-sr","diboson-2016-raw-sr",
+			      "znunu-2017RunBtoE-raw-sr","ttbar-2017RunBtoE-raw-sr","wjets-2017RunBtoE-raw-sr","tW-2017RunBtoE-raw-sr","ttW-2017RunBtoE-raw-sr","qcd-2017RunBtoE-raw-sr","ttZ-2017RunBtoE-raw-sr","diboson-2017RunBtoE-raw-sr",
+			      "znunu-2017RunF-raw-sr","ttbar-2017RunF-raw-sr","wjets-2017RunF-raw-sr","tW-2017RunF-raw-sr","ttW-2017RunF-raw-sr","qcd-2017RunF-raw-sr","ttZ-2017RunF-raw-sr","diboson-2017RunF-raw-sr",
+			      "znunu-2018preHEM-raw-sr","ttbar-2018preHEM-raw-sr","wjets-2018preHEM-raw-sr","tW-2018preHEM-raw-sr","ttW-2018preHEM-raw-sr","qcd-2018preHEM-raw-sr","ttZ-2018preHEM-raw-sr","diboson-2018preHEM-raw-sr",
+			      "znunu-2018postHEM-raw-sr","ttbar-2018postHEM-raw-sr","wjets-2018postHEM-raw-sr","tW-2018postHEM-raw-sr","ttW-2018postHEM-raw-sr","qcd-2018postHEM-raw-sr","ttZ-2018postHEM-raw-sr","diboson-2018postHEM-raw-sr"};
     for (auto &sname : mcnosf){
-      auto hmc = convertToHist(s.yields.at(sname), sname, ";Search Region;Events");
+      auto hmc = convertToHist(s.yields.at(sname), sname, ";Low #Deltam Validation Region;Events");
       if (!hmcnosf) hmcnosf = (TH1*)hmc->Clone();
       else hmcnosf->Add(hmc);
     }
@@ -106,7 +110,7 @@ void BkgPredLM_LowMET_LL(){
     output->Close();
   };
 
-  plot(altpred, altgraphs, "std_pred_trad");
+  plot(altpred, altgraphs, "std_pred_trad_LM");
 
 
   cout << "\n\n Traditional \n";

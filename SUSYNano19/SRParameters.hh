@@ -99,7 +99,7 @@ const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
 const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20";
 const TString qcdSpikeRemovals = "";
-const TString dphi_invert = " && Pass_dPhiQCD_UCSB";
+const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
 // ------------------------------------------------------------------------
@@ -114,7 +114,7 @@ std::map<TString, TString> cutMap = []{
         {"dPhiLM",      "Pass_dPhiMETLowDM"},
         {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM"},
-        {"invertDPhi",  "Pass_dPhiQCD_UCSB"},
+        {"invertDPhi",  "Pass_dPhiQCD"},
 
         {"nb0",         "Stop0l_nbtags==0"},
         {"nb1",         "Stop0l_nbtags==1"},
@@ -205,12 +205,12 @@ std::map<TString, TString> labelMap{
   {"nj6", R"($\nj\geq6$)"},
   {"nrtntnwgeq2", R"($(\nt+\nrt+\nw)\geq2$)"},
   {"nrtntnwgeq3", R"($(\nt+\nrt+\nw)\geq3$)"},
-  {"htlt1000",    R"($\ht<1000$)"},	
-  {"htgt1000",    R"($\ht\geq1000$)"},	
-  {"ht1000to1500",R"($1000\leq\ht<1500$)"},	
-  {"htgt1500",    R"($\ht\geq1500$)"},	
-  {"htlt1300",    R"($\ht<1300$)"},	
-  {"htgt1300",    R"($\ht\geq1300$)"},	
+  {"htlt1000",    R"($\Ht<1000$)"},	
+  {"htgt1000",    R"($\Ht\geq1000$)"},	
+  {"ht1000to1500",R"($1000\leq\Ht<1500$)"},	
+  {"htgt1500",    R"($\Ht\geq1500$)"},	
+  {"htlt1300",    R"($\Ht<1300$)"},	
+  {"htgt1300",    R"($\Ht\geq1300$)"},	
   {"lmNoDPhi",    R"(low $\Delta m$)"},
   {"hmNoDPhi",    R"(high $\Delta m$)"},
   
