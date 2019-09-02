@@ -42,8 +42,16 @@ void runBkgPred(){
   auto srcfg = srConfig();
   BaseEstimator s(srcfg);
   s.calcYields();
-  Quantity::removeNegatives(s.yields.at("ttZ"));
-  Quantity::removeNegatives(s.yields.at("diboson"));
+  Quantity::removeNegatives(s.yields.at("ttZ-2016"));
+  Quantity::removeNegatives(s.yields.at("diboson-2016"));
+  Quantity::removeNegatives(s.yields.at("ttZ-2017RunBtoE"));
+  Quantity::removeNegatives(s.yields.at("diboson-2017RunBtoE"));
+  Quantity::removeNegatives(s.yields.at("ttZ-2017RunF"));
+  Quantity::removeNegatives(s.yields.at("diboson-2017RunF"));
+  Quantity::removeNegatives(s.yields.at("ttZ-2018preHEM"));
+  Quantity::removeNegatives(s.yields.at("diboson-2018preHEM"));
+  Quantity::removeNegatives(s.yields.at("ttZ-2018postHEM"));
+  Quantity::removeNegatives(s.yields.at("diboson-2018postHEM"));
   for (const auto &samp : srcfg.samples){
     s.convertYields(samp.first, "");
   }
@@ -140,7 +148,7 @@ void runSignalYields(){
 }
 
 
-void BkgPred_dc(){
+void BkgPred_dc_LL(){
   runBkgPred();
   //runSignalYields();
 }
