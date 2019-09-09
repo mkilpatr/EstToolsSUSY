@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
+const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -59,7 +59,7 @@ const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_VetoSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_MediumSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -95,9 +95,8 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-//const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_exHEMVeto20";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )

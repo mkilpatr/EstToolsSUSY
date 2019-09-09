@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
+const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -59,7 +59,7 @@ const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-//const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_VetoSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+//const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_MediumSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString lepvetowgt_no_wtopsf = lepvetowgt;
 const TString lepvetowgt_no_wtopsf_RunBtoE = lepvetowgt_RunBtoE;
 const TString lepvetowgt_no_wtopsf_RunF = lepvetowgt_RunF;

@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_VetoSF";
+const TString lepvetowgt =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt  =      	wgtvar		+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Muon_LooseSF*Electron_MediumSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -59,7 +59,7 @@ const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-//const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_VetoSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+//const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_MediumSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 const TString lepvetowgt_no_wtopsf = lepvetowgt;
 const TString lepvetowgt_no_wtopsf_RunBtoE = lepvetowgt_RunBtoE;
 const TString lepvetowgt_no_wtopsf_RunF = lepvetowgt_RunF;
@@ -134,6 +134,7 @@ std::map<TString, TString> cutMap = []{
         {"medptisr",  "Stop0l_ISRJetPt>=300"},
         {"highptisr", "Stop0l_ISRJetPt>=500"},
         {"nj2to5",    "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
+        {"nj5",       "Stop0l_nJets>=5"},
         {"nj6",       "Stop0l_nJets>=6"},
         {"nj7",       "Stop0l_nJets>=7"},
         {"lowmtb",    "Stop0l_Mtb<175"},
@@ -208,8 +209,8 @@ std::vector<TString> srbins{
 
   // high mtb
   // 0 taggged
-  "hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0",
-  "hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0",
+  "hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",
+  "hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",
 
 	// nb1
   // 1 tagged
@@ -281,8 +282,8 @@ std::map<TString, std::vector<int>> srMETbins{
 
   // high mtb
   // 0 taggged
-  {"hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0", 		{250, 400, 1000}},
+  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0", 		{250, 400, 1000}},
+  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0", 		{250, 400, 1000}},
 
 	// nb1
   // 1 tagged
@@ -375,8 +376,8 @@ std::map<TString, TString> phocrMapping{
                                             
   // high mtb                       
   // 0 taggged                     
-  {"hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0"},
+  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0"},
+  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0"},
                                             
         // nb1                    
   // 1 tagged                    
@@ -453,8 +454,8 @@ std::map<TString, TString> lepcrMapping {
                                             
   // high mtb                       
   // 0 taggged                     
-  {"hmVal_nb1_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj7"},
-  {"hmVal_nb2_highmtb_nj7_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj7"},
+  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj5"},
+  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj5"},
                                             
         // nb1                    
   // 1 tagged                    

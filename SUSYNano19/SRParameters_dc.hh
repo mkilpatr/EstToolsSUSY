@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =              wgtvar          + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt  =              wgtvar          + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF     + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF     + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM   + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM   + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM  + "*Muon_LooseSF*Electron_VetoSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM  + "*Muon_LooseSF*Electron_VetoSF";
+const TString lepvetowgt =              wgtvar          + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt  =              wgtvar          + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF     + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF     + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM   + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM   + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM  + "*Muon_LooseSF*Electron_MediumSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM  + "*Muon_LooseSF*Electron_MediumSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -59,7 +59,7 @@ const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_VetoSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
+const TString lepvetowgt_no_wtopsf = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*ISRWeight*PrefireWeight*Muon_LooseSF*Electron_MediumSF*((Stop0l_nJets<5 || Stop0l_nbtags<1) + (Stop0l_nJets>=5 && Stop0l_nbtags>=1))";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -130,6 +130,7 @@ std::map<TString, TString> cutMap = []{
 	{"highptisr",   "Stop0l_ISRJetPt>=500"},
 	{"nj2to5",      "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
 	{"nj6",         "Stop0l_nJets>=6"},
+	{"nj5to6",      "Stop0l_nJets>=5 && Stop0l_nJets<=6"},
 	{"nj7",         "Stop0l_nJets>=7"},
 	{"lowmtb",      "Stop0l_Mtb<175"},
 	{"highmtb",     "Stop0l_Mtb>=175"},
@@ -834,73 +835,144 @@ std::vector<TString> srbins{
 
   // nb1
   // 1 tagged
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",
-  "hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",
-  "hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",
+  "hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htlt1000",
+  "hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_ht1000to1500",
+  "hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htgt1500",
+  "hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htlt1300",
+  "hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htgt1300",
+  "hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htlt1000",
+  "hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_ht1000to1500",
+  "hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htgt1500",
 
   // 1+1
-  "hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",
-  "hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",
-  "hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",
+  "hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nwgeq1",
+  "hm_nb1_highmtb_nj5to6_ntgeq1_nrtgeq1_nw0",
+  "hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nwgeq1",
 
   // nb2
   // 1 tagged
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",
-  "hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",
-  "hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",
-  "hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",
-  "hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",
-  "hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htlt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htgt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",
 
   // 1+1eq
-  "hm_nbeq2_highmtb_nt1_nrt0_nw1",
-  "hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",
-  "hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",
-  "hm_nbeq2_highmtb_nt0_nrt1_nw1",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw1",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw1",
 
   // 2
-  "hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",
-  "hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",
-  "hm_nbeq2_highmtb_nt0_nrt0_nw2",
-  "hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",
-  "hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw2",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",
 
   // 3
-  "hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",
-  "hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",
+  "hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htlt1300",
+  "hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htgt1300",
 
   // nb3
   //1 tagged
-  "hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",
-  "hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",
-  "hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",
-  "hm_nb3_highmtb_nt0_nrt0_nw1",
-  "hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",
-  "hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",
-  "hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt0_nw1",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",
 
   //1+1
-  "hm_nb3_highmtb_nt1_nrt0_nw1",
-  "hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",
-  "hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",
-  "hm_nb3_highmtb_nt0_nrt1_nw1",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt0_nw1",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",
+  "hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt1_nw1",
 
   //2
-  "hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",
-  "hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",
-  "hm_nb3_highmtb_nt0_nrt0_nw2",
-  "hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",
-  "hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",
+  "hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",
+  "hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt0_nw2",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",
+  "hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",
 
   // 3
-  "hm_nb3_highmtb_nrtntnwgeq3",
+  "hm_nb3_highmtb_nj5to6_nrtntnwgeq3",
+  
+  // high mtb
+  // nb1
+  // 1 tagged
+  "hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htlt1000",
+  "hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_ht1000to1500",
+  "hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htgt1500",
+  "hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htlt1300",
+  "hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htgt1300",
+  "hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htlt1000",
+  "hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_ht1000to1500",
+  "hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htgt1500",
+
+  // 1+1
+  "hm_nb1_highmtb_nj7_ntgeq1_nrt0_nwgeq1",
+  "hm_nb1_highmtb_nj7_ntgeq1_nrtgeq1_nw0",
+  "hm_nb1_highmtb_nj7_nt0_nrtgeq1_nwgeq1",
+
+  // nb2
+  // 1 tagged
+  "hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htgt1500",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htlt1300",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htgt1300",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htlt1000",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htgt1500",
+
+  // 1+1eq
+  "hm_nbeq2_highmtb_nj7_nt1_nrt0_nw1",
+  "hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt1_nw1",
+
+  // 2
+  "hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htgt1300",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt0_nw2",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htlt1300",
+  "hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htgt1300",
+
+  // 3
+  "hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htlt1300",
+  "hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htgt1300",
+
+  // nb3
+  //1 tagged
+  "hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htlt1000",
+  "hm_nb3_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htgt1500",
+  "hm_nb3_highmtb_nj7_nt0_nrt0_nw1",
+  "hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htlt1000",
+  "hm_nb3_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",
+  "hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htgt1500",
+
+  //1+1
+  "hm_nb3_highmtb_nj7_nt1_nrt0_nw1",
+  "hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htlt1300",
+  "hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htgt1300",
+  "hm_nb3_highmtb_nj7_nt0_nrt1_nw1",
+
+  //2
+  "hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htlt1300",
+  "hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htgt1300",
+  "hm_nb3_highmtb_nj7_nt0_nrt0_nw2",
+  "hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htlt1300",
+  "hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htgt1300",
+
+  // 3
+  "hm_nb3_highmtb_nj7_nrtntnwgeq3",
   
   //---------- high deltaM ----------
 
@@ -956,72 +1028,141 @@ std::map<TString, std::vector<int>> srMETbins{
   {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",         {250, 350, 450, 550, 1000}},
 
   // nb1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
 
   // nb2
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",                {250, 550, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw1",                {250, 550, 1000}},
 
   // 2
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",                {250, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw2",                {250, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
 
   // 3
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
 
         // nb3
   //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
 
   //1+1
-  {"hm_nb3_highmtb_nt1_nrt0_nw1",                  {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw1",                  {250, 550, 1000}},
 
   //2
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt0_nw2",                  {250, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw2",                  {250, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
 
   // 3
-  {"hm_nb3_highmtb_nrtntnwgeq3",                   {250, 450, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nrtntnwgeq3",                   {250, 450, 1000}},
+  
+  // high mtb
+  // nb1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
+
+  // nb2
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw1",                {250, 550, 1000}},
+
+  // 2
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw2",                {250, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
+
+  // 3
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
+
+        // nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
+
+  //1+1
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw1",                  {250, 550, 1000}},
+
+  //2
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw2",                  {250, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
+
+  // 3
+  {"hm_nb3_highmtb_nj7_nrtntnwgeq3",                   {250, 450, 1000}},
   
   //---------- high deltaM ----------
 
@@ -1086,78 +1227,149 @@ std::map<TString, TString> phocrMapping{
 
   // high mtb
   // 0 taggged
-  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb"},
+  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb_htgt1000"},
+  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb_htgt1000"},
 
         // nb1
   // 1 tagged
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",	"hm_nb1_highmtb_ht1000to1500"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_htgt1500"},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_htlt1300"},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_htgt1300"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",	"hm_nb1_highmtb_ht1000to1500"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_htgt1500"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_nj5to6_htlt1000"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_ht1000to1500",	"hm_nb1_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_nj5to6_htgt1500"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_nj5to6_htlt1300"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_nj5to6_htgt1300"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_nj5to6_htlt1000"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_ht1000to1500",	"hm_nb1_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_nj5to6_htgt1500"},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb"},
-  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb_nj5to6"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb_nj5to6"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb_nj5to6"},
 
         // nb2
   // 1 tagged
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",	"hm_nbeq2_highmtb_ht1000to1500"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_htgt1500"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",	"hm_nbeq2_highmtb_ht1000to1500"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_htgt1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_nj5to6_htlt1000"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_nj5to6_htgt1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_nj5to6_htlt1000"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_nj5to6_htgt1500"},
 
   // 1+1eq
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",		 	"hm_nbeq2_highmtb"},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",		 	"hm_nbeq2_highmtb"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw1",		 	"hm_nbeq2_highmtb_nj5to6"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw1",		 	"hm_nbeq2_highmtb_nj5to6"},
 
   // 2
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",		 	"hm_nbeq2_highmtb"},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw2",		 	"hm_nbeq2_highmtb_nj5to6"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
 
   // 3
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
 
         // nb3
   //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",		"hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",		"hm_nb3_highmtb_htgt1500"},
-  {"hm_nb3_highmtb_nt0_nrt0_nw1",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",		"hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",		"hm_nb3_highmtb_htgt1500"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",		"hm_nb3_highmtb_nj5to6_htlt1000"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",		"hm_nb3_highmtb_nj5to6_htgt1500"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw1",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",		"hm_nb3_highmtb_nj5to6_htlt1000"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",		"hm_nb3_highmtb_nj5to6_htgt1500"},
 
   //1+1
-  {"hm_nb3_highmtb_nt1_nrt0_nw1",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw1",		 	"hm_nb3_highmtb"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw1",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw1",		 	"hm_nb3_highmtb_nj5to6"},
 
   //2
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
-  {"hm_nb3_highmtb_nt0_nrt0_nw2",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw2",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
 
   // 3
-  {"hm_nb3_highmtb_nrtntnwgeq3",		 	"hm_nb3_highmtb"},
+  {"hm_nb3_highmtb_nj5to6_nrtntnwgeq3",		 		"hm_nb3_highmtb_nj5to6"},
+  
+  // high mtb
+        // nb1
+  // 1 tagged
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_nj7_htlt1000"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_ht1000to1500",		"hm_nb1_highmtb_nj7_ht1000to1500"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_nj7_htgt1500"},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_nj7_htlt1300"},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_nj7_htgt1300"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_nj7_htlt1000"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_ht1000to1500",		"hm_nb1_highmtb_nj7_ht1000to1500"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_nj7_htgt1500"},
+
+  // 1+1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb_nj7"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb_nj7"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb_nj7"},
+
+        // nb2
+  // 1 tagged
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_nj7_htlt1000"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj7_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_nj7_htgt1500"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_nj7_htlt1000"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj7_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_nj7_htgt1500"},
+
+  // 1+1eq
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw1",		 		"hm_nbeq2_highmtb_nj7"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw1",		 		"hm_nbeq2_highmtb_nj7"},
+
+  // 2
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw2",		 		"hm_nbeq2_highmtb_nj7"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+
+  // 3
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htlt1300",			"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htgt1300",			"hm_nbeq2_highmtb_nj7_htgt1300"},
+
+        // nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htlt1000",			"hm_nb3_highmtb_nj7_htlt1000"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_nj7_ht1000to1500"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htgt1500",			"hm_nb3_highmtb_nj7_htgt1500"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw1",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htlt1000",			"hm_nb3_highmtb_nj7_htlt1000"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_nj7_ht1000to1500"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htgt1500",			"hm_nb3_highmtb_nj7_htgt1500"},
+
+  //1+1
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw1",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw1",		 		"hm_nb3_highmtb_nj7"},
+
+  //2
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw2",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+
+  // 3
+  {"hm_nb3_highmtb_nj7_nrtntnwgeq3",		 		"hm_nb3_highmtb_nj7"},
   
   //---------- high deltaM ----------
 
@@ -1200,7 +1412,6 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb2_lowmtb_highptisr_highptb12_nj7",      "lm_nb2_lowmtb_highptisr_highptb12_nj7"},
   //---------- low deltaM ----------
 
-
   //---------- high deltaM ----------
   // low mtb
   {"hm_nb1_lowmtb_nj7_nrtgeq1",                  	"hm_nb1_lowmtb_nj7"},
@@ -1208,79 +1419,150 @@ std::map<TString, TString> lepcrMapping {
 
   // high mtb
   // 0 taggged
-  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb"},
+  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb_htgt1000"},
+  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb_htgt1000"},
 
         // nb1
   // 1 tagged
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",	"hm_nb1_highmtb_ht1000to1500"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_htgt1500"},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_htlt1300"},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_htgt1300"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",	"hm_nb1_highmtb_ht1000to1500"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_htgt1500"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_nj5to6_htlt1000"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_ht1000to1500",	"hm_nb1_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_nj5to6_htgt1500"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_nj5to6_htlt1300"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_nj5to6_htgt1300"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_nj5to6_htlt1000"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_ht1000to1500",	"hm_nb1_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_nj5to6_htgt1500"},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb"},
-  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb"},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb_nj5to6"},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb_nj5to6"},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb_nj5to6"},
 
         // nb2
   // 1 tagged
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",	"hm_nbeq2_highmtb_ht1000to1500"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_htgt1500"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",	"hm_nbeq2_highmtb_ht1000to1500"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_htgt1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_nj5to6_htlt1000"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_nj5to6_htgt1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_nj5to6_htlt1000"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_nj5to6_htgt1500"},
 
   // 1+1eq
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",		 	"hm_nbeq2_highmtb"},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",		 	"hm_nbeq2_highmtb"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw1",		 	"hm_nbeq2_highmtb_nj5to6"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw1",		 	"hm_nbeq2_highmtb_nj5to6"},
 
   // 2
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",		 	"hm_nbeq2_highmtb"},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw2",		 	"hm_nbeq2_highmtb_nj5to6"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
 
   // 3
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",		"hm_nbeq2_highmtb_htlt1300"},
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",		"hm_nbeq2_highmtb_htgt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htlt1300",		"hm_nbeq2_highmtb_nj5to6_htlt1300"},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htgt1300",		"hm_nbeq2_highmtb_nj5to6_htgt1300"},
 
         // nb3
   //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",		"hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",		"hm_nb3_highmtb_htgt1500"},
-  {"hm_nb3_highmtb_nt0_nrt0_nw1",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",		"hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",		"hm_nb3_highmtb_htgt1500"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",		"hm_nb3_highmtb_nj5to6_htlt1000"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",		"hm_nb3_highmtb_nj5to6_htgt1500"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw1",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",		"hm_nb3_highmtb_nj5to6_htlt1000"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_nj5to6_ht1000to1500"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",		"hm_nb3_highmtb_nj5to6_htgt1500"},
 
   //1+1
-  {"hm_nb3_highmtb_nt1_nrt0_nw1",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
-  {"hm_nb3_highmtb_nt0_nrt1_nw1",		 	"hm_nb3_highmtb"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw1",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw1",		 	"hm_nb3_highmtb_nj5to6"},
 
   //2
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
-  {"hm_nb3_highmtb_nt0_nrt0_nw2",		 	"hm_nb3_highmtb"},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",		"hm_nb3_highmtb_htlt1300"},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",		"hm_nb3_highmtb_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw2",		 	"hm_nb3_highmtb_nj5to6"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",		"hm_nb3_highmtb_nj5to6_htlt1300"},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",		"hm_nb3_highmtb_nj5to6_htgt1300"},
 
   // 3
-  {"hm_nb3_highmtb_nrtntnwgeq3",		 	"hm_nb3_highmtb"},
+  {"hm_nb3_highmtb_nj5to6_nrtntnwgeq3",		 		"hm_nb3_highmtb_nj5to6"},
+  
+  // high mtb
+        // nb1
+  // 1 tagged
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htlt1000",		"hm_nb1_highmtb_nj7_htlt1000"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_ht1000to1500",		"hm_nb1_highmtb_nj7_ht1000to1500"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htgt1500",		"hm_nb1_highmtb_nj7_htgt1500"},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htlt1300",		"hm_nb1_highmtb_nj7_htlt1300"},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htgt1300",		"hm_nb1_highmtb_nj7_htgt1300"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htlt1000",		"hm_nb1_highmtb_nj7_htlt1000"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_ht1000to1500",		"hm_nb1_highmtb_nj7_ht1000to1500"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htgt1500",		"hm_nb1_highmtb_nj7_htgt1500"},
 
+  // 1+1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nwgeq1",		 	"hm_nb1_highmtb_nj7"},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrtgeq1_nw0",		 	"hm_nb1_highmtb_nj7"},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nwgeq1",		 	"hm_nb1_highmtb_nj7"},
+
+        // nb2
+  // 1 tagged
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htlt1000",		"hm_nbeq2_highmtb_nj7_htlt1000"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj7_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htgt1500",		"hm_nbeq2_highmtb_nj7_htgt1500"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htlt1000",		"hm_nbeq2_highmtb_nj7_htlt1000"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",		"hm_nbeq2_highmtb_nj7_ht1000to1500"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htgt1500",		"hm_nbeq2_highmtb_nj7_htgt1500"},
+
+  // 1+1eq
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw1",		 		"hm_nbeq2_highmtb_nj7"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw1",		 		"hm_nbeq2_highmtb_nj7"},
+
+  // 2
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw2",		 		"hm_nbeq2_highmtb_nj7"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htlt1300",		"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htgt1300",		"hm_nbeq2_highmtb_nj7_htgt1300"},
+
+  // 3
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htlt1300",			"hm_nbeq2_highmtb_nj7_htlt1300"},
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htgt1300",			"hm_nbeq2_highmtb_nj7_htgt1300"},
+
+        // nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htlt1000",			"hm_nb3_highmtb_nj7_htlt1000"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",		"hm_nb3_highmtb_nj7_ht1000to1500"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htgt1500",			"hm_nb3_highmtb_nj7_htgt1500"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw1",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htlt1000",			"hm_nb3_highmtb_nj7_htlt1000"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",		"hm_nb3_highmtb_nj7_ht1000to1500"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htgt1500",			"hm_nb3_highmtb_nj7_htgt1500"},
+
+  //1+1
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw1",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw1",		 		"hm_nb3_highmtb_nj7"},
+
+  //2
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw2",		 		"hm_nb3_highmtb_nj7"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htlt1300",			"hm_nb3_highmtb_nj7_htlt1300"},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htgt1300",			"hm_nb3_highmtb_nj7_htgt1300"},
+
+  // 3
+  {"hm_nb3_highmtb_nj7_nrtntnwgeq3",		 		"hm_nb3_highmtb_nj7"},
+  
   //---------- high deltaM ----------
 
 };
@@ -1358,72 +1640,141 @@ std::map<TString, std::vector<int>> qcdcrMETbins {
   {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",         {250, 350, 450, 550, 1000}},
 
   // nb1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
-  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
-  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj5to6_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
 
   // nb2
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
 
   // 1+1
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",                {250, 550, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt0_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt1_nw1",                {250, 550, 1000}},
 
   // 2
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",                {250, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt0_nw2",                {250, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
 
   // 3
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
-  {"hm_nbeq2_highmtb_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj5to6_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
 
         // nb3
   //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
 
   //1+1
-  {"hm_nb3_highmtb_nt1_nrt0_nw1",                  {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt1_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt0_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt1_nw1",                  {250, 550, 1000}},
 
   //2
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt0_nw2",                  {250, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
-  {"hm_nb3_highmtb_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt0_nw2",                  {250, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
 
   // 3
-  {"hm_nb3_highmtb_nrtntnwgeq3",                   {250, 450, 1000}},
+  {"hm_nb3_highmtb_nj5to6_nrtntnwgeq3",                   {250, 450, 1000}},
+  
+  // high mtb
+  // nb1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htlt1000",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_ht1000to1500",  {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nw0_htgt1500",      {250, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htlt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrt0_nwgeq1_htgt1300",      {250, 350, 450, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_ht1000to1500",  {250, 350, 450, 550, 650, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrt0_nwgeq1",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj7_ntgeq1_nrtgeq1_nw0",            {250, 550, 1000}},
+  {"hm_nb1_highmtb_nj7_nt0_nrtgeq1_nwgeq1",            {250, 550, 1000}},
+
+  // nb2
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htlt1000",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",   {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw0_htgt1500",       {250, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw1_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",   {250, 350, 450, 550, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
+
+  // 1+1
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt0_nw1",                {250, 550, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htlt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt1_nrt1_nw0_htgt1300",       {250, 350, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt1_nw1",                {250, 550, 1000}},
+
+  // 2
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt2_nrt0_nw0_htgt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt0_nw2",                {250, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htlt1300",       {250, 450, 650, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nt0_nrt2_nw0_htgt1300",       {250, 450, 650, 1000}},
+
+  // 3
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htlt1300",        {250, 450, 1000}},
+  {"hm_nbeq2_highmtb_nj7_nrtntnwgeq3_htgt1300",        {250, 450, 1000}},
+
+        // nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw0_htgt1500",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw1",                  {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htlt1000",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_ht1000to1500",     {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw0_htgt1500",         {250, 350, 550, 1000}},
+
+  //1+1
+  {"hm_nb3_highmtb_nj7_nt1_nrt0_nw1",                  {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htlt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt1_nrt1_nw0_htgt1300",         {250, 350, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt1_nw1",                  {250, 550, 1000}},
+
+  //2
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt2_nrt0_nw0_htgt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt0_nw2",                  {250, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htlt1300",         {250, 550, 1000}},
+  {"hm_nb3_highmtb_nj7_nt0_nrt2_nw0_htgt1300",         {250, 550, 1000}},
+
+  // 3
+  {"hm_nb3_highmtb_nj7_nrtntnwgeq3",                   {250, 450, 1000}},
   
   //---------- high deltaM ----------
 
@@ -1538,7 +1889,6 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("singlelep-2016",   "Data 2016",     datadir+"met_2016",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
@@ -1547,7 +1897,6 @@ BaseConfig lepConfig(){
     //config.addSample("diboson-2016",     "Diboson",       inputdir_2016+"diboson",         lepselwgt,      datasel + revert_vetoes);
     //config.addSample("qcd-2016",         "QCD",           inputdir_2016+"qcd",             lepselwgt,      datasel + revert_vetoes);
 
-    config.addSample("singlelep-2017RunBtoE",   "Data 2017RunBtoE",     datadir+"met_2017RunBtoE",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2017RunBtoE",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunBtoE,      datasel + revert_vetoes);
     config.addSample("wjets-2017RunBtoE",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunBtoE,      datasel + revert_vetoes);
     config.addSample("tW-2017RunBtoE",            "tW",            inputdir_2017+"tW",              lepselwgt_RunBtoE,      datasel + revert_vetoes);
@@ -1555,7 +1904,6 @@ BaseConfig lepConfig(){
     //config.addSample("ttZ-2017RunBtoE",           "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunBtoE,      datasel + revert_vetoes);
     //config.addSample("diboson-2017RunBtoE",       "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunBtoE,      datasel + revert_vetoes);
     //config.addSample("qcd-2017RunBtoE",           "QCD",           inputdir_2017+"qcd",             lepselwgt_RunBtoE,      datasel + revert_vetoes);
-    config.addSample("singlelep-2017RunF",   "Data 2017RunF",     datadir+"met_2017RunF",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2017RunF",       	  "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunF,      datasel + revert_vetoes);
     config.addSample("wjets-2017RunF",       	  "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunF,      datasel + revert_vetoes);
     config.addSample("tW-2017RunF",          	  "tW",            inputdir_2017+"tW",              lepselwgt_RunF,      datasel + revert_vetoes);
@@ -1564,7 +1912,6 @@ BaseConfig lepConfig(){
     //config.addSample("diboson-2017RunF",     	  "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunF,      datasel + revert_vetoes);
     //config.addSample("qcd-2017RunF",         	  "QCD",           inputdir_2017+"qcd",             lepselwgt_RunF,      datasel + revert_vetoes);
 
-    config.addSample("singlelep-2018preHEM",   "Data 2018preHEM",     datadir+"met_2018PreHEM",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2018preHEM",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_preHEM,      datasel + revert_vetoes);
     config.addSample("wjets-2018preHEM",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_preHEM,      datasel + revert_vetoes);
     config.addSample("tW-2018preHEM",            "tW",            inputdir_2018+"tW",              lepselwgt_preHEM,      datasel + revert_vetoes);
@@ -1572,7 +1919,6 @@ BaseConfig lepConfig(){
     //config.addSample("ttZ-2018preHEM",           "ttZ",           inputdir_2018+"ttZ",             lepselwgt_preHEM,      datasel + revert_vetoes);
     //config.addSample("diboson-2018preHEM",       "Diboson",       inputdir_2018+"diboson",         lepselwgt_preHEM,      datasel + revert_vetoes);
     //config.addSample("qcd-2018preHEM",           "QCD",           inputdir_2018+"qcd",             lepselwgt_preHEM,      datasel + revert_vetoes);
-    config.addSample("singlelep-2018postHEM",   "Data 2018postHEM",     datadir+"met_2018PostHEM",              "1.0",    dataselHEM + trigSR + revert_vetoes);
     config.addSample("ttbar-2018postHEM",        "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_postHEM,      dataselHEM + revert_vetoes);
     config.addSample("wjets-2018postHEM",        "W+jets",        inputdir_2018+"wjets",           lepselwgt_postHEM,      dataselHEM + revert_vetoes);
     config.addSample("tW-2018postHEM",           "tW",            inputdir_2018+"tW",              lepselwgt_postHEM,      dataselHEM + revert_vetoes);
@@ -1922,16 +2268,16 @@ BaseConfig srConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("data",        	     "Data",          datadir+"met",    		 "1.0",      datasel + trigSR + vetoes);
-  config.addSample("ttZ-2016",            "ttZ",           inputdir_2016+"ttZ",               lepvetowgt, datasel + vetoes);
-  config.addSample("diboson-2016",        "Diboson",       inputdir_2016+"diboson",           lepvetowgt, datasel + vetoes);
-  config.addSample("ttZ-2017RunBtoE",     "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunBtoE, datasel + vetoes);
-  config.addSample("diboson-2017RunBtoE", "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunBtoE, datasel + vetoes);
-  config.addSample("ttZ-2017RunF",        "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunF, datasel + vetoes);
-  config.addSample("diboson-2017RunF",    "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunF, datasel + vetoes);
-  config.addSample("ttZ-2018preHEM",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM, datasel + vetoes);
-  config.addSample("diboson-2018preHEM",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM, datasel + vetoes);
-  config.addSample("ttZ-2018postHEM",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM, dataselHEM + vetoes);
-  config.addSample("diboson-2018postHEM", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM, dataselHEM + vetoes);
+  //config.addSample("ttZ-2016",            "ttZ",           inputdir_2016+"ttZ",               lepvetowgt, datasel + vetoes);
+  //config.addSample("diboson-2016",        "Diboson",       inputdir_2016+"diboson",           lepvetowgt, datasel + vetoes);
+  //config.addSample("ttZ-2017RunBtoE",     "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunBtoE, datasel + vetoes);
+  //config.addSample("diboson-2017RunBtoE", "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunBtoE, datasel + vetoes);
+  //config.addSample("ttZ-2017RunF",        "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunF, datasel + vetoes);
+  //config.addSample("diboson-2017RunF",    "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunF, datasel + vetoes);
+  //config.addSample("ttZ-2018preHEM",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM, datasel + vetoes);
+  //config.addSample("diboson-2018preHEM",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM, datasel + vetoes);
+  //config.addSample("ttZ-2018postHEM",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM, dataselHEM + vetoes);
+  //config.addSample("diboson-2018postHEM", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM, dataselHEM + vetoes);
 
 
   config.sel = baseline;
@@ -2033,8 +2379,8 @@ map<std::string, std::string> makeBinMap(TString control_region){
 }
 
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
-map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
-map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
+//map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
+//map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 #endif /* ESTTOOLS_LMPARAMETERS_HH_ */
