@@ -7,7 +7,8 @@
 
 #include <fstream>
 
-#include "SRParameters.hh"
+//#include "SRParameters.hh"
+#include "SRParameters_2016.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../utils/Estimator.hh"
@@ -21,17 +22,17 @@ void BkgPredHM_LL(){
   s.calcYields();
   s.printYields();
 
-  auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
+  //auto hdata = convertToHist(s.yields.at("data-sr"),"data",";Search Region;Events");
   vector<TH1*> mc;
-  for (const auto &sig : s.yields){
-    if (sig.first != "data-sr")
-      mc.push_back(convertToHist(sig.second, sig.first, ";Search Region;Events"));
-  }
+  //for (const auto &sig : s.yields){
+  //  if (sig.first != "data-sr")
+  //    mc.push_back(convertToHist(sig.second, sig.first, ";Search Region;Events"));
+  //}
 
   EstTools::ADD_LEP_TO_MET = false;
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.pred2016();
   l.printYields();
 cout << "Made it here 3" << endl;
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
@@ -62,15 +63,17 @@ cout << "Made it here 5" << endl;
 
   auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
-    prepHists(vpred, false, false, true);
-    prepHists({hdata}, false, false, false, {kBlack});
+    //prepHists(vpred, false, false, true);
+    prepHists(mc, false, false, true);
+    //prepHists({hdata}, false, false, false, {kBlack});
 
     auto leg = prepLegends(vpred, bkglabels, "F");
-    appendLegends(leg, {hdata}, datalabel, "LP");
+    //appendLegends(leg, {hdata}, datalabel, "LP");
     leg->SetTextSize(0.03);
 //    leg->SetNColumns(2);
+    vector<TH1*> sig;
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999);
+    auto c = drawStack(vpred, sig, true, leg);
     c->SetTitle(outputBase);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
     c->Print(s.config.outputdir+"/" + outputBase +".C");
@@ -79,7 +82,7 @@ cout << "Made it here 5" << endl;
     for (auto *h : vpred) h->Write();
     for (auto *g : vgraphs) g->Write();
     for (auto *h : mc)   h->Write();
-    hdata->Write();
+    //hdata->Write();
     output->Close();
   };
 
