@@ -2226,16 +2226,8 @@ BaseConfig srConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("data",        	     "Data",          datadir+"met",    		 "1.0",      datasel + trigSR + vetoes);
-  config.addSample("ttZ-2016",            "ttZ",           inputdir_2016+"ttZ",               lepvetowgt, datasel + vetoes);
-  config.addSample("diboson-2016",        "Diboson",       inputdir_2016+"diboson",           lepvetowgt, datasel + vetoes);
-  config.addSample("ttZ-2017RunBtoE",     "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunBtoE, datasel + vetoes);
-  config.addSample("diboson-2017RunBtoE", "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunBtoE, datasel + vetoes);
-  config.addSample("ttZ-2017RunF",        "ttZ",           inputdir_2017+"ttZ",               lepvetowgt_RunF, datasel + vetoes);
-  config.addSample("diboson-2017RunF",    "Diboson",       inputdir_2017+"diboson",           lepvetowgt_RunF, datasel + vetoes);
-  config.addSample("ttZ-2018preHEM",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM, datasel + vetoes);
-  config.addSample("diboson-2018preHEM",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM, datasel + vetoes);
-  config.addSample("ttZ-2018postHEM",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM, dataselHEM + vetoes);
-  config.addSample("diboson-2018postHEM", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM, dataselHEM + vetoes);
+  //config.addSample("ttZ",            "ttZ",           inputdir_2016+"ttZ",               lepvetowgt, datasel + vetoes);
+  //config.addSample("diboson",        "Diboson",       inputdir_2016+"diboson",           lepvetowgt, datasel + vetoes);
 
 
   config.sel = baseline;
@@ -2326,7 +2318,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
       for (unsigned ibin=0; ibin<merged_bin.bin.nbins; ++ibin){
         std::string mergedsr_binname = ("bin_"+merged_cat_name+"_"+merged_bin.bin.binnames.at(ibin)).Data();
         if (merged_bin.bin.plotbins.at(ibin+1) == split_bin.bin.plotbins.at(ibin+1)) {
-          if (merged_cat_name.Contains("nt0_nrt0_nw0")) continue;
+          if (merged_cat_name.Contains("lowmtb")) continue;
           else{
             // no splitting in MET: merged in nj
             auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin);

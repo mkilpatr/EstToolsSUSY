@@ -63,8 +63,7 @@ cout << "Made it here 5" << endl;
 
   auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs,TString outputBase) {
     // plot pred and data
-    //prepHists(vpred, false, false, true);
-    prepHists(mc, false, false, true);
+    prepHists(vpred, false, false, true);
     //prepHists({hdata}, false, false, false, {kBlack});
 
     auto leg = prepLegends(vpred, bkglabels, "F");

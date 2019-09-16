@@ -7,8 +7,8 @@
 
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "SRParameters_qcdsmall.hh"
+#include "SRParameters.hh"
+//#include "SRParameters_2016.hh"
 
 using namespace EstTools;
 
@@ -19,6 +19,7 @@ vector<Quantity> LLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
+  //l.pred2016();
   l.pred();
 
   l.printYields();
@@ -623,6 +624,61 @@ void plot1LepInclusive(){
       //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR LM Med N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
       //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", false, &plotextra);
     }
+  }
+  
+}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void plot1LepInclusive2016(){
+  auto config = lepConfig();
+  //config.sel = "MET_pt > 200";
+  TString LLCR = "Pass_dPhiMETLowDM";
+  TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
+  TString LLCR_LMMed = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETMedDM";
+  TString LLCR_LM_NoMed = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10";
+  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  config.sel = baseline + " && Stop0l_nJets >= 2";
+
+  config.categories.clear();
+  config.catMaps.clear();
+  config.categories.push_back("dummy");
+  config.catMaps["dummy"] = Category::dummy_category();
+
+  BaseEstimator z(config.outputdir);
+  z.setConfig(config);
+
+  vector<TString> mc_samples_2016 = {"ttbar", "wjets", "tW", "ttW"};
+  vector<TString> sig_sample_fullsim = {"T2tt_175_1_full", "T2tt_250_50_full", "T2tt_250_75_full", "T2tt_250_100_full"};
+  vector<TString> sig_sample_fastsim = {"T2tt_175_0_fast", "T2tt_250_50_fast", "T2tt_250_75_fast", "T2tt_250_100_fast"};
+  TString data_sample = "singlelep";
+
+  map<TString, BinInfo> varDict {
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
+	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
+	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+	//{"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
+	//{"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
+	//{"dphij3met", BinInfo("Jet_dPhiMET[2]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
+  };
+  //plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
+  std::function<void(TCanvas*)> plotextra;
+  std::function<void(TCanvas*)> plotextra30;
+  for (auto &var : varDict){
+    z.resetSelection();
+    z.setSelection(LLCR_LM, "llcr_lm_2016_fullsim", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fullsim", 0.2, 0.72); };
+    z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fullsim, Category::dummy_category(), true, true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2016_fullsim", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fullsim", 0.2, 0.72); };
+    z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fullsim, Category::dummy_category(), true, true, &plotextra);
+
+    z.setSelection(LLCR_LM, "llcr_lm_2016_fastsim", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fastsim", 0.2, 0.72); };
+    z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fastsim, Category::dummy_category(), true, true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2016_fastsim", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fastsim", 0.2, 0.72); };
+    z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fastsim, Category::dummy_category(), true, true, &plotextra);
   }
   
 }
