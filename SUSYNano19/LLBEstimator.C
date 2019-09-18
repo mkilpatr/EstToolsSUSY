@@ -26,14 +26,15 @@ vector<Quantity> LLBPred(){
 
   std::map<TString,int> digits;
   digits["singlelep"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap"] = -3;
-  digits["_TF_SR_extrap"] = -3;
+  digits["_TF_CR_to_SR_noextrap"] = -5;
+  digits["_TF_SR_extrap"] = -5;
+  digits["_pred"] = -5;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "ttbarplusw-sr-int", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");

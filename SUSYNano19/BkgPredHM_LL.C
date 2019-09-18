@@ -7,8 +7,8 @@
 
 #include <fstream>
 
-//#include "SRParameters.hh"
-#include "SRParameters_2016.hh"
+#include "SRParameters.hh"
+//#include "SRParameters_2016.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../utils/Estimator.hh"
@@ -32,7 +32,7 @@ void BkgPredHM_LL(){
   EstTools::ADD_LEP_TO_MET = false;
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2016();
+  l.pred();
   l.printYields();
 cout << "Made it here 3" << endl;
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));

@@ -440,12 +440,16 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 
   CMS_lumi(c, 4, 10);
 #endif
-
+  cout << "Made it here: 1" << endl;
   if (leg) leg->Draw();
+  cout << "Made it here: 2" << endl;
 
   c->RedrawAxis();
+  cout << "Made it here: 3" << endl;
   c->Update();
+  cout << "Made it here: 4" << endl;
   c->cd();
+  cout << "Made it here: 5" << endl;
 
   return c;
 }
