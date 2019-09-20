@@ -440,22 +440,17 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 
   CMS_lumi(c, 4, 10);
 #endif
-  cout << "Made it here: 1" << endl;
   if (leg) leg->Draw();
-  cout << "Made it here: 2" << endl;
 
   c->RedrawAxis();
-  cout << "Made it here: 3" << endl;
   c->Update();
-  cout << "Made it here: 4" << endl;
   c->cd();
-  cout << "Made it here: 5" << endl;
 
   return c;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
@@ -601,7 +596,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
 #else
   if (inData){
-    auto hRatio = makeRatioHists(inData, hbkgtotal);
+    TH1F* hRatio = nullptr;
+    if (diffRatio) hRatio = new TRatioPlot(inData, hbkgtotal);
+    else 	   hRatio = makeRatioHists(inData, hbkgtotal);
     hRatio->SetTitleSize  (0.14,"Y");
     hRatio->SetTitleOffset(0.41,"Y");
     hRatio->SetTitleSize  (0.14,"X");

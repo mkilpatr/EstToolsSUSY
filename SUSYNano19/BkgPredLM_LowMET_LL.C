@@ -34,8 +34,8 @@ void BkgPredLM_LowMET_LL(){
   LLBEstimator l(altllbcfg);
   l.pred();
   l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
+  //Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+  //Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   ToyCombination lc;
   lc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
@@ -95,8 +95,9 @@ void BkgPredLM_LowMET_LL(){
 //    leg->SetNColumns(2);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     //drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = false, TLegend *leg = 0)
-    auto c = drawStack(vpred, {hdata}, true, leg);
-    //auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC, hDataMCNoSF});
+    //auto c = drawStack(vpred, {hdata}, false, leg);
+    //auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC, hDataMCNoSF}, nullptr, true);
+    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC, hDataMCNoSF});
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
