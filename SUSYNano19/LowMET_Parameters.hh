@@ -98,9 +98,8 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-//const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && run < 319077";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run >= 319077 || run == 1) && Pass_exHEMVeto20";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_exHEMVeto20";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -114,7 +113,7 @@ const TString baseline = "Pass_MET && Pass_NJets20";
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-	{"lmNoDPhi",  "Stop0l_ISRJetPt>=300 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>=10"},
+	{"lmNoDPhi",  "Stop0l_ISRJetPt>=200 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>=10"},
         {"dPhiLM",    "Pass_dPhiMETLowDM"},
         {"hmNoDPhi",  "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",    "Pass_dPhiMETHighDM"},
@@ -131,7 +130,7 @@ std::map<TString, TString> cutMap = []{
         {"nivf0",     "Stop0l_nSoftb==0"},
         {"nivf1",     "Stop0l_nSoftb>=1"},
         {"lowptisr",  "Stop0l_ISRJetPt>=300 && Stop0l_ISRJetPt<500"},
-        {"medptisr",  "Stop0l_ISRJetPt>=300"},
+        {"medptisr",  "Stop0l_ISRJetPt>=200"},
         {"highptisr", "Stop0l_ISRJetPt>=500"},
         {"nj2to5",    "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
         {"nj5",       "Stop0l_nJets>=5"},
@@ -195,8 +194,8 @@ std::vector<TString> srbins{
 
   // Additional from Hui
   // 0b
-  "lmVal_nb0_lowmtb_nivf0_highptisr",
-  "lmVal_nb0_lowmtb_nivf1_highptisr",
+  "lmVal_nb0_lowmtb_nivf0_medptisr",
+  "lmVal_nb0_lowmtb_nivf1_medptisr",
   "lmVal_nbgeq1_lowmtb_nivf0_medptisr",
   "lmVal_nbgeq1_lowmtb_nivf1_medptisr",
   //---------- low deltaM ----------
@@ -215,8 +214,8 @@ std::vector<TString> srbins{
 	// nb1
   // 1 tagged
   "hmVal_nb1_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb1_highmtb_nt0_nrt0_nw1",
   "hmVal_nb1_highmtb_nt0_nrt1_nw0",
+  "hmVal_nb1_highmtb_nt0_nrt0_nw1",
 
   // 1+1
   "hmVal_nb1_highmtb_nrtntnwgeq2",
@@ -224,8 +223,8 @@ std::vector<TString> srbins{
 	// nb2
   // 1 tagged
   "hmVal_nb2_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb2_highmtb_nt0_nrt0_nw1",
   "hmVal_nb2_highmtb_nt0_nrt1_nw0",
+  "hmVal_nb2_highmtb_nt0_nrt0_nw1",
 
   // 1+1
   "hmVal_nb2_highmtb_nrtntnwgeq2",
@@ -268,8 +267,8 @@ std::map<TString, std::vector<int>> srMETbins{
 
   // Additional from Hui
   // 0b
-  {"lmVal_nb0_lowmtb_nivf0_highptisr", 		{400, 1000}},
-  {"lmVal_nb0_lowmtb_nivf1_highptisr", 		{400, 1000}},
+  {"lmVal_nb0_lowmtb_nivf0_medptisr", 		{400, 1000}},
+  {"lmVal_nb0_lowmtb_nivf1_medptisr", 		{400, 1000}},
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr", 		{300, 1000}},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr", 		{300, 1000}},
   //---------- low deltaM ----------
@@ -288,8 +287,8 @@ std::map<TString, std::vector<int>> srMETbins{
 	// nb1
   // 1 tagged
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
   {"hmVal_nb1_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
+  {"hmVal_nb1_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
 
   // 1+1
   {"hmVal_nb1_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
@@ -297,8 +296,8 @@ std::map<TString, std::vector<int>> srMETbins{
 	// nb2
   // 1 tagged
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
   {"hmVal_nb2_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
+  {"hmVal_nb2_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
 
   // 1+1
   {"hmVal_nb2_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
@@ -362,8 +361,8 @@ std::map<TString, TString> phocrMapping{
                                             
   // Additional from Hui               
   // 0b                               
-  {"lmVal_nb0_lowmtb_nivf0_highptisr",     "lmVal_nb0_lowmtb_nivf0_highptisr"},
-  {"lmVal_nb0_lowmtb_nivf1_highptisr",     "lmVal_nb0_lowmtb_nivf1_highptisr"},
+  {"lmVal_nb0_lowmtb_nivf0_medptisr",     "lmVal_nb0_lowmtb_nivf0_medptisr"},
+  {"lmVal_nb0_lowmtb_nivf1_medptisr",     "lmVal_nb0_lowmtb_nivf1_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
   //---------- low deltaM ---------- 
@@ -382,8 +381,8 @@ std::map<TString, TString> phocrMapping{
         // nb1                    
   // 1 tagged                    
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb_nt0_nrt0_nw1"},
   {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb_nt0_nrt1_nw0"},
+  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb_nt0_nrt0_nw1"},
                                             
   // 1+1                        
   {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb_nrtntnwgeq2"},
@@ -391,8 +390,8 @@ std::map<TString, TString> phocrMapping{
         // nb2                 
   // 1 tagged                 
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb_nt0_nrt0_nw1"},
   {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb_nt0_nrt1_nw0"},
+  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb_nt0_nrt0_nw1"},
                                             
   // 1+1                     
   {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb_nrtntnwgeq2"},         
@@ -440,8 +439,8 @@ std::map<TString, TString> lepcrMapping {
                                             
   // Additional from Hui               
   // 0b                               
-  {"lmVal_nb0_lowmtb_nivf0_highptisr",     "lmVal_nb0_lowmtb_nivf0_highptisr"},
-  {"lmVal_nb0_lowmtb_nivf1_highptisr",     "lmVal_nb0_lowmtb_nivf1_highptisr"},
+  {"lmVal_nb0_lowmtb_nivf0_medptisr",     "lmVal_nb0_lowmtb_nivf0_medptisr"},
+  {"lmVal_nb0_lowmtb_nivf1_medptisr",     "lmVal_nb0_lowmtb_nivf1_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
   //---------- low deltaM ---------- 
@@ -460,8 +459,8 @@ std::map<TString, TString> lepcrMapping {
         // nb1                    
   // 1 tagged                    
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb"},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb"},
   {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb"},
+  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb"},
                                             
   // 1+1                        
   {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb"},
@@ -469,8 +468,8 @@ std::map<TString, TString> lepcrMapping {
         // nb2                 
   // 1 tagged                 
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb"},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb"},
   {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb"},
+  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb"},
                                             
   // 1+1                     
   {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb"},         
