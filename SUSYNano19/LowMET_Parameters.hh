@@ -99,7 +99,7 @@ const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_exHEMVeto20";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run >= 319077 || run == 1) && Pass_exHEMVeto20";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -214,8 +214,8 @@ std::vector<TString> srbins{
 	// nb1
   // 1 tagged
   "hmVal_nb1_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb1_highmtb_nt0_nrt1_nw0",
   "hmVal_nb1_highmtb_nt0_nrt0_nw1",
+  "hmVal_nb1_highmtb_nt0_nrt1_nw0",
 
   // 1+1
   "hmVal_nb1_highmtb_nrtntnwgeq2",
@@ -223,8 +223,8 @@ std::vector<TString> srbins{
 	// nb2
   // 1 tagged
   "hmVal_nb2_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb2_highmtb_nt0_nrt1_nw0",
   "hmVal_nb2_highmtb_nt0_nrt0_nw1",
+  "hmVal_nb2_highmtb_nt0_nrt1_nw0",
 
   // 1+1
   "hmVal_nb2_highmtb_nrtntnwgeq2",
@@ -287,8 +287,8 @@ std::map<TString, std::vector<int>> srMETbins{
 	// nb1
   // 1 tagged
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
   {"hmVal_nb1_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
+  {"hmVal_nb1_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
 
   // 1+1
   {"hmVal_nb1_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
@@ -296,8 +296,8 @@ std::map<TString, std::vector<int>> srMETbins{
 	// nb2
   // 1 tagged
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
   {"hmVal_nb2_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
+  {"hmVal_nb2_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
 
   // 1+1
   {"hmVal_nb2_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
@@ -381,8 +381,8 @@ std::map<TString, TString> phocrMapping{
         // nb1                    
   // 1 tagged                    
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb_nt0_nrt1_nw0"},
   {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb_nt0_nrt0_nw1"},
+  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb_nt0_nrt1_nw0"},
                                             
   // 1+1                        
   {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb_nrtntnwgeq2"},
@@ -390,8 +390,8 @@ std::map<TString, TString> phocrMapping{
         // nb2                 
   // 1 tagged                 
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb_nt0_nrt1_nw0"},
   {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb_nt0_nrt0_nw1"},
+  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb_nt0_nrt1_nw0"},
                                             
   // 1+1                     
   {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb_nrtntnwgeq2"},         
@@ -459,8 +459,8 @@ std::map<TString, TString> lepcrMapping {
         // nb1                    
   // 1 tagged                    
   {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb"},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb"},
   {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb"},
+  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb"},
                                             
   // 1+1                        
   {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb"},
@@ -468,8 +468,8 @@ std::map<TString, TString> lepcrMapping {
         // nb2                 
   // 1 tagged                 
   {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb"},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb"},
   {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb"},
+  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb"},
                                             
   // 1+1                     
   {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb"},         

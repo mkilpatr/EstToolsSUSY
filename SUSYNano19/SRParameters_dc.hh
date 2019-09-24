@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_091219/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_091219/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_091219/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_091919/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_091919/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_091919/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_091219/";
+const TString datadir = "nanoaod_data_all_skim_091919/";
 
 const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -2328,11 +2328,15 @@ map<std::string, std::string> makeBinMap(TString control_region){
           }
         }else{
           // also merge in MET
+	cout << "mergedsr_binname: " << mergedsr_binname << endl;
+	cout << "check if: " << merged_bin.bin.plotbins.at(ibin+1) << " == " << split_bin.bin.plotbins.at(ibin+1) << endl;
           for (unsigned icr = ibin; icr < split_bin.bin.nbins; ++icr){
             auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(icr);
             auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(icr);
+	    cout << "In second part: splitsrbinname: " << splitsrbinname << ", crbinname: " << crbinname << endl;
             results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
             results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
+	    if(crbinname.Contains(merged_bin.bin.plotbins.at(ibin+1))) break;
           }
         }
       }
@@ -2349,7 +2353,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
 
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
 //map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
-map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
+//map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 #endif /* ESTTOOLS_LMPARAMETERS_HH_ */

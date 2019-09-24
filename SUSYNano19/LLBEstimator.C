@@ -237,17 +237,19 @@ vector<Quantity> LLBPredSeparate(){
     line_p->Draw();
 
 //drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
-    drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.22, 0.90);
-    drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017RunBtoE), 0.22, 0.85);
-    drawTLatexNDC("TF 2017 RunF Mean: " + to_string(Mean2017RunF), 0.22, 0.80);
-    drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018preHEM), 0.22, 0.75);
-    drawTLatexNDC("TF 2018 postHEM Mean: " + to_string(Mean2018postHEM), 0.22, 0.70);
+    drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.22, 0.80);
+    drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017RunBtoE), 0.22, 0.75);
+    drawTLatexNDC("TF 2017 RunF Mean: " + to_string(Mean2017RunF), 0.22, 0.70);
+    drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018preHEM), 0.22, 0.65);
+    drawTLatexNDC("TF 2018 postHEM Mean: " + to_string(Mean2018postHEM), 0.22, 0.60);
     cout << "TF 2016 Mean: " << Mean2016 << endl;
     cout << "TF 2017 RunBtoE Mean: " << Mean2017RunBtoE << endl;
     cout << "TF 2017 RunF Mean: " << Mean2017RunF << endl;
     cout << "TF 2018 preHEM Mean: " << Mean2018preHEM << endl;
     cout << "TF 2018 postHEM Mean: " << Mean2018postHEM << endl;
-    
+    CMS_lumi(TFSumCanvas, 4, 10);
+    TFSumCanvas->Update();   
+ 
     TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.pdf");
     TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.C");
     TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum_canvas.root");
