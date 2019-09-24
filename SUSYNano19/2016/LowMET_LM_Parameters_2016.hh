@@ -179,37 +179,6 @@ std::vector<TString> srbins{
   "lmVal_nbgeq1_lowmtb_nivf0_medptisr",
   "lmVal_nbgeq1_lowmtb_nivf1_medptisr",
   //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  "hmVal_nb1_lowmtb_nj7_nrtgeq1",
-  "hmVal_nb2_lowmtb_nj7_nrtgeq1",
-
-  // high mtb
-  // 0 taggged
-  "hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",
-  "hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",
-
-	// nb1
-  // 1 tagged
-  "hmVal_nb1_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb1_highmtb_nt0_nrt0_nw1",
-  "hmVal_nb1_highmtb_nt0_nrt1_nw0",
-
-  // 1+1
-  "hmVal_nb1_highmtb_nrtntnwgeq2",
-
-	// nb2
-  // 1 tagged
-  "hmVal_nb2_highmtb_nt1_nrt0_nw0",
-  "hmVal_nb2_highmtb_nt0_nrt0_nw1",
-  "hmVal_nb2_highmtb_nt0_nrt1_nw0",
-
-  // 1+1
-  "hmVal_nb2_highmtb_nrtntnwgeq2",
-  
-  //---------- high deltaM ----------
 };
 
 std::map<TString, TString> srcuts = []{
@@ -252,38 +221,6 @@ std::map<TString, std::vector<int>> srMETbins{
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr", 	{250, 1000}},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr", 	{250, 1000}},
   //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  {"hmVal_nb1_lowmtb_nj7_nrtgeq1", 		{250, 400, 1000}},
-  {"hmVal_nb2_lowmtb_nj7_nrtgeq1", 		{250, 400, 1000}},
-
-  // high mtb
-  // 0 taggged
-  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0", 		{250, 400, 1000}},
-
-	// nb1
-  // 1 tagged
-  {"hmVal_nb1_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
-
-  // 1+1
-  {"hmVal_nb1_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
-
-	// nb2
-  // 1 tagged
-  {"hmVal_nb2_highmtb_nt1_nrt0_nw0", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1", 		{250, 400, 1000}},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0", 		{250, 400, 1000}},
-
-  // 1+1
-  {"hmVal_nb2_highmtb_nrtntnwgeq2", 		{250, 400, 1000}},
-  
-  //---------- high deltaM ----------
-
 };
 
 // normalization cuts for Rz
@@ -346,38 +283,6 @@ std::map<TString, TString> phocrMapping{
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
   //---------- low deltaM ---------- 
-                                            
-                                            
-  //---------- high deltaM ---------- 
-  // low mtb                         
-  {"hmVal_nb1_lowmtb_nj7_nrtgeq1",            "hmVal_nb1_lowmtb_nj7_nrtgeq1"},
-  {"hmVal_nb2_lowmtb_nj7_nrtgeq1",            "hmVal_nb2_lowmtb_nj7_nrtgeq1"},
-                                            
-  // high mtb                       
-  // 0 taggged                     
-  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0"},
-                                            
-        // nb1                    
-  // 1 tagged                    
-  {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb_nt0_nrt0_nw1"},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb_nt0_nrt1_nw0"},
-                                            
-  // 1+1                        
-  {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb_nrtntnwgeq2"},
-                                            
-        // nb2                 
-  // 1 tagged                 
-  {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb_nt1_nrt0_nw0"},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb_nt0_nrt0_nw1"},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb_nt0_nrt1_nw0"},
-                                            
-  // 1+1                     
-  {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb_nrtntnwgeq2"},         
-  
-  //---------- high deltaM ----------
-
 };
 
 
@@ -424,38 +329,6 @@ std::map<TString, TString> lepcrMapping {
   {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
   {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
   //---------- low deltaM ---------- 
-                                            
-                                            
-  //---------- high deltaM ---------- 
-  // low mtb                         
-  {"hmVal_nb1_lowmtb_nj7_nrtgeq1",            "hmVal_nb1_lowmtb_nj7"},
-  {"hmVal_nb2_lowmtb_nj7_nrtgeq1",            "hmVal_nb2_lowmtb_nj7"},
-                                            
-  // high mtb                       
-  // 0 taggged                     
-  {"hmVal_nb1_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb1_highmtb_nj5"},
-  {"hmVal_nb2_highmtb_nj5_nt0_nrt0_nw0",      "hmVal_nb2_highmtb_nj5"},
-                                            
-        // nb1                    
-  // 1 tagged                    
-  {"hmVal_nb1_highmtb_nt1_nrt0_nw0",          "hmVal_nb1_highmtb"},
-  {"hmVal_nb1_highmtb_nt0_nrt0_nw1",          "hmVal_nb1_highmtb"},
-  {"hmVal_nb1_highmtb_nt0_nrt1_nw0",          "hmVal_nb1_highmtb"},
-                                            
-  // 1+1                        
-  {"hmVal_nb1_highmtb_nrtntnwgeq2",           "hmVal_nb1_highmtb"},
-                                            
-        // nb2                 
-  // 1 tagged                 
-  {"hmVal_nb2_highmtb_nt1_nrt0_nw0",          "hmVal_nb2_highmtb"},
-  {"hmVal_nb2_highmtb_nt0_nrt0_nw1",          "hmVal_nb2_highmtb"},
-  {"hmVal_nb2_highmtb_nt0_nrt1_nw0",          "hmVal_nb2_highmtb"},
-                                            
-  // 1+1                     
-  {"hmVal_nb2_highmtb_nrtntnwgeq2",           "hmVal_nb2_highmtb"},         
-  
-  //---------- high deltaM ----------
-
 };
 
 
