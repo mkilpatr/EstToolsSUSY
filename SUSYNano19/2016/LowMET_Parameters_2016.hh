@@ -76,8 +76,8 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_exHEMVeto20";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && Pass_exHEMVeto20";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -108,7 +108,7 @@ std::map<TString, TString> cutMap = []{
         {"nivf0",     "Stop0l_nSoftb==0"},
         {"nivf1",     "Stop0l_nSoftb>=1"},
         {"lowptisr",  "Stop0l_ISRJetPt>=300 && Stop0l_ISRJetPt<500"},
-        {"medptisr",  "Stop0l_ISRJetPt>=200"},
+        {"medptisr",  "Stop0l_ISRJetPt>=300"},
         {"highptisr", "Stop0l_ISRJetPt>=500"},
         {"nj2to5",    "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
         {"nj5",       "Stop0l_nJets>=5"},
@@ -162,7 +162,7 @@ std::vector<TString> srbins{
   "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",
   "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",
   // ---
-  "lm_nb1_nivf1_lowmtb_lowptb_met300",
+  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",
 
   // 2b
   "lm_nb2_lowmtb_lowptisr_lowptb12_met300",
@@ -174,10 +174,10 @@ std::vector<TString> srbins{
 
   // Additional from Hui
   // 0b
-  "lmVal_nb0_lowmtb_nivf0_medptisr",
-  "lmVal_nb0_lowmtb_nivf1_medptisr",
-  "lmVal_nbgeq1_lowmtb_nivf0_medptisr",
-  "lmVal_nbgeq1_lowmtb_nivf1_medptisr",
+  "lmVal_nb0_lowmtb_nivf0",
+  "lmVal_nb0_lowmtb_nivf1",
+  "lmVal_nbgeq1_lowmtb_nivf0",
+  "lmVal_nbgeq1_lowmtb_nivf1",
   //---------- low deltaM ----------
 
 
@@ -235,7 +235,7 @@ std::map<TString, std::vector<int>> srMETbins{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", 	{250, 400}},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", 	{250, 400}},
   // ---
-  {"lm_nb1_nivf1_lowmtb_lowptb_met300", 		{250, 300}},
+  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300", 	{250, 300}},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300", 		{250, 300}},
@@ -247,10 +247,10 @@ std::map<TString, std::vector<int>> srMETbins{
 
   // Additional from Hui
   // 0b
-  {"lmVal_nb0_lowmtb_nivf0_medptisr", 		{250, 1000}},
-  {"lmVal_nb0_lowmtb_nivf1_medptisr", 		{250, 1000}},
-  {"lmVal_nbgeq1_lowmtb_nivf0_medptisr", 	{250, 1000}},
-  {"lmVal_nbgeq1_lowmtb_nivf1_medptisr", 	{250, 1000}},
+  {"lmVal_nb0_lowmtb_nivf0", 		{250, 1000}},
+  {"lmVal_nb0_lowmtb_nivf1", 		{250, 1000}},
+  {"lmVal_nbgeq1_lowmtb_nivf0", 	{250, 1000}},
+  {"lmVal_nbgeq1_lowmtb_nivf1", 	{250, 1000}},
   //---------- low deltaM ----------
 
 
@@ -329,7 +329,7 @@ std::map<TString, TString> phocrMapping{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
   // ---                                 
-  {"lm_nb1_nivf1_lowmtb_lowptb_met300",           "lm_nb1_nivf1_lowmtb_lowptb_met300"},
+  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300"},
                                             
   // 2b                                 
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",      "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
@@ -341,10 +341,10 @@ std::map<TString, TString> phocrMapping{
                                             
   // Additional from Hui               
   // 0b                               
-  {"lmVal_nb0_lowmtb_nivf0_medptisr",     "lmVal_nb0_lowmtb_nivf0_medptisr"},
-  {"lmVal_nb0_lowmtb_nivf1_medptisr",     "lmVal_nb0_lowmtb_nivf1_medptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
+  {"lmVal_nb0_lowmtb_nivf0",     "lmVal_nb0_lowmtb_nivf0"},
+  {"lmVal_nb0_lowmtb_nivf1",     "lmVal_nb0_lowmtb_nivf1"},
+  {"lmVal_nbgeq1_lowmtb_nivf0",   "lmVal_nbgeq1_lowmtb_nivf0"},
+  {"lmVal_nbgeq1_lowmtb_nivf1",   "lmVal_nbgeq1_lowmtb_nivf1"},
   //---------- low deltaM ---------- 
                                             
                                             
@@ -407,7 +407,7 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
   // ---                                 
-  {"lm_nb1_nivf1_lowmtb_lowptb_met300",           "lm_nb1_nivf1_lowmtb_lowptb_met300"},
+  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300"},
                                             
   // 2b                                 
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",      "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
@@ -419,10 +419,10 @@ std::map<TString, TString> lepcrMapping {
                                             
   // Additional from Hui               
   // 0b                               
-  {"lmVal_nb0_lowmtb_nivf0_medptisr",     "lmVal_nb0_lowmtb_nivf0_medptisr"},
-  {"lmVal_nb0_lowmtb_nivf1_medptisr",     "lmVal_nb0_lowmtb_nivf1_medptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf0_medptisr",   "lmVal_nbgeq1_lowmtb_nivf0_medptisr"},
-  {"lmVal_nbgeq1_lowmtb_nivf1_medptisr",   "lmVal_nbgeq1_lowmtb_nivf1_medptisr"},
+  {"lmVal_nb0_lowmtb_nivf0",     "lmVal_nb0_lowmtb_nivf0"},
+  {"lmVal_nb0_lowmtb_nivf1",     "lmVal_nb0_lowmtb_nivf1"},
+  {"lmVal_nbgeq1_lowmtb_nivf0",   "lmVal_nbgeq1_lowmtb_nivf0"},
+  {"lmVal_nbgeq1_lowmtb_nivf1",   "lmVal_nbgeq1_lowmtb_nivf1"},
   //---------- low deltaM ---------- 
                                             
                                             
