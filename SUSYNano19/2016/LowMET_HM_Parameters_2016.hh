@@ -108,7 +108,7 @@ std::map<TString, TString> cutMap = []{
         {"nivf0",     "Stop0l_nSoftb==0"},
         {"nivf1",     "Stop0l_nSoftb>=1"},
         {"lowptisr",  "Stop0l_ISRJetPt>=300 && Stop0l_ISRJetPt<500"},
-        {"medptisr",  "Stop0l_ISRJetPt>=200"},
+        {"medptisr",  "Stop0l_ISRJetPt>=300"},
         {"highptisr", "Stop0l_ISRJetPt>=500"},
         {"nj2to5",    "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
         {"nj5",       "Stop0l_nJets>=5"},
