@@ -2328,15 +2328,13 @@ map<std::string, std::string> makeBinMap(TString control_region){
           }
         }else{
           // also merge in MET
-	cout << "mergedsr_binname: " << mergedsr_binname << endl;
-	cout << "check if: " << merged_bin.bin.plotbins.at(ibin+1) << " == " << split_bin.bin.plotbins.at(ibin+1) << endl;
           for (unsigned icr = ibin; icr < split_bin.bin.nbins; ++icr){
-            auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(icr);
-            auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(icr);
-	    cout << "In second part: splitsrbinname: " << splitsrbinname << ", crbinname: " << crbinname << endl;
-            results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-            results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
-	    if(crbinname.Contains(merged_bin.bin.plotbins.at(ibin+1))) break;
+	    if(split_bin.bin.plotbins.at(icr+1) <= merged_bin.bin.plotbins.at(ibin+1) && split_bin.bin.plotbins.at(icr) >= merged_bin.bin.plotbins.at(ibin)){
+              auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(icr);
+              auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(icr);
+              results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
+              results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
+            }
           }
         }
       }
@@ -2353,7 +2351,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
 
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
 //map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
-//map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
+map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }
 #endif /* ESTTOOLS_LMPARAMETERS_HH_ */
