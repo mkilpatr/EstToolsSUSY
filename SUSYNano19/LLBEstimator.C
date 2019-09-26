@@ -160,7 +160,9 @@ vector<Quantity> LLBPredSeparate(){
     leg->SetTextSize(0.03);
 //      leg->SetNColumns(2);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    auto c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.00001, 110);
+    TCanvas* c = nullptr;
+    if(i != 1) c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.00001, 110);
+    else       c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.1, 110);
     TString outputBase = "LostLepton"+tf[i]+"_Comparison";
     c->SetTitle(outputBase);
     c->Print(l.config.outputdir+"/"+outputBase+".pdf");
@@ -237,11 +239,11 @@ vector<Quantity> LLBPredSeparate(){
     line_p->Draw();
 
 //drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
-    drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.22, 0.80);
-    drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017RunBtoE), 0.22, 0.75);
-    drawTLatexNDC("TF 2017 RunF Mean: " + to_string(Mean2017RunF), 0.22, 0.70);
-    drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018preHEM), 0.22, 0.65);
-    drawTLatexNDC("TF 2018 postHEM Mean: " + to_string(Mean2018postHEM), 0.22, 0.60);
+    drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.2, 0.80);
+    drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017RunBtoE), 0.2, 0.75);
+    drawTLatexNDC("TF 2017 RunF Mean: " + to_string(Mean2017RunF), 0.2, 0.70);
+    drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018preHEM), 0.2, 0.65);
+    drawTLatexNDC("TF 2018 postHEM Mean: " + to_string(Mean2018postHEM), 0.2, 0.60);
     cout << "TF 2016 Mean: " << Mean2016 << endl;
     cout << "TF 2017 RunBtoE Mean: " << Mean2017RunBtoE << endl;
     cout << "TF 2017 RunF Mean: " << Mean2017RunF << endl;
