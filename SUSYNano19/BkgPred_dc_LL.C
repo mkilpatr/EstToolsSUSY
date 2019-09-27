@@ -55,7 +55,8 @@ void runBkgPred(){
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
 
 
-  vector<const BaseEstimator*> allPreds = {&l, &s};
+  //vector<const BaseEstimator*> allPreds = {&l, &s};
+  vector<const BaseEstimator*> allPreds = {&l};
 
   for (const auto *v : allPreds){
     yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
