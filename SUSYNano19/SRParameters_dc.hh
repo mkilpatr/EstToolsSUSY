@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_091919/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_091919/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_091919/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_092719/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_092719/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_091919/";
+const TString datadir = "nanoaod_data_all_skim_092719/";
 
 const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -25,11 +25,11 @@ const TString lumistr_2018PostHEM = "38.8296";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight";//*WSF*TopSF*restopSF*SoftBSF"; //2016
-const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight";//*WSF*TopSF*restopSF*SoftBSF"; //2017
-const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight";//*WSF*TopSF*restopSF*SoftBSF"; //2017
-const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight";//*WSF*TopSF*restopSF*SoftBSF"; //2018
-const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight";//*WSF*TopSF*restopSF*SoftBSF"; //2018
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeightg*WtagSF*TopSF*restopSF*SoftBSF"; //2016
+const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeightg*WtagSF*TopSF*restopSF*SoftBSF"; //2017
+const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeightg*WtagSF*TopSF*restopSF*SoftBSF"; //2017
+const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeightg*WtagSF*TopSF*restopSF*SoftBSF"; //2018
+const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeightg*WtagSF*TopSF*restopSF*SoftBSF"; //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =              wgtvar          ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt  =              wgtvar          ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF     ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF     ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM   ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM   ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM  ;//+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM  ;//+ "*MuonSF*ElectronSF*TauSF";
+const TString lepvetowgt =              wgtvar          + "*MuonSF*ElectronSF*TauSF";
+const TString lepselwgt  =              wgtvar          + "*MuonSF*ElectronSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  + "*MuonSF*ElectronSF*TauSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*MuonSF*ElectronSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF     + "*MuonSF*ElectronSF*TauSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF     + "*MuonSF*ElectronSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM   + "*MuonSF*ElectronSF*TauSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM   + "*MuonSF*ElectronSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM  + "*MuonSF*ElectronSF*TauSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM  + "*MuonSF*ElectronSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -2101,6 +2101,108 @@ std::map<TString, TString> mergedSRlabels = []{
     return cmap;
 }();
 
+std::map<TString, std::vector<int>> mergedSRNumbins{
+//---------- low deltaM ----------
+  // 0b, 0 or >=1 ivf
+  {"lm_nb0_nivf0_highptisr_nj2to5",              {     0,  1,  2,  3}},
+  {"lm_nb0_nivf0_highptisr_nj6",                 {     4,  5,  6,  7}},
+  {"lm_nb0_nivf1_highptisr_nj2to5",              {     8,  9, 10, 11}},
+  {"lm_nb0_nivf1_highptisr_nj6",                 {    12, 13, 14, 15}},
+
+  // 1b, 0 or >=1 ivf
+  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",        {    16, 17, 18, 19}},
+  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        {    20, 21, 22, 23}},
+  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",       {    24, 25, 26, 27}},
+  {"lm_nb1_nivf0_lowmtb_highptisr_medptb",       {    28, 29, 30, 31}},
+
+  {"lm_nb1_nivf1_lowmtb_lowptb",                 {    32, 33, 34}},
+
+  // 2b
+  {"lm_nb2_lowmtb_lowptisr_lowptb12",            {    35, 36, 37}},
+  {"lm_nb2_lowmtb_lowptisr_medptb12",            {    38, 39, 40}},
+  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7",       {    41, 42, 43}},
+  {"lm_nb2_lowmtb_highptisr_lowptb12",           {    44, 45, 46}},
+  {"lm_nb2_lowmtb_highptisr_medptb12",           {    47, 48, 49}},
+  {"lm_nb2_lowmtb_highptisr_highptb12_nj7",      {    50, 51, 52}},
+  //---------- low deltaM ----------
+
+
+  //---------- high deltaM ----------
+  // low mtb
+  {"hm_nb1_lowmtb_nj7_nrtgeq1",                    {  53, 54, 55, 56}},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1",                    {  57, 58, 59, 60}},
+
+  // high mtb
+  // 0 taggged
+  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",         {  61, 62, 63, 64}},
+  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",         {  65, 66, 67, 68}},
+
+  // nb1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {  69, 70, 71}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1500",  {  72, 73, 74}},
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {  75, 76, 77}},
+  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htlt1300",      {  78, 79, 80}},
+  {"hm_nb1_highmtb_nt0_nrt0_nwgeq1_htgt1300",      {  81, 82, 83}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htlt1000",      {  84, 85, 86, 87, 88}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500",  {  89, 90, 91, 92, 93}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nw0_htgt1500",      {  94, 95, 96, 97, 98}},
+
+  // 1+1
+  {"hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1",            {  99, 100}},
+  {"hm_nb1_highmtb_ntgeq1_nrtgeq1_nw0",            { 101, 102}},
+  {"hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1",            { 103, 104}},
+
+  // nb2
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       { 105, 106, 107}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1500",   { 108, 109, 110}},
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       { 111, 112, 113}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htlt1300",       { 114, 115, 116}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300",       { 117, 118, 119}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htlt1000",       { 120, 121, 123, 124, 125}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_ht1000to1500",   { 126, 127, 128, 129, 130}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw0_htgt1500",       { 131, 132, 133, 134, 135}},
+
+  // 1+1
+  {"hm_nbeq2_highmtb_nt1_nrt0_nw1",                { 136, 137}},
+  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htlt1300",       { 138, 139, 140}},
+  {"hm_nbeq2_highmtb_nt1_nrt1_nw0_htgt1300",       { 141, 142, 143}},
+  {"hm_nbeq2_highmtb_nt0_nrt1_nw1",                { 144, 145}},
+
+  // 2
+  {"hm_nbeq2_highmtb_nt2_nrt0_nw0",       	   { 146, 147}},
+  {"hm_nbeq2_highmtb_nt0_nrt0_nw2",                { 148}},
+  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htlt1300",       { 149, 150}},
+  {"hm_nbeq2_highmtb_nt0_nrt2_nw0_htgt1300",       { 151, 152}},
+
+  // 3
+  {"hm_nbeq2_highmtb_nrtntnwgeq3",        	   { 153}},
+
+        // nb3
+  //1 tagged
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         { 154, 155, 156}},
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     { 157, 158, 159}},
+  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         { 160, 161, 162}},
+  {"hm_nb3_highmtb_nt0_nrt0_nw1",                  { 163, 164, 165}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_htlt1000",         { 166, 167, 168}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_ht1000to1500",     { 169, 170, 171}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500",         { 172, 173, 174}},
+
+  //1+1
+  {"hm_nb3_highmtb_nt1_nrt0_nw1",                  { 175}},
+  {"hm_nb3_highmtb_nt1_nrt1_nw0",         	   { 176, 177}},
+  {"hm_nb3_highmtb_nt0_nrt1_nw1",                  { 178}},
+
+  //2
+  {"hm_nb3_highmtb_nt2_nrt0_nw0",         	   { 179}},
+  {"hm_nb3_highmtb_nt0_nrt0_nw2",                  { 180}},
+  {"hm_nb3_highmtb_nt0_nrt2_nw0",         	   { 181, 182}},
+
+  // 3
+  {"hm_nb3_highmtb_nrtntnwgeq3",                   { 183}},
+  
+  //---------- high deltaM ----------
+};
+
 std::map<TString, std::vector<int>> mergedSRMETbins{
 //---------- low deltaM ----------
   // 0b, 0 or >=1 ivf
@@ -2342,7 +2444,34 @@ map<std::string, std::string> makeBinMap(TString control_region){
   return rltstr;
 }
 
+map<std::string, std::string> makeNumBinMap(){
+  map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
+
+  const auto &merged_srCatMap = mergedSRCatMap();
+  //const auto &merged_numBinMap = mergedSRNumbins();
+
+  int binNum = 0;
+  for (const auto &merged_cat_name : mergedSRbins){
+    const auto& merged_bin = merged_srCatMap.at(merged_cat_name);
+      
+    for (unsigned ibin=0; ibin<merged_bin.bin.nbins; ++ibin){
+      std::string mergedsr_binname = ("bin_"+merged_cat_name+"_"+merged_bin.bin.binnames.at(ibin)).Data();
+      std::string mergedsr_binnum = to_string(binNum);
+      results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
+      results[mergedsr_binname].push_back(mergedsr_binnum); 
+      binNum++;
+    }
+  }
+  map<std::string, std::string> rltstr;
+  for (const auto &s : results){
+    rltstr[s.first] = joinString(s.second, " + ").Data();
+    cout << s.first << endl << rltstr[s.first] << endl << endl;
+  }
+  return rltstr;
+}
+
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
+map<std::string, std::string> lepcrBinNumMap = makeNumBinMap();
 //map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
 map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
