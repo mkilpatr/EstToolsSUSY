@@ -7,8 +7,8 @@
 
 #include <fstream>
 
-//#include "LowMET_HM_Parameters.hh"
-#include "LowMET_Parameters.hh"
+#include "LowMET_HM_Parameters.hh"
+//#include "LowMET_Parameters.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 
@@ -72,30 +72,30 @@ void BkgPredHM_LowMET_LL(){
     prepHists({hDataRawMC}, false, false, false, {kOrange});
 
     // plot raw MC - w/o top/W SF
-    TH1 *hmcnosf = nullptr;
-    vector<TString> mcnosf = {"znunu-2016-raw-sr","ttbar-2016-raw-sr","wjets-2016-raw-sr","tW-2016-raw-sr","ttW-2016-raw-sr","qcd-2016-raw-sr","ttZ-2016-raw-sr","diboson-2016-raw-sr",
-			      "znunu-2017RunBtoE-raw-sr","ttbar-2017RunBtoE-raw-sr","wjets-2017RunBtoE-raw-sr","tW-2017RunBtoE-raw-sr","ttW-2017RunBtoE-raw-sr","qcd-2017RunBtoE-raw-sr","ttZ-2017RunBtoE-raw-sr","diboson-2017RunBtoE-raw-sr",
-			      "znunu-2017RunF-raw-sr","ttbar-2017RunF-raw-sr","wjets-2017RunF-raw-sr","tW-2017RunF-raw-sr","ttW-2017RunF-raw-sr","qcd-2017RunF-raw-sr","ttZ-2017RunF-raw-sr","diboson-2017RunF-raw-sr",
-			      "znunu-2018preHEM-raw-sr","ttbar-2018preHEM-raw-sr","wjets-2018preHEM-raw-sr","tW-2018preHEM-raw-sr","ttW-2018preHEM-raw-sr","qcd-2018preHEM-raw-sr","ttZ-2018preHEM-raw-sr","diboson-2018preHEM-raw-sr",
-			      "znunu-2018postHEM-raw-sr","ttbar-2018postHEM-raw-sr","wjets-2018postHEM-raw-sr","tW-2018postHEM-raw-sr","ttW-2018postHEM-raw-sr","qcd-2018postHEM-raw-sr","ttZ-2018postHEM-raw-sr","diboson-2018postHEM-raw-sr"};
-    for (auto &sname : mcnosf){
-      auto hmc = convertToHist(s.yields.at(sname), sname, ";High #Deltam Validation Region;Events");
-      if (!hmcnosf) hmcnosf = (TH1*)hmc->Clone();
-      else hmcnosf->Add(hmc);
-    }
-    TH1* hDataMCNoSF = (TH1*)hdata->Clone("hDataMCNoSF");
-    hDataMCNoSF->Divide(hmcnosf);
-    hDataMCNoSF->SetLineWidth(2);
-    prepHists({hDataMCNoSF}, false, false, false, {kPink-2});
+    //TH1 *hmcnosf = nullptr;
+    //vector<TString> mcnosf = {"znunu-2016-raw-sr","ttbar-2016-raw-sr","wjets-2016-raw-sr","tW-2016-raw-sr","ttW-2016-raw-sr","qcd-2016-raw-sr","ttZ-2016-raw-sr","diboson-2016-raw-sr",
+    //    		      "znunu-2017RunBtoE-raw-sr","ttbar-2017RunBtoE-raw-sr","wjets-2017RunBtoE-raw-sr","tW-2017RunBtoE-raw-sr","ttW-2017RunBtoE-raw-sr","qcd-2017RunBtoE-raw-sr","ttZ-2017RunBtoE-raw-sr","diboson-2017RunBtoE-raw-sr",
+    //    		      "znunu-2017RunF-raw-sr","ttbar-2017RunF-raw-sr","wjets-2017RunF-raw-sr","tW-2017RunF-raw-sr","ttW-2017RunF-raw-sr","qcd-2017RunF-raw-sr","ttZ-2017RunF-raw-sr","diboson-2017RunF-raw-sr",
+    //    		      "znunu-2018preHEM-raw-sr","ttbar-2018preHEM-raw-sr","wjets-2018preHEM-raw-sr","tW-2018preHEM-raw-sr","ttW-2018preHEM-raw-sr","qcd-2018preHEM-raw-sr","ttZ-2018preHEM-raw-sr","diboson-2018preHEM-raw-sr",
+    //    		      "znunu-2018postHEM-raw-sr","ttbar-2018postHEM-raw-sr","wjets-2018postHEM-raw-sr","tW-2018postHEM-raw-sr","ttW-2018postHEM-raw-sr","qcd-2018postHEM-raw-sr","ttZ-2018postHEM-raw-sr","diboson-2018postHEM-raw-sr"};
+    //for (auto &sname : mcnosf){
+    //  auto hmc = convertToHist(s.yields.at(sname), sname, ";High #Deltam Validation Region;Events");
+    //  if (!hmcnosf) hmcnosf = (TH1*)hmc->Clone();
+    //  else hmcnosf->Add(hmc);
+    //}
+    //TH1* hDataMCNoSF = (TH1*)hdata->Clone("hDataMCNoSF");
+    //hDataMCNoSF->Divide(hmcnosf);
+    //hDataMCNoSF->SetLineWidth(2);
+    //prepHists({hDataMCNoSF}, false, false, false, {kPink-2});
 
     auto leg = prepLegends(vpred, bkglabels, "F");
     appendLegends(leg, {hdata}, datalabel, "LP");
-    appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
-    appendLegends(leg, {hDataMCNoSF}, {"MC (w/o top/W SF)"}, "L");
+    //appendLegends(leg, {hDataRawMC}, {"Simulation"}, "L");
+    //appendLegends(leg, {hDataMCNoSF}, {"MC (w/o top/W SF)"}, "L");
     leg->SetTextSize(0.03);
 //    leg->SetNColumns(2);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {hDataRawMC, hDataMCNoSF});
+    auto c = drawStackAndRatio(vpred, hdata, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {}, nullptr, {});
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
@@ -106,7 +106,6 @@ void BkgPredHM_LowMET_LL(){
     for (auto *h : vpred) h->Write();
     for (auto *g : vgraphs) g->Write();
     for (auto *h : mc)   h->Write();
-    hDataMCNoSF->Write();
     hdata->Write();
     output->Close();
   };
