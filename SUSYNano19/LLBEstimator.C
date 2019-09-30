@@ -507,6 +507,64 @@ void srYields(){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+void SBv4Yields(){
+
+  auto config = lepConfig();
+  config.crCatMaps.clear();
+
+  config.samples.clear();
+  //config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*ISRWeight", datasel + vetoes);
+  //config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("tW-sr",          "tW",            inputdir_2016+"tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttW-sr",         "ttW",           inputdir_2016+"ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttZ-sr",         "ttZ",           inputdir_2016+"ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("znunu-sr",       "znunu",         inputdir_2016+"znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttbar-v2-sr",       "t#bar{t}",      inputdir_2016+"../nanoaod_all_skim_2016_082619/ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*ISRWeight", datasel + vetoes);
+  //config.addSample("wjets-v2-sr",       "W+jets",        inputdir_2016+"../nanoaod_all_skim_2016_082619/wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("tW-v2-sr",          "tW",            inputdir_2016+"../nanoaod_all_skim_2016_082619/tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttW-v2-sr",         "ttW",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttZ-v2-sr",         "ttZ",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("qcd-v2-sr",         "QCD",           inputdir_2016+"../nanoaod_all_skim_2016_082619/qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("znunu-v2-sr",       "znunu",         inputdir_2016+"../nanoaod_all_skim_2016_082619/znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+
+  config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
+  config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
+  config.addSample("tW-sr",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes);
+  config.addSample("ttW-sr",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes);
+  config.addSample("ttZ-sr",         "ttZ",           inputdir_2016+"ttZ",          "1.0", datasel + vetoes);
+  config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",    	    "1.0", datasel + vetoes);
+  config.addSample("znunu-sr",       "znunu",         inputdir_2016+"znunu",        "1.0", datasel + vetoes);
+  config.addSample("ttbar-v2-sr",       "t#bar{t}",      inputdir_2016+"../nanoaod_all_skim_2016_082619/ttbar",        "1.0", datasel + vetoes);
+  config.addSample("wjets-v2-sr",       "W+jets",        inputdir_2016+"../nanoaod_all_skim_2016_082619/wjets",        "1.0", datasel + vetoes);
+  config.addSample("tW-v2-sr",          "tW",            inputdir_2016+"../nanoaod_all_skim_2016_082619/tW",           "1.0", datasel + vetoes);
+  config.addSample("ttW-v2-sr",         "ttW",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttW",          "1.0", datasel + vetoes);
+  config.addSample("ttZ-v2-sr",         "ttZ",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttZ",          "1.0", datasel + vetoes);
+  config.addSample("qcd-v2-sr",         "QCD",           inputdir_2016+"../nanoaod_all_skim_2016_082619/qcd",    	"1.0", datasel + vetoes);
+  config.addSample("znunu-v2-sr",       "znunu",         inputdir_2016+"../nanoaod_all_skim_2016_082619/znunu",        "1.0", datasel + vetoes);
+//  config.addSample("ww-sr",          "WW",            "sr/ww",              lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("wz-sr",          "WZ",            "sr/wz",              lepvetowgt, datasel + trigSR + vetoes);
+//  config.addSample("zz-sr",          "ZZ",            "sr/zz",              lepvetowgt, datasel + trigSR + vetoes);
+
+
+  BaseEstimator z(config);
+
+  std::map<TString,int> digits;
+  digits["LL"] = -5;
+  digits["ttZ-sr"] = -5;
+  digits["LL v2"] = -5;
+  digits["ttZ-v2-sr"] = -5;
+
+  z.calcYields();
+  z.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "LL");
+  z.sumYields({"ttbar-v2-sr", "wjets-v2-sr", "tW-v2-sr", "ttW-v2-sr"}, "LL v2");
+  z.printYieldsTable({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "qcd-sr", "znunu-sr", "ttZ-sr", "LL"});
+  z.printYieldsTableLatex({"LL", "ttZ-sr", "LL v2", "ttZ-v2-sr"}, labelMap, "yields_llb_hm_raw.tex", "hm", digits);
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void lepcrYields(){
 
   auto config = lepConfig();
@@ -652,10 +710,10 @@ void plot1LepInclusive2016(){
   BaseEstimator z(config.outputdir);
   z.setConfig(config);
 
-  vector<TString> mc_samples_2016 = {"ttbar", "wjets", "tW", "ttW"};
+  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> sig_sample_fullsim = {"T2tt_175_1_full", "T2tt_250_50_full", "T2tt_250_75_full", "T2tt_250_100_full"};
   vector<TString> sig_sample_fastsim = {"T2tt_175_0_fast", "T2tt_250_50_fast", "T2tt_250_75_fast", "T2tt_250_100_fast"};
-  TString data_sample = "singlelep";
+  TString data_sample = "singlelep-2016";
 
   map<TString, BinInfo> varDict {
 	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -671,18 +729,18 @@ void plot1LepInclusive2016(){
   std::function<void(TCanvas*)> plotextra30;
   for (auto &var : varDict){
     z.resetSelection();
-    z.setSelection(LLCR_LM, "llcr_lm_2016_fullsim", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fullsim", 0.2, 0.72); };
+    z.setSelection(LLCR_LM, "llcr_lm_2017_fullsim_v3", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM fullsim_v3", 0.2, 0.72); };
     z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fullsim, Category::dummy_category(), true, true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2016_fullsim", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fullsim", 0.2, 0.72); };
+    z.setSelection(LLCR_HM, "llcr_hm_2017_fullsim_v3", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM fullsim_v3", 0.2, 0.72); };
     z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fullsim, Category::dummy_category(), true, true, &plotextra);
 
-    z.setSelection(LLCR_LM, "llcr_lm_2016_fastsim", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fastsim", 0.2, 0.72); };
+    z.setSelection(LLCR_LM, "llcr_lm_2017_fastsim_v3", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM fastsim_v3", 0.2, 0.72); };
     z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fastsim, Category::dummy_category(), true, true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2016_fastsim", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM fastsim", 0.2, 0.72); };
+    z.setSelection(LLCR_HM, "llcr_hm_2017_fastsim_v3", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM fastsim_v3", 0.2, 0.72); };
     z.plotSigVsBkg(var.second, mc_samples_2016, sig_sample_fastsim, Category::dummy_category(), true, true, &plotextra);
   }
   

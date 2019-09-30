@@ -7,7 +7,7 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
-const TString inputdir_sig  = "nanoaod_all_skim_2017_091319/";
+const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_093019/";
 
 const TString outputdir = ".";
 
@@ -1050,14 +1050,14 @@ BaseConfig srConfig(){
 //  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "signals/T2fbd_500_480",  sigwgt, datasel + vetoes);
 //  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "signals/T2cc_500_490",   sigwgt, datasel + vetoes);
 
-  config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_2016+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_2016+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_2016+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_2016+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_2016+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_2016+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_2016+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_2016+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
+  config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_sig+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
+  config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
+  config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
+  config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_sig+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
+  config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_sig+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
+  config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
+  config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
+  config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_sig+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
 //  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "signals/T2tt_1100_1",    sigwgt, datasel + vetoes);
 //  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "signals/T2bW_850_1",     sigwgt, datasel + vetoes);
 //  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "signals/T2bW_550_350",   sigwgt, datasel + vetoes);
