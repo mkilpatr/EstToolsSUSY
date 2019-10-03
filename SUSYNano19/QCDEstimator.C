@@ -1,7 +1,7 @@
 #include "../EstMethods/QCDEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "SRParameters_qcd.hh"
+#include "SRParameters.hh"
+//#include "SRParameters_qcd.hh"
 
 using namespace EstTools;
 

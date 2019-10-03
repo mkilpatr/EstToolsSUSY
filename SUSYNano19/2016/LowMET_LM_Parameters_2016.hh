@@ -6,12 +6,12 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_all_skim_2016_092719/";
+const TString datadir = "nanoaod_all_skim_2016_100219/";
 
 const TString lumistr = "35.922";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -31,8 +31,8 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonSF*ElectronSF*TauSF";
+const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronMedSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF

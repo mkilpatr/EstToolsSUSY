@@ -6,12 +6,12 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_all_skim_2016_092719/";
+const TString datadir = "nanoaod_all_skim_2016_100219/";
 
 const TString lumistr = "35.922";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -31,8 +31,8 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonSF*ElectronSF";
+const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronMedSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -739,14 +739,14 @@ BaseConfig sigConfig(){
   config.addSample("data-sr",        "Data",      datadir+"met",                    "1.0",  datasel + trigSR + vetoes);
 
   // raw MC w/o top/W SF
-  config.addSample("znunu-raw-sr",                 "Z#rightarrow#nu#nu", inputdir_2016+"znunu",           lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("ttbar-raw-sr",                 "t#bar{t}",           inputdir_2016+"ttbar",           lepvetowgt_no_wtopsf+"*ISRWeight",    datasel + vetoes);
-  config.addSample("wjets-raw-sr",                 "W+jets",             inputdir_2016+"wjets",           lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("tW-raw-sr",                    "tW",                 inputdir_2016+"tW",              lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("ttW-raw-sr",                   "ttW",                inputdir_2016+"ttW",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("ttZ-raw-sr",                   "ttZ",                inputdir_2016+"ttZ",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("diboson-raw-sr",               "Diboson",            inputdir_2016+"diboson",         lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  config.addSample("qcd-raw-sr",                   "QCD",                inputdir_2016+"qcd",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("znunu-raw-sr",                 "Z#rightarrow#nu#nu", inputdir_2016+"znunu",           lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("ttbar-raw-sr",                 "t#bar{t}",           inputdir_2016+"ttbar",           lepvetowgt_no_wtopsf+"*ISRWeight",    datasel + vetoes);
+  //config.addSample("wjets-raw-sr",                 "W+jets",             inputdir_2016+"wjets",           lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("tW-raw-sr",                    "tW",                 inputdir_2016+"tW",              lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("ttW-raw-sr",                   "ttW",                inputdir_2016+"ttW",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("ttZ-raw-sr",                   "ttZ",                inputdir_2016+"ttZ",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("diboson-raw-sr",               "Diboson",            inputdir_2016+"diboson",         lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("qcd-raw-sr",                   "QCD",                inputdir_2016+"qcd",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
 
 //  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
 //  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);

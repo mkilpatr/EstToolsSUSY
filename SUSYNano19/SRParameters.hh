@@ -6,17 +6,17 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_092719/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_092719/";
-const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_093019/";
+const TString inputdir_2016_v2 = "nanoaod_all_skim_2016_082619/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_100219/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_100219/";
+const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_092719/";
+const TString datadir = "nanoaod_data_all_skim_100219/";
 
-//const TString lumistr = "137.728";
-const TString lumistr = "41.8"; //Units are in pb
+const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
 const TString lumistr_2017RunBtoE = "28.290";
 const TString lumistr_2017RunF    = "13.527";
@@ -42,17 +42,18 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonSF*ElectronSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonSF*ElectronSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonSF*ElectronSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonSF*ElectronSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonSF*ElectronSF*TauSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonSF*ElectronSF";
+const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronMedSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronMedSF";
 const TString vetoes = " && Pass_LeptonVeto";
+const TString vetoes_elemu = " && Stop0l_nVetoElecMuon == 0";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -1140,28 +1141,55 @@ BaseConfig srConfig(){
   config.outputdir = outputdir+"/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt, datasel + vetoes);
-  config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        lepvetowgt, datasel + vetoes);
-  config.addSample("znunu",       "Z#rightarrow#nu#nu", inputdir_2016+"znunu",   lepvetowgt, datasel + vetoes);
-  config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",          lepvetowgt, datasel + vetoes + qcdSpikeRemovals);
-  config.addSample("tW",          "tW",            inputdir_2016+"tW",           lepvetowgt, datasel + vetoes);
-  config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          lepvetowgt, datasel + vetoes);
-  config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",          lepvetowgt, datasel + vetoes);
-  config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",      lepvetowgt, datasel + vetoes);
+  config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
+  config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
+  //config.addSample("znunu",       "Z#rightarrow#nu#nu", inputdir_2016+"znunu",   "1.0", datasel + vetoes);
+  //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",          "1.0", datasel + vetoes + qcdSpikeRemovals);
+  config.addSample("tW",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes);
+  config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes);
+  //config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",          "1.0", datasel + vetoes);
+  //config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",      "1.0", datasel + vetoes);
+
+  config.addSample("ttbar-notau",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes_elemu);
+  config.addSample("wjets-notau",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes_elemu);
+  //config.addSample("znunu-notau",       "Z#rightarrow#nu#nu", inputdir_2016+"znunu",   "1.0", datasel + vetoes_elemu);
+  //config.addSample("qcd-notau",         "QCD",           inputdir_2016+"qcd",          "1.0", datasel + vetoes_elemu + qcdSpikeRemovals);
+  config.addSample("tW-notau",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes_elemu);
+  config.addSample("ttW-notau",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes_elemu);
+  //config.addSample("ttZ-notau",         "ttZ",           inputdir_2016+"ttZ",          "1.0", datasel + vetoes_elemu);
+  //config.addSample("diboson-notau",     "Diboson",       inputdir_2016+"diboson",      "1.0", datasel + vetoes_elemu);
+
+  config.addSample("ttbar-v2",       "t#bar{t}",      inputdir_2016_v2+"ttbar",        "1.0", datasel + vetoes);
+  config.addSample("wjets-v2",       "W+jets",        inputdir_2016_v2+"wjets",        "1.0", datasel + vetoes);
+  //config.addSample("znunu",       "Z#rightarrow#nu#nu", inputdir_2016_v2+"znunu",   "1.0", datasel + vetoes);
+  //config.addSample("qcd",         "QCD",           inputdir_2016_v2+"qcd",          "1.0", datasel + vetoes + qcdSpikeRemovals);
+  config.addSample("tW-v2",          "tW",            inputdir_2016_v2+"tW",           "1.0", datasel + vetoes);
+  config.addSample("ttW-v2",         "ttW",           inputdir_2016_v2+"ttW",          "1.0", datasel + vetoes);
+  //config.addSample("ttZ",         "ttZ",           inputdir_2016_v2+"ttZ",          "1.0", datasel + vetoes);
+  //config.addSample("diboson",     "Diboson",       inputdir_2016_v2+"diboson",      "1.0", datasel + vetoes);
+
+  config.addSample("ttbar-v2-notau",       "t#bar{t}",      inputdir_2016_v2+"ttbar",        "1.0", datasel + vetoes_elemu);
+  config.addSample("wjets-v2-notau",       "W+jets",        inputdir_2016_v2+"wjets",        "1.0", datasel + vetoes_elemu);
+  //config.addSample("znunu-notau",       "Z#rightarrow#nu#nu", inputdir_2016_v2+"znunu",   "1.0", datasel + vetoes_elemu);
+  //config.addSample("qcd-notau",         "QCD",           inputdir_2016_v2+"qcd",          "1.0", datasel + vetoes_elemu + qcdSpikeRemovals);
+  config.addSample("tW-v2-notau",          "tW",            inputdir_2016_v2+"tW",           "1.0", datasel + vetoes_elemu);
+  config.addSample("ttW-v2-notau",         "ttW",           inputdir_2016_v2+"ttW",          "1.0", datasel + vetoes_elemu);
+  //config.addSample("ttZ-notau",         "ttZ",           inputdir_2016_v2+"ttZ",          "1.0", datasel + vetoes_elemu);
+  //config.addSample("diboson-notau",     "Diboson",       inputdir_2016_v2+"diboson",      "1.0", datasel + vetoes_elemu);
 
 //  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "signals/T2fbd_500_420",  sigwgt, datasel + vetoes);
 //  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "signals/T2fbd_500_450",  sigwgt, datasel + vetoes);
 //  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "signals/T2fbd_500_480",  sigwgt, datasel + vetoes);
 //  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "signals/T2cc_500_490",   sigwgt, datasel + vetoes);
 
-  config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_sig+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_sig+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_sig+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
-  config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_sig+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
+  //config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_sig+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
+  //config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
+  //config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
+  //config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_sig+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
+  //config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_sig+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
+  //config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
+  //config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
+  //config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_sig+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
 //  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "signals/T2tt_1100_1",    sigwgt, datasel + vetoes);
 //  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "signals/T2bW_850_1",     sigwgt, datasel + vetoes);
 //  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "signals/T2bW_550_350",   sigwgt, datasel + vetoes);
@@ -1244,7 +1272,7 @@ BaseConfig qcdConfig(){
   config.addSample("znunu-2018postHEM-cr",       "Znunu",         inputdir_2018+"znunu",       lepvetowgt_postHEM, dataselHEM + vetoes + dphi_invert);
 
   // onelepcr: norm correction for other bkg subtraction
-  config.addSample("data-norm",           "Data",          datadir+"met", "1.0",      datasel + revert_vetoes + dphi_cut);
+  config.addSample("data-norm",           "Data",          datadir+"met", "1.0",      datasel + trigSR + revert_vetoes + dphi_cut);
   config.addSample("ttbar-2016-norm",     "t#bar{t}",      inputdir_2016+"ttbar",     lepselwgt,   datasel + revert_vetoes + dphi_cut);
   config.addSample("wjets-2016-norm",     "W+jets",        inputdir_2016+"wjets",     lepselwgt,   datasel + revert_vetoes + dphi_cut);
   config.addSample("tW-2016-norm",        "tW",            inputdir_2016+"tW",        lepselwgt,   datasel + revert_vetoes + dphi_cut);

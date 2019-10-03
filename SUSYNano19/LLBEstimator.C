@@ -8,7 +8,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
 #include "SRParameters.hh"
-//#include "SRParameters_2016.hh"
+//#include "SRParameters_TF_HM_2.hh"
 
 using namespace EstTools;
 
@@ -30,11 +30,11 @@ vector<Quantity> LLBPred(){
   digits["_TF_SR_extrap"] = -5;
   digits["_pred"] = -5;
 
-  l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "yields_llb_all_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "ttbarplusw-sr-int", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "ttbarplusw-sr-int", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "LLB/yields_llb_all_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "ttbarplusw", "ttbarplusw-sr", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_hm.tex", "hm", digits);
   }
 
   return l.yields.at("_pred");
@@ -71,57 +71,57 @@ vector<Quantity> LLBPredSeparate(){
   digits["_TF_CR_to_SR_noextrap-2018postHEM"] = -3;
   digits["_TF_SR_extrap-2018postHEM"] = -3;
 
-  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap", "_pred"}, labelMap, "LLB/yields_llb_all_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "yields_llb_all_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_pred-2016"}, labelMap, "yields_llb_2016_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_pred-2016"}, labelMap, "LLB/yields_llb_2016_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_TF_CR_to_SR_noextrap-2016", "_TF_SR_extrap-2016", "_pred-2016"}, labelMap, "yields_llb_2016_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_TF_CR_to_SR_noextrap-2016", "_TF_SR_extrap-2016", "_pred-2016"}, labelMap, "LLB/yields_llb_2016_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_pred-2016"}, labelMap, "yields_llb_2016_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_pred-2016"}, labelMap, "LLB/yields_llb_2016_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "yields_llb_2017RunBtoE_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_TF_CR_to_SR_noextrap-2017RunBtoE", "_TF_SR_extrap-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "yields_llb_2017RunBtoE_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_TF_CR_to_SR_noextrap-2017RunBtoE", "_TF_SR_extrap-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "yields_llb_2017RunBtoE_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "yields_llb_2017RunF_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_TF_CR_to_SR_noextrap-2017RunF", "_TF_SR_extrap-2017RunF", "_pred-2017RunF"}, labelMap, "yields_llb_2017RunF_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_TF_CR_to_SR_noextrap-2017RunF", "_TF_SR_extrap-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "yields_llb_2017RunF_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "yields_llb_2018preHEM_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_TF_CR_to_SR_noextrap-2018preHEM", "_TF_SR_extrap-2018preHEM", "_pred-2018preHEM"}, labelMap, "yields_llb_2018preHEM_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_TF_CR_to_SR_noextrap-2018preHEM", "_TF_SR_extrap-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "yields_llb_2018preHEM_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "yields_llb_2018postHEM_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_TF_CR_to_SR_noextrap-2018postHEM", "_TF_SR_extrap-2018postHEM", "_pred-2018postHEM"}, labelMap, "yields_llb_2018postHEM_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_TF_CR_to_SR_noextrap-2018postHEM", "_TF_SR_extrap-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "yields_llb_2018postHEM_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_hm.tex", "hm", digits);
   }
 
   vector<TString> tf = {"_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap"};
 
   for(int i = 0; i != tf.size(); i++){
-    auto hAll = convertToHist(l.yields.at(tf[i]),"TF All" + to_string(i),";Search Region;Events");
-    auto h2016 = convertToHist(l.yields.at(tf[i]+"-2016"),"TF 2016" + to_string(i),";Search Region;Events");
-    auto h2017RunBtoE = convertToHist(l.yields.at(tf[i]+"-2017RunBtoE"),"TF 2017RunBtoE" + to_string(i),";Search Region;Events");
-    auto h2017RunF = convertToHist(l.yields.at(tf[i]+"-2017RunF"),"TF 2017RunF" + to_string(i),";Search Region;Events");
-    auto h2018preHEM = convertToHist(l.yields.at(tf[i]+"-2018preHEM"),"TF 2018preHEM" + to_string(i),";Search Region;Events");
-    auto h2018postHEM = convertToHist(l.yields.at(tf[i]+"-2018postHEM"),"TF 2018postHEM" + to_string(i),";Search Region;Events");
+    auto hAll = convertToHist(l.yields.at(tf[i]),"TF All" + to_string(i),";Search Region;Transfer Factor");
+    auto h2016 = convertToHist(l.yields.at(tf[i]+"-2016"),"TF 2016" + to_string(i),";Search Region;Transfer Factor");
+    auto h2017RunBtoE = convertToHist(l.yields.at(tf[i]+"-2017RunBtoE"),"TF 2017RunBtoE" + to_string(i),";Search Region;Transfer Factor");
+    auto h2017RunF = convertToHist(l.yields.at(tf[i]+"-2017RunF"),"TF 2017RunF" + to_string(i),";Search Region;Transfer Factor");
+    auto h2018preHEM = convertToHist(l.yields.at(tf[i]+"-2018preHEM"),"TF 2018preHEM" + to_string(i),";Search Region;Transfer Factor");
+    auto h2018postHEM = convertToHist(l.yields.at(tf[i]+"-2018postHEM"),"TF 2018postHEM" + to_string(i),";Search Region;Transfer Factor");
 
     prepHists({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, false, false, false, {kBlack, kRed, kBlue, kGreen, kAzure, kMagenta});
 
@@ -165,8 +165,8 @@ vector<Quantity> LLBPredSeparate(){
     else       c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.1, 110);
     TString outputBase = "LostLepton"+tf[i]+"_Comparison";
     c->SetTitle(outputBase);
-    c->Print(l.config.outputdir+"/"+outputBase+".pdf");
-    c->Print(l.config.outputdir+"/"+outputBase+".C");
+    c->Print(l.config.outputdir+"/TransferFactor/"+outputBase+".pdf");
+    c->Print(l.config.outputdir+"/TransferFactor/"+outputBase+".C");
 
     TFile *output = new TFile(l.config.outputdir+"/"+outputBase+".root", "RECREATE");
     hAll->Write();
@@ -183,12 +183,13 @@ vector<Quantity> LLBPredSeparate(){
     TH1F* h2017RunFSum    = new TH1F("hTF_2", "Transfer Factors", 41, -0.025, 2.025);
     TH1F* h2018preHEMSum  = new TH1F("hTF_3", "Transfer Factors", 41, -0.025, 2.025);
     TH1F* h2018postHEMSum = new TH1F("hTF_4", "Transfer Factors", 41, -0.025, 2.025);
-    for(unsigned int i = 0; i != h2016_div->GetNbinsX() + 1; i++){
+    for(unsigned int i = 1; i != h2016_div->GetNbinsX(); i++){
       h2016Sum->Fill(h2016_div->GetBinContent(i));
       h2017RunBtoESum->Fill(h2017RunBtoE_div->GetBinContent(i));
       h2017RunFSum->Fill(h2017RunF_div->GetBinContent(i));
       h2018preHEMSum->Fill(h2018preHEM_div->GetBinContent(i));
       h2018postHEMSum->Fill(h2018postHEM_div->GetBinContent(i));
+      //cout << "2016: " << h2016_div->GetBinContent(i) << ", 2017 RunBtoE: " << h2017RunBtoE_div->GetBinContent(i) << ", 2017 RunF: " << h2017RunF_div->GetBinContent(i) << ", 2018 preHEM: " << h2018preHEM_div->GetBinContent(i) << ", 2018 postHEM: " << h2018postHEM_div->GetBinContent(i) << endl;
     }
     TFSumCanvas->cd();
     h2016Sum->SetLineWidth(2);
@@ -201,7 +202,16 @@ vector<Quantity> LLBPredSeparate(){
     h2018preHEMSum->SetLineColor(kAzure);
     h2018postHEMSum->SetLineWidth(2);
     h2018postHEMSum->SetLineColor(kMagenta);
+
+    int max2016 = h2016Sum->GetMaximum();
+    int max2017RunBtoE = h2017RunBtoESum->GetMaximum();
+    int max2017RunF = h2017RunFSum->GetMaximum();
+    int max2018preHEM = h2018preHEMSum->GetMaximum();
+    int max2018PostHEM = h2018postHEMSum->GetMaximum();
     
+    int max = std::max(max2016, std::max(std::max(max2017RunBtoE, max2017RunF), std::max(max2018preHEM, max2018PostHEM)));
+    h2016Sum->SetMaximum(1.1*max);
+
     h2016Sum->GetYaxis()->SetTitleFont(62);
     h2016Sum->GetYaxis()->CenterTitle(kTRUE);
     h2016Sum->GetXaxis()->SetTitleFont(62);
@@ -214,7 +224,7 @@ vector<Quantity> LLBPredSeparate(){
     float Mean2017RunF = h2017RunFSum->GetMean();
     float Mean2018preHEM = h2018preHEMSum->GetMean();
     float Mean2018postHEM = h2018postHEMSum->GetMean();
-    
+
     h2016Sum->Draw();
     h2017RunBtoESum->Draw("same");
     h2017RunFSum->Draw("same");
@@ -252,9 +262,9 @@ vector<Quantity> LLBPredSeparate(){
     CMS_lumi(TFSumCanvas, 4, 10);
     TFSumCanvas->Update();   
  
-    TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.pdf");
-    TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.C");
-    TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum_canvas.root");
+    TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum.pdf");
+    TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum.C");
+    TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum_canvas.root");
 
     delete gROOT->FindObject("hTF_0"); 
     delete gROOT->FindObject("hTF_1");  
@@ -513,20 +523,20 @@ void SBv4Yields(){
   config.crCatMaps.clear();
 
   config.samples.clear();
-  //config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*ISRWeight", datasel + vetoes);
-  //config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("tW-sr",          "tW",            inputdir_2016+"tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("ttW-sr",         "ttW",           inputdir_2016+"ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("ttZ-sr",         "ttZ",           inputdir_2016+"ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("znunu-sr",       "znunu",         inputdir_2016+"znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("ttbar-v2-sr",       "t#bar{t}",      inputdir_2016+"../nanoaod_all_skim_2016_082619/ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*ISRWeight", datasel + vetoes);
-  //config.addSample("wjets-v2-sr",       "W+jets",        inputdir_2016+"../nanoaod_all_skim_2016_082619/wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("tW-v2-sr",          "tW",            inputdir_2016+"../nanoaod_all_skim_2016_082619/tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("ttW-v2-sr",         "ttW",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("ttZ-v2-sr",         "ttZ",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("qcd-v2-sr",         "QCD",           inputdir_2016+"../nanoaod_all_skim_2016_082619/qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
-  //config.addSample("znunu-v2-sr",       "znunu",         inputdir_2016+"../nanoaod_all_skim_2016_082619/znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight*ISRWeight", datasel + vetoes);
+  //config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("tW-sr",          "tW",            inputdir_2016+"tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttW-sr",         "ttW",           inputdir_2016+"ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttZ-sr",         "ttZ",           inputdir_2016+"ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("znunu-sr",       "znunu",         inputdir_2016+"znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttbar-v2-sr",       "t#bar{t}",      inputdir_2016+"../nanoaod_all_skim_2016_082619/ttbar",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight*ISRWeight", datasel + vetoes);
+  //config.addSample("wjets-v2-sr",       "W+jets",        inputdir_2016+"../nanoaod_all_skim_2016_082619/wjets",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("tW-v2-sr",          "tW",            inputdir_2016+"../nanoaod_all_skim_2016_082619/tW",           "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttW-v2-sr",         "ttW",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttW",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("ttZ-v2-sr",         "ttZ",           inputdir_2016+"../nanoaod_all_skim_2016_082619/ttZ",          "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("qcd-v2-sr",         "QCD",           inputdir_2016+"../nanoaod_all_skim_2016_082619/qcd",    	    "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
+  //config.addSample("znunu-v2-sr",       "znunu",         inputdir_2016+"../nanoaod_all_skim_2016_082619/znunu",        "137.728*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*PrefireWeight", datasel + vetoes);
 
   config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
   config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
@@ -724,7 +734,7 @@ void plot1LepInclusive2016(){
 	//{"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
 	//{"dphij3met", BinInfo("Jet_dPhiMET[2]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
   };
-  //plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
+
   std::function<void(TCanvas*)> plotextra;
   std::function<void(TCanvas*)> plotextra30;
   for (auto &var : varDict){

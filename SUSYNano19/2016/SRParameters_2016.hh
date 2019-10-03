@@ -6,7 +6,7 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_092719/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_093019/";
 
 const TString outputdir = ".";
