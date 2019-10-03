@@ -152,31 +152,32 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(const vector<Quantity> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
+TH1D* convertToHist(const vector<Quantity> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
   auto nbins = vec.size();
+  if(manualBins > 0) nbins = manualBins;
   TH1D *hist;
 
   if (bin && bin->nbins==nbins){
     hist = new TH1D(hname, title, nbins, bin->plotbins.data());
     hist->SetXTitle(bin->label + (bin->unit=="" ? "" : "["+bin->unit+"]"));
   }else{
-    hist = new TH1D(hname, title, nbins, 0, nbins);
+    hist = new TH1D(hname, title, nbins, start, start + nbins);
   }
   hist->Sumw2();
   for (unsigned i=0; i<nbins; ++i){
-    hist->SetBinContent(i+1, vec.at(i).value);
-    hist->SetBinError(i+1, vec.at(i).error);
+    hist->SetBinContent(i+1, vec.at(i+start).value);
+    hist->SetBinError(i+1, vec.at(i+start).error);
   }
   return hist;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(const vector<QuantityAsymmErrors> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
+TH1D* convertToHist(const vector<QuantityAsymmErrors> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
   vector<Quantity> qv;
   for (auto &q : vec){
     qv.push_back(q.getQuantity(true));
   }
-  return convertToHist(qv, hname, title, bin);
+  return convertToHist(qv, hname, title, bin, start, manualBins);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
