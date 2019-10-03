@@ -22,7 +22,6 @@ void runBkgPred(){
   vector<std::string> binlist;
   map<std::string, map<std::string, std::string>> binMaps;
   map<std::string, map<std::string, vector<double>>> yieldsMap;
-  map<std::string, int> NumBinMaps;
 
   auto updateBinMap = [](const map<std::string, std::string>& orig, const map<std::string, std::string> &manual, const vector<std::string>& binlist){
     map<std::string, std::string> binmap;
@@ -80,6 +79,7 @@ void runBkgPred(){
   json j;
   j["binlist"] = binlist;
   j["binNum"] = lepcrBinNumMap;
+  j["unitNum"] = lepcrUnitNumMap;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;

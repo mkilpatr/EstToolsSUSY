@@ -42,15 +42,15 @@ const TString phowgt = wgtvar;
 
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =              wgtvar          + "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt  =              wgtvar          + "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt  =              wgtvar          + "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE  + "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE  + "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_RunF =         wgtvar_RunF     + "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF     + "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF     + "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_preHEM =       wgtvar_preHEM   + "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM   + "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM   + "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_postHEM =      wgtvar_postHEM  + "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM  + "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM  + "*MuonLooseSF*ElectronVetoSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -2448,7 +2448,6 @@ map<std::string, std::string> makeNumBinMap(){
   map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
 
   const auto &merged_srCatMap = mergedSRCatMap();
-  //const auto &merged_numBinMap = mergedSRNumbins();
 
   int binNum = 0;
   for (const auto &merged_cat_name : mergedSRbins){
@@ -2470,8 +2469,34 @@ map<std::string, std::string> makeNumBinMap(){
   return rltstr;
 }
 
+map<std::string, std::string> makeNumUnitMap(){
+  map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
+
+  const auto &split_srCatMap = srCatMap();
+
+  int UnitNum = 0;
+  for (const auto &split_cat_name : srbins){
+    const auto& split_bin = split_srCatMap.at(split_cat_name);
+      
+    for (unsigned ibin=0; ibin<split_bin.bin.nbins; ++ibin){
+      std::string splitsr_binname = ("bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin)).Data();
+      std::string splitsr_binnum = to_string(UnitNum);
+      results[splitsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
+      results[splitsr_binname].push_back(splitsr_binnum); 
+      UnitNum++;
+    }
+  }
+  map<std::string, std::string> rltstr;
+  for (const auto &s : results){
+    rltstr[s.first] = joinString(s.second, " + ").Data();
+    cout << s.first << endl << rltstr[s.first] << endl << endl;
+  }
+  return rltstr;
+}
+
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
 map<std::string, std::string> lepcrBinNumMap = makeNumBinMap();
+map<std::string, std::string> lepcrUnitNumMap = makeNumUnitMap();
 //map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
 map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

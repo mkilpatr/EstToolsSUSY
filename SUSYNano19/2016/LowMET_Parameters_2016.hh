@@ -32,7 +32,7 @@ const TString phowgt = wgtvar;
 
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF

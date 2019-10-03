@@ -43,15 +43,15 @@ const TString phowgt = wgtvar;
 
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronMedSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF";
 const TString vetoes = " && Pass_LeptonVeto";
 const TString vetoes_elemu = " && Stop0l_nVetoElecMuon == 0";
 
