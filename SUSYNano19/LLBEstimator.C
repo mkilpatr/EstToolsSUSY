@@ -289,7 +289,7 @@ vector<Quantity> LLBPredSeparate(){
   return l.yields.at("_pred");
 }
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//--------------------------------------------------
 
 void plotLepCR(){
   auto config = lepConfig();
@@ -489,6 +489,101 @@ void compSLep(){
     c->SaveAs(lepConfig().outputdir+"/llb_pred_cmp.pdf");
   }
 
+}
+
+// --------------------------------------------------
+
+void LLCompTau(){
+  auto config = lepConfig();
+  config.crCatMaps.clear();
+
+  config.samples.clear();
+  config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt+"*ISRWeight", datasel + vetoes);
+  config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        lepvetowgt, datasel + vetoes);
+  config.addSample("tW",          "tW",            inputdir_2016+"tW",           lepvetowgt, datasel + vetoes);
+  config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          lepvetowgt, datasel + vetoes);
+  
+  config.addSample("ttbar-notau",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt+"*ISRWeight", datasel + vetoes_elemu);
+  config.addSample("wjets-notau",       "W+jets",        inputdir_2016+"wjets",        lepvetowgt, datasel + vetoes_elemu);
+  config.addSample("tW-notau",          "tW",            inputdir_2016+"tW",           lepvetowgt, datasel + vetoes_elemu);
+  config.addSample("ttW-notau",         "ttW",           inputdir_2016+"ttW",          lepvetowgt, datasel + vetoes_elemu);
+  
+  config.addSample("ttbar-v2",       "t#bar{t}",      inputdir_2016_v2+"ttbar",        wgtvar_v2+"*ISRWeight", datasel + vetoes);
+  config.addSample("wjets-v2",       "W+jets",        inputdir_2016_v2+"wjets",        wgtvar_v2, datasel + vetoes);
+  config.addSample("tW-v2",          "tW",            inputdir_2016_v2+"tW",           wgtvar_v2, datasel + vetoes);
+  config.addSample("ttW-v2",         "ttW",           inputdir_2016_v2+"ttW",          wgtvar_v2, datasel + vetoes);
+  
+  config.addSample("ttbar-v2-notau",       "t#bar{t}",      inputdir_2016_v2+"ttbar",        wgtvar_v2+"*ISRWeight", datasel + vetoes_elemu);
+  config.addSample("wjets-v2-notau",       "W+jets",        inputdir_2016_v2+"wjets",        wgtvar_v2, datasel + vetoes_elemu);
+  config.addSample("tW-v2-notau",          "tW",            inputdir_2016_v2+"tW",           wgtvar_v2, datasel + vetoes_elemu);
+  config.addSample("ttW-v2-notau",         "ttW",           inputdir_2016_v2+"ttW",          wgtvar_v2, datasel + vetoes_elemu);
+
+  BaseEstimator z(config);
+  z.calcYields();
+  z.sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+  z.sumYields({"ttbar-notau", "wjets-notau", "tW-notau", "ttW-notau"}, "ttbarplusw-notau");
+  z.sumYields({"ttbar-v2", "wjets-v2", "tW-v2", "ttW-v2"}, "ttbarplusw-v2");
+  z.sumYields({"ttbar-v2-notau", "wjets-v2-notau", "tW-v2-notau", "ttW-v2-notau"}, "ttbarplusw-v2-notau");
+
+  vector<TString> sep = {"", "_LM", "_HM_1", "_HM_2"};
+
+  int start = 0, manualBins = 0;
+  for(int j = 0; j <= 3; j++){
+    if(j == 1){ 
+      start = 0;
+      manualBins = 53;
+    } else if(j == 2){
+      start = 53;
+      manualBins = 65;
+    } else if(j == 3){
+      start = 117;
+      manualBins = 65;
+    }
+    auto httbarplusw = convertToHist(z.yields.at("ttbarplusw"),"ttbarplusw_" + to_string(j),";Search Region;Events", nullptr, start, manualBins);
+    auto httbarplusw_notau = convertToHist(z.yields.at("ttbarplusw-notau"),"ttbarplusw-notau_" + to_string(j),";Search Region;Events", nullptr, start, manualBins);
+    auto httbarplusw_v2 = convertToHist(z.yields.at("ttbarplusw-v2"),"ttbarplusw-v2_" + to_string(j),";Search Region;Events", nullptr, start, manualBins);
+    auto httbarplusw_v2_notau = convertToHist(z.yields.at("ttbarplusw-v2-notau"),"ttbarplusw-v2-notau_" + to_string(j),";Search Region;Events", nullptr, start, manualBins);
+
+    prepHists({httbarplusw, httbarplusw_notau, httbarplusw_v2, httbarplusw_v2_notau}, false, false, false, {kRed, kBlue, kGreen, kMagenta});
+
+    TH1* hSBv3_div = (TH1*)httbarplusw->Clone();
+    hSBv3_div->Divide(httbarplusw_notau);
+    hSBv3_div->SetLineWidth(2);
+    prepHists({hSBv3_div}, false, false, false, {kBlue});
+    
+    TH1* hSBv2_div = (TH1*)httbarplusw_v2->Clone();
+    hSBv2_div->Divide(httbarplusw_v2_notau);
+    hSBv2_div->SetLineWidth(2);
+    prepHists({hSBv2_div}, false, false, false, {kMagenta});
+
+    TH1* hTot_div = (TH1*)hSBv3_div->Clone();
+    hTot_div->Divide(hSBv2_div);
+    hTot_div->SetLineWidth(2);
+    prepHists({hTot_div}, false, false, false, {kBlue});
+
+    auto leg = prepLegends({}, {""}, "l");
+    appendLegends(leg, {httbarplusw}, {"LL w/ tau veto v3"}, "l");
+    appendLegends(leg, {httbarplusw_notau}, {"LL w/o tau veto v3"}, "l");
+    appendLegends(leg, {httbarplusw_v2}, {"LL w/ tau veto v2"}, "l");
+    appendLegends(leg, {httbarplusw_v2_notau}, {"LL w/o tau veto v2"}, "l");
+    leg->SetTextSize(0.03);
+    leg->SetY1NDC(leg->GetY2NDC() - 0.2);
+    auto c = drawCompAndRatio({httbarplusw, httbarplusw_notau, httbarplusw_v2, httbarplusw_v2_notau}, {hSBv3_div, hSBv2_div}, leg, "N_{tau}/N_{notau}", 0.001, 1.001, true, 0.1);
+    TString outputBase = "LostLepton_Tau_Comparison" + sep[j];
+    c->SetTitle(outputBase);
+    c->Print(z.config.outputdir+"/"+outputBase+".pdf");
+    
+    auto leg_ratio = prepLegends({}, {""}, "l");
+    appendLegends(leg_ratio, {hSBv3_div}, {"LL ratio v3"}, "l");
+    appendLegends(leg_ratio, {hSBv2_div}, {"LL ratio v2"}, "l");
+    leg_ratio->SetTextSize(0.03);
+    leg_ratio->SetY1NDC(leg_ratio->GetY2NDC() - 0.2);
+    auto c_ratio = drawCompAndRatio({hSBv3_div, hSBv2_div}, {hTot_div}, leg_ratio, "N_{v3}/N_{v2}", 0.499, 1.500, true, 0.1, 10);
+    outputBase = "LostLepton_Tau_Comparison_Ratio" + sep[j];
+    c_ratio->SetTitle(outputBase);
+    c_ratio->Print(z.config.outputdir+"/"+outputBase+".pdf");
+  }
+  
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

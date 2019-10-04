@@ -8,7 +8,6 @@
 #include <fstream>
 
 #include "SRParameters.hh"
-//#include "SRParameters_2016.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../utils/Estimator.hh"
