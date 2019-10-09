@@ -2497,7 +2497,7 @@ map<std::string, std::string> makeNumUnitMap(){
 map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
 map<std::string, std::string> lepcrBinNumMap = makeNumBinMap();
 map<std::string, std::string> lepcrUnitNumMap = makeNumUnitMap();
-//map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
+map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
 map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 }

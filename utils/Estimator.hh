@@ -805,7 +805,7 @@ public:
       addLegendEntry(leg, hdata, d_sample->label, "LP");
     }
 
-    vector<TString> mc = {"ttbar", "wjets", "tW", "ttW"};
+    vector<TString> mc = {"ttbar", "wjets", "tW", "ttW", "znunu", "qcd"};
     for (auto &scomb : mc){
       TH1 *hist = nullptr;
       for (auto &sname : mc_samples){
