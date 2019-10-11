@@ -8,7 +8,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
 //#include "SRParameters.hh"
-#include "2016/SRParameters_2016_njets30.hh"
+#include "SRParameters_njets30.hh"
 
 using namespace EstTools;
 
@@ -19,8 +19,8 @@ vector<Quantity> LLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  l.pred2016();
-  //l.pred();
+  //l.pred2016();
+  l.pred();
 
   l.printYields();
 
@@ -136,7 +136,7 @@ vector<Quantity> LLBPredSeparate(){
       auto h2018preHEM = convertToHist(l.yields.at(tf[i]+"-2018preHEM"),"TF 2018preHEM" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2018postHEM = convertToHist(l.yields.at(tf[i]+"-2018postHEM"),"TF 2018postHEM" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
 
-      prepHists({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, false, false, false, {kBlack, kRed, kBlue, kGreen, kAzure, kMagenta});
+      prepHists({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, false, false, false, {kBlack, kRed, kBlue, kGreen, kPink, kMagenta});
 
       TH1* h2016_div = (TH1*)h2016->Clone();
       h2016_div->Divide(hAll);
@@ -156,7 +156,7 @@ vector<Quantity> LLBPredSeparate(){
       TH1* h2018preHEM_div = (TH1*)h2018preHEM->Clone();
       h2018preHEM_div->Divide(hAll);
       h2018preHEM_div->SetLineWidth(2);
-      prepHists({h2018preHEM_div}, false, false, false, {kAzure});
+      prepHists({h2018preHEM_div}, false, false, false, {kPink});
 
       TH1* h2018postHEM_div = (TH1*)h2018postHEM->Clone();
       h2018postHEM_div->Divide(hAll);
@@ -212,7 +212,7 @@ vector<Quantity> LLBPredSeparate(){
       h2017RunFSum->SetLineWidth(2);
       h2017RunFSum->SetLineColor(kGreen);
       h2018preHEMSum->SetLineWidth(2);
-      h2018preHEMSum->SetLineColor(kAzure);
+      h2018preHEMSum->SetLineColor(kPink);
       h2018postHEMSum->SetLineWidth(2);
       h2018postHEMSum->SetLineColor(kMagenta);
 

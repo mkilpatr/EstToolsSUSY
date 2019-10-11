@@ -79,7 +79,8 @@ void runBkgPred(){
   json j;
   j["binlist"] = binlist;
   j["binNum"] = lepcrBinNumMap;
-  j["unitNum"] = lepcrUnitNumMap;
+  j["unitSRNum"] = lepcrUnitNumMap;
+  j["unitCRNum"] = lepcrUnitCRNumMap;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
