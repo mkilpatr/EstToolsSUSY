@@ -53,6 +53,8 @@ void runBkgPred(){
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
+  binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
+  binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
 
 
   //vector<const BaseEstimator*> allPreds = {&l, &s};
