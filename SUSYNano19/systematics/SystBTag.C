@@ -65,7 +65,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
   {
     sys_name = "nominal";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -75,7 +75,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     sys_name = "b_Up";
     btagwgt = "BTagWeight_Up";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -85,7 +85,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     sys_name = "b_Down";
     btagwgt = "BTagWeight_Down";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
