@@ -92,7 +92,7 @@ public:
     //Sum yields from each era
     sumYields({"qcd-2016-sr", "qcd-2017RunBtoE-sr", "qcd-2017RunF-sr", "qcd-2018preHEM-sr", "qcd-2018postHEM-sr"}, "qcd-sr");
     sumYields({"qcd-2016-cr", "qcd-2017RunBtoE-cr", "qcd-2017RunF-cr", "qcd-2018preHEM-cr", "qcd-2018postHEM-cr"}, "qcd-cr");
-    sumYields({"qcd-2016-sr-int", "qcd-2017RunBtoE-sr-int", "qcd-2017RunF-sr-int", "qcd-2018preHEM-sr-int", "qcd-2018postHEM-sr-int"}, "qcd-sr-int");
+    if(splitTF) sumYields({"qcd-2016-sr-int", "qcd-2017RunBtoE-sr-int", "qcd-2017RunF-sr-int", "qcd-2018preHEM-sr-int", "qcd-2018postHEM-sr-int"}, "qcd-sr-int");
 
     // FIXME
     for (auto &q : yields.at("qcd-cr")){
@@ -341,7 +341,7 @@ public:
 
 
   // whether run bootstrapping for QCD uncertainty or not
-  bool runBootstrapping = true;
+  bool runBootstrapping = false;
 
   // whether to split TF when making prediction tables
   bool splitTF = false;

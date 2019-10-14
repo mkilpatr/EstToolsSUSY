@@ -11,6 +11,7 @@
 using json = nlohmann::json;
 
 #include "../EstMethods/LLBEstimator.hh"
+#include "../EstMethods/QCDEstimator.hh"
 #include "SRParameters_dc.hh"
 
 
@@ -47,18 +48,25 @@ void runBkgPred(){
   }
   binlist = s.binlist;
 
+  auto qcdcfg = qcdConfig();
+  QCDEstimator q(qcdcfg);
+  q.pred();
+  q.printYields();
+  q.prepDatacard();
+  binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
+
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
-  binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
+  //binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
   binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
 
 
   //vector<const BaseEstimator*> allPreds = {&l, &s};
-  vector<const BaseEstimator*> allPreds = {&l};
+  vector<const BaseEstimator*> allPreds = {&q, &l};
 
   for (const auto *v : allPreds){
     yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
@@ -104,7 +112,8 @@ void runSignalYields(){
 
   map<std::string, map<std::string, vector<double>>> yieldsMap;
 
-  for (const auto &signal : signals){
+  //for (const auto &signal : signals){
+  for (const auto &signal : signals_small){
     BaseEstimator s(signalConfig(signal));
     s.calcYields();
     s.convertYields(signal, "");
@@ -131,7 +140,8 @@ void runSignalYields(){
   }
 
   json j;
-  j["signals"] = signals;
+  //j["signals"] = signals;
+  j["signals"] = signals_small;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
   jout.open(outputdir+"/dc_SigYields.json");
@@ -146,5 +156,5 @@ void runSignalYields(){
 
 void BkgPred_dc_LL(){
   runBkgPred();
-  //runSignalYields();
+  runSignalYields();
 }
