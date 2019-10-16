@@ -46,15 +46,15 @@ map<TString, vector<Quantity>> getLLBPred(){
 
   return {
     {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
+    //{"ttZ",        l.yields.at("ttZ-sr")},
+    //{"diboson",    l.yields.at("diboson-sr")},
   };
 }
 
 
 void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
 
-  vector<TString> bkgnames  = {"diboson", "ttZ", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -89,26 +89,6 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
-  //// btag - light up
-  //{
-  //  sys_name = "b_light_Up";
-  //  btagwgt = "BTagWeightLight_Up";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-
-  //// btag - light down
-  //{
-  //  sys_name = "b_light_Down";
-  //  btagwgt = "BTagWeightLight_Down";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);

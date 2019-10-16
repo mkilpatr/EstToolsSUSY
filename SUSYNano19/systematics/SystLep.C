@@ -46,25 +46,25 @@ map<TString, vector<Quantity>> getLLBPred(){
 
   return {
     {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
+    //{"ttZ",        l.yields.at("ttZ-sr")},
+    //{"diboson",    l.yields.at("diboson-sr")},
   };
 }
 
 
 void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "znunu", "diboson", "ttZ", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  inputdir = "/data/hqu/ramdisk/20170207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -72,21 +72,9 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
   // ele - up
   {
-    sys_name = "eff_e_UP";
-    tnpwgtlm = "leptnpweightLM_ELE_UP";
-    tnpwgthm = "leptnpweightHM_ELE_UP";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // ele - down
-  {
-    sys_name = "eff_e_DOWN";
-    tnpwgtlm = "leptnpweightLM_ELE_DOWN";
-    tnpwgthm = "leptnpweightHM_ELE_DOWN";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    sys_name = "eff_e_err";
+    elewgt = "(1 + ElectronVetoSFErr)";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -95,21 +83,9 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // -----------------------
   // mu - up
   {
-    sys_name = "eff_mu_UP";
-    tnpwgtlm = "leptnpweightLM_MU_UP";
-    tnpwgthm = "leptnpweightHM_MU_UP";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // mu - down
-  {
-    sys_name = "eff_mu_DOWN";
-    tnpwgtlm = "leptnpweightLM_MU_DOWN";
-    tnpwgthm = "leptnpweightHM_MU_DOWN";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    sys_name = "eff_mu_err";
+    muonwgt = "(1 + MuonLooseSFErr)";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -119,9 +95,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // tau - up
   {
     sys_name = "eff_tau_UP";
-    vetowgtlm = "lepvetoweightLM_UP";
-    vetowgthm = "lepvetoweightHM_UP";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    tauwgt = "TauSF_UP";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -130,9 +105,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // tau - down
   {
     sys_name = "eff_tau_DOWN";
-    vetowgtlm = "lepvetoweightLM_DOWN";
-    vetowgthm = "lepvetoweightHM_DOWN";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    tauwgt = "TauSF_DOWN";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -156,7 +130,10 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
         auto name_down = TString(sPair.first).ReplaceAll("_UP", "_DOWN");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
-      }else{
+      } else if(sPair.first.EndsWith("err")){
+	auto varerr = sPair.second / nominal_pred;
+	uncs = Quantity::CombineErrUncs(varerr);
+      }	else{
         uncs = sPair.second / nominal_pred;
       }
 

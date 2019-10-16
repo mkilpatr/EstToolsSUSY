@@ -140,6 +140,16 @@ public:
     return unc;
   }
 
+  static std::vector<Quantity> CombineErrUncs(const std::vector<Quantity> &err){
+    // input need to be relative unc: "up/nominal", "down/nominal"
+    std::vector<Quantity> unc;
+    for (unsigned i=0; i<err.size(); ++i){
+      double val = err[i].value; // take the avg of abs. diff.
+      unc.emplace_back(1 + val, 0); // don't forget to plus 1
+    }
+    return unc;
+  }
+
   Quantity& setSqrtN(bool setAtLeastOne = false){
     if (setAtLeastOne && value<1){
       value = 1;

@@ -46,73 +46,70 @@ map<TString, vector<Quantity>> getLLBPred(){
 
   return {
     {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
+    //{"ttZ",        l.yields.at("ttZ-sr")},
+    //{"diboson",    l.yields.at("diboson-sr")},
   };
 }
 
 
 void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
-//  vector<TString> sdmvaSyst = {"sdMVAWeight", "sdMVAWeight_STATS_UP"};
-//  vector<TString> resTopSyst = {"resTopWeight", "resTopWeight_STATS_UP"};
-
-  vector<TString> sdmvaSystMistag = {"sdMVAWeight_MISTAG_STATS_W", "sdMVAWeight_MISTAG_STATS_T", "sdMVAWeight_MISTAG_NB", "sdMVAWeight_MISTAG_PS"};
-  vector<TString> resTopSystMistag = {"resTopWeight_MISTAG_STATS", "resTopWeight_MISTAG_NB", "resTopWeight_MISTAG_PS"};
-
-  vector<TString> sdmvaSystEff = {"sdMVAWeight_STATS_W", "sdMVAWeight_STATS_T", "sdMVAWeight_PS", "sdMVAWeight_GEN", "sdMVAWeight_MISTAG_UP_W", "sdMVAWeight_MISTAG_UP_T"};
-  vector<TString> resTopSystEff = {"resTopWeight_STATS", "resTopWeight_PS", "resTopWeight_GEN", "resTopWeight_MISTAG_UP", "resTopWeight_NMATCH"};
-
-
-  vector<TString> bkgnames  = {"qcd", "znunu", "diboson", "ttZ", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  inputdir = "/data/hqu/trees/20170221_wtopSyst";
+  //inputdir = "/data/hqu/trees/20170221_wtopSyst";
 
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // mistag: relevant for all bkgs
-  for (auto &sdsyst : sdmvaSystMistag){
-    sys_name = sdsyst; sdmvawgt = sdsyst; restopwgt = "resTopWeight";
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-  for (auto &resyst : resTopSystMistag){
-    sys_name = resyst; sdmvawgt = "sdMVAWeight"; restopwgt = resyst;
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  {
+    sys_name = "wtag_err";
+    wtagwgt = "(1 + WtagSFErr)"; sdmvawgt = "TopSF"; restopwgt = "1";
+    cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
+  //{
+  //  sys_name = "toptag_err";
+  //  wtagwgt = "WtagSF"; sdmvawgt = "(1 + TopSFErr)"; restopwgt = "1";
+  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  // eff: only for ttbarplusw, ttZ and VV
-  for (auto &sdsyst : sdmvaSystEff){
-    sys_name = sdsyst; sdmvawgt = sdsyst; restopwgt = "resTopWeight";
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-  for (auto &resyst : resTopSystEff){
-    sys_name = resyst; sdmvawgt = "sdMVAWeight"; restopwgt = resyst;
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //{
+  //  sys_name = "restop_Up";
+  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
+  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
+
+  //{
+  //  sys_name = "restop_Down";
+  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
+  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
@@ -122,7 +119,20 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      auto uncs = sPair.second / nominal_pred;
+      if(sPair.first.EndsWith("_DOWN")) continue; // ignore down: processed at the same time as up
+      vector<Quantity> uncs;
+      
+      if(sPair.first.EndsWith("_UP")){
+        auto varup = sPair.second / nominal_pred;
+        auto name_down = TString(sPair.first).ReplaceAll("_UP", "_DOWN");
+        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
+        uncs = Quantity::combineUpDownUncs(varup, vardown);
+      } else if(sPair.first.EndsWith("err")){
+        auto varerr = sPair.second / nominal_pred;
+        uncs = Quantity::CombineErrUncs(varerr);
+      } else{
+        uncs = sPair.second / nominal_pred;
+      }
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){

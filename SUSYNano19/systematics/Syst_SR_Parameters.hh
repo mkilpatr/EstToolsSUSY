@@ -25,7 +25,8 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights
 TString wtagwgt = "WtagSF";
 TString sdmvawgt = "TopSF"; // top/W
-TString restopwgt = "restopSF";
+//TString restopwgt = "restopSF";
+TString restopwgt = "1";
 TString softbwgt = "SoftBSF";
 
 TString puwgt = "puWeight"; // PU
