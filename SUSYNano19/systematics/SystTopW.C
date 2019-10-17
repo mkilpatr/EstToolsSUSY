@@ -66,7 +66,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   {
     sys_name = "nominal";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -74,42 +74,42 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   {
     sys_name = "wtag_err";
     wtagwgt = "(1 + WtagSFErr)"; sdmvawgt = "TopSF"; restopwgt = "1";
-    cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  //{
-  //  sys_name = "toptag_err";
-  //  wtagwgt = "WtagSF"; sdmvawgt = "(1 + TopSFErr)"; restopwgt = "1";
-  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
+  {
+    sys_name = "toptag_err";
+    wtagwgt = "WtagSF"; sdmvawgt = "(1 + TopSFErr)"; restopwgt = "1";
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    auto llb = getLLBPred();
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
 
-  //{
-  //  sys_name = "restop_Up";
-  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
-  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
+  {
+    sys_name = "restop_Up";
+    wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    auto llb = getLLBPred();
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
 
-  //{
-  //  sys_name = "restop_Down";
-  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
-  //  cout << "\n\n ====== Using weights " wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
+  {
+    sys_name = "restop_Down";
+    wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    auto llb = getLLBPred();
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
