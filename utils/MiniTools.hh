@@ -88,6 +88,11 @@ TString createCutString(TString name, const std::map<TString, TString>& cutMap, 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TString createCutString(TString name, std::map<TString, TString>& cutMap, TString delimiter="_"){
+  return translateString(name, cutMap, delimiter, " && ");
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1* normalize(TH1 *h, double norm = 1){
   h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
   return h;

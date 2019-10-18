@@ -91,25 +91,25 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  {
-    sys_name = "restop_Up";
-    wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //{
+  //  sys_name = "restop_Up";
+  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
+  //  cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  {
-    sys_name = "restop_Down";
-    wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //{
+  //  sys_name = "restop_Down";
+  //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
+  //  cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
@@ -134,6 +134,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
         uncs = sPair.second / nominal_pred;
       }
 
+	cout << "Uncertainty: " << uncs << endl;
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
         auto &cat = config.catMaps.at(cat_name);

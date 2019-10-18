@@ -116,13 +116,14 @@ TString qcdvetowgt_postHEM() {return lepvetowgt_postHEM();}
 TString sigwgt() {return lepvetowgt();}
 
 // triggers
-TString trigSR = " && Pass_trigger_MET";
+TString trigSR() { return " && Pass_trigger_MET"+jes_postfix;}
 TString trigPhoCR = " && passtrigphoOR && origmet<200";
 TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 TString datasel() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20"+jes_postfix+"))"; }
 TString dataselHEM() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run >= 319077 || run == 1) && Pass_exHEMVeto20"+jes_postfix+""; }
 TString qcdSpikeRemovals = "";
+//TString dphi_invert() {return " && Pass_dPhiQCD"+jes_postfix;}
 TString dphi_invert() {return " && Pass_dPhiQCD";}
 TString dphi_cut() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; } // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
 
@@ -190,6 +191,123 @@ std::map<TString, TString> cutMap = []{
     return cmap;
 }();
 
+std::map<TString, TString> cutMap_JESUp = []{
+    // Underscore "_" not allowed in the names!!!
+    std::map<TString, TString> cmap = {
+	{"lmNoDPhi",    "Stop0l_ISRJetPt_JESUp>=300 && Stop0l_Mtb_JESUp < 175 && Stop0l_nTop_JESUp==0 && Stop0l_nW_JESUp==0 && Stop0l_nResolved_JESUp==0 && Stop0l_METSig_JESUp>=10"},
+        {"dPhiLM",      "Pass_dPhiMETLowDM_JESUp"},
+        {"hmNoDPhi",    "Stop0l_nJets_JESUp>=5 && Stop0l_nbtags_JESUp>=1"},
+        {"dPhiHM",      "Pass_dPhiMETHighDM_JESUp"},
+        {"invertDPhi",  "Pass_dPhiQCD"},
+ 
+        {"nb0",         "Stop0l_nbtags_JESUp==0"},
+        {"nb1",         "Stop0l_nbtags_JESUp==1"},
+        {"nbgeq1",      "Stop0l_nbtags_JESUp>=1"},
+        {"nb2",         "Stop0l_nbtags_JESUp>=2"},
+        {"nbeq2",       "Stop0l_nbtags_JESUp==2"},
+        {"nb3",         "Stop0l_nbtags_JESUp>=3"},
+        {"nivf0",       "Stop0l_nSoftb==0"},
+        {"nivf1",       "Stop0l_nSoftb>=1"},
+        {"lowptisr",    "Stop0l_ISRJetPt_JESUp>=300 && Stop0l_ISRJetPt_JESUp<500"},
+        {"medptisr",    "Stop0l_ISRJetPt_JESUp>=300"},
+        {"highptisr",   "Stop0l_ISRJetPt_JESUp>=500"},
+        {"nj2to5",      "Stop0l_nJets_JESUp>=2 && Stop0l_nJets_JESUp<=5"},
+        {"nj6",         "Stop0l_nJets_JESUp>=6"},
+        {"nj7",         "Stop0l_nJets_JESUp>=7"},
+        {"lowmtb",      "Stop0l_Mtb_JESUp<175"},
+        {"highmtb",     "Stop0l_Mtb_JESUp>=175"},
+        {"lowptb",      "Stop0l_Ptb_JESUp<40"},
+        {"medptb",      "Stop0l_Ptb_JESUp>=40 && Stop0l_Ptb_JESUp<70"},
+        {"highptb",     "Stop0l_Ptb_JESUp>=70"},
+        {"lowptb12",    "Stop0l_Ptb_JESUp<80"},
+        {"medptb12",    "Stop0l_Ptb_JESUp>=80 && Stop0l_Ptb_JESUp<140"},
+        {"highptb12",   "Stop0l_Ptb_JESUp>=140"},
+        {"nt0",         "Stop0l_nTop_JESUp==0"},
+        {"nt1",         "Stop0l_nTop_JESUp==1"},
+        {"nt2",         "Stop0l_nTop_JESUp==2"},
+        {"ntgeq1",      "Stop0l_nTop_JESUp>=1"},
+        {"nw0",         "Stop0l_nW_JESUp==0"},
+        {"nw1",         "Stop0l_nW_JESUp==1"},
+        {"nw2",         "Stop0l_nW_JESUp==2"},
+        {"nwgeq1",      "Stop0l_nW_JESUp>=1"},
+        {"nrt0",        "Stop0l_nResolved_JESUp==0"},
+        {"nrt1",        "Stop0l_nResolved_JESUp==1"},
+        {"nrt2",        "Stop0l_nResolved_JESUp==2"},
+        {"nrtgeq1",     "Stop0l_nResolved_JESUp>=1"},
+        {"nrtntnwgeq2", "(Stop0l_nTop_JESUp+Stop0l_nResolved_JESUp+Stop0l_nW_JESUp) >= 2"},
+        {"nrtntnwgeq3", "(Stop0l_nTop_JESUp+Stop0l_nResolved_JESUp+Stop0l_nW_JESUp) >= 3"},
+        {"htgt1000",    "Stop0l_HT_JESUp>=1000"},
+        {"htlt1000",    "Stop0l_HT_JESUp<1000"},
+        {"ht1000to1500","Stop0l_HT_JESUp>=1000 && Stop0l_HT_JESUp<1500"},
+        {"htgt1500",    "Stop0l_HT_JESUp>=1500"},
+        {"htlt1300",    "Stop0l_HT_JESUp<1300"},
+        {"htgt1300",    "Stop0l_HT_JESUp>=1300"},
+
+    };
+
+    cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
+    cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    return cmap;
+}();
+
+std::map<TString, TString> cutMap_JESDown = []{
+    // Underscore "_" not allowed in the names!!!
+    std::map<TString, TString> cmap = {
+	{"lmNoDPhi",    "Stop0l_ISRJetPt_JESDown>=300 && Stop0l_Mtb_JESDown < 175 && Stop0l_nTop_JESDown==0 && Stop0l_nW_JESDown==0 && Stop0l_nResolved_JESDown==0 && Stop0l_METSig_JESDown>=10"},
+        {"dPhiLM",      "Pass_dPhiMETLowDM_JESDown"},
+        {"hmNoDPhi",    "Stop0l_nJets_JESDown>=5 && Stop0l_nbtags_JESDown>=1"},
+        {"dPhiHM",      "Pass_dPhiMETHighDM_JESDown"},
+        {"invertDPhi",  "Pass_dPhiQCD"},
+ 
+        {"nb0",         "Stop0l_nbtags_JESDown==0"},
+        {"nb1",         "Stop0l_nbtags_JESDown==1"},
+        {"nbgeq1",      "Stop0l_nbtags_JESDown>=1"},
+        {"nb2",         "Stop0l_nbtags_JESDown>=2"},
+        {"nbeq2",       "Stop0l_nbtags_JESDown==2"},
+        {"nb3",         "Stop0l_nbtags_JESDown>=3"},
+        {"nivf0",       "Stop0l_nSoftb==0"},
+        {"nivf1",       "Stop0l_nSoftb>=1"},
+        {"lowptisr",    "Stop0l_ISRJetPt_JESDown>=300 && Stop0l_ISRJetPt_JESDown<500"},
+        {"medptisr",    "Stop0l_ISRJetPt_JESDown>=300"},
+        {"highptisr",   "Stop0l_ISRJetPt_JESDown>=500"},
+        {"nj2to5",      "Stop0l_nJets_JESDown>=2 && Stop0l_nJets_JESDown<=5"},
+        {"nj6",         "Stop0l_nJets_JESDown>=6"},
+        {"nj7",         "Stop0l_nJets_JESDown>=7"},
+        {"lowmtb",      "Stop0l_Mtb_JESDown<175"},
+        {"highmtb",     "Stop0l_Mtb_JESDown>=175"},
+        {"lowptb",      "Stop0l_Ptb_JESDown<40"},
+        {"medptb",      "Stop0l_Ptb_JESDown>=40 && Stop0l_Ptb_JESDown<70"},
+        {"highptb",     "Stop0l_Ptb_JESDown>=70"},
+        {"lowptb12",    "Stop0l_Ptb_JESDown<80"},
+        {"medptb12",    "Stop0l_Ptb_JESDown>=80 && Stop0l_Ptb_JESDown<140"},
+        {"highptb12",   "Stop0l_Ptb_JESDown>=140"},
+        {"nt0",         "Stop0l_nTop_JESDown==0"},
+        {"nt1",         "Stop0l_nTop_JESDown==1"},
+        {"nt2",         "Stop0l_nTop_JESDown==2"},
+        {"ntgeq1",      "Stop0l_nTop_JESDown>=1"},
+        {"nw0",         "Stop0l_nW_JESDown==0"},
+        {"nw1",         "Stop0l_nW_JESDown==1"},
+        {"nw2",         "Stop0l_nW_JESDown==2"},
+        {"nwgeq1",      "Stop0l_nW_JESDown>=1"},
+        {"nrt0",        "Stop0l_nResolved_JESDown==0"},
+        {"nrt1",        "Stop0l_nResolved_JESDown==1"},
+        {"nrt2",        "Stop0l_nResolved_JESDown==2"},
+        {"nrtgeq1",     "Stop0l_nResolved_JESDown>=1"},
+        {"nrtntnwgeq2", "(Stop0l_nTop_JESDown+Stop0l_nResolved_JESDown+Stop0l_nW_JESDown) >= 2"},
+        {"nrtntnwgeq3", "(Stop0l_nTop_JESDown+Stop0l_nResolved_JESDown+Stop0l_nW_JESDown) >= 3"},
+        {"htgt1000",    "Stop0l_HT_JESDown>=1000"},
+        {"htlt1000",    "Stop0l_HT_JESDown<1000"},
+        {"ht1000to1500","Stop0l_HT_JESDown>=1000 && Stop0l_HT_JESDown<1500"},
+        {"htgt1500",    "Stop0l_HT_JESDown>=1500"},
+        {"htlt1300",    "Stop0l_HT_JESDown<1300"},
+        {"htgt1300",    "Stop0l_HT_JESDown>=1300"},
+
+    };
+
+    cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
+    cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    return cmap;
+}();
 
 std::vector<TString> srbins{
 //---------- low deltaM ----------
@@ -299,6 +417,20 @@ std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins)
       cuts[name] = createCutString(name, cutMap);
+    return cuts;
+}();
+
+std::map<TString, TString> srcuts_JESUp = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins)
+      cuts[name] = createCutString(name, cutMap_JESUp);
+    return cuts;
+}();
+
+std::map<TString, TString> srcuts_JESDown = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins)
+      cuts[name] = createCutString(name, cutMap_JESDown);
     return cuts;
 }();
 
@@ -422,6 +554,28 @@ std::map<TString, TString> normMap{
   {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap)},
 };
 
+std::map<TString, TString> normMap_JESUp{
+  {"lm_nb0_nivf0", createCutString("lmNoDPhi_nb0_nivf0", cutMap_JESUp)},
+  {"lm_nb0_nivf1", createCutString("lmNoDPhi_nb0_nivf1", cutMap_JESUp)},
+  {"lm_nb1_nivf0", createCutString("lmNoDPhi_nb1_nivf0", cutMap_JESUp)},
+  {"lm_nb1_nivf1", createCutString("lmNoDPhi_nb1_nivf1", cutMap_JESUp)},
+  {"lm_nb2",       createCutString("lmNoDPhi_nb2", cutMap_JESUp)},
+
+  {"hm_nb1",       createCutString("hmNoDPhi_nb1", cutMap_JESUp)},
+  {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap_JESUp)},
+};
+
+std::map<TString, TString> normMap_JESDown{
+  {"lm_nb0_nivf0", createCutString("lmNoDPhi_nb0_nivf0", cutMap_JESDown)},
+  {"lm_nb0_nivf1", createCutString("lmNoDPhi_nb0_nivf1", cutMap_JESDown)},
+  {"lm_nb1_nivf0", createCutString("lmNoDPhi_nb1_nivf0", cutMap_JESDown)},
+  {"lm_nb1_nivf1", createCutString("lmNoDPhi_nb1_nivf1", cutMap_JESDown)},
+  {"lm_nb2",       createCutString("lmNoDPhi_nb2", cutMap_JESDown)},
+
+  {"hm_nb1",       createCutString("hmNoDPhi_nb1", cutMap_JESDown)},
+  {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap_JESDown)},
+};
+
 // normalize photon to Data after baseline+this cut to calc Sgamma
 std::map<TString, TString> phoNormMap = []{
   if (ICHEPCR) return normMap;
@@ -432,6 +586,30 @@ std::map<TString, TString> phoNormMap = []{
 
     {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap)},
     {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap)},
+  };
+}();
+
+std::map<TString, TString> phoNormMap_JESUp = []{
+  if (ICHEPCR) return normMap_JESUp;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap_JESUp)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap_JESUp)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap_JESUp)},
+
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap_JESUp)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap_JESUp)},
+  };
+}();
+
+std::map<TString, TString> phoNormMap_JESDown = []{
+  if (ICHEPCR) return normMap_JESDown;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap_JESDown)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap_JESDown)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap_JESDown)},
+
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap_JESDown)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap_JESDown)},
   };
 }();
 
@@ -469,8 +647,8 @@ std::map<TString, TString> phocrMapping{
 
   // high mtb
   // 0 taggged
-  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb"},
+  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb_htgt1000"},
+  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb_htgt1000"},
 
         // nb1
   // 1 tagged
@@ -548,6 +726,20 @@ std::map<TString, TString> phocrCuts = []{
     return cuts;
 }();
 
+std::map<TString, TString> phocrCuts_JESUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : phocrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+    return cuts;
+}();
+
+std::map<TString, TString> phocrCuts_JESDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : phocrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    return cuts;
+}();
+
 std::map<TString, TString> phocrlabels = phocrMapping;
 
 std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
@@ -585,8 +777,8 @@ std::map<TString, TString> lepcrMapping {
 
   // high mtb
   // 0 taggged
-  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb"},
-  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb"},
+  {"hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb1_highmtb_htgt1000"},
+  {"hm_nb2_highmtb_nt0_nrt0_nw0_htgt1000",		"hm_nb2_highmtb_htgt1000"},
 
         // nb1
   // 1 tagged
@@ -664,6 +856,20 @@ std::map<TString, TString> lepcrCuts = []{
     return cuts;
 }();
 
+std::map<TString, TString> lepcrCuts_JESUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : lepcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+    return cuts;
+}();
+
+std::map<TString, TString> lepcrCuts_JESDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : lepcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    return cuts;
+}();
+
 std::map<TString, TString> lepcrlabels = lepcrMapping;
 std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 
@@ -682,6 +888,18 @@ std::map<TString, TString> qcdcrCuts = []{
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
     return cuts;
 }();
+std::map<TString, TString> qcdcrCuts_JESUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : qcdcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+    return cuts;
+}();
+std::map<TString, TString> qcdcrCuts_JESDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : qcdcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    return cuts;
+}();
 std::map<TString, TString> qcd1to1crCuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
@@ -689,6 +907,26 @@ std::map<TString, TString> qcd1to1crCuts = []{
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
       cuts[name] = createCutString(crname, cutMap);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcd1to1crCuts_JESUp = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap_JESUp);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcd1to1crCuts_JESDown = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap_JESDown);
     }
     return cuts;
 }();
@@ -794,7 +1032,6 @@ std::map<TString, std::vector<int>> qcdcrMETbins {
   //---------- high deltaM ----------
 };
 
-
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
@@ -803,9 +1040,45 @@ map<TString, Category> srCatMap(){
   return cmap;
 }
 
+map<TString, Category> srCatMap_JESUp(){
+  map<TString, Category> cmap;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, srcuts_JESUp.at(name), srlabels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> srCatMap_JESDown(){
+  map<TString, Category> cmap;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, srcuts_JESDown.at(name), srlabels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
 map<TString, Category> phoCatMap(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
+  const auto &labels = ICHEPCR ? srlabels: phocrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> phoCatMap_JESUp(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_JESUp: phocrCuts_JESUp;
+  const auto &labels = ICHEPCR ? srlabels: phocrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> phoCatMap_JESDown(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_JESDown: phocrCuts_JESDown;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
@@ -824,9 +1097,51 @@ map<TString, Category> lepCatMap(){
   return cmap;
 }
 
+map<TString, Category> lepCatMap_JESUp(){
+  TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_JESUp: lepcrCuts_JESUp;
+  const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> lepCatMap_JESDown(){
+  TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_JESDown: lepcrCuts_JESDown;
+  const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
 map<TString, Category> qcdCatMap(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
+  const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> qcdCatMap_JESUp(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts_JESUp: qcdcrCuts_JESUp;
+  const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> qcdCatMap_JESDown(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts_JESDown: qcdcrCuts_JESDown;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
@@ -854,7 +1169,7 @@ BaseConfig phoConfig(){
 
   config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt(), datasel() + trigPhoCR + phoBadEventRemoval);
 //  config.addSample("photon",      "Photon",         "photoncr/gjets",      phowgt, datasel() + trigPhoCR);
-  config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt(), datasel() + trigSR + vetoes());
+  config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt(), datasel() + trigSR() + vetoes());
 
   config.sel = baseline();
   config.categories = srbins;
@@ -902,83 +1217,79 @@ BaseConfig lepConfig(){
     config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel() + trigSR + revert_vetoes());
-    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*ISRWeight",      datasel() + trigSR + revert_vetoes());
-    config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             lepselwgt(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttZ-2016",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("diboson-2016",     "Diboson",       inputdir_2016+"diboson",         lepselwgt(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("qcd-2016",         "QCD",           inputdir_2016+"qcd",             lepselwgt(),      datasel() + trigSR + revert_vetoes());
+    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*ISRWeight",      datasel() + revert_vetoes());
+    config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2016",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2016",     "Diboson",       inputdir_2016+"diboson",         lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2016",         "QCD",           inputdir_2016+"qcd",             lepselwgt(),      datasel() + revert_vetoes());
 
-    //config.addSample("singlelep-2017RunBtoE",     "Data",          inputdir_2017+"met_RunBtoE",         "1.0",      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttbar-2017RunBtoE",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("wjets-2017RunBtoE",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("tW-2017RunBtoE",            "tW",            inputdir_2017+"tW",              lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttW-2017RunBtoE",           "ttW",           inputdir_2017+"ttW",             lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttZ-2017RunBtoE",           "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("diboson-2017RunBtoE",       "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("qcd-2017RunBtoE",           "QCD",           inputdir_2017+"qcd",             lepselwgt_RunBtoE(),      datasel() + trigSR + revert_vetoes());
-    //config.addSample("singlelep-2017RunF",        "Data",          inputdir_2017+"met_RunF",            "1.0",      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttbar-2017RunF",       	  "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("wjets-2017RunF",       	  "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("tW-2017RunF",          	  "tW",            inputdir_2017+"tW",              lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttW-2017RunF",         	  "ttW",           inputdir_2017+"ttW",             lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttZ-2017RunF",         	  "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("diboson-2017RunF",     	  "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("qcd-2017RunF",         	  "QCD",           inputdir_2017+"qcd",             lepselwgt_RunF(),      datasel() + trigSR + revert_vetoes());
+    config.addSample("ttbar-2017RunBtoE",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2017RunBtoE",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("tW-2017RunBtoE",            "tW",            inputdir_2017+"tW",              lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2017RunBtoE",           "ttW",           inputdir_2017+"ttW",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2017RunBtoE",           "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2017RunBtoE",       "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2017RunBtoE",           "QCD",           inputdir_2017+"qcd",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttbar-2017RunF",       	  "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2017RunF",       	  "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("tW-2017RunF",          	  "tW",            inputdir_2017+"tW",              lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2017RunF",         	  "ttW",           inputdir_2017+"ttW",             lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2017RunF",         	  "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2017RunF",     	  "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2017RunF",         	  "QCD",           inputdir_2017+"qcd",             lepselwgt_RunF(),      datasel() + revert_vetoes());
 
-    //config.addSample("singlelep-2018preHEM",     "Data",          inputdir_2018+"met_PreHEM",                 "1.0",      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttbar-2018preHEM",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("wjets-2018preHEM",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("tW-2018preHEM",            "tW",            inputdir_2018+"tW",              lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttW-2018preHEM",           "ttW",           inputdir_2018+"ttW",             lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("ttZ-2018preHEM",           "ttZ",           inputdir_2018+"ttZ",             lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("diboson-2018preHEM",       "Diboson",       inputdir_2018+"diboson",         lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    config.addSample("qcd-2018preHEM",           "QCD",           inputdir_2018+"qcd",             lepselwgt_preHEM(),      datasel() + trigSR + revert_vetoes());
-    //config.addSample("singlelep-2018postHEM",    "Data",          inputdir_2018+"met_PostHEM",                 "1.0",     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("ttbar-2018postHEM",        "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("wjets-2018postHEM",        "W+jets",        inputdir_2018+"wjets",           lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("tW-2018postHEM",           "tW",            inputdir_2018+"tW",              lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("ttW-2018postHEM",          "ttW",           inputdir_2018+"ttW",             lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("ttZ-2018postHEM",          "ttZ",           inputdir_2018+"ttZ",             lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("diboson-2018postHEM",      "Diboson",       inputdir_2018+"diboson",         lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
-    config.addSample("qcd-2018postHEM",          "QCD",           inputdir_2018+"qcd",             lepselwgt_postHEM(),     dataselHEM() + trigSR + revert_vetoes());
+    config.addSample("ttbar-2018preHEM",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2018preHEM",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("tW-2018preHEM",            "tW",            inputdir_2018+"tW",              lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2018preHEM",           "ttW",           inputdir_2018+"ttW",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2018preHEM",           "ttZ",           inputdir_2018+"ttZ",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2018preHEM",       "Diboson",       inputdir_2018+"diboson",         lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2018preHEM",           "QCD",           inputdir_2018+"qcd",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttbar-2018postHEM",        "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("wjets-2018postHEM",        "W+jets",        inputdir_2018+"wjets",           lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("tW-2018postHEM",           "tW",            inputdir_2018+"tW",              lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("ttW-2018postHEM",          "ttW",           inputdir_2018+"ttW",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("ttZ-2018postHEM",          "ttZ",           inputdir_2018+"ttZ",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("diboson-2018postHEM",      "Diboson",       inputdir_2018+"diboson",         lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("qcd-2018postHEM",          "QCD",           inputdir_2018+"qcd",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
   }
 
   // samples for sr categories
-  config.addSample("ttbar-2016-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*ISRWeight", datasel() + trigSR + vetoes());
-  config.addSample("wjets-2016-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("tW-2016-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("ttW-2016-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("ttZ-2016-sr",         "ttZ",           inputdir_2016+"ttZ",                  lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("diboson-2016-sr",     "Diboson",       inputdir_2016+"diboson",              lepvetowgt(), datasel() + trigSR + vetoes());
+  config.addSample("ttbar-2016-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*ISRWeight", datasel() + vetoes());
+  config.addSample("wjets-2016-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + vetoes());
+  config.addSample("tW-2016-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttW-2016-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttZ-2016-sr",         "ttZ",           inputdir_2016+"ttZ",                  lepvetowgt(), datasel() + vetoes());
+  config.addSample("diboson-2016-sr",     "Diboson",       inputdir_2016+"diboson",              lepvetowgt(), datasel() + vetoes());
 
-  config.addSample("ttbar-2017RunBtoE-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("wjets-2017RunBtoE-sr",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("tW-2017RunBtoE-sr",       "tW",            inputdir_2017+"tW",               lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("ttW-2017RunBtoE-sr",      "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("ttZ-2017RunBtoE-sr",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("diboson-2017RunBtoE-sr",  "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunBtoE(), datasel() + trigSR + vetoes());
-  config.addSample("ttbar-2017RunF-sr",       "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunF(), datasel() + trigSR + vetoes());
-  config.addSample("wjets-2017RunF-sr",       "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunF(), datasel() + trigSR + vetoes());
-  config.addSample("tW-2017RunF-sr",          "tW",            inputdir_2017+"tW",               lepvetowgt_RunF(), datasel() + trigSR + vetoes());
-  config.addSample("ttW-2017RunF-sr",         "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunF(), datasel() + trigSR + vetoes());
-  config.addSample("ttZ-2017RunF-sr",         "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunF(), datasel() + trigSR + vetoes());
-  config.addSample("diboson-2017RunF-sr",     "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunF(), datasel() + trigSR + vetoes());
+  config.addSample("ttbar-2017RunBtoE-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("wjets-2017RunBtoE-sr",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("tW-2017RunBtoE-sr",       "tW",            inputdir_2017+"tW",               lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttW-2017RunBtoE-sr",      "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttZ-2017RunBtoE-sr",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("diboson-2017RunBtoE-sr",  "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttbar-2017RunF-sr",       "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("wjets-2017RunF-sr",       "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("tW-2017RunF-sr",          "tW",            inputdir_2017+"tW",               lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("ttW-2017RunF-sr",         "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("ttZ-2017RunF-sr",         "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("diboson-2017RunF-sr",     "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunF(), datasel() + vetoes());
 
-  config.addSample("ttbar-2018preHEM-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("wjets-2018preHEM-sr",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("tW-2018preHEM-sr",       "tW",            inputdir_2018+"tW",                lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("ttW-2018preHEM-sr",      "ttW",           inputdir_2018+"ttW",               lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("ttZ-2018preHEM-sr",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("diboson-2018preHEM-sr",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM(), datasel() + trigSR + vetoes());
-  config.addSample("ttbar-2018postHEM-sr",   "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
-  config.addSample("wjets-2018postHEM-sr",   "W+jets",        inputdir_2018+"wjets",             lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
-  config.addSample("tW-2018postHEM-sr",      "tW",            inputdir_2018+"tW",                lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
-  config.addSample("ttW-2018postHEM-sr",     "ttW",           inputdir_2018+"ttW",               lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
-  config.addSample("ttZ-2018postHEM-sr",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
-  config.addSample("diboson-2018postHEM-sr", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM(), dataselHEM() + trigSR + vetoes());
+  config.addSample("ttbar-2018preHEM-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("wjets-2018preHEM-sr",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("tW-2018preHEM-sr",       "tW",            inputdir_2018+"tW",                lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttW-2018preHEM-sr",      "ttW",           inputdir_2018+"ttW",               lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttZ-2018preHEM-sr",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("diboson-2018preHEM-sr",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttbar-2018postHEM-sr",   "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("wjets-2018postHEM-sr",   "W+jets",        inputdir_2018+"wjets",             lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("tW-2018postHEM-sr",      "tW",            inputdir_2018+"tW",                lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("ttW-2018postHEM-sr",     "ttW",           inputdir_2018+"ttW",               lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("ttZ-2018postHEM-sr",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("diboson-2018postHEM-sr", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM(), dataselHEM() + vetoes());
 
 
   config.sel = baseline();
@@ -998,25 +1309,25 @@ BaseConfig srConfig(){
   config.outputdir = outputdir()+"/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ttbar",       "t#bar{t}",      "ttbar",        lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("wjets",       "W+jets",        "wjets",        lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("znunu",       "Z#rightarrow#nu#nu", "znunu",   lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("qcd",         "QCD",           "qcd-sr",       lepvetowgt(), datasel() + trigSR + vetoes() + qcdSpikeRemovals);
-  config.addSample("tW",          "tW",            "tW",           lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("ttW",         "ttW",           "ttW",          lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("ttZ",         "ttZ",           "ttZ",          lepvetowgt(), datasel() + trigSR + vetoes());
-  config.addSample("diboson",     "Diboson",       "diboson",      lepvetowgt(), datasel() + trigSR + vetoes());
+  config.addSample("ttbar",       "t#bar{t}",      "ttbar",        lepvetowgt(), datasel() + vetoes());
+  config.addSample("wjets",       "W+jets",        "wjets",        lepvetowgt(), datasel() + vetoes());
+  config.addSample("znunu",       "Z#rightarrow#nu#nu", "znunu",   lepvetowgt(), datasel() + vetoes());
+  config.addSample("qcd",         "QCD",           "qcd-sr",       lepvetowgt(), datasel() + vetoes() + qcdSpikeRemovals);
+  config.addSample("tW",          "tW",            "tW",           lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttW",         "ttW",           "ttW",          lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttZ",         "ttZ",           "ttZ",          lepvetowgt(), datasel() + vetoes());
+  config.addSample("diboson",     "Diboson",       "diboson",      lepvetowgt(), datasel() + vetoes());
 
-//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "T2fbd_500_420",  sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "T2fbd_500_450",  sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "T2fbd_500_480",  sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "T2cc_500_490",   sigwgt, datasel() + trigSR + vetoes());
+//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "T2fbd_500_420",  sigwgt, datasel() + vetoes());
+//  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "T2fbd_500_450",  sigwgt, datasel() + vetoes());
+//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "T2fbd_500_480",  sigwgt, datasel() + vetoes());
+//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "T2cc_500_490",   sigwgt, datasel() + vetoes());
 //
-//  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "T2tt_450_250",   sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2tt_700_400",  "T2tt(700,400)",  "T2tt_700_400",   sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "T2tt_1000_1",    sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "T2bW_850_1",     sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "T2bW_550_350",   sigwgt, datasel() + trigSR + vetoes());
+//  config.addSample("T2tt_450_250",  "T2tt(450,250)",  "T2tt_450_250",   sigwgt, datasel() + vetoes());
+//  config.addSample("T2tt_700_400",  "T2tt(700,400)",  "T2tt_700_400",   sigwgt, datasel() + vetoes());
+//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "T2tt_1000_1",    sigwgt, datasel() + vetoes());
+//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "T2bW_850_1",     sigwgt, datasel() + vetoes());
+//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "T2bW_550_350",   sigwgt, datasel() + vetoes());
 
 
   COLOR_MAP["T2fbd_500_420"] = kRed;
@@ -1047,7 +1358,7 @@ BaseConfig qcdConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   // qcdcr
-  config.addSample("data-cr",     "Data",             datadir+"met",  "1.0",      datasel() + trigSR + vetoes() + dphi_invert());
+  config.addSample("data-cr",     "Data",             datadir+"met",  "1.0",      datasel() + trigSR() + vetoes() + dphi_invert());
   
   config.addSample("qcd-2016-cr",      "QCD",              inputdir_2016+"qcd",       qcdwgt(),      datasel() + dphi_invert() + qcdSpikeRemovals);
   config.addSample("qcd-2016-withveto-cr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes() + dphi_invert() + qcdSpikeRemovals);
@@ -1097,7 +1408,7 @@ BaseConfig qcdConfig(){
   config.addSample("znunu-2018postHEM-cr",       "Znunu",         inputdir_2018+"znunu",       lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
 
   // onelepcr: norm correction for other bkg subtraction
-  config.addSample("data-norm",           "Data",          datadir+"met", "1.0",      datasel() + trigSR + revert_vetoes() + dphi_cut());
+  config.addSample("data-norm",           "Data",          datadir+"met", "1.0",      datasel() + trigSR() + revert_vetoes() + dphi_cut());
   config.addSample("ttbar-2016-norm",     "t#bar{t}",      inputdir_2016+"ttbar",     lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("wjets-2016-norm",     "W+jets",        inputdir_2016+"wjets",     lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2016-norm",        "tW",            inputdir_2016+"tW",        lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
@@ -1150,11 +1461,11 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir()+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel() + trigSR + vetoes());
+  config.addSample("data-sr",        "Data",             datadir+"/sr/met",                    "1.0",  datasel() + trigSR() + vetoes());
 
-//  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel() + trigSR + vetoes());
-//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel() + trigSR + vetoes());
+//  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel() + vetoes());
+//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel() + vetoes());
+//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel() + vetoes());
 //
   config.sel = baseline();
   config.categories = srbins;

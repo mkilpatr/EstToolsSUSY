@@ -27,8 +27,15 @@ vector<Quantity> getZnunuPred(){
   return z.yields.at("_TF");
 }
 
-vector<Quantity> getQCDPred(){
+vector<Quantity> getQCDPred(TString sys_name = ""){
   auto qcdcfg = qcdConfig();
+  if(sys_name == "JESUp"){
+    qcdcfg.catMaps = srCatMap_JESUp();
+    qcdcfg.crCatMaps = qcdCatMap_JESUp();
+  } else if(sys_name == "JESDown"){
+    qcdcfg.catMaps = srCatMap_JESDown();
+    qcdcfg.crCatMaps = qcdCatMap_JESDown();
+  }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
   q.pred();
@@ -36,8 +43,15 @@ vector<Quantity> getQCDPred(){
   return q.yields.at("_TF");
 }
 
-map<TString, vector<Quantity>> getLLBPred(){
+map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   auto llbcfg = lepConfig();
+  if(sys_name == "JESUp"){
+    llbcfg.catMaps = srCatMap_JESUp();
+    llbcfg.crCatMaps = lepCatMap_JESUp();
+  } else if(sys_name == "JESDown"){
+    llbcfg.catMaps = srCatMap_JESDown();
+    llbcfg.crCatMaps = lepCatMap_JESDown();
+  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
@@ -46,15 +60,14 @@ map<TString, vector<Quantity>> getLLBPred(){
 
   return {
     {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
+    //{"ttZ",        l.yields.at("ttZ-sr")},
+    //{"diboson",    l.yields.at("diboson-sr")},
   };
 }
 
-
 void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
-  vector<TString> bkgnames  = {"diboson", "ttZ", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -66,7 +79,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     sys_name = "nominal";
     EstTools::jes_postfix = "";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -77,8 +90,8 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     sys_name = "JESUp";
     EstTools::jes_postfix = "_JESUp";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
@@ -87,8 +100,8 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     sys_name = "JESDown";
     EstTools::jes_postfix = "_JESDown";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
@@ -111,6 +124,8 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
       }else{
         uncs = sPair.second / nominal_pred;
       }
+
+      cout << "JES Uncertainty: " << uncs << endl;
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
