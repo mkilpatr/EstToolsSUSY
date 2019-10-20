@@ -73,7 +73,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // ele - up
   {
     sys_name = "eff_e_err";
-    elewgt = "(1 + ElectronVetoSFErr)";
+    elewgt = "(ElectronVetoSF + ElectronVetoSFErr)";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
@@ -84,34 +84,37 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // mu - up
   {
     sys_name = "eff_mu_err";
-    muonwgt = "(1 + MuonLooseSFErr)";
+    elewgt = "ElectronVetoSF";
+    muonwgt = "(MuonLooseSF + MuonLooseSFErr)";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // -----------------------
-  // tau - up
-  {
-    sys_name = "eff_tau_UP";
-    tauwgt = "TauSF_UP";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //// -----------------------
+  //// tau - up
+  //{
+  //  sys_name = "eff_tau_UP";
+  //  elewgt = "ElectronVetoSF";
+  //  muonwgt = "MuonLooseSF";
+  //  tauwgt = "TauSF_UP";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  // tau - down
-  {
-    sys_name = "eff_tau_DOWN";
-    tauwgt = "TauSF_DOWN";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-  // -----------------------
+  //// tau - down
+  //{
+  //  sys_name = "eff_tau_DOWN";
+  //  tauwgt = "TauSF_DOWN";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
+  //// -----------------------
 
 
   cout << "\n\n Write unc to " << outfile_path << endl;

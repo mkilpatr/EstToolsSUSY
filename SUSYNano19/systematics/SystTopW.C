@@ -73,7 +73,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   {
     sys_name = "wtag_err";
-    wtagwgt = "(1 + WtagSFErr)"; sdmvawgt = "TopSF"; restopwgt = "1";
+    wtagwgt = "(WtagSF + WtagSFErr)"; sdmvawgt = "TopSF"; restopwgt = "1";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -83,7 +83,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   {
     sys_name = "toptag_err";
-    wtagwgt = "WtagSF"; sdmvawgt = "(1 + TopSFErr)"; restopwgt = "1";
+    wtagwgt = "WtagSF"; sdmvawgt = "(TopSF + TopSFErr)"; restopwgt = "1";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();

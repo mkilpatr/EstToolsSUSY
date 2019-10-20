@@ -1,6 +1,6 @@
 # Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-794-g1f6819a-dirty
 imax    1 number of bins
-jmax    2 number of processes minus 1
+jmax    4 number of processes minus 1
 kmax    * number of nuisance parameters
 --------------------------------------------------------------------------------
 shapes * bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 FAKE
@@ -8,12 +8,27 @@ shapes * bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 FAKE
 bin          bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 
 observation  1.0             
 --------------------------------------------------------------------------------
-bin                                                                                  bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 
-process                                                                              signal          ttbarplusw      qcd             
-process                                                                              0               1               2               
-rate                                                                                 18.2877         1               1               
+bin                                                                                  bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 
+process                                                                              signal          ttbarplusw      qcd             ttZ             diboson         
+process                                                                              0               1               2               3               4               
+rate                                                                                 18.2877         1               1               0.211088        0.0010369       
 --------------------------------------------------------------------------------
-mcstats_qcd_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550        lnN     -               -               1.61925         
-mcstats_ttbarplusw_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 lnN     -               1.09379         -               
+JES                                                                          lnN     -               0.967337        0.901056        1.07945         1               
+PDF_Weight                                                                   lnN     -               -               -               1.06149         1.03175         
+PU_Weight                                                                    lnN     -               -               -               0.987865        1.45569         
+Prefire_Weight                                                               lnN     -               -               -               0.997557        1               
+b                                                                            lnN     -               1.00534         1.00358         1.03967         0.949447        
+eff_e_err                                                                    lnN     -               0.985503        1.00093         -               -               
+eff_mu_err                                                                   lnN     -               0.999118        1.00006         -               -               
+mcstats_diboson_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550    lnN     -               -               -               -               2               
+mcstats_qcd_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550        lnN     -               -               1.61925         -               -               
+mcstats_signal_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550     lnN     2               -               -               -               -               
+mcstats_ttZ_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550        lnN     -               -               -               1.1646          -               
+mcstats_ttbarplusw_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550 lnN     -               1.09379         -               -               -               
+metres                                                                       lnN     -               -               -               1.00366         1               
+toptag_err                                                                   lnN     -               1.05016         1.09            -               -               
+trigger_eff                                                                  lnN     -               -               -               1.00228         1.00193         
+ttZ_SF                                                                       lnN     -               -               -               1.13675         -               
+wtag_err                                                                     lnN     -               0.997459        0.999429        -               -               
 R_qcd_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550              rateParam  *          qcd        (@0*0.393274+@1*0.327667+@2*0.000001) R_bin_qcdcr_hm_nbeq2_highmtb_htgt1500_MET_pt250to350,R_bin_qcdcr_hm_nbeq2_highmtb_htgt1500_MET_pt350to450,R_bin_qcdcr_hm_nbeq2_highmtb_htgt1500_MET_pt450to550
 R_ttbarplusw_bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to550       rateParam  *          ttbarplusw (@0*7.870517+@1*2.522578+@2*0.756335) R_bin_lepcr_hm_nbeq2_highmtb_htgt1500_MET_pt250to350,R_bin_lepcr_hm_nbeq2_highmtb_htgt1500_MET_pt350to450,R_bin_lepcr_hm_nbeq2_highmtb_htgt1500_MET_pt450to550

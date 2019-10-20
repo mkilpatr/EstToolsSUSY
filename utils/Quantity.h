@@ -145,7 +145,7 @@ public:
     std::vector<Quantity> unc;
     for (unsigned i=0; i<err.size(); ++i){
       double val = err[i].value; // take the avg of abs. diff.
-      unc.emplace_back(1 + val, 0); // don't forget to plus 1
+      unc.emplace_back(val, 0); // You don't need plus 1 for this
     }
     return unc;
   }
