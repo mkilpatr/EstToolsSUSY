@@ -13,7 +13,7 @@ vector<Quantity> QCDPred(){
 
   QCDEstimator z(config);
 
-  z.runBootstrapping = false;
+  z.runBootstrapping = true;
   z.splitTF = SPLITTF;
 
   z.pred();
@@ -42,8 +42,10 @@ void plotQCDCR2016(){
   auto config = qcdConfig();
   config.catMaps = config.crCatMaps;
 
-  BaseEstimator z(config.outputdir);
+  //BaseEstimator z(config.outputdir);
+  QCDEstimator z(config.outputdir);
   z.setConfig(config);
+  z.runBootstrapping = true;
 
   z.plotDataMC({"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr", "qcd-withveto-cr"}, "data-cr", false);
 

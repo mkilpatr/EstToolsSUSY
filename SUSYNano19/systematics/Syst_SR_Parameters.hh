@@ -309,6 +309,124 @@ std::map<TString, TString> cutMap_JESDown = []{
     return cmap;
 }();
 
+std::map<TString, TString> cutMap_METUnClustUp = []{
+    // Underscore "_" not allowed in the names!!!
+    std::map<TString, TString> cmap = {
+	{"lmNoDPhi",    "Stop0l_ISRJetPt_METUnClustUp>=300 && Stop0l_Mtb_METUnClustUp < 175 && Stop0l_nTop_METUnClustUp==0 && Stop0l_nW_METUnClustUp==0 && Stop0l_nResolved_METUnClustUp==0 && Stop0l_METSig_METUnClustUp>=10"},
+        {"dPhiLM",      "Pass_dPhiMETLowDM_METUnClustUp"},
+        {"hmNoDPhi",    "Stop0l_nJets_METUnClustUp>=5 && Stop0l_nbtags_METUnClustUp>=1"},
+        {"dPhiHM",      "Pass_dPhiMETHighDM_METUnClustUp"},
+        {"invertDPhi",  "Pass_dPhiQCD"},
+ 
+        {"nb0",         "Stop0l_nbtags_METUnClustUp==0"},
+        {"nb1",         "Stop0l_nbtags_METUnClustUp==1"},
+        {"nbgeq1",      "Stop0l_nbtags_METUnClustUp>=1"},
+        {"nb2",         "Stop0l_nbtags_METUnClustUp>=2"},
+        {"nbeq2",       "Stop0l_nbtags_METUnClustUp==2"},
+        {"nb3",         "Stop0l_nbtags_METUnClustUp>=3"},
+        {"nivf0",       "Stop0l_nSoftb==0"},
+        {"nivf1",       "Stop0l_nSoftb>=1"},
+        {"lowptisr",    "Stop0l_ISRJetPt_METUnClustUp>=300 && Stop0l_ISRJetPt_METUnClustUp<500"},
+        {"medptisr",    "Stop0l_ISRJetPt_METUnClustUp>=300"},
+        {"highptisr",   "Stop0l_ISRJetPt_METUnClustUp>=500"},
+        {"nj2to5",      "Stop0l_nJets_METUnClustUp>=2 && Stop0l_nJets_METUnClustUp<=5"},
+        {"nj6",         "Stop0l_nJets_METUnClustUp>=6"},
+        {"nj7",         "Stop0l_nJets_METUnClustUp>=7"},
+        {"lowmtb",      "Stop0l_Mtb_METUnClustUp<175"},
+        {"highmtb",     "Stop0l_Mtb_METUnClustUp>=175"},
+        {"lowptb",      "Stop0l_Ptb_METUnClustUp<40"},
+        {"medptb",      "Stop0l_Ptb_METUnClustUp>=40 && Stop0l_Ptb_METUnClustUp<70"},
+        {"highptb",     "Stop0l_Ptb_METUnClustUp>=70"},
+        {"lowptb12",    "Stop0l_Ptb_METUnClustUp<80"},
+        {"medptb12",    "Stop0l_Ptb_METUnClustUp>=80 && Stop0l_Ptb_METUnClustUp<140"},
+        {"highptb12",   "Stop0l_Ptb_METUnClustUp>=140"},
+        {"nt0",         "Stop0l_nTop_METUnClustUp==0"},
+        {"nt1",         "Stop0l_nTop_METUnClustUp==1"},
+        {"nt2",         "Stop0l_nTop_METUnClustUp==2"},
+        {"ntgeq1",      "Stop0l_nTop_METUnClustUp>=1"},
+        {"nw0",         "Stop0l_nW_METUnClustUp==0"},
+        {"nw1",         "Stop0l_nW_METUnClustUp==1"},
+        {"nw2",         "Stop0l_nW_METUnClustUp==2"},
+        {"nwgeq1",      "Stop0l_nW_METUnClustUp>=1"},
+        {"nrt0",        "Stop0l_nResolved_METUnClustUp==0"},
+        {"nrt1",        "Stop0l_nResolved_METUnClustUp==1"},
+        {"nrt2",        "Stop0l_nResolved_METUnClustUp==2"},
+        {"nrtgeq1",     "Stop0l_nResolved_METUnClustUp>=1"},
+        {"nrtntnwgeq2", "(Stop0l_nTop_METUnClustUp+Stop0l_nResolved_METUnClustUp+Stop0l_nW_METUnClustUp) >= 2"},
+        {"nrtntnwgeq3", "(Stop0l_nTop_METUnClustUp+Stop0l_nResolved_METUnClustUp+Stop0l_nW_METUnClustUp) >= 3"},
+        {"htgt1000",    "Stop0l_HT_METUnClustUp>=1000"},
+        {"htlt1000",    "Stop0l_HT_METUnClustUp<1000"},
+        {"ht1000to1500","Stop0l_HT_METUnClustUp>=1000 && Stop0l_HT_METUnClustUp<1500"},
+        {"htgt1500",    "Stop0l_HT_METUnClustUp>=1500"},
+        {"htlt1300",    "Stop0l_HT_METUnClustUp<1300"},
+        {"htgt1300",    "Stop0l_HT_METUnClustUp>=1300"},
+
+    };
+
+    cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
+    cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    return cmap;
+}();
+
+std::map<TString, TString> cutMap_METUnClustDown = []{
+    // Underscore "_" not allowed in the names!!!
+    std::map<TString, TString> cmap = {
+	{"lmNoDPhi",    "Stop0l_ISRJetPt_METUnClustDown>=300 && Stop0l_Mtb_METUnClustDown < 175 && Stop0l_nTop_METUnClustDown==0 && Stop0l_nW_METUnClustDown==0 && Stop0l_nResolved_METUnClustDown==0 && Stop0l_METSig_METUnClustDown>=10"},
+        {"dPhiLM",      "Pass_dPhiMETLowDM_METUnClustDown"},
+        {"hmNoDPhi",    "Stop0l_nJets_METUnClustDown>=5 && Stop0l_nbtags_METUnClustDown>=1"},
+        {"dPhiHM",      "Pass_dPhiMETHighDM_METUnClustDown"},
+        {"invertDPhi",  "Pass_dPhiQCD"},
+ 
+        {"nb0",         "Stop0l_nbtags_METUnClustDown==0"},
+        {"nb1",         "Stop0l_nbtags_METUnClustDown==1"},
+        {"nbgeq1",      "Stop0l_nbtags_METUnClustDown>=1"},
+        {"nb2",         "Stop0l_nbtags_METUnClustDown>=2"},
+        {"nbeq2",       "Stop0l_nbtags_METUnClustDown==2"},
+        {"nb3",         "Stop0l_nbtags_METUnClustDown>=3"},
+        {"nivf0",       "Stop0l_nSoftb==0"},
+        {"nivf1",       "Stop0l_nSoftb>=1"},
+        {"lowptisr",    "Stop0l_ISRJetPt_METUnClustDown>=300 && Stop0l_ISRJetPt_METUnClustDown<500"},
+        {"medptisr",    "Stop0l_ISRJetPt_METUnClustDown>=300"},
+        {"highptisr",   "Stop0l_ISRJetPt_METUnClustDown>=500"},
+        {"nj2to5",      "Stop0l_nJets_METUnClustDown>=2 && Stop0l_nJets_METUnClustDown<=5"},
+        {"nj6",         "Stop0l_nJets_METUnClustDown>=6"},
+        {"nj7",         "Stop0l_nJets_METUnClustDown>=7"},
+        {"lowmtb",      "Stop0l_Mtb_METUnClustDown<175"},
+        {"highmtb",     "Stop0l_Mtb_METUnClustDown>=175"},
+        {"lowptb",      "Stop0l_Ptb_METUnClustDown<40"},
+        {"medptb",      "Stop0l_Ptb_METUnClustDown>=40 && Stop0l_Ptb_METUnClustDown<70"},
+        {"highptb",     "Stop0l_Ptb_METUnClustDown>=70"},
+        {"lowptb12",    "Stop0l_Ptb_METUnClustDown<80"},
+        {"medptb12",    "Stop0l_Ptb_METUnClustDown>=80 && Stop0l_Ptb_METUnClustDown<140"},
+        {"highptb12",   "Stop0l_Ptb_METUnClustDown>=140"},
+        {"nt0",         "Stop0l_nTop_METUnClustDown==0"},
+        {"nt1",         "Stop0l_nTop_METUnClustDown==1"},
+        {"nt2",         "Stop0l_nTop_METUnClustDown==2"},
+        {"ntgeq1",      "Stop0l_nTop_METUnClustDown>=1"},
+        {"nw0",         "Stop0l_nW_METUnClustDown==0"},
+        {"nw1",         "Stop0l_nW_METUnClustDown==1"},
+        {"nw2",         "Stop0l_nW_METUnClustDown==2"},
+        {"nwgeq1",      "Stop0l_nW_METUnClustDown>=1"},
+        {"nrt0",        "Stop0l_nResolved_METUnClustDown==0"},
+        {"nrt1",        "Stop0l_nResolved_METUnClustDown==1"},
+        {"nrt2",        "Stop0l_nResolved_METUnClustDown==2"},
+        {"nrtgeq1",     "Stop0l_nResolved_METUnClustDown>=1"},
+        {"nrtntnwgeq2", "(Stop0l_nTop_METUnClustDown+Stop0l_nResolved_METUnClustDown+Stop0l_nW_METUnClustDown) >= 2"},
+        {"nrtntnwgeq3", "(Stop0l_nTop_METUnClustDown+Stop0l_nResolved_METUnClustDown+Stop0l_nW_METUnClustDown) >= 3"},
+        {"htgt1000",    "Stop0l_HT_METUnClustDown>=1000"},
+        {"htlt1000",    "Stop0l_HT_METUnClustDown<1000"},
+        {"ht1000to1500","Stop0l_HT_METUnClustDown>=1000 && Stop0l_HT_METUnClustDown<1500"},
+        {"htgt1500",    "Stop0l_HT_METUnClustDown>=1500"},
+        {"htlt1300",    "Stop0l_HT_METUnClustDown<1300"},
+        {"htgt1300",    "Stop0l_HT_METUnClustDown>=1300"},
+
+    };
+
+    cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
+    cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    return cmap;
+}();
+
 std::vector<TString> srbins{
 //---------- low deltaM ----------
   // 0b, 0 or >=1 ivf
@@ -431,6 +549,20 @@ std::map<TString, TString> srcuts_JESDown = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins)
       cuts[name] = createCutString(name, cutMap_JESDown);
+    return cuts;
+}();
+
+std::map<TString, TString> srcuts_METUnClustUp = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins)
+      cuts[name] = createCutString(name, cutMap_METUnClustUp);
+    return cuts;
+}();
+
+std::map<TString, TString> srcuts_METUnClustDown = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins)
+      cuts[name] = createCutString(name, cutMap_METUnClustDown);
     return cuts;
 }();
 
@@ -576,6 +708,28 @@ std::map<TString, TString> normMap_JESDown{
   {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap_JESDown)},
 };
 
+std::map<TString, TString> normMap_METUnClustUp{
+  {"lm_nb0_nivf0", createCutString("lmNoDPhi_nb0_nivf0", cutMap_METUnClustUp)},
+  {"lm_nb0_nivf1", createCutString("lmNoDPhi_nb0_nivf1", cutMap_METUnClustUp)},
+  {"lm_nb1_nivf0", createCutString("lmNoDPhi_nb1_nivf0", cutMap_METUnClustUp)},
+  {"lm_nb1_nivf1", createCutString("lmNoDPhi_nb1_nivf1", cutMap_METUnClustUp)},
+  {"lm_nb2",       createCutString("lmNoDPhi_nb2", cutMap_METUnClustUp)},
+
+  {"hm_nb1",       createCutString("hmNoDPhi_nb1", cutMap_METUnClustUp)},
+  {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap_METUnClustUp)},
+};
+
+std::map<TString, TString> normMap_METUnClustDown{
+  {"lm_nb0_nivf0", createCutString("lmNoDPhi_nb0_nivf0", cutMap_METUnClustDown)},
+  {"lm_nb0_nivf1", createCutString("lmNoDPhi_nb0_nivf1", cutMap_METUnClustDown)},
+  {"lm_nb1_nivf0", createCutString("lmNoDPhi_nb1_nivf0", cutMap_METUnClustDown)},
+  {"lm_nb1_nivf1", createCutString("lmNoDPhi_nb1_nivf1", cutMap_METUnClustDown)},
+  {"lm_nb2",       createCutString("lmNoDPhi_nb2", cutMap_METUnClustDown)},
+
+  {"hm_nb1",       createCutString("hmNoDPhi_nb1", cutMap_METUnClustDown)},
+  {"hm_nb2",       createCutString("hmNoDPhi_nb2", cutMap_METUnClustDown)},
+};
+
 // normalize photon to Data after baseline+this cut to calc Sgamma
 std::map<TString, TString> phoNormMap = []{
   if (ICHEPCR) return normMap;
@@ -610,6 +764,30 @@ std::map<TString, TString> phoNormMap_JESDown = []{
 
     {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap_JESDown)},
     {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap_JESDown)},
+  };
+}();
+
+std::map<TString, TString> phoNormMap_METUnClustUp = []{
+  if (ICHEPCR) return normMap_METUnClustUp;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap_METUnClustUp)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap_METUnClustUp)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap_METUnClustUp)},
+
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap_METUnClustUp)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap_METUnClustUp)},
+  };
+}();
+
+std::map<TString, TString> phoNormMap_METUnClustDown = []{
+  if (ICHEPCR) return normMap_METUnClustDown;
+  else return std::map<TString, TString>{
+    {"lm_nb0", createCutString("lmNoDPhi_nb0", cutMap_METUnClustDown)},
+    {"lm_nb1", createCutString("lmNoDPhi_nb1", cutMap_METUnClustDown)},
+    {"lm_nb2", createCutString("lmNoDPhi_nb2", cutMap_METUnClustDown)},
+
+    {"hm_nb1", createCutString("hmNoDPhi_nb1", cutMap_METUnClustDown)},
+    {"hm_nb2", createCutString("hmNoDPhi_nb2", cutMap_METUnClustDown)},
   };
 }();
 
@@ -737,6 +915,20 @@ std::map<TString, TString> phocrCuts_JESDown = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : phocrMapping)
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    return cuts;
+}();
+
+std::map<TString, TString> phocrCuts_METUnClustUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : phocrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    return cuts;
+}();
+
+std::map<TString, TString> phocrCuts_METUnClustDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : phocrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
     return cuts;
 }();
 
@@ -870,6 +1062,20 @@ std::map<TString, TString> lepcrCuts_JESDown = []{
     return cuts;
 }();
 
+std::map<TString, TString> lepcrCuts_METUnClustUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : lepcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    return cuts;
+}();
+
+std::map<TString, TString> lepcrCuts_METUnClustDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : lepcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
+    return cuts;
+}();
+
 std::map<TString, TString> lepcrlabels = lepcrMapping;
 std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 
@@ -900,6 +1106,18 @@ std::map<TString, TString> qcdcrCuts_JESDown = []{
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
     return cuts;
 }();
+std::map<TString, TString> qcdcrCuts_METUnClustUp = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : qcdcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    return cuts;
+}();
+std::map<TString, TString> qcdcrCuts_METUnClustDown = []{
+    std::map<TString, TString> cuts;
+    for (auto sr2cr : qcdcrMapping)
+      cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
+    return cuts;
+}();
 std::map<TString, TString> qcd1to1crCuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
@@ -927,6 +1145,26 @@ std::map<TString, TString> qcd1to1crCuts_JESDown = []{
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
       cuts[name] = createCutString(crname, cutMap_JESDown);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcd1to1crCuts_METUnClustUp = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap_METUnClustUp);
+    }
+    return cuts;
+}();
+std::map<TString, TString> qcd1to1crCuts_METUnClustDown = []{
+    std::map<TString, TString> cuts;
+    for (auto name : srbins){
+      TString crname = name;
+      crname.ReplaceAll("lm_", "lmNoDPhi_");
+      crname.ReplaceAll("hm_", "hmNoDPhi_");
+      cuts[name] = createCutString(crname, cutMap_METUnClustDown);
     }
     return cuts;
 }();
@@ -1056,6 +1294,22 @@ map<TString, Category> srCatMap_JESDown(){
   return cmap;
 }
 
+map<TString, Category> srCatMap_METUnClustUp(){
+  map<TString, Category> cmap;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, srcuts_METUnClustUp.at(name), srlabels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> srCatMap_METUnClustDown(){
+  map<TString, Category> cmap;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, srcuts_METUnClustDown.at(name), srlabels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", srMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
 map<TString, Category> phoCatMap(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
@@ -1079,6 +1333,26 @@ map<TString, Category> phoCatMap_JESUp(){
 map<TString, Category> phoCatMap_JESDown(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? srcuts_JESDown: phocrCuts_JESDown;
+  const auto &labels = ICHEPCR ? srlabels: phocrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> phoCatMap_METUnClustUp(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_METUnClustUp: phocrCuts_METUnClustUp;
+  const auto &labels = ICHEPCR ? srlabels: phocrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> phoCatMap_METUnClustDown(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_METUnClustDown: phocrCuts_METUnClustDown;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
@@ -1119,6 +1393,28 @@ map<TString, Category> lepCatMap_JESDown(){
   return cmap;
 }
 
+map<TString, Category> lepCatMap_METUnClustUp(){
+  TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_METUnClustUp: lepcrCuts_METUnClustUp;
+  const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> lepCatMap_METUnClustDown(){
+  TString varlabel = ADD_LEP_TO_MET ? "p_{T}^{W}" : "#slash{E}_{T}";
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? srcuts_METUnClustDown: lepcrCuts_METUnClustDown;
+  const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
 map<TString, Category> qcdCatMap(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
@@ -1142,6 +1438,26 @@ map<TString, Category> qcdCatMap_JESUp(){
 map<TString, Category> qcdCatMap_JESDown(){
   map<TString, Category> cmap;
   const auto &cuts = ICHEPCR ? qcd1to1crCuts_JESDown: qcdcrCuts_JESDown;
+  const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> qcdCatMap_METUnClustUp(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts_METUnClustUp: qcdcrCuts_METUnClustUp;
+  const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
+  for (auto &name : srbins){
+    cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
+map<TString, Category> qcdCatMap_METUnClustDown(){
+  map<TString, Category> cmap;
+  const auto &cuts = ICHEPCR ? qcd1to1crCuts_METUnClustDown: qcdcrCuts_METUnClustDown;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));

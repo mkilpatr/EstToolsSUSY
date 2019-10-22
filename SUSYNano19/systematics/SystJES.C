@@ -35,6 +35,12 @@ vector<Quantity> getQCDPred(TString sys_name = ""){
   } else if(sys_name == "JESDown"){
     qcdcfg.catMaps = srCatMap_JESDown();
     qcdcfg.crCatMaps = qcdCatMap_JESDown();
+  } else if(sys_name == "metresUp"){
+    qcdcfg.catMaps = srCatMap_METUnClustUp();
+    qcdcfg.crCatMaps = qcdCatMap_METUnClustUp();
+  } else if(sys_name == "metresDown"){
+    qcdcfg.catMaps = srCatMap_METUnClustDown();
+    qcdcfg.crCatMaps = qcdCatMap_METUnClustDown();
   }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
@@ -51,6 +57,12 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   } else if(sys_name == "JESDown"){
     llbcfg.catMaps = srCatMap_JESDown();
     llbcfg.crCatMaps = lepCatMap_JESDown();
+  } else if(sys_name == "metresUp"){
+    llbcfg.catMaps = srCatMap_METUnClustUp();
+    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
+  } else if(sys_name == "metresDown"){
+    llbcfg.catMaps = srCatMap_METUnClustDown();
+    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
   }
   LLBEstimator l(llbcfg);
   l.pred();
@@ -86,7 +98,6 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   // jes - up
   {
-    //inputdir = "jesup";
     sys_name = "JESUp";
     EstTools::jes_postfix = "_JESUp";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
@@ -96,9 +107,27 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   }
 
   {
-    //inputdir = "jesdown";
     sys_name = "JESDown";
     EstTools::jes_postfix = "_JESDown";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  // metres - up
+  {
+    sys_name = "metresUp";
+    EstTools::jes_postfix = "_METUnClustUp";
+    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  {
+    sys_name = "metresDown";
+    EstTools::jes_postfix = "_METUnClustDown";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
@@ -124,8 +153,6 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
       }else{
         uncs = sPair.second / nominal_pred;
       }
-
-      cout << "JES Uncertainty: " << uncs << endl;
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){

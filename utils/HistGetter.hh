@@ -401,21 +401,14 @@ TH1F*  HistogramGetter::getHistogramManual(TTree * tree){
 
       for(unsigned int iBS = 0; iBS < nBootStraps; ++iBS){
 	cout << "hb->GetBinContent(iB,iBS+1): " << hb->GetBinContent(iB,iBS+1) << endl;
-	cout << "hb->GetBinContent(iB,iBS):   " << hb->GetBinContent(iB,iBS) << endl;
         s += hb->GetBinContent(iB,iBS+1);
-        stest += hb->GetBinContent(iB,iBS);
         ss += hb->GetBinContent(iB,iBS+1)*hb->GetBinContent(iB,iBS+1);
-        sstest += hb->GetBinContent(iB,iBS)*hb->GetBinContent(iB,iBS);
       }
       std::cout << "sum s: "<< s << std::endl;
       std::cout << "sum SS: "<< ss << std::endl;
-      std::cout << "sum stest: "<< stest << std::endl;
-      std::cout << "sum SStest: "<< sstest << std::endl;
       std::cout << "nBootstraps: "<< nBootStraps << std::endl;
       double stdDev = TMath::Sqrt(nBootStraps*ss - s*s)/nBootStraps;
-      double stdDevtest = TMath::Sqrt(nBootStraps*sstest - stest*stest)/nBootStraps;
       cout << "stdDev: " << stdDev << endl;
-      cout << "stdDevtest: " << stdDevtest << endl;
       h->SetBinError(iB,stdDev);
     }
     delete hb;
