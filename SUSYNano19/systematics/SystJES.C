@@ -85,35 +85,35 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  // nominal
-  {
-    //inputdir = ".";
-    sys_name = "nominal";
-    EstTools::jes_postfix = "";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //// nominal
+  //{
+  //  //inputdir = ".";
+  //  sys_name = "nominal";
+  //  EstTools::jes_postfix = "";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  // jes - up
-  {
-    sys_name = "JESUp";
-    EstTools::jes_postfix = "_JESUp";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-    auto llb = getLLBPred(sys_name);
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //// jes - up
+  //{
+  //  sys_name = "JESUp";
+  //  EstTools::jes_postfix = "_JESUp";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+  //  auto llb = getLLBPred(sys_name);
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  {
-    sys_name = "JESDown";
-    EstTools::jes_postfix = "_JESDown";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-    auto llb = getLLBPred(sys_name);
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //{
+  //  sys_name = "JESDown";
+  //  EstTools::jes_postfix = "_JESDown";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+  //  auto llb = getLLBPred(sys_name);
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
   // metres - up
   {

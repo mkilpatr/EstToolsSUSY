@@ -42,12 +42,10 @@ void plotQCDCR2016(){
   auto config = qcdConfig();
   config.catMaps = config.crCatMaps;
 
-  //BaseEstimator z(config.outputdir);
-  QCDEstimator z(config.outputdir);
+  BaseEstimator z(config.outputdir);
   z.setConfig(config);
-  z.runBootstrapping = true;
 
-  z.plotDataMC({"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr", "znunu-cr", "qcd-withveto-cr"}, "data-cr", false);
+  z.plotDataMC({"ttbar-2016-cr", "wjets-2016-cr", "tW-2016-cr", "ttW-2016-cr", "znunu-2016-cr", "qcd-withveto-2016-cr"}, "data-2016-cr", false);
 
 }
 

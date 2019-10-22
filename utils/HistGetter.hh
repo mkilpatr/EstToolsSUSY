@@ -400,15 +400,10 @@ TH1F*  HistogramGetter::getHistogramManual(TTree * tree){
       double sstest = 0;
 
       for(unsigned int iBS = 0; iBS < nBootStraps; ++iBS){
-	cout << "hb->GetBinContent(iB,iBS+1): " << hb->GetBinContent(iB,iBS+1) << endl;
         s += hb->GetBinContent(iB,iBS+1);
         ss += hb->GetBinContent(iB,iBS+1)*hb->GetBinContent(iB,iBS+1);
       }
-      std::cout << "sum s: "<< s << std::endl;
-      std::cout << "sum SS: "<< ss << std::endl;
-      std::cout << "nBootstraps: "<< nBootStraps << std::endl;
       double stdDev = TMath::Sqrt(nBootStraps*ss - s*s)/nBootStraps;
-      cout << "stdDev: " << stdDev << endl;
       h->SetBinError(iB,stdDev);
     }
     delete hb;
