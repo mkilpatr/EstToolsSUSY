@@ -1,0 +1,34 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-794-g1f6819a-dirty
+imax    1 number of bins
+jmax    4 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 FAKE
+--------------------------------------------------------------------------------
+bin          bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 
+observation  1.0             
+--------------------------------------------------------------------------------
+bin                                                                                bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 
+process                                                                            signal          ttbarplusw      qcd             ttZ             diboson         
+process                                                                            0               1               2               3               4               
+rate                                                                               19.2229         1               1               0.629462        1.75324         
+--------------------------------------------------------------------------------
+JES                                                                        lnN     -               1.02947         1.08322         1.06824         1.18889         
+PDF_Weight                                                                 lnN     -               -               -               1.01581         1.08331         
+PU_Weight                                                                  lnN     -               -               -               1.00636         0.996075        
+Prefire_Weight                                                             lnN     -               -               -               0.995121        0.996809        
+b                                                                          lnN     -               1.02107         1.00304         0.975446        1.05166         
+eff_e_err                                                                  lnN     -               0.986502        1.00072         -               -               
+eff_mu_err                                                                 lnN     -               0.999139        1.00005         -               -               
+mcstats_diboson_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350    lnN     -               -               -               -               1.26078         
+mcstats_qcd_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350        lnN     -               -               1.13129         -               -               
+mcstats_signal_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350     lnN     2               -               -               -               -               
+mcstats_ttZ_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350        lnN     -               -               -               1.12687         -               
+mcstats_ttbarplusw_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 lnN     -               1.01297         -               -               -               
+metres                                                                     lnN     -               -               -               1.04496         0.985068        
+toptag_err                                                                 lnN     -               0.987468        0.998075        -               -               
+trigger_eff                                                                lnN     -               -               -               1.00194         1.0018          
+ttZ_SF                                                                     lnN     -               -               -               1.13675         -               
+wtag_err                                                                   lnN     -               0.996779        0.998697        -               -               
+R_qcd_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350              rateParam  *          qcd        (@0*63.347339+@1*12.244975+@2*68.381006) R_bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_qcdcr_hm_nb1_highmtb_htgt1500_MET_pt250to350
+R_ttbarplusw_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350       rateParam  *          ttbarplusw (@0*211.606354+@1*59.934990+@2*70.115009) R_bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_lepcr_hm_nb1_highmtb_htgt1500_MET_pt250to350

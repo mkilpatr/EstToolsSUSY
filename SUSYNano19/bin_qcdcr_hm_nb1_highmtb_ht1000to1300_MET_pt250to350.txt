@@ -1,0 +1,18 @@
+# Datacard produced by CombineHarvester with git status: analysis-HIG-16-006-freeze-080416-794-g1f6819a-dirty
+imax    1 number of bins
+jmax    1 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------------------------------------
+shapes * bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350 FAKE
+--------------------------------------------------------------------------------
+bin          bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350 
+observation  2498.0          
+--------------------------------------------------------------------------------
+bin                                                                            bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350 bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350 
+process                                                                        qcd             otherbkgs       
+process                                                                        1               2               
+rate                                                                           1902.07         167.667         
+--------------------------------------------------------------------------------
+mcstats_otherbkgs_bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350 lnN     -               2               
+mcstats_qcd_bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350       lnN     1.03535         -               
+R_bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350                 rateParam  *          qcd        1  [0.01,5]
