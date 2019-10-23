@@ -1,8 +1,8 @@
 /*
  * Znunu.C
  *
- *  Created on: Sep 23, 2015
- *      Author: hqu
+ *  Created on: Oct 23, 2019
+ *      Author: mkilpatr
  */
 
 #include <fstream>
@@ -72,7 +72,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   }
 
   {
-    sys_name = "wtag_err";
+    sys_name = "eff_wtag_err";
     wtagwgt = "(WtagSF + WtagSFErr)"; sdmvawgt = "TopSF"; restopwgt = "1";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
@@ -82,7 +82,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   }
 
   {
-    sys_name = "toptag_err";
+    sys_name = "eff_toptag_err";
     wtagwgt = "WtagSF"; sdmvawgt = "(TopSF + TopSFErr)"; restopwgt = "1";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
@@ -92,7 +92,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   }
 
   //{
-  //  sys_name = "restop_Up";
+  //  sys_name = "eff_restop_Up";
   //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Up";
   //  cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
   //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
@@ -102,7 +102,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
   //}
 
   //{
-  //  sys_name = "restop_Down";
+  //  sys_name = "eff_restop_Down";
   //  wtagwgt = "WtagSF"; sdmvawgt = "TopSF"; restopwgt = "restopSF_Down";
   //  cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
   //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
@@ -142,7 +142,8 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType = sPair.first;
+	  auto uncType = TString(sPair.first).ReplaceAll("_Up", ""); // get rid of "up"
+	  uncType = TString(sPair.first).ReplaceAll("_err", ""); // get rid of "err"
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
           double val = uncs.at(ibin).value;
           if (val>2 || std::isnan(val)) {

@@ -1,8 +1,8 @@
 /*
  * Znunu.C
  *
- *  Created on: Sep 23, 2015
- *      Author: hqu
+ *  Created on: Oct 23, 2019
+ *      Author: mkilpatr
  */
 
 #include <fstream>

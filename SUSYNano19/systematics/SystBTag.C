@@ -1,8 +1,8 @@
 /*
  * Znunu.C
  *
- *  Created on: Sep 23, 2015
- *      Author: hqu
+ *  Created on: Oct 23, 2019
+ *      Author: mkilpatr
  */
 
 #include <fstream>
@@ -70,20 +70,31 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
+  //// btag - up
+  //{
+  //  sys_name = "b_Up";
+  //  btagwgt = "BTagWeight_Up";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
+
+  //// btag - down
+  //{
+  //  sys_name = "b_Down";
+  //  btagwgt = "BTagWeight_Down";
+  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
+
   // btag - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // btag - down
-  {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "ivfunc_err";
+    btagwgt = "BTagWeight";
+    softbwgt = "(SoftBSF + SoftBSFErr)";
     //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
@@ -106,7 +117,10 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
         auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
-      }else{
+      } else if(sPair.first.EndsWith("err")){
+	auto varerr = sPair.second / nominal_pred;
+	uncs = Quantity::CombineErrUncs(varerr);
+      } else{
         uncs = sPair.second / nominal_pred;
       }
 
@@ -118,6 +132,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType = TString(sPair.first).ReplaceAll("_Up", ""); // get rid of "up"
+          uncType = TString(sPair.first).ReplaceAll("_err", ""); // get rid of "err"
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
           double val = uncs.at(ibin).value;
           if (val>2 || std::isnan(val)) {

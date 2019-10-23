@@ -1,8 +1,8 @@
 /*
  * Znunu.C
  *
- *  Created on: Sep 23, 2015
- *      Author: hqu
+ *  Created on: Oct 23, 2019
+ *      Author: mkilpatr
  */
 
 #include <fstream>
@@ -134,7 +134,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
       } else if(sPair.first.EndsWith("err")){
-	auto varerr = sPair.second / nominal_pred;
+	//auto varerr = sPair.second / nominal_pred;
+	auto varerr = nominal_pred / sPair.second;
 	uncs = Quantity::CombineErrUncs(varerr);
       }	else{
         uncs = sPair.second / nominal_pred;
@@ -148,6 +149,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType = TString(sPair.first).ReplaceAll("_UP", ""); // get rid of "up"
+	  uncType = TString(sPair.first).ReplaceAll("_err", ""); // get rid of "err"
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
           double val = uncs.at(ibin).value;
           if (val>2 || std::isnan(val)) {
