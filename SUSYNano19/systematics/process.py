@@ -12,6 +12,7 @@ parser.add_argument("-o", "--outdir", dest="outdir", default="${PWD}/plots", hel
 parser.add_argument("-r", "--runscript", dest="script", default="runjobs", help="Shell script to be run by the jobs, [Default: runjobs]")
 parser.add_argument("-t", "--submittype", dest="submittype", default="condor", choices=["interactive","lsf","condor"], help="Method of job submission. [Options: interactive, lsf, condor. Default: condor]")
 parser.add_argument("-q", "--queue", dest="queue", default="1nh", help="LSF submission queue. [Default: 1nh]")
+parser.add_argument("-a", "--tar", dest="tar", default="", help="add the tar command to the submit script")
 parser.add_argument("--output-suffix", dest="suffix", default="_tree.root", help="Suffix of output file. [Default: %(default)s. Use '.json' with dumpJSON.C.]")
 parser.add_argument("--jobdir", dest="jobdir", default="jobs", help="Job dir. [Default: %(default)s]")
 parser.add_argument("--path-to-rootlogon", dest="rootlogon", default="../../rootlogon.C", help="Path to the root logon file. [Default: %(default)s]")
@@ -46,8 +47,15 @@ fi
 cp {rootlogon} $workdir
 cp {pathtomacro}/$runmacro $workdir
 """.format(pathtomacro=args.path,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
-    script.write("""
-    
+if "No" in args.tar:
+	script.write("""
+	    
+echo "$runscript $runmacro $workdir $outputdir"    
+""")
+
+else:
+	script.write("""
+	    
 source tarCMSSW_syst.sh
 
 echo "$runscript $runmacro $workdir $outputdir"    
