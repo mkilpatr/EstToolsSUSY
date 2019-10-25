@@ -6,7 +6,7 @@
 namespace EstTools{
 
 TString sys_name = "nominal";
-TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
+TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
 TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
 TString inputdir_2017 = "nanoaod_all_skim_2017_100219/";
 TString inputdir_2018 = "nanoaod_all_skim_2018_100219/";

@@ -8,7 +8,6 @@ scram=${5}
 
 workdir=`pwd`
 cmssw=${scramdir##*/}
-export USER = $(whoami)
 
 echo $(whoami)
 echo `hostname`

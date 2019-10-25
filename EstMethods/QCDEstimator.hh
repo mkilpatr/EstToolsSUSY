@@ -55,7 +55,9 @@ public:
   virtual ~QCDEstimator() {}
 
   virtual vector<Quantity> getYieldVectorWrapper(const Sample& sample, TString sel, const BinInfo &bin, int nBootstrapping=0) override{
-    std::unique_ptr<TFile> infile(new TFile(sample.filepath));
+    TFile *file = TFile::Open(sample.filepath);
+    std::unique_ptr<TFile> infile(file);
+    //std::unique_ptr<TFile> infile(new TFile(sample.filepath));
     std::unique_ptr<TTree> intree(dynamic_cast<TTree*>(infile->Get(sample.treename)));
     intree->SetTitle(sample.name);
     vector<Quantity> yields;

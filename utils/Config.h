@@ -153,7 +153,9 @@ public:
   Sample(TString name, TString label, TString fname, TString filepath, TString wgtvar, TString sel = "") :
     name(name), label(label), fname(fname), filepath(filepath), wgtvar(wgtvar), sel(sel), tree(nullptr) {
     TDirectory::TContext ctxt; // Will restore gDirectory to its 'current' value at the end of this scope
-    infile.reset(new TFile(filepath));
+    //infile.reset(new TFile(filepath));
+    TFile *f = TFile::Open(filepath);
+    infile.reset(f);
     assert(infile);
     infile->GetObject(treename, tree);
     assert(tree);
