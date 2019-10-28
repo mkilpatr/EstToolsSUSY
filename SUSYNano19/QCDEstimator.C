@@ -1,7 +1,6 @@
 #include "../EstMethods/QCDEstimator.hh"
 
 #include "SRParameters.hh"
-//#include "2016/SRParameters_2016_qcdsmall.hh"
 
 using namespace EstTools;
 
@@ -13,7 +12,7 @@ vector<Quantity> QCDPred(){
 
   QCDEstimator z(config);
 
-  z.runBootstrapping = true;
+  z.runBootstrapping = false;
   z.splitTF = SPLITTF;
 
   z.pred();

@@ -6,12 +6,12 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_102719_limits/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_all_skim_2016_100219/";
+const TString datadir = "nanoaod_all_skim_2016_102719_limits/";
 
 const TString lumistr = "35.922";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -86,7 +86,7 @@ const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_n
 // search regions and control regions
 
 
-const TString baseline = "Pass_MET && Pass_NJets20";
+const TString baseline = "Pass_MET && Pass_NJets30";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!

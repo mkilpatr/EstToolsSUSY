@@ -7,12 +7,12 @@ namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
-TString inputdir_2017 = "nanoaod_all_skim_2017_100219/";
-TString inputdir_2018 = "nanoaod_all_skim_2018_100219/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_102719_limits/";
+TString inputdir_2017 = "nanoaod_all_skim_2017_102719_limits/";
+TString inputdir_2018 = "nanoaod_all_skim_2018_102719_limits/";
 TString outputdir() {return "syst/"+sys_name;}
 
-const TString datadir = "nanoaod_data_all_skim_100219/";
+const TString datadir = "nanoaod_data_all_skim_102719_limits/";
 
 const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -130,7 +130,7 @@ TString dphi_cut() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nT
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-TString baseline() {return "Pass_MET"+jes_postfix+" && Pass_NJets20"+jes_postfix+""; }
+TString baseline() {return "Pass_MET"+jes_postfix+" && Pass_NJets30"+jes_postfix+""; }
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!

@@ -44,6 +44,8 @@ if [ ! "$CMSSW_BASE" ]; then
   exit 1
 fi
 
+eosmkdir /store/user/mkilpatr/13TeV/$outputdir
+
 cp {rootlogon} $workdir
 cp {pathtomacro}/$runmacro $workdir
 """.format(pathtomacro=args.path,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))

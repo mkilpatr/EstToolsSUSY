@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters_small.hh"
+#include "Syst_SR_Parameters.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
@@ -127,6 +127,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_DOWN")) continue; // ignore down: processed at the same time as up
       vector<Quantity> uncs;
+      vector<Quantity> varerr;
 
       if(sPair.first.EndsWith("_UP")){
         auto varup = sPair.second / nominal_pred;
@@ -134,8 +135,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
       } else if(sPair.first.EndsWith("err")){
-	//auto varerr = sPair.second / nominal_pred;
-	auto varerr = nominal_pred / sPair.second;
+	if(bkg == "ttbarplusw") varerr = nominal_pred / sPair.second;
+	else varerr = sPair.second / nominal_pred;
 	uncs = Quantity::CombineErrUncs(varerr);
       }	else{
         uncs = sPair.second / nominal_pred;

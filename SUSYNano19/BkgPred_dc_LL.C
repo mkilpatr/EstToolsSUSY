@@ -48,12 +48,12 @@ void runBkgPred(){
   }
   binlist = s.binlist;
 
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.pred();
-  q.printYields();
-  q.prepDatacard();
-  binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
+  //auto qcdcfg = qcdConfig();
+  //QCDEstimator q(qcdcfg);
+  //q.pred();
+  //q.printYields();
+  //q.prepDatacard();
+  //binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
@@ -61,12 +61,12 @@ void runBkgPred(){
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
-  //binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
+  binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
   binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
 
 
   //vector<const BaseEstimator*> allPreds = {&l, &s};
-  vector<const BaseEstimator*> allPreds = {&q, &l};
+  vector<const BaseEstimator*> allPreds = {&l};
 
   for (const auto *v : allPreds){
     yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());

@@ -1,14 +1,6 @@
-/*
- * Znunu.C
- *
- *  Created on: Sep 23, 2015
- *      Author: hqu
- */
-
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "SRParameters_njets30.hh"
+#include "SRParameters.hh"
 
 using namespace EstTools;
 

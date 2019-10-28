@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_100219/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_100219/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_100219/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_102719_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_102719_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_102719_limits/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_100219/";
+const TString datadir = "nanoaod_data_all_skim_102719_limits/";
 
 const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -25,11 +25,11 @@ const TString lumistr_2018PostHEM = "38.8296";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF";//*restopSF //2016
-const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF";//*restopSF //2017
-const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF";//*restopSF //2017
-const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF";//*restopSF //2018
-const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF";//*restopSF //2018
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
+const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
+const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
+const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -109,7 +109,7 @@ const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_n
 // search regions and control regions
 
 
-const TString baseline = "Pass_MET && Pass_NJets20";
+const TString baseline = "Pass_MET && Pass_NJets30";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!

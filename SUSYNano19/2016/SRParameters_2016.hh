@@ -87,7 +87,7 @@ const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW=
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_MET && Pass_NJets20";
+const TString baseline = "Pass_MET && Pass_NJets30";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
