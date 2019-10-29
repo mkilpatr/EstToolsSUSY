@@ -5,11 +5,11 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
+const TString inputdir = "root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/";
 const TString inputdir_2016 = "nanoaod_all_skim_2016_102719_limits/";
 const TString inputdir_2017 = "nanoaod_all_skim_2017_102719_limits/";
 const TString inputdir_2018 = "nanoaod_all_skim_2018_102719_limits/";
-const TString inputdir_sig  = "nanoaod_Signal_T2tt_2016_102719/";
+const TString inputdir_sig  = "nanoaod_Signal_T2tt_2016_102419/";
 
 const TString outputdir = ".";
 
@@ -162,14 +162,14 @@ std::map<TString, TString> cutMap = []{
 	{"nrtgeq1",     "Stop0l_nResolved>=1"},
 	{"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
 	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
-	{"htlt1000",    "Stop0l_HT<1000"},
+	{"htlt1000",    	"Stop0l_HT<1000"},
 	{"htgt1000",    "Stop0l_HT>=1000"},
 	{"ht1000to1500","Stop0l_HT>=1000 && Stop0l_HT<1500"},
-	{"htgt1500",    "Stop0l_HT>=1500"},
+	{"htgt1500",    	"Stop0l_HT>=1500"},
 	{"htlt1300",    "Stop0l_HT<1300"},
 	{"htgt1300",    "Stop0l_HT>=1300"},
-	{"ht1000to1300","Stop0l_HT>=1000 && Stop0l_HT<1300"},
-	{"ht1300to1500","Stop0l_HT>=1300 && Stop0l_HT<1500"},
+	{"ht1000to1300",	"Stop0l_HT>=1000 && Stop0l_HT<1300"},
+	{"ht1300to1500",	"Stop0l_HT>=1300 && Stop0l_HT<1500"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
