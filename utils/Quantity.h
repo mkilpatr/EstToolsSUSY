@@ -140,6 +140,26 @@ public:
     return unc;
   }
 
+  static std::vector<Quantity> combineUpUncs(const std::vector<Quantity> &up){
+    // input need to be relative unc: "up/nominal", "down/nominal"
+    std::vector<Quantity> unc;
+    for (unsigned i=0; i<up.size(); ++i){
+      double val = up[i].value; // take the avg of abs. diff.
+      unc.emplace_back(val, 0); // don't forget to plus 1
+    }
+    return unc;
+  }
+
+  static std::vector<Quantity> combineDownUncs(const std::vector<Quantity> &down){
+    // input need to be relative unc: "down/nominal", "down/nominal"
+    std::vector<Quantity> unc;
+    for (unsigned i=0; i<down.size(); ++i){
+      double val = down[i].value; // take the avg of abs. diff.
+      unc.emplace_back(val, 0); // don't forget to plus 1
+    }
+    return unc;
+  }
+
   static std::vector<Quantity> CombineErrUncs(const std::vector<Quantity> &err){
     // input need to be relative unc: "up/nominal", "down/nominal"
     std::vector<Quantity> unc;

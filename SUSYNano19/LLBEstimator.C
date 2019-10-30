@@ -719,20 +719,17 @@ void lepcrYields(){
 
 void plot1LepInclusive(){
   auto config = lepConfig();
-  //config.sel = "MET_pt > 200";
-  TString LLCR = "Pass_dPhiMETLowDM";
   TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
-  TString LLCR_LMMed = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETMedDM";
-  TString LLCR_LM_NoMed = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10";
   TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
-  config.sel = baseline + " && Stop0l_nJets >= 2";
+  config.sel = baseline;
 
   config.categories.clear();
   config.catMaps.clear();
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  BaseEstimator z(config.outputdir);
+  TString region = "lepcr_inclusive_newtrees";
+  BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM", "wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM", 
@@ -750,54 +747,50 @@ void plot1LepInclusive(){
   TString data_sample_2018postHEM = "singlelep-2018postHEM";
 
   map<TString, BinInfo> varDict {
-	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-	{"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
-	{"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-	{"dphij3met", BinInfo("Jet_dPhiMET[2]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-  };
-  vector< pair< TString, TString> > npv_bin = {
-	make_pair(" && 1 == 1", 				"_allPU"),
-	//make_pair(" && PV_npvsGood >= 0 && PV_npvsGood < 10", 	"_PU0to10"),
-	//make_pair(" && PV_npvsGood >= 10 && PV_npvsGood < 20", 	"_PU10to20"),
-	//make_pair(" && PV_npvsGood >= 20 && PV_npvsGood < 30", 	"_PU20to30"),
-	//make_pair(" && PV_npvsGood >= 30 && PV_npvsGood < 40", 	"_PU30to40"),
-	//make_pair(" && PV_npvsGood >= 40", 			"_PUgeq40"),
   };
 
   std::function<void(TCanvas*)> plotextra;
-  std::function<void(TCanvas*)> plotextra30;
-  for(int iPU = 0; iPU != npv_bin.size(); iPU++){
-    for (auto &var : varDict){
-      z.resetSelection();
-      z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_2016" + npv_bin[iPU].second, "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM Med", 0.2, 0.72); };
-      z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", false, &plotextra);
-      z.setSelection(LLCR_LM_NoMed + npv_bin[iPU].first, "llcr_lm_nomed_2016" + npv_bin[iPU].second, "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM No Med", 0.2, 0.72); };
-      z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", false, &plotextra);
-      z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_2017RunBtoE" + npv_bin[iPU].second, "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR LM Med", 0.2, 0.72); };
-      z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", false, &plotextra);
-      z.setSelection(LLCR_LM_NoMed + npv_bin[iPU].first, "llcr_lm_nomed_2017RunBtoE" + npv_bin[iPU].second, "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR LM No Med", 0.2, 0.72); };
-      z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", false, &plotextra);
-      //z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_2017RunF" + npv_bin[iPU].second, "");
-      //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunF LLCR LM Med N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
-      //z.plotDataMC(var.second, mc_samples_2017RunF, data_sample_2017RunF, Category::dummy_category(), false, "", false, &plotextra);
-      //z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_2018preHEM" + npv_bin[iPU].second, "");
-      //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018preHEM LLCR LM Med N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
-      //z.plotDataMC(var.second, mc_samples_2018preHEM, data_sample_2018preHEM, Category::dummy_category(), false, "", false, &plotextra);
-      //z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_2018postHEM" + npv_bin[iPU].second, "");
-      //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018postHEM LLCR LM Med N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
-      //z.plotDataMC(var.second, mc_samples_2018postHEM, data_sample_2018postHEM, Category::dummy_category(), false, "", false, &plotextra);
-      //
-      //z.setSelection(LLCR_LMMed + npv_bin[iPU].first, "llcr_lm_med_AllEras" + npv_bin[iPU].second, "");
-      //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("LLCR LM Med N_{j}(p_{T} #geq 20)", 0.2, 0.72); };
-      //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", false, &plotextra);
-    }
+  for (auto &var : varDict){
+    z.resetSelection();
+    //z.setSelection(LLCR_LM, "llcr_lm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", false, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", false, &plotextra);
+
+    //z.setSelection(LLCR_LM, "llcr_lm_2017RunBtoE", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", false, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2017RunBtoE", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", false, &plotextra);
+
+    z.setSelection(LLCR_LM, "llcr_lm_2017RunF", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunF LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2017RunF, data_sample_2017RunF, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2017RunF", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunF LLCR HM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2017RunF, data_sample_2017RunF, Category::dummy_category(), false, "", true, &plotextra);
+
+    //z.setSelection(LLCR_LM, "llcr_lm_2018preHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018preHEM LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2018preHEM, data_sample_2018preHEM, Category::dummy_category(), false, "", false, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2018preHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018preHEM LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2018preHEM, data_sample_2018preHEM, Category::dummy_category(), false, "", false, &plotextra);
+
+    //z.setSelection(LLCR_LM, "llcr_lm_2018postHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018postHEM LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2018postHEM, data_sample_2018postHEM, Category::dummy_category(), false, "", false, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2018postHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018postHEM LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2018postHEM, data_sample_2018postHEM, Category::dummy_category(), false, "", false, &plotextra);
+
   }
   
 }

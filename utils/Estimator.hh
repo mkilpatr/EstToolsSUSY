@@ -811,7 +811,13 @@ public:
       TH1 *hist = nullptr;
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
-	if(sname.Contains(scomb)){
+	TString sMC = TString(sname);
+	if(sMC.Contains("2016")) 	     sMC = sMC.ReplaceAll("-2016","");
+	else if(sMC.Contains("2017RunBtoE")) sMC = sMC.ReplaceAll("-2017RunBtoE","");
+	else if(sMC.Contains("2017RunF"))    sMC = sMC.ReplaceAll("-2017RunF","");
+	else if(sMC.Contains("2018preHEM"))  sMC = sMC.ReplaceAll("-2018preHEM","");
+	else if(sMC.Contains("2018postHEM")) sMC = sMC.ReplaceAll("-2018postHEM","");
+	if(sMC == scomb){
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
 	  if(!hist) hist = (TH1*) hmc_buff->Clone();
@@ -819,12 +825,14 @@ public:
 	}
       }
 
-      prepHists({hist});
-      if (saveHists_) saveHist(hist);
-      mchists.push_back(hist);
-      hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
-
-      addLegendEntry(leg, hist, scomb, "F");
+      if(hist != nullptr){
+        prepHists({hist});
+        if(saveHists_) saveHist(hist);
+        mchists.push_back(hist);
+        hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+        
+        addLegendEntry(leg, hist, scomb, "F");
+      }
     }
 
     if (hdata){
