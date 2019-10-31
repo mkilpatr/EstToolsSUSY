@@ -39,7 +39,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
+void SystTau(std::string outfile_path = "values_unc_tau.conf"){
 
   vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -47,7 +47,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/20170207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -56,23 +56,25 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // -----------------------
+  // tau - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "eff_tau_Up";
+    tauwgt = "TauSF_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // tau - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "eff_tau_Down";
+    tauwgt = "TauSF_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
+  // -----------------------
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
@@ -84,11 +86,14 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
       vector<Quantity> uncs_up, uncs_down;
+      vector<Quantity> varup, vardown;
 
       if(sPair.first.EndsWith("_Up")){
-        auto varup = sPair.second / nominal_pred;
+        if(bkg == "ttbarplusw") varup = nominal_pred / sPair.second;
+	else 			varup = sPair.second / nominal_pred;
         auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
-        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
+        if(bkg == "ttbarplusw") vardown = nominal_pred / proc_syst_pred[bkg].at(name_down);
+	else 			vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs_up = Quantity::combineUpUncs(varup);
         uncs_down = Quantity::combineDownUncs(vardown);
       } else{

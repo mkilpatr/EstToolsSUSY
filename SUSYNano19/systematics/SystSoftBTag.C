@@ -39,7 +39,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
+void SystSoftBTag(std::string outfile_path = "values_unc_soft_btag.conf"){
 
   vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -56,19 +56,19 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // soft btag - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "ivfunc_err_Up";
+    softbwgt = "(SoftBSF + SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // soft btag - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "ivfunc_err_Down";
+    softbwgt = "(SoftBSF - SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

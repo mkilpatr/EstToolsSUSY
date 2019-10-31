@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_102719_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_100219/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_102719_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_103019_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_103019_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_103019_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_100219/";
+const TString datadir = "nanoaod_data_all_skim_103019_limits/";
 
 const TString lumistr = "137.728";
 const TString lumistr_2016 = "35.922"; //Units are in pb
@@ -27,8 +27,7 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // lumi and base weight
 const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
 const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
-//const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
-const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight";// //2017
+const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
 const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 
@@ -46,8 +45,8 @@ const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
 const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
 const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	;//+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	;//+ "*MuonLooseSF*ElectronVetoSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
 const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF";
 const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
@@ -115,7 +114,7 @@ const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW=
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_MET && Pass_NJets20";
+const TString baseline = "Pass_MET && Pass_NJets30";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
@@ -1074,15 +1073,6 @@ BaseConfig lepConfig(){
   config.addSample("ttW-2018postHEM-sr",     "ttW",           inputdir_2018+"ttW",               lepvetowgt_postHEM, dataselHEM + vetoes);
   config.addSample("ttZ-2018postHEM-sr",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM, dataselHEM + vetoes);
   config.addSample("diboson-2018postHEM-sr", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM, dataselHEM + vetoes);
-
-  //config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_sig+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_sig+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_sig+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_sig+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
