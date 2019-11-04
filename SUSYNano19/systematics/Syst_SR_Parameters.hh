@@ -35,6 +35,9 @@ TString Fpuwgt = "17FpuWeight"; // PU
 TString muonwgt = "MuonLooseSF"; // tnp (el/mu)
 TString elewgt = "ElectronVetoSF";
 TString tauwgt = "TauSF";
+TString muonvetowgt = "MuonLooseSF"; // tnp (el/mu)
+TString elevetowgt = "ElectronVetoSF";
+TString tauvetowgt = "TauSF";
 
 TString btagwgt = "BTagWeight"; // btag
 
@@ -65,15 +68,15 @@ TString jes_postfix = "";
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-TString lepvetowgt() 	     { return wgtvar() + "*"+muonwgt+"*"+elewgt+"*"+tauwgt; }
+TString lepvetowgt() 	     { return wgtvar() + "*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt()  	     { return wgtvar() + "*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() + "*"+muonwgt+"*"+elewgt+"*"+tauwgt; }
+TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() + "*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() + "*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunF()    { return wgtvar_RunF() + "*"+muonwgt+"*"+elewgt+"*"+tauwgt; }
+TString lepvetowgt_RunF()    { return wgtvar_RunF() + "*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt_RunF()     { return wgtvar_RunF() + "*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_preHEM()  { return wgtvar_preHEM() + "*"+muonwgt+"*"+elewgt+"*"+tauwgt; }
+TString lepvetowgt_preHEM()  { return wgtvar_preHEM() + "*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt_preHEM()   { return wgtvar_preHEM() + "*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_postHEM() { return wgtvar_postHEM() + "*"+muonwgt+"*"+elewgt+"*"+tauwgt; }
+TString lepvetowgt_postHEM() { return wgtvar_postHEM() + "*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt_postHEM()  { return wgtvar_postHEM() + "*"+muonwgt+"*"+elewgt; }
 TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 

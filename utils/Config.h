@@ -72,10 +72,14 @@ struct BinInfo{
       Number lower = bins.at(i), upper = bins.at(i+1);
       if (i==bins.size()-2 || bins.size() == 1){
         cuts.push_back(var + ">=" + to_string(lower));
+        //if(var=="MET_pt") binnames.push_back("mt" + to_string(int(lower)) + "toinf");
+        //else 		  binnames.push_back(var + to_string(int(lower)) + "toinf");
         binnames.push_back(var + to_string(int(lower)) + "toinf");
         plotnames.push_back(var + "geq" + to_string(lower));
         plotlabels.push_back(label + "#geq" + to_string(lower));
       }else{
+        //if(var=="MET_pt") binnames.push_back("mt" + to_string(int(lower)) + "to" + to_string(int(upper)));
+        //else		  binnames.push_back(var + to_string(int(lower)) + "to" + to_string(int(upper)));
         binnames.push_back(var + to_string(int(lower)) + "to" + to_string(int(upper)));
         if (std::is_integral<Number>::value && upper==(lower+1)){
           cuts.push_back(var + "==" + to_string(lower));
@@ -153,7 +157,6 @@ public:
   Sample(TString name, TString label, TString fname, TString filepath, TString wgtvar, TString sel = "") :
     name(name), label(label), fname(fname), filepath(filepath), wgtvar(wgtvar), sel(sel), tree(nullptr) {
     TDirectory::TContext ctxt; // Will restore gDirectory to its 'current' value at the end of this scope
-    //infile.reset(new TFile(filepath));
     TFile *f = TFile::Open(filepath);
     infile.reset(f);
     assert(infile);

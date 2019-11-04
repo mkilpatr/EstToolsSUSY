@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
+#include "Syst_SR_Parameters_small.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
@@ -20,7 +20,10 @@ vector<Quantity> getQCDPred(){
   q.runBootstrapping = false;
   q.pred();
   q.printYields();
-  return q.yields.at("_TF");
+  vector<Quantity> yields = q.yields.at("_TF");
+  qcdcfg.reset();
+  return yields;
+  //return q.yields.at("_TF");
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
@@ -30,9 +33,12 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
+  vector<Quantity> yields = l.yields.at("_TF");
+  llbcfg.reset();
 
   return {
-    {"ttbarplusw", l.yields.at("_TF")},
+    {"ttbarplusw", yields},
+    //{"ttbarplusw", l.yields.at("_TF")},
     //{"ttZ",        l.yields.at("ttZ-sr")},
     //{"diboson",    l.yields.at("diboson-sr")},
   };
@@ -51,7 +57,7 @@ void SystElectron(std::string outfile_path = "values_unc_electron.conf"){
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -60,7 +66,7 @@ void SystElectron(std::string outfile_path = "values_unc_electron.conf"){
   {
     sys_name = "eff_e_err_Up";
     elewgt = "(ElectronVetoSF + ElectronVetoSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -69,7 +75,7 @@ void SystElectron(std::string outfile_path = "values_unc_electron.conf"){
   {
     sys_name = "eff_e_err_Down";
     elewgt = "(ElectronVetoSF - ElectronVetoSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
