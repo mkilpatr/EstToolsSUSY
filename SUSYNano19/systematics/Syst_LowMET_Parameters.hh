@@ -14,12 +14,12 @@ TString outputdir() {return "syst/"+sys_name;}
 
 const TString datadir = "nanoaod_data_all_skim_102719_limits/";
 
-const TString lumistr = "137.728";
-const TString lumistr_2016 = "35.922"; //Units are in pb
-const TString lumistr_2017RunBtoE = "28.290";
-const TString lumistr_2017RunF    = "13.527";
-const TString lumistr_2018PreHEM  = "21.0684";
-const TString lumistr_2018PostHEM = "38.8296";
+const TString lumistr = "136.722688";
+const TString lumistr_2016 = "35.815165"; //Units are in pb
+const TString lumistr_2017RunBtoE = "27.987721";
+const TString lumistr_2017RunF    = "13.220313";
+const TString lumistr_2018PreHEM  = "21.068576";
+const TString lumistr_2018PostHEM = "38.630913";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights

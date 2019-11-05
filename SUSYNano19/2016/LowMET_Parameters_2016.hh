@@ -13,8 +13,8 @@ const TString outputdir = "LowMET";
 
 const TString datadir = "nanoaod_all_skim_2016_103019_limits/";
 
-const TString lumistr = "35.922";
-const TString lumistr_2016 = "35.922"; //Units are in pb
+const TString lumistr = "35.815165";
+const TString lumistr_2016 = "35.815165"; //Units are in pb
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 

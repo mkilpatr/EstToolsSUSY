@@ -6,15 +6,15 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_100819/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_103019_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_all_skim_2016_100819/";
+const TString datadir = "nanoaod_data_all_skim_103019_limits/";
 
-const TString lumistr = "35.922";
-const TString lumistr_2016 = "35.922"; //Units are in pb
+const TString lumistr = "35.815165";
+const TString lumistr_2016 = "35.815165"; //Units are in pb
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
@@ -77,8 +77,8 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto20))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run >= 319077 || run == 1) && Pass_exHEMVeto20";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30))";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run >= 319077 || run == 1) && Pass_exHEMVeto30";
 const TString ttWSpikeRemovals = " && !(event==7811274) && !(event==956491)";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
@@ -961,14 +961,14 @@ BaseConfig lepConfig(){
 
   // samples for cr categories
   if (ADD_LEP_TO_MET){
-    config.addSample("singlelep",        "Data",          datadir+"met", 		   "1.0",       datasel + trigLepCR + lepcrsel);
+    config.addSample("singlelep",        "Data",          datadir+"met_2016", 		   "1.0",       datasel + trigLepCR + lepcrsel);
     config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt+"*ISRWeight", datasel + trigLepCR + lepcrsel);
     config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
     config.addSample("tW",          "tW",            inputdir_2016+"tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",   "Data",                datadir+"met_2016",                   "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("tW",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);

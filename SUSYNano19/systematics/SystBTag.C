@@ -78,24 +78,24 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // soft btag - up
-  {
-    sys_name = "ivfunc_err_Up";
-    btagwgt = "BTagWeight";
-    softbwgt = "(SoftBSF + SoftBSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //// soft btag - up
+  //{
+  //  sys_name = "ivfunc_err_Up";
+  //  btagwgt = "BTagWeight";
+  //  softbwgt = "(SoftBSF + SoftBSFErr)";
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
-  // soft btag - down
-  {
-    sys_name = "ivfunc_err_Down";
-    softbwgt = "(SoftBSF - SoftBSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
+  //// soft btag - down
+  //{
+  //  sys_name = "ivfunc_err_Down";
+  //  softbwgt = "(SoftBSF - SoftBSFErr)";
+  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
