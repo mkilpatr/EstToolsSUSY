@@ -10,20 +10,8 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  vector<Quantity> yields = q.yields.at("_TF");
-  qcdcfg.reset();
-  return yields;
-}
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
@@ -43,9 +31,9 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPU(std::string outfile_path = "values_unc_pu.conf"){
+void SystPU_LL(std::string outfile_path = "values_unc_ll_pu.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -54,7 +42,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -65,7 +52,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     puwgt = "puWeight_Up";
     BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
     Fpuwgt = "17FpuWeight_Up"; // PU
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -75,7 +61,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     puwgt = "puWeight_Down";
     BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
     Fpuwgt = "17FpuWeight_Down"; // PU
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

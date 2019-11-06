@@ -25,27 +25,10 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
-  LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
-  return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
-}
 
+void SystPU_QCD(std::string outfile_path = "values_unc_qcd_pu.conf"){
 
-void SystPU(std::string outfile_path = "values_unc_pu.conf"){
-
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -55,8 +38,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
   {
     sys_name = "nominal";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   // pu - up
@@ -66,8 +47,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
     Fpuwgt = "17FpuWeight_Up"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
   // pu - down
   {
@@ -76,8 +55,6 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
     Fpuwgt = "17FpuWeight_Down"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;

@@ -20,7 +20,9 @@ vector<Quantity> getQCDPred(){
   q.runBootstrapping = false;
   q.pred();
   q.printYields();
-  return q.yields.at("_TF");
+  vector<Quantity> yields = q.yields.at("_TF");
+  qcdcfg.reset();
+  return yields;
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
@@ -30,12 +32,14 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-
+  vector<Quantity> yields = l.yields.at("_TF");
+  llbcfg.reset();
+  
   return {
-    {"ttbarplusw", l.yields.at("_TF")},
+    {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
+    //    //{"diboson",    l.yields.at("diboson-sr")},
+    //      };
 }
 
 
