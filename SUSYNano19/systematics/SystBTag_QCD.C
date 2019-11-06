@@ -9,7 +9,6 @@
 #include "Syst_SR_Parameters.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
@@ -25,105 +24,53 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
-  LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
-  return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
-}
+void SystBTag_QCD(std::string outfile_path = "values_unc_qcd_btag.conf"){
 
-void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
-
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
+  //inputdir = "/uscms_data/d3/hqu/trees/20170207_syst/others";
   // nominal
   {
     sys_name = "nominal";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
-  // ele - up
+  // btag - up
   {
-    sys_name = "eff_e_err_Up";
-    elewgt = "(ElectronVetoSF + ElectronVetoSFErr)";
-    elevetowgt = "(ElectronVetoSF + (1 - ElectronVetoSFErr)/ElectronVetoSFErr)";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    sys_name = "b_Up";
+    btagwgt = "BTagWeight_Up";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
-  // ele - down
+  // btag - down
   {
-    sys_name = "eff_e_err_Down";
-    elewgt = "(ElectronVetoSF - ElectronVetoSFErr)";
-    elevetowgt = "(ElectronVetoSF - (1 - ElectronVetoSFErr)/ElectronVetoSFErr)";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    sys_name = "b_Down";
+    btagwgt = "BTagWeight_Down";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
-  //// -----------------------
-  //// mu - up
+  //// soft btag - up
   //{
-  //  sys_name = "eff_mu_err_Up";
-  //  elewgt = "ElectronVetoSF";
-  //  elevetowgt = "ElectronVetoSF";
-  //  muonwgt = "(MuonLooseSF + MuonLooseSFErr)";
-  //  muonvetowgt = "(MuonLooseSF + (1 - MuonLooseSFErr)/MuonLooseSFErr)";
+  //  sys_name = "ivfunc_err_Up";
+  //  btagwgt = "BTagWeight";
+  //  softbwgt = "(SoftBSF + SoftBSFErr)";
   //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   //  auto llb = getLLBPred();
   //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   //}
 
-  //// mu - up
+  //// soft btag - down
   //{
-  //  sys_name = "eff_mu_err_Down";
-  //  muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
-  //  muonvetowgt = "(MuonLooseSF - (1 - MuonLooseSFErr)/MuonLooseSFErr)";
+  //  sys_name = "ivfunc_err_Down";
+  //  softbwgt = "(SoftBSF - SoftBSFErr)";
   //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   //  auto llb = getLLBPred();
   //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   //}
-
-  //// -----------------------
-  //// tau - up
-  //{
-  //  sys_name = "eff_tau_Up";
-  //  muonwgt = "MuonLooseSF";
-  //  muonvetowgt = "MuonLooseSF";
-  //  tauvetowgt = "TauSF_Up";
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-
-  //// tau - down
-  //{
-  //  sys_name = "eff_tau_Down";
-  //  tauvetowgt = "TauSF_Down";
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-  //// -----------------------
-
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
@@ -135,14 +82,11 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
       vector<Quantity> uncs_up, uncs_down;
-      vector<Quantity> varup, vardown;
 
       if(sPair.first.EndsWith("_Up")){
-        if(bkg == "ttbarplusw") varup = nominal_pred / sPair.second;
-	else 			varup = sPair.second / nominal_pred;
+        auto varup = sPair.second / nominal_pred;
         auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
-        if(bkg == "ttbarplusw") vardown = nominal_pred / proc_syst_pred[bkg].at(name_down);
-	else 			vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
+        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs_up = Quantity::combineUpUncs(varup);
         uncs_down = Quantity::combineDownUncs(vardown);
       } else{

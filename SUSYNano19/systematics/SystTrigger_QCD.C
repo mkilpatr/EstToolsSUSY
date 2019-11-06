@@ -6,42 +6,43 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters_small.hh"
+#include "Syst_SR_Parameters.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
-vector<Quantity> getQCDPred(){
+vector<Quantity> getQCDPred(TString sys_name = ""){
   auto qcdcfg = qcdConfig();
+  if(sys_name == "JESUp"){
+    qcdcfg.catMaps = srCatMap_JESUp();
+    qcdcfg.crCatMaps = qcdCatMap_JESUp();
+  } else if(sys_name == "JESDown"){
+    qcdcfg.catMaps = srCatMap_JESDown();
+    qcdcfg.crCatMaps = qcdCatMap_JESDown();
+  } else if(sys_name == "metresUp"){
+    qcdcfg.catMaps = srCatMap_METUnClustUp();
+    qcdcfg.crCatMaps = qcdCatMap_METUnClustUp();
+  } else if(sys_name == "metresDown"){
+    qcdcfg.catMaps = srCatMap_METUnClustDown();
+    qcdcfg.crCatMaps = qcdCatMap_METUnClustDown();
+  } else{
+    qcdcfg.catMaps = srCatMap();
+    qcdcfg.crCatMaps = qcdCatMap();
+  }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
   q.pred();
   q.printYields();
-  return q.yields.at("_TF");
+  vector<Quantity> yields = q.yields.at("_TF");
+  qcdcfg.reset();
+  return yields;
 }
 
-map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
-  LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
+void SystTrigger_QCD(std::string outfile_path = "values_unc_qcd_trigger.conf"){
 
-  return {
-    {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
-  };
-}
-
-
-void SystPU(std::string outfile_path = "values_unc_pu.conf"){
-
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -49,31 +50,23 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
 
   // nominal
   {
+    //inputdir = ".";
     sys_name = "nominal";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    EstTools::jes_postfix = "";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
   }
 
-  // pu - up
+  // trigger - up
   {
-    sys_name = "pu_UP";
-    puwgt = "puWeight_Up";
-    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
-    Fpuwgt = "17FpuWeight_Up"; // PU
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    sys_name = "trigger_err_Up";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
   }
-  // pu - down
+
   {
-    sys_name = "pu_DOWN";
-    puwgt = "puWeight_Down";
-    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
-    Fpuwgt = "17FpuWeight_Down"; // PU
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    sys_name = "trigger_err_Down";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
@@ -84,12 +77,12 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_DOWN")) continue; // ignore down: processed at the same time as up
+      if(sPair.first.EndsWith("Down")) continue; // ignore down: processed at the same time as up
       vector<Quantity> uncs;
 
-      if(sPair.first.EndsWith("_UP")){
+      if(sPair.first.EndsWith("Up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_UP", "_DOWN");
+        auto name_down = TString(sPair.first).ReplaceAll("Up", "Down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownUncs(varup, vardown);
       }else{
@@ -103,7 +96,7 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType = TString(sPair.first).ReplaceAll("_UP", ""); // get rid of "up"
+          auto uncType = TString(sPair.first).ReplaceAll("Up", ""); // get rid of "up"
 //          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
           double val = uncs.at(ibin).value;
           if (val>2 || std::isnan(val)) {

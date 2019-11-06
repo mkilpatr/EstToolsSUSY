@@ -6,12 +6,9 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_103019_limits/";
-const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
-
+const TString inputdir_2016 = "nanoaod_all_skim_2016_110519_limits/";
+const TString datadir = "nanoaod_all_skim_2016_110519_limits/";
 const TString outputdir = "LowMET";
-
-const TString datadir = "nanoaod_all_skim_2016_103019_limits/";
 
 const TString lumistr = "35.815165";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -609,7 +606,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          inputdir_2016+"met",             "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",        "Data",          datadir+"met",             "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("tW",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);

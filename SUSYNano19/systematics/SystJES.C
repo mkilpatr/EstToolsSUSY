@@ -1,5 +1,4 @@
 /*
- * Znunu.C
  *
  *  Created on: Oct 23, 2019
  *      Author: mkilpatr
@@ -7,25 +6,13 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
+#include "Syst_SR_Parameters_small.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/ZnunuEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getZnunuPred(){
-  auto phocfg = phoConfig();
-  ZnunuEstimator z(phocfg);
-  z.zllcr_cfg = zllConfig();
-  z.zll_normMap = normMap;
-  z.phocr_normMap = phoNormMap;
-  z.pred();
-  z.printYields();
-  return z.yields.at("_TF");
-}
 
 vector<Quantity> getQCDPred(TString sys_name = ""){
   auto qcdcfg = qcdConfig();
@@ -41,12 +28,17 @@ vector<Quantity> getQCDPred(TString sys_name = ""){
   } else if(sys_name == "metresDown"){
     qcdcfg.catMaps = srCatMap_METUnClustDown();
     qcdcfg.crCatMaps = qcdCatMap_METUnClustDown();
+  } else{
+    qcdcfg.catMaps = srCatMap();
+    qcdcfg.crCatMaps = qcdCatMap();
   }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
   q.pred();
   q.printYields();
-  return q.yields.at("_TF");
+  vector<Quantity> yields = q.yields.at("_TF");
+  qcdcfg.reset();
+  return yields;
 }
 
 map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
@@ -63,15 +55,20 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   } else if(sys_name == "metresDown"){
     llbcfg.catMaps = srCatMap_METUnClustDown();
     llbcfg.crCatMaps = lepCatMap_METUnClustDown();
+  } else{
+    llbcfg.catMaps = srCatMap();
+    llbcfg.crCatMaps = lepCatMap();
   }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-
+  vector<Quantity> yields = l.yields.at("_TF");
+  llbcfg.reset();
+  
   return {
-    {"ttbarplusw", l.yields.at("_TF")},
+    {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
     //{"diboson",    l.yields.at("diboson-sr")},
   };
@@ -85,50 +82,62 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //// nominal
-  //{
-  //  //inputdir = ".";
-  //  sys_name = "nominal";
-  //  EstTools::jes_postfix = "";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-  //  auto llb = getLLBPred();
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-
-  //// jes - up
-  //{
-  //  sys_name = "JESUp";
-  //  EstTools::jes_postfix = "_JESUp";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-  //  auto llb = getLLBPred(sys_name);
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-
-  //{
-  //  sys_name = "JESDown";
-  //  EstTools::jes_postfix = "_JESDown";
-  //  //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
-  //  proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
-  //  auto llb = getLLBPred(sys_name);
-  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  //}
-
-  // metres - up
+  // nominal
   {
-    sys_name = "metresUp";
-    EstTools::jes_postfix = "_METUnClustUp";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    //inputdir = ".";
+    sys_name = "nominal";
+    EstTools::jes_postfix = "";
+    //proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred();
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  // jes - up
+  {
+    sys_name = "JES_Up";
+    EstTools::jes_postfix = "_JESUp";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
-    sys_name = "metresDown";
+    sys_name = "JES_Down";
+    EstTools::jes_postfix = "_JESDown";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  // metres - up
+  {
+    sys_name = "metres_Up";
+    EstTools::jes_postfix = "_METUnClustUp";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  {
+    sys_name = "metres_Down";
     EstTools::jes_postfix = "_METUnClustDown";
-    //proc_syst_pred["znunu"][sys_name] = getZnunuPred();
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  // trigger - up
+  {
+    sys_name = "trigger_err_Up";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
+    auto llb = getLLBPred(sys_name);
+    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  }
+
+  {
+    sys_name = "trigger_err_Down";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
