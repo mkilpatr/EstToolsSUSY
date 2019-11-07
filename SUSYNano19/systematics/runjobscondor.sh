@@ -37,7 +37,7 @@ ls
 
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
-cd CMSSW_9_4_10/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
+cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
 echo $outdir
 
 root -l -b -q $runmacro+

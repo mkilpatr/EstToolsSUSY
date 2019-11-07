@@ -142,7 +142,7 @@ if [ ! "$CMSSW_BASE" ]; then
   exit 1
 fi
         
-eosmkdir /store/user/mkilpatr/13TeV/$outputdir
+#eosmkdir /store/user/mkilpatr/13TeV/$outputdir
         
 cp {rootlogon} $workdir
 cp {pathtomacro}/$runmacro $workdir
@@ -165,7 +165,7 @@ Output                  = logs/{sysname}.out
 Error                   = logs/{sysname}.err
 Log                     = logs/{sysname}.log
 x509userproxy           = 
-request_memory 		= 4200
+request_memory 		= 5000
 initialdir              = {outdir}
 Should_Transfer_Files   = YES
 transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
