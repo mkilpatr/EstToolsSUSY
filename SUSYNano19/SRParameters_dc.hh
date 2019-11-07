@@ -162,14 +162,14 @@ std::map<TString, TString> cutMap = []{
 	{"nrtgeq1",     "Stop0l_nResolved>=1"},
 	{"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
 	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
-	{"htlt1000",    	"Stop0l_HT<1000"},
+	{"htlt1000",    "Stop0l_HT<1000"},
 	{"htgt1000",    "Stop0l_HT>=1000"},
 	{"ht1000to1500","Stop0l_HT>=1000 && Stop0l_HT<1500"},
-	{"htgt1500",    	"Stop0l_HT>=1500"},
+	{"htgt1500",    "Stop0l_HT>=1500"},
 	{"htlt1300",    "Stop0l_HT<1300"},
 	{"htgt1300",    "Stop0l_HT>=1300"},
-	{"ht1000to1300",	"Stop0l_HT>=1000 && Stop0l_HT<1300"},
-	{"ht1300to1500",	"Stop0l_HT>=1300 && Stop0l_HT<1500"},
+	{"ht1000to1300","Stop0l_HT>=1000 && Stop0l_HT<1300"},
+	{"ht1300to1500","Stop0l_HT>=1300 && Stop0l_HT<1500"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -2518,9 +2518,9 @@ BaseConfig lepConfig(){
     //config.addSample("qcd-2018postHEM",          "QCD",           inputdir_2018+"qcd",             lepselwgt_postHEM,      dataselHEM + revert_vetoes);
 
     // add signals in lepcr
-    for (const auto &sig : signals_small){
-      config.addSample("lepcr_"+sig,   sig,          inputdir_sig+sig,    siglepselwgt, datasel + trigSR + revert_vetoes);
-    }
+    //for (const auto &sig : signals_small){
+    //  config.addSample("lepcr_"+sig,   sig,          inputdir_sig+sig,    siglepselwgt, datasel + trigSR + revert_vetoes);
+    //}
   }
 
   config.addSample("ttbar-2016-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt+"*ISRWeight", datasel + vetoes);
@@ -2966,7 +2966,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
   const auto &split_srCatMap = srCatMap();
 
   for (const auto &merged_cat_name : mergedSRbins){
-    cout << "merged bin: " << merged_cat_name << endl;
+    //cout << "merged bin: " << merged_cat_name << endl;
     vector<TString> categories_to_process; // get the categories to consider
     if (merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
     if(merged_cat_name.Contains("nb2")){
@@ -3068,7 +3068,7 @@ map<std::string, std::string> makeNumBinMap(){
       std::string mergedsr_binnum = to_string(binNum);
       results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
       results[mergedsr_binname].push_back(mergedsr_binnum); 
-      cout << "SB binname: " << mergedsr_binname << ": " << mergedsr_binnum << endl;
+      //cout << "SB binname: " << mergedsr_binname << ": " << mergedsr_binnum << endl;
       binNum++;
     }
   }
@@ -3097,7 +3097,7 @@ map<std::string, std::string> makeNumUnitCRMap(TString control_region){
       if(!results.count(crbinname)){
         results[crbinname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
         results[crbinname].push_back(splitsr_binnum); 
-	cout << "unit crbinname: " << crbinname << ": " << splitsr_binnum << endl;
+	//cout << "unit crbinname: " << crbinname << ": " << splitsr_binnum << endl;
         UnitNum++;
       }
     }
@@ -3125,7 +3125,7 @@ map<std::string, std::string> makeNumUnitMap(){
       std::string splitsr_binnum = to_string(UnitNum);
       results[splitsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
       results[splitsr_binname].push_back(splitsr_binnum); 
-      cout << "unit srbinname: " << splitsr_binname << ": " << splitsr_binnum << endl;
+      //cout << "unit srbinname: " << splitsr_binname << ": " << splitsr_binnum << endl;
       UnitNum++;
     }
   }
@@ -3142,6 +3142,8 @@ map<std::string, std::string> lepcrBinMap = makeBinMap("lepcr");
 map<std::string, std::string> lepcrBinNumMap = makeNumBinMap();
 map<std::string, std::string> lepcrUnitNumMap = makeNumUnitMap();
 map<std::string, std::string> lepcrUnitCRNumMap = makeNumUnitCRMap("lepcr");
+map<std::string, std::string> phocrUnitCRNumMap = makeNumUnitCRMap("phocr");
+map<std::string, std::string> qcdcrUnitCRNumMap = makeNumUnitCRMap("qcdcr");
 map<std::string, std::string> phocrBinMap = makeBinMap("phocr");
 map<std::string, std::string> qcdcrBinMap = makeBinMap("qcdcr");
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

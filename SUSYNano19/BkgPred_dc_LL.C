@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
-#include "SRParameters_dc.hh"
+#include "SRParameters_dc_2016.hh"
 
 
 using namespace EstTools;
@@ -57,7 +57,7 @@ void runBkgPred(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.pred2016();
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
@@ -90,7 +90,9 @@ void runBkgPred(){
   j["binlist"] = binlist;
   j["binNum"] = lepcrBinNumMap;
   j["unitSRNum"] = lepcrUnitNumMap;
-  j["unitCRNum"] = lepcrUnitCRNumMap;
+  j["unitCRNum"]["lepcr"] = lepcrUnitCRNumMap;
+  j["unitCRNum"]["phocr"] = phocrUnitCRNumMap;
+  j["unitCRNum"]["qcdcr"] = qcdcrUnitCRNumMap;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
