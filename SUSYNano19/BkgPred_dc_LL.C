@@ -12,6 +12,7 @@ using json = nlohmann::json;
 
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
+#include "../EstMethods/ZnunuEstimator.hh"
 #include "SRParameters_dc_2016.hh"
 
 
@@ -48,12 +49,13 @@ void runBkgPred(){
   }
   binlist = s.binlist;
 
-  //auto qcdcfg = qcdConfig();
-  //QCDEstimator q(qcdcfg);
-  //q.pred();
-  //q.printYields();
-  //q.prepDatacard();
-  //binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
+  auto phocfg = phoConfig();
+  ZnunuEstimator z(phocfg);
+  binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
+
+  auto qcdcfg = qcdConfig();
+  QCDEstimator q(qcdcfg);
+  binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);

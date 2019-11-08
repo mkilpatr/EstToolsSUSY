@@ -106,14 +106,16 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
+      std::pair<vector<Quantity>, vector<Quantity>> uncs;
       vector<Quantity> uncs_up, uncs_down;
 
       if(sPair.first.EndsWith("_Up")){
         auto varup = sPair.second / nominal_pred;
         auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
-        uncs_up = Quantity::combineUpUncs(varup);
-        uncs_down = Quantity::combineDownUncs(vardown);
+        uncs = Quantity::combineUpDownSepUncs(varup, vardown);
+	uncs_up = uncs.first;
+	uncs_down = uncs.second;
       } else{
         uncs_down = sPair.second / nominal_pred;
       }
@@ -125,16 +127,8 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType_up   = TString(sPair.first); // get rid of "up"
-          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); // get rid of "up"
-          //double val = uncs.at(ibin).value;
-          //if (val>2 || std::isnan(val)) {
-          //  cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          //  val = 2;
-          //}else if (val<0.5){
-          //  cout << "Invalid unc, set to -100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          //  val = 0.001;
-          //}
+          auto uncType_up   = TString(sPair.first); 
+          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
           ++ibin;

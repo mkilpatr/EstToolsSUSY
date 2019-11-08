@@ -2426,11 +2426,11 @@ BaseConfig phoConfig(){
   config.outputdir = outputdir+"/znunu";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
+  //config.addSample("singlepho",   "Data",           datadir+"/photoncr/singlepho",  "1.0",  datasel + trigPhoCR);
 
-  config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt, datasel + trigPhoCR + phoBadEventRemoval);
-//  config.addSample("photon",      "Photon",         "photoncr/gjets",      phowgt, datasel + trigPhoCR);
-  config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt, datasel + trigSR + vetoes);
+  //config.addSample("photon",      "Photon",         "photoncr/photon",     phowgt, datasel + trigPhoCR + phoBadEventRemoval);
+////  config.addSample("photon",      "Photon",         "photoncr/gjets",      phowgt, datasel + trigPhoCR);
+  //config.addSample("znunu-sr",    "Z#rightarrow#nu#nu",   "sr/znunu",      lepvetowgt, datasel + trigSR + vetoes);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -2450,9 +2450,9 @@ BaseConfig zllConfig(){
   config.outputdir = outputdir+"/zllcr";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/z-soup",                    lepselwgt, datasel + trigDiLepCR);
-  config.addSample("ttbar",     "t#bar{t}",               "zllcr/t-soup",                    lepselwgt, datasel + trigDiLepCR);
-  config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",       "1.0",     datasel + trigDiLepCR);
+  //config.addSample("dyll",      "Z#rightarrowll+jets",    "zllcr/z-soup",                    lepselwgt, datasel + trigDiLepCR);
+  //config.addSample("ttbar",     "t#bar{t}",               "zllcr/t-soup",                    lepselwgt, datasel + trigDiLepCR);
+  //config.addSample("doublelep", "Data",                   datadir+"/zllcr/doublelep",       "1.0",     datasel + trigDiLepCR);
 
   config.sel = baseline;
   config.catMaps = zllCatMap;
@@ -2962,12 +2962,15 @@ map<std::string, std::string> makeBinMap(TString control_region){
 
   const auto &crMapping = control_region=="phocr" ? phocrMapping : (control_region=="lepcr" ? lepcrMapping : qcdcrMapping);
 
-  const auto &merged_srCatMap = mergedSRCatMap();
+  const auto &merged_srCatMap = control_region=="qcdcr" ? qcdCatMap() : mergedSRCatMap();
   const auto &split_srCatMap = srCatMap();
 
   for (const auto &merged_cat_name : mergedSRbins){
     //cout << "merged bin: " << merged_cat_name << endl;
     vector<TString> categories_to_process; // get the categories to consider
+    if (control_region == "qcdcr" && !merged_cat_name.BeginsWith("nb0_nivf0")){
+      categories_to_process.push_back(TString(merged_cat_name));
+    }
     if (merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
     if(merged_cat_name.Contains("nb2")){
       TString nb2_bin = TString(merged_cat_name).ReplaceAll("nb2", "nbeq2");

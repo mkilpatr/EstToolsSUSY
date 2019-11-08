@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_110519_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_110519_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_110519_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_110619_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_110619_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_110619_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_110519_limits/";
+const TString datadir = "nanoaod_data_all_skim_110619_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonLooseSF*ElectronVetoSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseSF*ElectronVetoSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseSF*ElectronVetoSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseSF*ElectronVetoSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF*TauSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseSF*ElectronVetoSF";
+const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt  =      	wgtvar		+ "*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
