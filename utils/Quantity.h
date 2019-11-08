@@ -147,10 +147,10 @@ public:
     for (unsigned i=0; i<up.size(); ++i){
       double val_up = up[i].value > down[i].value ? up[i].value : down[i].value; 
       double val_down = up[i].value > down[i].value ? down[i].value : up[i].value; 
-      unc_up.emplace_back(val, 0); 
-      unc_down.emplace_back(val, 0); 
+      unc_up.emplace_back(val_up, 0); 
+      unc_down.emplace_back(val_down, 0); 
     }
-    return unc;
+    return make_pair(unc_up, unc_down);
   }
 
   static std::vector<Quantity> combineDownUncs(const std::vector<Quantity> &down){

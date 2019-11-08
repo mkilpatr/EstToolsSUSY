@@ -51,11 +51,11 @@ void runBkgPred(){
 
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
-  binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
+  //binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
-  binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
+  //binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);

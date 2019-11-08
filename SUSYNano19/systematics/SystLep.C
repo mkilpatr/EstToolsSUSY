@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
+#include "Syst_SR_Parameters_small.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
@@ -55,6 +55,9 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   {
     sys_name = "nominal";
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    elevetowgt = "1"; 
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -62,8 +65,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // ele - up
   {
     sys_name = "eff_e_err_Up";
-    elewgt = "(ElectronVetoSF + ElectronVetoSFErr)";
-    elevetowgt = "(ElectronVetoSF + (1 - ElectronVetoSFErr)/ElectronVetoSFErr)";
+    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -72,8 +75,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // ele - down
   {
     sys_name = "eff_e_err_Down";
-    elewgt = "(ElectronVetoSF - ElectronVetoSFErr)";
-    elevetowgt = "(ElectronVetoSF - (1 - ElectronVetoSFErr)/ElectronVetoSFErr)";
+    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -134,17 +137,16 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
+      std::pair<vector<Quantity>, vector<Quantity>> uncs;
       vector<Quantity> uncs_up, uncs_down;
-      vector<Quantity> varup, vardown;
 
       if(sPair.first.EndsWith("_Up")){
-        if(bkg == "ttbarplusw") varup = nominal_pred / sPair.second;
-	else 			varup = sPair.second / nominal_pred;
+        auto varup = sPair.second / nominal_pred;
         auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
-        if(bkg == "ttbarplusw") vardown = nominal_pred / proc_syst_pred[bkg].at(name_down);
-	else 			vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
-        uncs_up = Quantity::combineUpUncs(varup);
-        uncs_down = Quantity::combineDownUncs(vardown);
+        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
+        uncs = Quantity::combineUpDownSepUncs(varup, vardown);
+	uncs_up = uncs.first;
+	uncs_down = uncs.second;
       } else{
         uncs_down = sPair.second / nominal_pred;
       }
@@ -156,16 +158,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType_up   = TString(sPair.first); // get rid of "up"
-          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); // get rid of "up"
-          //double val = uncs.at(ibin).value;
-          //if (val>2 || std::isnan(val)) {
-          //  cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          //  val = 2;
-          //}else if (val<0.5){
-          //  cout << "Invalid unc, set to -100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          //  val = 0.001;
-          //}
+          auto uncType_up   = TString(sPair.first); 
+          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
           ++ibin;

@@ -94,7 +94,7 @@ if args.config == "":
     Error                   = logs/{sysname}.err
     Log                     = logs/{sysname}.log
     x509userproxy           = 
-    request_memory 		= 4200
+    request_memory 	    = 6000
     initialdir              = {outdir}
     Should_Transfer_Files   = YES
     transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
@@ -165,7 +165,7 @@ Output                  = logs/{sysname}.out
 Error                   = logs/{sysname}.err
 Log                     = logs/{sysname}.log
 x509userproxy           = 
-request_memory 		= 5000
+request_memory 		= 6000
 initialdir              = {outdir}
 Should_Transfer_Files   = YES
 transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
