@@ -13,7 +13,7 @@ using json = nlohmann::json;
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
-#include "SRParameters_dc_2016.hh"
+#include "SRParameters_dc.hh"
 
 
 using namespace EstTools;
@@ -51,11 +51,11 @@ void runBkgPred(){
 
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
-  //binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
+  binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
-  //binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
+  binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
@@ -63,8 +63,8 @@ void runBkgPred(){
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
-  binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
-  binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
+  //binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
+  //binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
 
 
   //vector<const BaseEstimator*> allPreds = {&l, &s};

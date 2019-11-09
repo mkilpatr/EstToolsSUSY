@@ -24,7 +24,7 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-void SystMuon_QCD(std::string outfile_path = "values_unc_ll_muon.conf"){
+void SystMuon_QCD(std::string outfile_path = "values_unc_qcd_muon.conf"){
 
   vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}

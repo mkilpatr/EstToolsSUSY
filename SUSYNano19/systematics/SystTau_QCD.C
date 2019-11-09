@@ -24,7 +24,7 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-void SystTau_QCD(std::string outfile_path = "values_unc_ll_tau.conf"){
+void SystTau_QCD(std::string outfile_path = "values_unc_qcd_tau.conf"){
 
   vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}

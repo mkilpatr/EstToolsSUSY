@@ -2957,7 +2957,6 @@ BaseConfig lepcrSignalConfig(TString signal){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 map<std::string, std::string> makeBinMap(TString control_region){
   map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
 
@@ -3033,7 +3032,8 @@ map<std::string, std::string> makeBinMap(TString control_region){
             auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin);
             auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(ibin);
             results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-            results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
+            if(merged_cat_name.BeginsWith("hm")) results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
+	    else 				 results[mergedsr_binname].push_back(crbinname);
           }
         }else{
           // also merge in MET
@@ -3042,8 +3042,8 @@ map<std::string, std::string> makeBinMap(TString control_region){
               auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(icr);
               auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(icr);
               results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-              if(control_region != "qcdcr" && merged_cat_name.BeginsWith("lm")) results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
-	      else 								results[mergedsr_binname].push_back(crbinname);
+              if(merged_cat_name.BeginsWith("hm")) results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
+	      else 				   results[mergedsr_binname].push_back(crbinname);
             }
           }
         }
