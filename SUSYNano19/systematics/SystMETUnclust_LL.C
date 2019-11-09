@@ -10,23 +10,27 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  vector<Quantity> yields = q.yields.at("_TF");
-  qcdcfg.reset();
-  return yields;
-}
-
-map<TString, vector<Quantity>> getLLBPred(){
+map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   auto llbcfg = lepConfig();
+  if(sys_name == "JESUp"){
+    llbcfg.catMaps = srCatMap_JESUp();
+    llbcfg.crCatMaps = lepCatMap_JESUp();
+  } else if(sys_name == "JESDown"){
+    llbcfg.catMaps = srCatMap_JESDown();
+    llbcfg.crCatMaps = lepCatMap_JESDown();
+  } else if(sys_name == "metresUp"){
+    llbcfg.catMaps = srCatMap_METUnClustUp();
+    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
+  } else if(sys_name == "metresDown"){
+    llbcfg.catMaps = srCatMap_METUnClustDown();
+    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
+  } else{
+    llbcfg.catMaps = srCatMap();
+    llbcfg.crCatMaps = lepCatMap();
+  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
@@ -42,89 +46,37 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
+void SystMETUnclust_LL(std::string outfile_path = "values_unc_ll_metres.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
   // nominal
   {
+    //inputdir = ".";
     sys_name = "nominal";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    elevetowgt = "1"; 
-    EstTools::lepsel = "ElecVeto";
-    EstTools::doLepSyst = true;
+    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ele - up
+  // metres - up
   {
-    sys_name = "eff_e_err_Up";
-    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
+    sys_name = "metres_Up";
+    EstTools::jes_postfix = "_METUnClustUp";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ele - down
   {
-    sys_name = "eff_e_err_Down";
-    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
+    sys_name = "metres_Down";
+    EstTools::jes_postfix = "_METUnClustDown";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
-  // -----------------------
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Up";
-    muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // -----------------------
-  // tau - up
-  {
-    sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF_Up";
-    septauvetowgt = "TauSRSF_Up";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // tau - down
-  {
-    sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF_Down";
-    septauvetowgt = "TauSRSF_Down";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-  // -----------------------
-
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);

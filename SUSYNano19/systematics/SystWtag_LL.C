@@ -10,20 +10,8 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  vector<Quantity> yields = q.yields.at("_TF");
-  qcdcfg.reset();
-  return yields;
-}
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
@@ -38,93 +26,45 @@ map<TString, vector<Quantity>> getLLBPred(){
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
+    //    //{"diboson",    l.yields.at("diboson-sr")},
+    //      };
 }
 
-void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+void SystWtag_LL(std::string outfile_path = "values_unc_ll_wtag.conf"){
+
+  vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
+  //inputdir = "/data/hqu/trees/20170221_wtopSyst";
+
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    elevetowgt = "1"; 
-    EstTools::lepsel = "ElecVeto";
-    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ele - up
+  // wtag up
   {
-    sys_name = "eff_e_err_Up";
-    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    sys_name = "eff_wtag_err_Up";
+    wtagwgt = "(WtagSF + WtagSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ele - down
+  // wtag down
   {
-    sys_name = "eff_e_err_Down";
-    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    sys_name = "eff_wtag_err_Down";
+    wtagwgt = "(WtagSF - WtagSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
-  // -----------------------
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Up";
-    muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // -----------------------
-  // tau - up
-  {
-    sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF_Up";
-    septauvetowgt = "TauSRSF_Up";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // tau - down
-  {
-    sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF_Down";
-    septauvetowgt = "TauSRSF_Down";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-  // -----------------------
-
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);

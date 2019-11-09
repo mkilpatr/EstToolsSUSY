@@ -10,20 +10,8 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  vector<Quantity> yields = q.yields.at("_TF");
-  qcdcfg.reset();
-  return yields;
-}
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
@@ -42,9 +30,9 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
+void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -54,51 +42,9 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // nominal
   {
     sys_name = "nominal";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    elevetowgt = "1"; 
-    EstTools::lepsel = "ElecVeto";
+    tauvetowgt = "1"; 
+    EstTools::lepsel = "TauVeto";
     EstTools::doLepSyst = true;
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // ele - up
-  {
-    sys_name = "eff_e_err_Up";
-    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // ele - down
-  {
-    sys_name = "eff_e_err_Down";
-    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
-    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // -----------------------
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Up";
-    muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // mu - up
-  {
-    sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
-    sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -109,7 +55,6 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
     sys_name = "eff_tau_Up";
     tauvetowgt = "TauSRSF_Up";
     septauvetowgt = "TauSRSF_Up";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -119,7 +64,6 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
     sys_name = "eff_tau_Down";
     tauvetowgt = "TauSRSF_Down";
     septauvetowgt = "TauSRSF_Down";
-    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
