@@ -96,7 +96,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // mu - up
   {
     sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
+    muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();

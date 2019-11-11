@@ -54,7 +54,7 @@ void SystMuon_QCD(std::string outfile_path = "values_unc_qcd_muon.conf"){
   // mu - up
   {
     sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
+    muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }

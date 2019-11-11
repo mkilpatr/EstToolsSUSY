@@ -62,7 +62,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_ll_muon.conf"){
   // mu - up
   {
     sys_name = "eff_mu_err_Down";
-    muonwgt = "(MuonLooseSF - MuonLooseSFErr)";
+    muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
