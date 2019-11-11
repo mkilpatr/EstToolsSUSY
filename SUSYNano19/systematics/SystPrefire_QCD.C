@@ -9,7 +9,6 @@
 #include "Syst_SR_Parameters.hh"
 //#include "Syst_LowMET_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
@@ -25,27 +24,9 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
-  LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
-  return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
-}
+void SystPrefire_QCD(std::string outfile_path = "values_unc_qcd_prefire.conf"){
 
-
-void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
-
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -54,26 +35,20 @@ void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
   // nominal
   {
     sys_name = "nominal";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // isr - up
   {
     sys_name = "Prefire_Weight_Up";
     prefirewgt = "PrefireWeight_Up";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // pu - down
   {
     sys_name = "Prefire_Weight_Down";
     prefirewgt = "PrefireWeight_Down";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
-    auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+    proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;

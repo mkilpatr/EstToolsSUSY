@@ -10,20 +10,8 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  vector<Quantity> yields = q.yields.at("_TF");
-  qcdcfg.reset();
-  return yields;
-}
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
@@ -43,9 +31,9 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
+void SystISR_LL(std::string outfile_path = "values_unc_ll_isr.conf"){
 
-  vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
+  vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
@@ -54,24 +42,21 @@ void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
   // nominal
   {
     sys_name = "nominal";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   // isr - up
   {
-    sys_name = "Prefire_Weight_Up";
-    prefirewgt = "PrefireWeight_Up";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    sys_name = "ISR_Weight_Up";
+    isrwgt = "ISRWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
   // pu - down
   {
-    sys_name = "Prefire_Weight_Down";
-    prefirewgt = "PrefireWeight_Down";
-    //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
+    sys_name = "ISR_Weight_Down";
+    isrwgt = "ISRWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
