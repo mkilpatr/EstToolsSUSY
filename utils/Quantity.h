@@ -142,11 +142,12 @@ public:
 
   static std::pair<std::vector<Quantity>, std::vector<Quantity>> combineUpDownSepUncs(const std::vector<Quantity> &up, const std::vector<Quantity> &down){
     // input need to be relative unc: "up/nominal", "down/nominal"
+    assert(up.size() == down.size());
     std::vector<Quantity> unc_up;
     std::vector<Quantity> unc_down;
     for (unsigned i=0; i<up.size(); ++i){
-      double val_up = up[i].value > down[i].value ? up[i].value : down[i].value; 
-      double val_down = up[i].value > down[i].value ? down[i].value : up[i].value; 
+      double val_up = up[i].value;
+      double val_down = down[i].value;
       unc_up.emplace_back(val_up, 0); 
       unc_down.emplace_back(val_down, 0); 
     }

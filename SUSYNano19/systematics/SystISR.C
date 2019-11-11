@@ -43,7 +43,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPU(std::string outfile_path = "values_unc_pu.conf"){
+void SystISR(std::string outfile_path = "values_unc_isr.conf"){
 
   vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -59,22 +59,18 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // pu - up
+  // isr - up
   {
-    sys_name = "pu_Up";
-    puwgt = "puWeight_Up";
-    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
-    Fpuwgt = "17FpuWeight_Up"; // PU
+    sys_name = "ISR_Weight_Up";
+    isrwgt = "ISRWeight_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
   // pu - down
   {
-    sys_name = "pu_Down";
-    puwgt = "puWeight_Down";
-    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
-    Fpuwgt = "17FpuWeight_Down"; // PU
+    sys_name = "ISR_Weight_Down";
+    isrwgt = "ISRWeight_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

@@ -43,6 +43,8 @@ TString sepmuonvetowgt = "MuonLooseSRSF"; // tnp (el/mu)
 TString sepelevetowgt = "ElectronVetoSRSF";
 TString septauvetowgt = "TauSRSF";
 
+TString isrwgt = "ISRWeight";
+
 TString btagwgt = "BTagWeight"; // btag
 
 TString prefirewgt = "PrefireWeight"; //prefire
@@ -54,6 +56,7 @@ TString mcwgt = "1000*Stop0l_evtWeight"; // ttbarnorm / wjetsnorm
 TString qcdrestail = "qcdRespTailWeight"; //qcd response tail
 
 // lumi and base weight
+TString isrwgtvar()     { return isrwgt; }
 TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+triggerwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt; }
 TString wgtvar_RunBtoE(){ return lumistr_2017RunBtoE+"*"+mcwgt+"*"+BtoEpuwgt+"*"+btagwgt+"*"+triggerwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt; }
 TString wgtvar_RunF()   { return lumistr_2017RunF+"*"+mcwgt+"*"+Fpuwgt+"*"+btagwgt+"*"+triggerwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt; }
@@ -1543,14 +1546,14 @@ BaseConfig lepConfig(){
     // samples for cr categories
   if (ADD_LEP_TO_MET){
     config.addSample("singlelep",        "Data",          datadir+"met", 		   "1.0",       datasel() + trigLepCR + lepcrsel);
-    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt()+"*ISRWeight", datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt()+"*"+isrwgtvar(), datasel() + trigLepCR + lepcrsel);
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
     config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
-    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*ISRWeight",      datasel() + revert_vetoes());
+    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*"+isrwgtvar(),      datasel() + revert_vetoes());
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt(),      datasel() + revert_vetoes());
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
     config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             lepselwgt(),      datasel() + revert_vetoes());
@@ -1590,7 +1593,7 @@ BaseConfig lepConfig(){
   }
 
   // samples for sr categories
-  config.addSample("ttbar-2016-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*ISRWeight", datasel() + vetoes());
+  config.addSample("ttbar-2016-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*"+isrwgtvar(), datasel() + vetoes());
   config.addSample("wjets-2016-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + vetoes());
   config.addSample("tW-2016-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + vetoes());
   config.addSample("ttW-2016-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + vetoes());
@@ -1625,7 +1628,7 @@ BaseConfig lepConfig(){
 
   if(doLepSyst){
     //yields for MC with specific lepton SF choosing smallest pt
-    config.addSample("ttbar-2016-eventsf-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                seplepvetowgt()+"*ISRWeight", datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2016-eventsf-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                seplepvetowgt()+"*"+isrwgtvar(), datasel() + revert_vetoes_sep());
     config.addSample("wjets-2016-eventsf-sr",       "W+jets",        inputdir_2016+"wjets",                seplepvetowgt(), datasel() + revert_vetoes_sep());
     config.addSample("tW-2016-eventsf-sr",          "tW",            inputdir_2016+"tW",                   seplepvetowgt(), datasel() + revert_vetoes_sep());
     config.addSample("ttW-2016-eventsf-sr",         "ttW",           inputdir_2016+"ttW",                  seplepvetowgt(), datasel() + revert_vetoes_sep());
@@ -1659,7 +1662,7 @@ BaseConfig lepConfig(){
     config.addSample("diboson-2018postHEM-eventsf-sr", "Diboson",       inputdir_2018+"diboson",           seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
     
     //yields for MC without specific lepton SF
-    config.addSample("ttbar-2016-event-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*ISRWeight", datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2016-event-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*"+isrwgtvar(), datasel() + revert_vetoes_sep());
     config.addSample("wjets-2016-event-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + revert_vetoes_sep());
     config.addSample("tW-2016-event-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + revert_vetoes_sep());
     config.addSample("ttW-2016-event-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + revert_vetoes_sep());
