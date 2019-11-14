@@ -2964,16 +2964,11 @@ map<std::string, std::string> makeBinMap(TString control_region){
 
   const auto &merged_srCatMap = mergedSRCatMap();
   const auto &split_srCatMap = srCatMap();
-  const auto &merged_qcdCRCatMap = qcdCatMap();
 
   for (const auto &merged_cat_name : mergedSRbins){
     vector<TString> categories_to_process; // get the categories to consider
-    if (control_region != "qcdcr" && (merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb"))) continue;
-    if (control_region == "qcdcr" && (merged_cat_name.Contains("nb0_nivf0") || (merged_cat_name.Contains("lowmtb") && merged_cat_name.BeginsWith("hm")))) continue;
-    if (control_region == "qcdcr" && !merged_cat_name.Contains("nb0_nivf0") && !merged_cat_name.BeginsWith("hm")){
-      categories_to_process.push_back(TString(merged_cat_name));
-    }
-    else if(merged_cat_name.Contains("nb2")){
+    if (merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
+    if(merged_cat_name.Contains("nb2")){
       TString nb2_bin = TString(merged_cat_name).ReplaceAll("nb2", "nbeq2");
       categories_to_process.push_back(TString(nb2_bin).ReplaceAll("nt0_nrt0_nw0_htgt1000", "nt0_nrt0_nw0_ht1000to1300"));
       categories_to_process.push_back(TString(nb2_bin).ReplaceAll("nt0_nrt0_nw0_htgt1000", "nt0_nrt0_nw0_ht1300to1500"));
@@ -3019,21 +3014,20 @@ map<std::string, std::string> makeBinMap(TString control_region){
     }
 
     // create the sr-to-cr map
-    const auto& merged_bin = (control_region == "qcdcr" && merged_cat_name.BeginsWith("lm")) ? merged_qcdCRCatMap.at(merged_cat_name) : merged_srCatMap.at(merged_cat_name);
+    const auto& merged_bin = merged_srCatMap.at(merged_cat_name);
     for (const auto &split_cat_name : categories_to_process){
       // loop over all categories to consider, e.g., ht bins
       const auto &split_bin = split_srCatMap.at(split_cat_name);
       for (unsigned ibin=0; ibin<merged_bin.bin.nbins; ++ibin){
         std::string mergedsr_binname = ("bin_"+merged_cat_name+"_"+merged_bin.bin.binnames.at(ibin)).Data();
         if (merged_bin.bin.plotbins.at(ibin+1) == split_bin.bin.plotbins.at(ibin+1)) {
-          if (merged_cat_name.Contains("lowmtb") && control_region != "qcdcr") continue;
+	  if (merged_cat_name.Contains("lowmtb")) continue;
           else{
             // no splitting in MET: merged in nj
             auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin);
             auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(ibin);
             results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-            if(merged_cat_name.BeginsWith("hm")) results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
-	    else 				 results[mergedsr_binname].push_back(crbinname);
+            results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
           }
         }else{
           // also merge in MET
@@ -3042,8 +3036,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
               auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(icr);
               auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(icr);
               results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-              if(merged_cat_name.BeginsWith("hm")) results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
-	      else 				   results[mergedsr_binname].push_back(crbinname);
+              results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
             }
           }
         }
@@ -3090,7 +3083,7 @@ map<std::string, std::string> makeNumUnitCRMap(TString control_region){
   map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
 
   const auto &crMapping = control_region=="phocr" ? phocrMapping : (control_region=="lepcr" ? lepcrMapping : qcdcrMapping);
-  const auto &split_srCatMap = srCatMap();
+  const auto &split_srCatMap = control_region == "qcdcr" ? qcdCatMap() : srCatMap();
 
   int UnitNum = 0;
   for (const auto &split_cat_name : srbins){
@@ -3102,7 +3095,7 @@ map<std::string, std::string> makeNumUnitCRMap(TString control_region){
       if(!results.count(crbinname)){
         results[crbinname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
         results[crbinname].push_back(splitsr_binnum); 
-	//cout << "unit crbinname: " << crbinname << ": " << splitsr_binnum << endl;
+	cout << "unit crbinname: " << crbinname << ": " << splitsr_binnum << endl;
         UnitNum++;
       }
     }

@@ -59,9 +59,9 @@ void runBkgPred(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
-  l.printYields();
-  l.prepDatacard();
+  //l.pred();
+  //l.printYields();
+  //l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
   //binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
   //binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
