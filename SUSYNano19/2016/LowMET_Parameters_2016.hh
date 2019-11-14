@@ -613,7 +613,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes);
     //config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt,      datasel + revert_vetoes);
     //config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",         lepselwgt,      datasel + revert_vetoes);
-    //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",             lepselwgt,      datasel + revert_vetoes);
+    //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd_smear",             lepselwgt,      datasel + revert_vetoes);
   }
 
   // samples for sr categories
@@ -743,7 +743,7 @@ BaseConfig sigConfig(){
   //config.addSample("ttW-raw-sr",                   "ttW",                inputdir_2016+"ttW",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
   //config.addSample("ttZ-raw-sr",                   "ttZ",                inputdir_2016+"ttZ",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
   //config.addSample("diboson-raw-sr",               "Diboson",            inputdir_2016+"diboson",         lepvetowgt_no_wtopsf,                 datasel + vetoes);
-  //config.addSample("qcd-raw-sr",                   "QCD",                inputdir_2016+"qcd",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
+  //config.addSample("qcd-raw-sr",                   "QCD",                inputdir_2016+"qcd_smear",             lepvetowgt_no_wtopsf,                 datasel + vetoes);
 
 //  config.addSample("T2fbd_375_355",  "T2-4bd(375,355)",  "sig/T2fbd_375_355",  sigwgt, datasel + trigSR + vetoes);
 //  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + trigSR + vetoes);

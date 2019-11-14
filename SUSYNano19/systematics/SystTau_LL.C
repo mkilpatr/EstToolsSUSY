@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
+void SystTau_LL(std::string outfile_path = "values_unc_val_ll_tau.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -53,8 +53,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF_Up";
-    septauvetowgt = "TauSRSF_Up";
+    tauvetowgt = "TauSRSF + TauSRSF_Up";
+    septauvetowgt = "TauSRSF + TauSRSF_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -62,8 +62,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
   // tau - down
   {
     sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF_Down";
-    septauvetowgt = "TauSRSF_Down";
+    tauvetowgt = "TauSRSF - TauSRSF_Down";
+    septauvetowgt = "TauSRSF - TauSRSF_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

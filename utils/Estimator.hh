@@ -817,6 +817,8 @@ public:
 	else if(sMC.Contains("2017RunF"))    sMC = sMC.ReplaceAll("-2017RunF","");
 	else if(sMC.Contains("2018preHEM"))  sMC = sMC.ReplaceAll("-2018preHEM","");
 	else if(sMC.Contains("2018postHEM")) sMC = sMC.ReplaceAll("-2018postHEM","");
+	sMC = sMC.ReplaceAll("-cr","");
+	sMC = sMC.ReplaceAll("-withveto","");
 	if(sMC == scomb){
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);

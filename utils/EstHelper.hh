@@ -282,7 +282,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1.)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -312,7 +312,14 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     h->GetXaxis()->SetLabelOffset(0.20);
     if (isFirst){
       isFirst = false;
-      h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
+      if(isVal){
+	float val = h->GetMaximum();
+	float max = val > 1 ? val : 1 + (1 - val);
+	float min = val > 1 ? 1 - (val - 1) : 1 - (1 - val);
+	h->GetYaxis()->SetRangeUser(0.9*min, 1.1*max);
+	h->SetMinimum(0.9*min);
+      }
+      if(!isVal) h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
       if(forceymax>0) h->GetYaxis()->SetRangeUser(0,plotMax*forceymax);
       if(logymin>0) {
         float gap = 0.40;
@@ -330,7 +337,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  CMS_lumi(p1, 4, 10);
+  if(!isVal) CMS_lumi(p1, 4, 10);
 #endif
 
   c->cd();
@@ -344,6 +351,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   p2->cd();
   isFirst = true;
   TString drawOpt = showErrorBarInRatio?"E":"hist";
+  if(isVal) gStyle->SetOptStat(0);
   for (auto *h : ratiohists){
     if (isFirst) {
       isFirst = false;

@@ -975,7 +975,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes);
     //config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt,      datasel + revert_vetoes);
     //config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",         lepselwgt,      datasel + revert_vetoes);
-    //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",             lepselwgt,      datasel + revert_vetoes);
+    //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd_smear",             lepselwgt,      datasel + revert_vetoes);
   }
 
   // samples for sr categories
@@ -1016,7 +1016,7 @@ BaseConfig srConfig(){
   config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
   config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
   //config.addSample("znunu",       "Z#rightarrow#nu#nu", inputdir_2016+"znunu",   "1.0", datasel + vetoes);
-  //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",          "1.0", datasel + vetoes + qcdSpikeRemovals);
+  //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd_smear",          "1.0", datasel + vetoes + qcdSpikeRemovals);
   config.addSample("tW",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes);
   config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes);
   //config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",          "1.0", datasel + vetoes);
@@ -1069,9 +1069,9 @@ BaseConfig qcdConfig(){
   // qcdcr
   config.addSample("data-cr",     "Data",             datadir+"met",  "1.0",      datasel + trigSR + vetoes + dphi_invert);
   
-  config.addSample("qcd-cr",      "QCD",              inputdir_2016+"qcd",       qcdwgt,      datasel + dphi_invert + qcdSpikeRemovals);
-  config.addSample("qcd-withveto-cr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt,  datasel + vetoes + dphi_invert + qcdSpikeRemovals);
-  config.addSample("qcd-withveto-sr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt,  datasel + vetoes + qcdSpikeRemovals);
+  config.addSample("qcd-cr",      "QCD",              inputdir_2016+"qcd_smear",       qcdwgt,      datasel + dphi_invert + qcdSpikeRemovals);
+  config.addSample("qcd-withveto-cr",  "QCD",         inputdir_2016+"qcd_smear",       qcdvetowgt,  datasel + vetoes + dphi_invert + qcdSpikeRemovals);
+  config.addSample("qcd-withveto-sr",  "QCD",         inputdir_2016+"qcd_smear",       qcdvetowgt,  datasel + vetoes + qcdSpikeRemovals);
 
   // qcdcr: other bkg subtraction
   config.addSample("ttbar-cr",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt,  datasel + vetoes + dphi_invert);
@@ -1086,14 +1086,14 @@ BaseConfig qcdConfig(){
   config.addSample("wjets-norm",     "W+jets",        inputdir_2016+"wjets",     lepselwgt,   datasel + revert_vetoes + dphi_cut);
   config.addSample("tW-norm",        "tW",            inputdir_2016+"tW",        lepselwgt,   datasel + revert_vetoes + dphi_cut);
   config.addSample("ttW-norm",       "ttW",           inputdir_2016+"ttW",       lepselwgt,   datasel + revert_vetoes + dphi_cut);
-  config.addSample("qcd-norm",       "QCD",           inputdir_2016+"qcd",       lepselwgt,   datasel + revert_vetoes + dphi_cut + qcdSpikeRemovals);
+  config.addSample("qcd-norm",       "QCD",           inputdir_2016+"qcd_smear",       lepselwgt,   datasel + revert_vetoes + dphi_cut + qcdSpikeRemovals);
 
   // qcdsr
-  config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",       qcdwgt,           datasel + qcdSpikeRemovals);
+  config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd_smear",       qcdwgt,           datasel + qcdSpikeRemovals);
 
   // samples for splitting the TF, optional (see z.splitTF)
   if (SPLITTF){
-    config.addSample("qcd-sr-int",         "QCD",           inputdir_2016+"qcd",       qcdwgt,           datasel + dphi_cut + qcdSpikeRemovals);
+    config.addSample("qcd-sr-int",         "QCD",           inputdir_2016+"qcd_smear",       qcdwgt,           datasel + dphi_cut + qcdSpikeRemovals);
   }
 
   config.sel = baseline;

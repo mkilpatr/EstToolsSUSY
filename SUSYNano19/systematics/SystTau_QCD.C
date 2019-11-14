@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/QCDEstimator.hh"
 
@@ -24,7 +24,7 @@ vector<Quantity> getQCDPred(){
   return yields;
 }
 
-void SystTau_QCD(std::string outfile_path = "values_unc_qcd_tau.conf"){
+void SystTau_QCD(std::string outfile_path = "values_unc_val_qcd_tau.conf"){
 
   vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -46,16 +46,16 @@ void SystTau_QCD(std::string outfile_path = "values_unc_qcd_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF_Up";
-    septauvetowgt = "TauSRSF_Up";
+    tauvetowgt = "TauSRSF + TauSRSF_Up";
+    septauvetowgt = "TauSRSF + TauSRSF_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // tau - down
   {
     sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF_Down";
-    septauvetowgt = "TauSRSF_Down";
+    tauvetowgt = "TauSRSF - TauSRSF_Down";
+    septauvetowgt = "TauSRSF - TauSRSF_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // -----------------------
