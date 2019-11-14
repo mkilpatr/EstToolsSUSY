@@ -25,11 +25,11 @@ const TString lumistr_2018PostHEM = "38.630913";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
-const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17BtoEpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
-const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
-const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
-const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight**puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
+const TString wgtvar_RunBtoE = lumistr_2017RunBtoE+"*1000*Stop0l_evtWeight**17BtoEpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
+const TString wgtvar_RunF = lumistr_2017RunF+"*1000*Stop0l_evtWeight**17FpuWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
+const TString wgtvar_preHEM = lumistr_2018PreHEM+"*1000*Stop0l_evtWeight**puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar_postHEM = lumistr_2018PostHEM+"*1000*Stop0l_evtWeight**puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -41,16 +41,16 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt =      	wgtvar		+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt  =      	wgtvar		+ "*MuonLooseCRSF*ElectronVetoCRSF";
-const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*MuonLooseCRSF*ElectronVetoCRSF";
-const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*MuonLooseCRSF*ElectronVetoCRSF";
-const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*MuonLooseCRSF*ElectronVetoCRSF";
-const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt =      	wgtvar		+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt  =      	wgtvar		+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_RunBtoE =      wgtvar_RunBtoE	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_RunBtoE  =      wgtvar_RunBtoE	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_RunF =         wgtvar_RunF	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_RunF  =         wgtvar_RunF	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_preHEM =       wgtvar_preHEM	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_preHEM  =       wgtvar_preHEM	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt_postHEM =      wgtvar_postHEM	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt_postHEM  =      wgtvar_postHEM	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -85,16 +85,16 @@ const TString trigLepCR = "";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-const TString qcdwgt         = wgtvar + "*qcdRespTailWeight";
-const TString qcdwgt_RunBtoE = wgtvar_RunBtoE + "*qcdRespTailWeight";
-const TString qcdwgt_RunF    = wgtvar_RunF + "*qcdRespTailWeight";
-const TString qcdwgt_preHEM  = wgtvar_preHEM + "*qcdRespTailWeight";
-const TString qcdwgt_postHEM = wgtvar_postHEM + "*qcdRespTailWeight";
-const TString qcdvetowgt         = lepvetowgt + "*qcdRespTailWeight";
-const TString qcdvetowgt_RunBtoE = lepvetowgt_RunBtoE + "*qcdRespTailWeight";
-const TString qcdvetowgt_RunF    = lepvetowgt_RunF + "*qcdRespTailWeight";
-const TString qcdvetowgt_preHEM  = lepvetowgt_preHEM + "*qcdRespTailWeight";
-const TString qcdvetowgt_postHEM = lepvetowgt_postHEM + "*qcdRespTailWeight";
+const TString qcdwgt         = wgtvar + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdwgt_RunBtoE = wgtvar_RunBtoE + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdwgt_RunF    = wgtvar_RunF + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdwgt_preHEM  = wgtvar_preHEM + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdwgt_postHEM = wgtvar_postHEM + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdvetowgt         = lepvetowgt + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline";
+const TString qcdvetowgt_RunBtoE = lepvetowgt_RunBtoE + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline";
+const TString qcdvetowgt_RunF    = lepvetowgt_RunF + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline";
+const TString qcdvetowgt_preHEM  = lepvetowgt_preHEM + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline";
+const TString qcdvetowgt_postHEM = lepvetowgt_postHEM + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline";
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
