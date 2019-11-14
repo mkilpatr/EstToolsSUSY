@@ -130,6 +130,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   {
     sys_name = "trigger_err_Up";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
+    triggerwgtqcd = "Stop0l_trigger_eff_MET_loose_baseline_QCD_up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -138,6 +139,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   {
     sys_name = "trigger_err_Down";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
+    triggerwgtqcd = "Stop0l_trigger_eff_MET_loose_baseline_QCD_down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
