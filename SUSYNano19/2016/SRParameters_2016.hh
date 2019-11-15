@@ -11,7 +11,7 @@ const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_110619_limits/";
+const TString datadir = "nanoaod_data_all_skim_111319_limits/";
 
 const TString lumistr = "35.815165";
 const TString lumistr_2016 = "35.815165"; //Units are in pb

@@ -30,7 +30,7 @@ void BkgPred_LowMET_LL(){
 
   // traditional method for LLB
   EstTools::ADD_LEP_TO_MET = false;
-  auto altllbcfg = lepConfig();
+  auto altllbcfg = lepConfig2017();
   LLBEstimator l(altllbcfg);
   l.pred();
   l.printYields();
@@ -83,8 +83,8 @@ void BkgPred_LowMET_LL(){
     output->Close();
   };
 
-  plot(altpred_low, altgraphs_low, "std_pred_trad_LM", "Low");
-  plot(altpred_high, altgraphs_high, "std_pred_trad_HM", "High");
+  plot(altpred_low, altgraphs_low, "std_pred_trad_LM_2017", "Low");
+  plot(altpred_high, altgraphs_high, "std_pred_trad_HM_2017", "High");
 
 
   cout << "\n\n Traditional \n";
