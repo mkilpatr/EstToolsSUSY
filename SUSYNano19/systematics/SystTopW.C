@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
@@ -15,10 +15,10 @@
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
@@ -26,9 +26,9 @@ vector<Quantity> getQCDPred(){
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -43,7 +43,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystTopW(std::string outfile_path = "values_unc_val_wtoptag.conf"){
+void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -51,7 +51,7 @@ void SystTopW(std::string outfile_path = "values_unc_val_wtoptag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/trees/20180221_wtopSyst";
+  //inputdir = "/data/hqu/trees/0221_wtopSyst";
 
   // nominal
   {
@@ -123,7 +123,7 @@ void SystTopW(std::string outfile_path = "values_unc_val_wtoptag.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

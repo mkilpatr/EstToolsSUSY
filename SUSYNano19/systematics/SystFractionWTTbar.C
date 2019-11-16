@@ -7,8 +7,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/ZnunuEstimator.hh"
@@ -22,24 +22,24 @@ vector<Quantity> getZnunuPred(){
   z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
   z.phocr_normMap = phoNormMap;
-  z.pred2018();
+  z.pred();
   z.printYields();
   return z.yields.at("_TF");
 }
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   return q.yields.at("_TF");
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -52,7 +52,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystFractionWTTbar(std::string outfile_path = "values_unc_val_wtopfrac.conf"){
+void SystFractionWTTbar(std::string outfile_path = "values_unc_wtopfrac.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -60,7 +60,7 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_val_wtopfrac.conf
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  inputdir = "/uscms/home/hqu/nobackup/trees/20180206_lepSF";
+  inputdir = "/uscms/home/hqu/nobackup/trees/0206_lepSF";
 
   // nominal
   {
@@ -87,7 +87,7 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_val_wtopfrac.conf
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
