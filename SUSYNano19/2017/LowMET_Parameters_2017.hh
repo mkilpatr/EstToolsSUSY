@@ -1,7 +1,7 @@
 #ifndef ESTTOOLS_LMPARAMETERS_HH_
 #define ESTTOOLS_LMPARAMETERS_HH_
 
-#include "../utils/EstHelper.hh"
+#include "../../utils/EstHelper.hh"
 
 namespace EstTools{
 
