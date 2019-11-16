@@ -6,25 +6,25 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
+  auto qcdcfg = qcdConfig2018();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred();
+  q.pred2018();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
   return yields;
 }
 
-void SystElectron_QCD(std::string outfile_path = "values_unc_qcd_electron.conf"){
+void SystElectron_QCD(std::string outfile_path = "values_unc_val_qcd_electron.conf"){
 
   vector<TString> bkgnames  = {"qcd"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -32,7 +32,7 @@ void SystElectron_QCD(std::string outfile_path = "values_unc_qcd_electron.conf")
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/ramdisk/20170207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/20180207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -60,7 +60,7 @@ void SystElectron_QCD(std::string outfile_path = "values_unc_qcd_electron.conf")
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

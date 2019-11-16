@@ -76,23 +76,23 @@ bool doLepSyst = false;
 //TString lepselwgt()  {return wgtvar();}
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
-TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_RunBtoE()      	{ return wgtvar_RunBtoE() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_RunF()      	{ return wgtvar_RunF() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_preHEM()      	{ return wgtvar_preHEM() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_postHEM()      	{ return wgtvar_postHEM() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_RunBtoE()      	{ return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_RunF()      	{ return wgtvar_RunF() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_preHEM()      	{ return wgtvar_preHEM() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_postHEM()      	{ return wgtvar_postHEM() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
 
 // Tag-and-Probe Lepton SF
-TString lepvetowgt() 	     { return wgtvar() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt()  	     { return wgtvar() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunF()    { return wgtvar_RunF() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_RunF()     { return wgtvar_RunF() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_preHEM()  { return wgtvar_preHEM() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_preHEM()   { return wgtvar_preHEM() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_postHEM() { return wgtvar_postHEM() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_postHEM()  { return wgtvar_postHEM() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt() 	     { return wgtvar() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt()  	     { return wgtvar() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_RunF()    { return wgtvar_RunF() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_RunF()     { return wgtvar_RunF() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_preHEM()  { return wgtvar_preHEM() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_preHEM()   { return wgtvar_preHEM() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_postHEM() { return wgtvar_postHEM() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_postHEM()  { return wgtvar_postHEM() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
 TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 
 // 1LCR Lepton SF
@@ -121,16 +121,16 @@ const TString trigLepCR = " && passtriglepOR";
 TString onelepcrwgt() {return lepselwgt();}
 
 // qcd weights
-TString qcdwgt()         {return wgtvar() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_RunBtoE() {return wgtvar_RunBtoE() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_RunF()    {return wgtvar_RunF() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_preHEM()  {return wgtvar_preHEM() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_postHEM() {return wgtvar_postHEM() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdvetowgt()         {return lepvetowgt() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_RunBtoE() {return lepvetowgt_RunBtoE() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_RunF()    {return lepvetowgt_RunF() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_preHEM()  {return lepvetowgt_preHEM() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_postHEM() {return lepvetowgt_postHEM() +"*"+triggerwgt"*" + qcdrestail;}
+TString qcdwgt()         {return wgtvar() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_RunBtoE() {return wgtvar_RunBtoE() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_RunF()    {return wgtvar_RunF() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_preHEM()  {return wgtvar_preHEM() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_postHEM() {return wgtvar_postHEM() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdvetowgt()         {return lepvetowgt() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_RunBtoE() {return lepvetowgt_RunBtoE() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_RunF()    {return lepvetowgt_RunF() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_preHEM()  {return lepvetowgt_preHEM() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_postHEM() {return lepvetowgt_postHEM() +"*"+triggerwgt+"*" + qcdrestail;}
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";

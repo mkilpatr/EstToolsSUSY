@@ -76,23 +76,23 @@ bool doLepSyst = false;
 //TString lepselwgt()  {return wgtvar();}
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
-TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_RunBtoE()      	{ return wgtvar_RunBtoE() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_RunF()      	{ return wgtvar_RunF() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_preHEM()      	{ return wgtvar_preHEM() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
-TString seplepvetowgt_postHEM()      	{ return wgtvar_postHEM() +"*"+triggerwgt"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_RunBtoE()      	{ return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_RunF()      	{ return wgtvar_RunF() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_preHEM()      	{ return wgtvar_preHEM() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
+TString seplepvetowgt_postHEM()      	{ return wgtvar_postHEM() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
 
 // Tag-and-Probe Lepton SF
-TString lepvetowgt() 	     { return wgtvar() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt()  	     { return wgtvar() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_RunF()    { return wgtvar_RunF() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_RunF()     { return wgtvar_RunF() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_preHEM()  { return wgtvar_preHEM() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_preHEM()   { return wgtvar_preHEM() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
-TString lepvetowgt_postHEM() { return wgtvar_postHEM() +"*"+triggerwgt"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_postHEM()  { return wgtvar_postHEM() +"*"+triggerwgt"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt() 	     { return wgtvar() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt()  	     { return wgtvar() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_RunBtoE() { return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_RunBtoE()  { return wgtvar_RunBtoE() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_RunF()    { return wgtvar_RunF() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_RunF()     { return wgtvar_RunF() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_preHEM()  { return wgtvar_preHEM() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_preHEM()   { return wgtvar_preHEM() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepvetowgt_postHEM() { return wgtvar_postHEM() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
+TString lepselwgt_postHEM()  { return wgtvar_postHEM() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
 TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 
 // 1LCR Lepton SF
@@ -121,16 +121,16 @@ const TString trigLepCR = " && passtriglepOR";
 TString onelepcrwgt() {return lepselwgt();}
 
 // qcd weights
-TString qcdwgt()         {return wgtvar() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_RunBtoE() {return wgtvar_RunBtoE() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_RunF()    {return wgtvar_RunF() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_preHEM()  {return wgtvar_preHEM() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdwgt_postHEM() {return wgtvar_postHEM() +"*"+triggerwgtqcd"*" + qcdrestail;}
-TString qcdvetowgt()         {return lepvetowgt() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_RunBtoE() {return lepvetowgt_RunBtoE() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_RunF()    {return lepvetowgt_RunF() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_preHEM()  {return lepvetowgt_preHEM() +"*"+triggerwgt"*" + qcdrestail;}
-TString qcdvetowgt_postHEM() {return lepvetowgt_postHEM() +"*"+triggerwgt"*" + qcdrestail;}
+TString qcdwgt()         {return wgtvar() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_RunBtoE() {return wgtvar_RunBtoE() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_RunF()    {return wgtvar_RunF() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_preHEM()  {return wgtvar_preHEM() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdwgt_postHEM() {return wgtvar_postHEM() +"*"+triggerwgtqcd+"*" + qcdrestail;}
+TString qcdvetowgt()         {return lepvetowgt() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_RunBtoE() {return lepvetowgt_RunBtoE() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_RunF()    {return lepvetowgt_RunF() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_preHEM()  {return lepvetowgt_preHEM() +"*"+triggerwgt+"*" + qcdrestail;}
+TString qcdvetowgt_postHEM() {return lepvetowgt_postHEM() +"*"+triggerwgt+"*" + qcdrestail;}
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(1.0*(mtcsv12met<=175)+sdtopFastSimWeight*sdwFastSimWeight*(mtcsv12met>175))";
@@ -1484,6 +1484,236 @@ BaseConfig lepConfig(){
   return config;
 }
 
+BaseConfig lepConfig2016(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/LLB";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+    // samples for cr categories
+  if (ADD_LEP_TO_MET){
+    config.addSample("singlelep",        "Data",          datadir+"met", 		   "1.0",       datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt()+"*"+isrwgtvar(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("tW",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+//    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
+  }else{
+    config.addSample("singlelep",        "Data",          inputdir_2016+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*"+isrwgtvar(),      datasel() + revert_vetoes());
+    config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("tW",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",         lepselwgt(),      datasel() + revert_vetoes());
+    config.addSample("qcd",         "QCD",           inputdir_2016+"qcd",             lepselwgt(),      datasel() + revert_vetoes());
+  }
+
+  // samples for sr categories
+  config.addSample("ttbar-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*"+isrwgtvar(), datasel() + vetoes());
+  config.addSample("wjets-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + vetoes());
+  config.addSample("tW-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttW-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + vetoes());
+  config.addSample("ttZ-sr",         "ttZ",           inputdir_2016+"ttZ",                  lepvetowgt(), datasel() + vetoes());
+  config.addSample("diboson-sr",     "Diboson",       inputdir_2016+"diboson",              lepvetowgt(), datasel() + vetoes());
+
+  if(doLepSyst){
+    //yields for MC with specific lepton SF choosing smallest pt
+    config.addSample("ttbar-eventsf-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                seplepvetowgt()+"*"+isrwgtvar(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-eventsf-sr",       "W+jets",        inputdir_2016+"wjets",                seplepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-eventsf-sr",          "tW",            inputdir_2016+"tW",                   seplepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-eventsf-sr",         "ttW",           inputdir_2016+"ttW",                  seplepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-eventsf-sr",         "ttZ",           inputdir_2016+"ttZ",                  seplepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-eventsf-sr",     "Diboson",       inputdir_2016+"diboson",              seplepvetowgt(), datasel() + revert_vetoes_sep());
+
+    //yields for MC without specific lepton SF
+    config.addSample("ttbar-event-sr",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt()+"*"+isrwgtvar(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-event-sr",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-event-sr",          "tW",            inputdir_2016+"tW",                   lepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-event-sr",         "ttW",           inputdir_2016+"ttW",                  lepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-event-sr",         "ttZ",           inputdir_2016+"ttZ",                  lepvetowgt(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-event-sr",     "Diboson",       inputdir_2016+"diboson",              lepvetowgt(), datasel() + revert_vetoes_sep());
+  }
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();
+  config.crCatMaps = lepCatMap();
+
+  return config;
+}
+
+BaseConfig lepConfig2017(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/LLB";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+    // samples for cr categories
+  if (ADD_LEP_TO_MET){
+    config.addSample("singlelep",        "Data",          datadir+"met", 		   "1.0",       datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt()+"*"+isrwgtvar(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+//    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
+  }else{
+    config.addSample("singlelep",        	  "Data",          inputdir_2017+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("ttbar-2017RunBtoE",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2017RunBtoE",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("tW-2017RunBtoE",            "tW",            inputdir_2017+"tW",              lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2017RunBtoE",           "ttW",           inputdir_2017+"ttW",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2017RunBtoE",           "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2017RunBtoE",       "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2017RunBtoE",           "QCD",           inputdir_2017+"qcd",             lepselwgt_RunBtoE(),      datasel() + revert_vetoes());
+    config.addSample("ttbar-2017RunF",       	  "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2017RunF",       	  "W+jets",        inputdir_2017+"wjets",           lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("tW-2017RunF",          	  "tW",            inputdir_2017+"tW",              lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2017RunF",         	  "ttW",           inputdir_2017+"ttW",             lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2017RunF",         	  "ttZ",           inputdir_2017+"ttZ",             lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2017RunF",     	  "Diboson",       inputdir_2017+"diboson",         lepselwgt_RunF(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2017RunF",         	  "QCD",           inputdir_2017+"qcd",             lepselwgt_RunF(),      datasel() + revert_vetoes());
+  }
+
+  // samples for sr categories
+  config.addSample("ttbar-2017RunBtoE-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("wjets-2017RunBtoE-sr",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("tW-2017RunBtoE-sr",       "tW",            inputdir_2017+"tW",               lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttW-2017RunBtoE-sr",      "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttZ-2017RunBtoE-sr",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("diboson-2017RunBtoE-sr",  "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunBtoE(), datasel() + vetoes());
+  config.addSample("ttbar-2017RunF-sr",       "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("wjets-2017RunF-sr",       "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("tW-2017RunF-sr",          "tW",            inputdir_2017+"tW",               lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("ttW-2017RunF-sr",         "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("ttZ-2017RunF-sr",         "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunF(), datasel() + vetoes());
+  config.addSample("diboson-2017RunF-sr",     "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunF(), datasel() + vetoes());
+
+  if(doLepSyst){
+    //yields for MC with specific lepton SF choosing smallest pt
+    config.addSample("ttbar-2017RunBtoE-eventsf-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2017RunBtoE-eventsf-sr",    "W+jets",        inputdir_2017+"wjets",            seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2017RunBtoE-eventsf-sr",       "tW",            inputdir_2017+"tW",               seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2017RunBtoE-eventsf-sr",      "ttW",           inputdir_2017+"ttW",              seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2017RunBtoE-eventsf-sr",      "ttZ",           inputdir_2017+"ttZ",              seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2017RunBtoE-eventsf-sr",  "Diboson",       inputdir_2017+"diboson",          seplepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2017RunF-eventsf-sr",       "t#bar{t}",      inputdir_2017+"ttbar",            seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2017RunF-eventsf-sr",       "W+jets",        inputdir_2017+"wjets",            seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2017RunF-eventsf-sr",          "tW",            inputdir_2017+"tW",               seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2017RunF-eventsf-sr",         "ttW",           inputdir_2017+"ttW",              seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2017RunF-eventsf-sr",         "ttZ",           inputdir_2017+"ttZ",              seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2017RunF-eventsf-sr",     "Diboson",       inputdir_2017+"diboson",          seplepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    
+    //yields for MC without specific lepton SF
+    config.addSample("ttbar-2017RunBtoE-event-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2017RunBtoE-event-sr",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2017RunBtoE-event-sr",       "tW",            inputdir_2017+"tW",               lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2017RunBtoE-event-sr",      "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2017RunBtoE-event-sr",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2017RunBtoE-event-sr",  "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunBtoE(), datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2017RunF-event-sr",       "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2017RunF-event-sr",       "W+jets",        inputdir_2017+"wjets",            lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2017RunF-event-sr",          "tW",            inputdir_2017+"tW",               lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2017RunF-event-sr",         "ttW",           inputdir_2017+"ttW",              lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2017RunF-event-sr",         "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2017RunF-event-sr",     "Diboson",       inputdir_2017+"diboson",          lepvetowgt_RunF(), datasel() + revert_vetoes_sep());
+  }
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();
+  config.crCatMaps = lepCatMap();
+
+  return config;
+}
+
+BaseConfig lepConfig2018(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/LLB";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+    // samples for cr categories
+  if (ADD_LEP_TO_MET){
+    config.addSample("singlelep",        "Data",          datadir+"met", 		   "1.0",       datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           onelepcrwgt()+"*"+isrwgtvar(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+    config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
+//    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
+  }else{
+    config.addSample("singlelep",        	 "Data",          inputdir_2018+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("ttbar-2018preHEM",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("wjets-2018preHEM",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("tW-2018preHEM",            "tW",            inputdir_2018+"tW",              lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttW-2018preHEM",           "ttW",           inputdir_2018+"ttW",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttZ-2018preHEM",           "ttZ",           inputdir_2018+"ttZ",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("diboson-2018preHEM",       "Diboson",       inputdir_2018+"diboson",         lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("qcd-2018preHEM",           "QCD",           inputdir_2018+"qcd",             lepselwgt_preHEM(),      datasel() + revert_vetoes());
+    config.addSample("ttbar-2018postHEM",        "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("wjets-2018postHEM",        "W+jets",        inputdir_2018+"wjets",           lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("tW-2018postHEM",           "tW",            inputdir_2018+"tW",              lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("ttW-2018postHEM",          "ttW",           inputdir_2018+"ttW",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("ttZ-2018postHEM",          "ttZ",           inputdir_2018+"ttZ",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("diboson-2018postHEM",      "Diboson",       inputdir_2018+"diboson",         lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+    config.addSample("qcd-2018postHEM",          "QCD",           inputdir_2018+"qcd",             lepselwgt_postHEM(),     dataselHEM() + revert_vetoes());
+  }
+
+  // samples for sr categories
+  config.addSample("ttbar-2018preHEM-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("wjets-2018preHEM-sr",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("tW-2018preHEM-sr",       "tW",            inputdir_2018+"tW",                lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttW-2018preHEM-sr",      "ttW",           inputdir_2018+"ttW",               lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttZ-2018preHEM-sr",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("diboson-2018preHEM-sr",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM(), datasel() + vetoes());
+  config.addSample("ttbar-2018postHEM-sr",   "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("wjets-2018postHEM-sr",   "W+jets",        inputdir_2018+"wjets",             lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("tW-2018postHEM-sr",      "tW",            inputdir_2018+"tW",                lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("ttW-2018postHEM-sr",     "ttW",           inputdir_2018+"ttW",               lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("ttZ-2018postHEM-sr",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM(), dataselHEM() + vetoes());
+  config.addSample("diboson-2018postHEM-sr", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM(), dataselHEM() + vetoes());
+
+  if(doLepSyst){
+    //yields for MC with specific lepton SF choosing smallest pt
+    config.addSample("ttbar-2018preHEM-eventsf-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2018preHEM-eventsf-sr",    "W+jets",        inputdir_2018+"wjets",             seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2018preHEM-eventsf-sr",       "tW",            inputdir_2018+"tW",                seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2018preHEM-eventsf-sr",      "ttW",           inputdir_2018+"ttW",               seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2018preHEM-eventsf-sr",      "ttZ",           inputdir_2018+"ttZ",               seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2018preHEM-eventsf-sr",  "Diboson",       inputdir_2018+"diboson",           seplepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2018postHEM-eventsf-sr",   "t#bar{t}",      inputdir_2018+"ttbar",             seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("wjets-2018postHEM-eventsf-sr",   "W+jets",        inputdir_2018+"wjets",             seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("tW-2018postHEM-eventsf-sr",      "tW",            inputdir_2018+"tW",                seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("ttW-2018postHEM-eventsf-sr",     "ttW",           inputdir_2018+"ttW",               seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("ttZ-2018postHEM-eventsf-sr",     "ttZ",           inputdir_2018+"ttZ",               seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("diboson-2018postHEM-eventsf-sr", "Diboson",       inputdir_2018+"diboson",           seplepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    
+    //yields for MC without specific lepton SF
+    config.addSample("ttbar-2018preHEM-event-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("wjets-2018preHEM-event-sr",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("tW-2018preHEM-event-sr",       "tW",            inputdir_2018+"tW",                lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttW-2018preHEM-event-sr",      "ttW",           inputdir_2018+"ttW",               lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttZ-2018preHEM-event-sr",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("diboson-2018preHEM-event-sr",  "Diboson",       inputdir_2018+"diboson",           lepvetowgt_preHEM(), datasel() + revert_vetoes_sep());
+    config.addSample("ttbar-2018postHEM-event-sr",   "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("wjets-2018postHEM-event-sr",   "W+jets",        inputdir_2018+"wjets",             lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("tW-2018postHEM-event-sr",      "tW",            inputdir_2018+"tW",                lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("ttW-2018postHEM-event-sr",     "ttW",           inputdir_2018+"ttW",               lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("ttZ-2018postHEM-event-sr",     "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+    config.addSample("diboson-2018postHEM-event-sr", "Diboson",       inputdir_2018+"diboson",           lepvetowgt_postHEM(), dataselHEM() + revert_vetoes_sep());
+  }
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();
+  config.crCatMaps = lepCatMap();
+
+  return config;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 BaseConfig srConfig(){
@@ -1496,7 +1726,7 @@ BaseConfig srConfig(){
   config.addSample("ttbar",       "t#bar{t}",      "ttbar",        lepvetowgt(), datasel() + vetoes());
   config.addSample("wjets",       "W+jets",        "wjets",        lepvetowgt(), datasel() + vetoes());
   config.addSample("znunu",       "Z#rightarrow#nu#nu", "znunu",   lepvetowgt(), datasel() + vetoes());
-  config.addSample("qcd",         "QCD",           "qcd-sr",       lepvetowgt(), datasel() + vetoes() + qcdSpikeRemovals);
+  config.addSample("qcd",         "QCD",           "qcd-sr",       lepvetowgt(), datasel() + vetoes());
   config.addSample("tW",          "tW",            "tW",           lepvetowgt(), datasel() + vetoes());
   config.addSample("ttW",         "ttW",           "ttW",          lepvetowgt(), datasel() + vetoes());
   config.addSample("ttZ",         "ttZ",           "ttZ",          lepvetowgt(), datasel() + vetoes());
@@ -1544,23 +1774,23 @@ BaseConfig qcdConfig(){
   // qcdcr
   config.addSample("data-cr",     "Data",             datadir+"met",  "1.0",      datasel() + trigSR() + vetoes() + dphi_invert());
   
-  config.addSample("qcd-2016-cr",      "QCD",              inputdir_2016+"qcd",       qcdwgt(),      datasel() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2016-withveto-cr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2016-withveto-sr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes() + qcdSpikeRemovals);
+  config.addSample("qcd-2016-cr",      "QCD",              inputdir_2016+"qcd",       qcdwgt(),      datasel() + dphi_invert());
+  config.addSample("qcd-2016-withveto-cr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2016-withveto-sr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes());
 
-  config.addSample("qcd-2017RunBtoE-cr",      "QCD",       inputdir_2017+"qcd",       qcdwgt_RunBtoE(),      datasel() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunBtoE-withveto-cr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunBtoE-withveto-sr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunF-cr",      "QCD",          inputdir_2017+"qcd",       qcdwgt_RunF(),         datasel() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunF-withveto-cr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunF-withveto-sr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes() + qcdSpikeRemovals);
+  config.addSample("qcd-2017RunBtoE-cr",      "QCD",       inputdir_2017+"qcd",       qcdwgt_RunBtoE(),      datasel() + dphi_invert());
+  config.addSample("qcd-2017RunBtoE-withveto-cr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2017RunBtoE-withveto-sr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes());
+  config.addSample("qcd-2017RunF-cr",      "QCD",          inputdir_2017+"qcd",       qcdwgt_RunF(),         datasel() + dphi_invert());
+  config.addSample("qcd-2017RunF-withveto-cr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2017RunF-withveto-sr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes());
 
-  config.addSample("qcd-2018preHEM-cr",      "QCD",        inputdir_2018+"qcd",       qcdwgt_preHEM(),       datasel() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2018preHEM-withveto-cr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2018preHEM-withveto-sr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes() + qcdSpikeRemovals);
-  config.addSample("qcd-2018postHEM-cr",      "QCD",       inputdir_2018+"qcd",       qcdwgt_postHEM(),      dataselHEM() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2018postHEM-withveto-cr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes() + dphi_invert() + qcdSpikeRemovals);
-  config.addSample("qcd-2018postHEM-withveto-sr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes() + qcdSpikeRemovals);
+  config.addSample("qcd-2018preHEM-cr",      "QCD",        inputdir_2018+"qcd",       qcdwgt_preHEM(),       datasel() + dphi_invert());
+  config.addSample("qcd-2018preHEM-withveto-cr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2018preHEM-withveto-sr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes());
+  config.addSample("qcd-2018postHEM-cr",      "QCD",       inputdir_2018+"qcd",       qcdwgt_postHEM(),      dataselHEM() + dphi_invert());
+  config.addSample("qcd-2018postHEM-withveto-cr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("qcd-2018postHEM-withveto-sr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes());
 
   // qcdcr: other bkg subtraction
   config.addSample("ttbar-2016-cr",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt(),  datasel() + vetoes() + dphi_invert());
@@ -1597,36 +1827,184 @@ BaseConfig qcdConfig(){
   config.addSample("wjets-2016-norm",     "W+jets",        inputdir_2016+"wjets",     lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2016-norm",        "tW",            inputdir_2016+"tW",        lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttW-2016-norm",       "ttW",           inputdir_2016+"ttW",       lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
-  config.addSample("qcd-2016-norm",       "QCD",           inputdir_2016+"qcd",       lepselwgt(),   datasel() + revert_vetoes() + dphi_cut() + qcdSpikeRemovals);
+  config.addSample("qcd-2016-norm",       "QCD",           inputdir_2016+"qcd",       lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
 
   config.addSample("ttbar-2017RunBtoE-norm",     "t#bar{t}",      inputdir_2017+"ttbar",     lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("wjets-2017RunBtoE-norm",     "W+jets",        inputdir_2017+"wjets",     lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2017RunBtoE-norm",        "tW",            inputdir_2017+"tW",        lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttW-2017RunBtoE-norm",       "ttW",           inputdir_2017+"ttW",       lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
-  config.addSample("qcd-2017RunBtoE-norm",       "QCD",           inputdir_2017+"qcd",       lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut() + qcdSpikeRemovals);
+  config.addSample("qcd-2017RunBtoE-norm",       "QCD",           inputdir_2017+"qcd",       lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttbar-2017RunF-norm",        "t#bar{t}",      inputdir_2017+"ttbar",     lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
   config.addSample("wjets-2017RunF-norm",        "W+jets",        inputdir_2017+"wjets",     lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2017RunF-norm",           "tW",            inputdir_2017+"tW",        lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttW-2017RunF-norm",          "ttW",           inputdir_2017+"ttW",       lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
-  config.addSample("qcd-2017RunF-norm",          "QCD",           inputdir_2017+"qcd",       lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut() + qcdSpikeRemovals);
+  config.addSample("qcd-2017RunF-norm",          "QCD",           inputdir_2017+"qcd",       lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
 
   config.addSample("ttbar-2018preHEM-norm",     "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("wjets-2018preHEM-norm",     "W+jets",        inputdir_2018+"wjets",     lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2018preHEM-norm",        "tW",            inputdir_2018+"tW",        lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttW-2018preHEM-norm",       "ttW",           inputdir_2018+"ttW",       lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
-  config.addSample("qcd-2018preHEM-norm",       "QCD",           inputdir_2018+"qcd",       lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut() + qcdSpikeRemovals);
+  config.addSample("qcd-2018preHEM-norm",       "QCD",           inputdir_2018+"qcd",       lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
   config.addSample("ttbar-2018postHEM-norm",    "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
   config.addSample("wjets-2018postHEM-norm",    "W+jets",        inputdir_2018+"wjets",     lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
   config.addSample("tW-2018postHEM-norm",       "tW",            inputdir_2018+"tW",        lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
   config.addSample("ttW-2018postHEM-norm",      "ttW",           inputdir_2018+"ttW",       lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
-  config.addSample("qcd-2018postHEM-norm",      "QCD",           inputdir_2018+"qcd",       lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut() + qcdSpikeRemovals);
+  config.addSample("qcd-2018postHEM-norm",      "QCD",           inputdir_2018+"qcd",       lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
 
   // qcdsr
-  config.addSample("qcd-2016-sr",         "QCD",           inputdir_2016+"qcd",       qcdwgt(),           datasel() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunBtoE-sr",  "QCD",           inputdir_2017+"qcd",       qcdwgt_RunBtoE(),   datasel() + qcdSpikeRemovals);
-  config.addSample("qcd-2017RunF-sr",     "QCD",           inputdir_2017+"qcd",       qcdwgt_RunF(),      datasel() + qcdSpikeRemovals);
-  config.addSample("qcd-2018preHEM-sr",   "QCD",           inputdir_2018+"qcd",       qcdwgt_preHEM(),    datasel() + qcdSpikeRemovals);
-  config.addSample("qcd-2018postHEM-sr",  "QCD",           inputdir_2018+"qcd",       qcdwgt_postHEM(),   dataselHEM() + qcdSpikeRemovals);
+  config.addSample("qcd-2016-sr",         "QCD",           inputdir_2016+"qcd",       qcdwgt(),           datasel());
+  config.addSample("qcd-2017RunBtoE-sr",  "QCD",           inputdir_2017+"qcd",       qcdwgt_RunBtoE(),   datasel());
+  config.addSample("qcd-2017RunF-sr",     "QCD",           inputdir_2017+"qcd",       qcdwgt_RunF(),      datasel());
+  config.addSample("qcd-2018preHEM-sr",   "QCD",           inputdir_2018+"qcd",       qcdwgt_preHEM(),    datasel());
+  config.addSample("qcd-2018postHEM-sr",  "QCD",           inputdir_2018+"qcd",       qcdwgt_postHEM(),   dataselHEM());
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();    // sr DPhi cut applied
+  config.crCatMaps = qcdCatMap(); // no DPhi cut in category def
+
+  return config;
+}
+
+BaseConfig qcdConfig2016(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/QCD";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+  // qcdcr
+  config.addSample("data-cr",     "Data",             inputdir_2016+"met",  "1.0",      datasel() + trigSR() + vetoes() + dphi_invert());
+  
+  config.addSample("qcd-cr",      "QCD",              inputdir_2016+"qcd",       qcdwgt(),      datasel() + dphi_invert());
+  config.addSample("qcd-withveto-cr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-withveto-sr",  "QCD",         inputdir_2016+"qcd",       qcdvetowgt(),  datasel() + vetoes());
+
+  // qcdcr: other bkg subtraction
+  config.addSample("ttbar-cr",       "t#bar{t}",      inputdir_2016+"ttbar",        lepvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("wjets-cr",       "W+jets",        inputdir_2016+"wjets",        lepvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("tW-cr",          "tW",            inputdir_2016+"tW",           lepvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("ttW-cr",         "ttW",           inputdir_2016+"ttW",          lepvetowgt(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("znunu-cr",       "Znunu",         inputdir_2016+"znunu",        lepvetowgt(),  datasel() + vetoes() + dphi_invert());
+
+  // onelepcr: norm correction for other bkg subtraction
+  config.addSample("data-norm",           "Data",          inputdir_2016+"met", "1.0",      datasel() + trigSR() + revert_vetoes() + dphi_cut());
+  config.addSample("ttbar-norm",     "t#bar{t}",      inputdir_2016+"ttbar",     lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("wjets-norm",     "W+jets",        inputdir_2016+"wjets",     lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("tW-norm",        "tW",            inputdir_2016+"tW",        lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttW-norm",       "ttW",           inputdir_2016+"ttW",       lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("qcd-norm",       "QCD",           inputdir_2016+"qcd",       lepselwgt(),   datasel() + revert_vetoes() + dphi_cut());
+
+  // qcdsr
+  config.addSample("qcd-sr",         "QCD",           inputdir_2016+"qcd",       qcdwgt(),           datasel());
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();    // sr DPhi cut applied
+  config.crCatMaps = qcdCatMap(); // no DPhi cut in category def
+
+  return config;
+}
+
+BaseConfig qcdConfig2017(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/QCD";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+  // qcdcr
+  config.addSample("data-cr",     "Data",             inputdir_2017+"met",  "1.0",      datasel() + trigSR() + vetoes() + dphi_invert());
+  
+  config.addSample("qcd-2017RunBtoE-cr",      "QCD",       inputdir_2017+"qcd",       qcdwgt_RunBtoE(),      datasel() + dphi_invert());
+  config.addSample("qcd-2017RunBtoE-withveto-cr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2017RunBtoE-withveto-sr",  "QCD",  inputdir_2017+"qcd",       qcdvetowgt_RunBtoE(),  datasel() + vetoes());
+  config.addSample("qcd-2017RunF-cr",      "QCD",          inputdir_2017+"qcd",       qcdwgt_RunF(),         datasel() + dphi_invert());
+  config.addSample("qcd-2017RunF-withveto-cr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2017RunF-withveto-sr",  "QCD",     inputdir_2017+"qcd",       qcdvetowgt_RunF(),     datasel() + vetoes());
+
+  // qcdcr: other bkg subtraction
+  config.addSample("ttbar-2017RunBtoE-cr",       "t#bar{t}",      inputdir_2017+"ttbar",        lepvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("wjets-2017RunBtoE-cr",       "W+jets",        inputdir_2017+"wjets",        lepvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("tW-2017RunBtoE-cr",          "tW",            inputdir_2017+"tW",           lepvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("ttW-2017RunBtoE-cr",         "ttW",           inputdir_2017+"ttW",          lepvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("znunu-2017RunBtoE-cr",       "Znunu",         inputdir_2017+"znunu",        lepvetowgt_RunBtoE(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("ttbar-2017RunF-cr",          "t#bar{t}",      inputdir_2017+"ttbar",           lepvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("wjets-2017RunF-cr",          "W+jets",        inputdir_2017+"wjets",           lepvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("tW-2017RunF-cr",             "tW",            inputdir_2017+"tW",              lepvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("ttW-2017RunF-cr",            "ttW",           inputdir_2017+"ttW",             lepvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+  config.addSample("znunu-2017RunF-cr",          "Znunu",         inputdir_2017+"znunu",           lepvetowgt_RunF(),     datasel() + vetoes() + dphi_invert());
+
+  // onelepcr: norm correction for other bkg subtraction
+  config.addSample("data-norm",           	 "Data",          inputdir_2017+"met", "1.0",      datasel() + trigSR() + revert_vetoes() + dphi_cut());
+  config.addSample("ttbar-2017RunBtoE-norm",     "t#bar{t}",      inputdir_2017+"ttbar",     lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("wjets-2017RunBtoE-norm",     "W+jets",        inputdir_2017+"wjets",     lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("tW-2017RunBtoE-norm",        "tW",            inputdir_2017+"tW",        lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttW-2017RunBtoE-norm",       "ttW",           inputdir_2017+"ttW",       lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("qcd-2017RunBtoE-norm",       "QCD",           inputdir_2017+"qcd",       lepselwgt_RunBtoE(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttbar-2017RunF-norm",        "t#bar{t}",      inputdir_2017+"ttbar",     lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("wjets-2017RunF-norm",        "W+jets",        inputdir_2017+"wjets",     lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("tW-2017RunF-norm",           "tW",            inputdir_2017+"tW",        lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttW-2017RunF-norm",          "ttW",           inputdir_2017+"ttW",       lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("qcd-2017RunF-norm",          "QCD",           inputdir_2017+"qcd",       lepselwgt_RunF(),      datasel() + revert_vetoes() + dphi_cut());
+
+  // qcdsr
+  config.addSample("qcd-2017RunBtoE-sr",  "QCD",           inputdir_2017+"qcd",       qcdwgt_RunBtoE(),   datasel());
+  config.addSample("qcd-2017RunF-sr",     "QCD",           inputdir_2017+"qcd",       qcdwgt_RunF(),      datasel());
+
+  config.sel = baseline();
+  config.categories = srbins;
+  config.catMaps = srCatMap();    // sr DPhi cut applied
+  config.crCatMaps = qcdCatMap(); // no DPhi cut in category def
+
+  return config;
+}
+
+BaseConfig qcdConfig2018(){
+  BaseConfig     config;
+
+  config.inputdir = inputdir;
+  config.outputdir = outputdir()+"/QCD";
+  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
+
+  // qcdcr
+  config.addSample("data-cr",     "Data",             inputdir_2018+"met",  "1.0",      datasel() + trigSR() + vetoes() + dphi_invert());
+  
+  config.addSample("qcd-2018preHEM-cr",      "QCD",        inputdir_2018+"qcd",       qcdwgt_preHEM(),       datasel() + dphi_invert());
+  config.addSample("qcd-2018preHEM-withveto-cr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes() + dphi_invert());
+  config.addSample("qcd-2018preHEM-withveto-sr",  "QCD",   inputdir_2018+"qcd",       qcdvetowgt_preHEM(),   datasel() + vetoes());
+  config.addSample("qcd-2018postHEM-cr",      "QCD",       inputdir_2018+"qcd",       qcdwgt_postHEM(),      dataselHEM() + dphi_invert());
+  config.addSample("qcd-2018postHEM-withveto-cr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("qcd-2018postHEM-withveto-sr",  "QCD",  inputdir_2018+"qcd",       qcdvetowgt_postHEM(),  dataselHEM() + vetoes());
+
+  // qcdcr: other bkg subtraction
+  config.addSample("ttbar-2018preHEM-cr",        "t#bar{t}",      inputdir_2018+"ttbar",        lepvetowgt_preHEM(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("wjets-2018preHEM-cr",        "W+jets",        inputdir_2018+"wjets",        lepvetowgt_preHEM(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("tW-2018preHEM-cr",           "tW",            inputdir_2018+"tW",           lepvetowgt_preHEM(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("ttW-2018preHEM-cr",          "ttW",           inputdir_2018+"ttW",          lepvetowgt_preHEM(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("znunu-2018preHEM-cr",        "Znunu",         inputdir_2018+"znunu",        lepvetowgt_preHEM(),  datasel() + vetoes() + dphi_invert());
+  config.addSample("ttbar-2018postHEM-cr",       "t#bar{t}",      inputdir_2018+"ttbar",       lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("wjets-2018postHEM-cr",       "W+jets",        inputdir_2018+"wjets",       lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("tW-2018postHEM-cr",          "tW",            inputdir_2018+"tW",          lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("ttW-2018postHEM-cr",         "ttW",           inputdir_2018+"ttW",         lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
+  config.addSample("znunu-2018postHEM-cr",       "Znunu",         inputdir_2018+"znunu",       lepvetowgt_postHEM(), dataselHEM() + vetoes() + dphi_invert());
+
+  // onelepcr: norm correction for other bkg subtraction
+  config.addSample("data-norm",           	"Data",          inputdir_2018+"met", "1.0",      datasel() + trigSR() + revert_vetoes() + dphi_cut());
+  config.addSample("ttbar-2018preHEM-norm",     "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("wjets-2018preHEM-norm",     "W+jets",        inputdir_2018+"wjets",     lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("tW-2018preHEM-norm",        "tW",            inputdir_2018+"tW",        lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttW-2018preHEM-norm",       "ttW",           inputdir_2018+"ttW",       lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("qcd-2018preHEM-norm",       "QCD",           inputdir_2018+"qcd",       lepselwgt_preHEM(),   datasel() + revert_vetoes() + dphi_cut());
+  config.addSample("ttbar-2018postHEM-norm",    "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
+  config.addSample("wjets-2018postHEM-norm",    "W+jets",        inputdir_2018+"wjets",     lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
+  config.addSample("tW-2018postHEM-norm",       "tW",            inputdir_2018+"tW",        lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
+  config.addSample("ttW-2018postHEM-norm",      "ttW",           inputdir_2018+"ttW",       lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
+  config.addSample("qcd-2018postHEM-norm",      "QCD",           inputdir_2018+"qcd",       lepselwgt_postHEM(),  dataselHEM() + revert_vetoes() + dphi_cut());
+
+  // qcdsr
+  config.addSample("qcd-2018preHEM-sr",   "QCD",           inputdir_2018+"qcd",       qcdwgt_preHEM(),    datasel());
+  config.addSample("qcd-2018postHEM-sr",  "QCD",           inputdir_2018+"qcd",       qcdwgt_postHEM(),   dataselHEM());
 
   config.sel = baseline();
   config.categories = srbins;

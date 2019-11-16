@@ -6,17 +6,17 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
+  auto llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.pred2018();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -31,7 +31,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystSoftBTag_LL(std::string outfile_path = "values_unc_ll_softbtag.conf"){
+void SystSoftBTag_LL(std::string outfile_path = "values_unc_val_ll_softbtag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,7 +39,7 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_ll_softbtag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/20170207_syst/others";
+  //inputdir = "/uscms_data/d3/hqu/trees/20180207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -65,7 +65,7 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_ll_softbtag.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

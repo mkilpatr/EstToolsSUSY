@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
@@ -15,7 +15,7 @@
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(TString sys_name = ""){
-  auto qcdcfg = qcdConfig();
+  auto qcdcfg = qcdConfig2018();
   if(sys_name == "JESUp"){
     qcdcfg.catMaps = srCatMap_JESUp();
     qcdcfg.crCatMaps = qcdCatMap_JESUp();
@@ -34,7 +34,7 @@ vector<Quantity> getQCDPred(TString sys_name = ""){
   }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred();
+  q.pred2018();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
@@ -42,7 +42,7 @@ vector<Quantity> getQCDPred(TString sys_name = ""){
 }
 
 map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
-  auto llbcfg = lepConfig();
+  auto llbcfg = lepConfig2018();
   if(sys_name == "JESUp"){
     llbcfg.catMaps = srCatMap_JESUp();
     llbcfg.crCatMaps = lepCatMap_JESUp();
@@ -60,7 +60,7 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
     llbcfg.crCatMaps = lepCatMap();
   }
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.pred2018();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -74,7 +74,7 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   };
 }
 
-void SystJES(std::string outfile_path = "values_unc_jes.conf"){
+void SystJES(std::string outfile_path = "values_unc_val_jes.conf"){
 
   vector<TString> bkgnames  = {"qcd", "ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -147,7 +147,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

@@ -90,6 +90,14 @@ public:
     sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
     sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
 
+    if(doLepSyst){
+      sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+      sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+    }
+
+    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
+    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
     // _pred = _TF * N(Data,CR)
@@ -194,6 +202,29 @@ public:
     sumYields({"ttZ-2017RunBtoE-sr", "ttZ-2017RunF-sr"}, "ttZ-sr");
     sumYields({"diboson-2017RunBtoE-sr", "diboson-2017RunF-sr"}, "diboson-sr");
 
+    if(doLepSyst){
+      sumYields({"ttbar-2017RunBtoE-event-sr", "ttbar-2017RunF-event-sr"}, "ttbar-event-sr");
+      sumYields({"wjets-2017RunBtoE-event-sr", "wjets-2017RunF-event-sr"}, "wjets-event-sr");
+      sumYields({"tW-2017RunBtoE-event-sr", "tW-2017RunF-event-sr"}, "tW-event-sr");
+      sumYields({"ttW-2017RunBtoE-event-sr", "ttW-2017RunF-event-sr"}, "ttW-event-sr");
+      sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+
+      sumYields({"ttZ-2017RunBtoE-event-sr", "ttZ-2017RunF-event-sr"}, "ttZ-event-sr");
+      sumYields({"diboson-2017RunBtoE-event-sr", "diboson-2017RunF-event-sr"}, "diboson-event-sr");
+      
+      sumYields({"ttbar-2017RunBtoE-eventsf-sr", "ttbar-2017RunF-eventsf-sr"}, "ttbar-eventsf-sr");
+      sumYields({"wjets-2017RunBtoE-eventsf-sr", "wjets-2017RunF-eventsf-sr"}, "wjets-eventsf-sr");
+      sumYields({"tW-2017RunBtoE-eventsf-sr", "tW-2017RunF-eventsf-sr"}, "tW-eventsf-sr");
+      sumYields({"ttW-2017RunBtoE-eventsf-sr", "ttW-2017RunF-eventsf-sr"}, "ttW-eventsf-sr");
+      sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+
+      sumYields({"ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr"}, "ttZ-eventsf-sr");
+      sumYields({"diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr"}, "diboson-eventsf-sr");
+    }
+
+    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
+    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
     // _pred = _TF * N(Data,CR)
@@ -235,6 +266,29 @@ public:
 
     sumYields({"ttZ-2018preHEM-sr", "ttZ-2018postHEM-sr"}, "ttZ-sr");
     sumYields({"diboson-2018preHEM-sr", "diboson-2018postHEM-sr"}, "diboson-sr");
+
+    if(doLepSyst){
+      sumYields({"ttbar-2018preHEM-event-sr", "ttbar-2018postHEM-event-sr"}, "ttbar-event-sr");
+      sumYields({"wjets-2018preHEM-event-sr", "wjets-2018postHEM-event-sr"}, "wjets-event-sr");
+      sumYields({"tW-2018preHEM-event-sr", "tW-2018postHEM-event-sr"}, "tW-event-sr");
+      sumYields({"ttW-2018preHEM-event-sr", "ttW-2018postHEM-event-sr"}, "ttW-event-sr");
+      sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+
+      sumYields({"ttZ-2018preHEM-event-sr", "ttZ-2018postHEM-event-sr"}, "ttZ-event-sr");
+      sumYields({"diboson-2018preHEM-event-sr", "diboson-2018postHEM-event-sr"}, "diboson-event-sr");
+      
+      sumYields({"ttbar-2018preHEM-eventsf-sr", "ttbar-2018postHEM-eventsf-sr"}, "ttbar-eventsf-sr");
+      sumYields({"wjets-2018preHEM-eventsf-sr", "wjets-2018postHEM-eventsf-sr"}, "wjets-eventsf-sr");
+      sumYields({"tW-2018preHEM-eventsf-sr", "tW-2018postHEM-eventsf-sr"}, "tW-eventsf-sr");
+      sumYields({"ttW-2018preHEM-eventsf-sr", "ttW-2018postHEM-eventsf-sr"}, "ttW-eventsf-sr");
+      sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+
+      sumYields({"ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
+      sumYields({"diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
+    }
+
+    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
+    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
