@@ -14,10 +14,10 @@
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
@@ -46,16 +46,16 @@ void SystTau_QCD(std::string outfile_path = "values_unc_val_qcd_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF + TauSRSF_Up";
-    septauvetowgt = "TauSRSF + TauSRSF_Up";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // tau - down
   {
     sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF - TauSRSF_Down";
-    septauvetowgt = "TauSRSF - TauSRSF_Down";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // -----------------------
@@ -63,7 +63,7 @@ void SystTau_QCD(std::string outfile_path = "values_unc_val_qcd_tau.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

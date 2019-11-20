@@ -40,6 +40,7 @@ pwd
 cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
 echo $outdir
 
+ulimit -s unlimited
 root -l -b -q $runmacro+
 xrdcp -np values*.conf root://cmseos.fnal.gov//store/user/$(whoami)/13TeV/${outdir}/.
 ls -a

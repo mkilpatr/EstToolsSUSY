@@ -94,7 +94,7 @@ if args.config == "":
     Error                   = logs/{sysname}.err
     Log                     = logs/{sysname}.log
     x509userproxy           = 
-    request_memory 	    = 6000
+    request_memory 	    = 8000
     initialdir              = {outdir}
     Should_Transfer_Files   = YES
     transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
@@ -118,10 +118,15 @@ else:
     print "Creating submission file: ",args.submit+".sh"
     script = open(args.submit+".sh","w")
     script.write("""#!/bin/bash 
+outputdir={outdir}
+runmacro={macro}
+sysname={sysname}
 source tarCMSSW_syst.sh
-    
+ 
+eosmkdir /eos/uscms/store/user/mkilpatr/13TeV/$outputdir
+   
 echo "$runscript $runmacro $workdir $outputdir"    
-    """)
+    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, sysname=args.sysname))
         
     for i in xrange(len(macro)):
 	print(sysname[i])
@@ -141,8 +146,6 @@ if [ ! "$CMSSW_BASE" ]; then
   echo "-------> error: define cms environment."
   exit 1
 fi
-        
-#eosmkdir /store/user/mkilpatr/13TeV/$outputdir
         
 cp {rootlogon} $workdir
 cp {pathtomacro}/$runmacro $workdir
@@ -165,7 +168,7 @@ Output                  = logs/{sysname}.out
 Error                   = logs/{sysname}.err
 Log                     = logs/{sysname}.log
 x509userproxy           = 
-request_memory 		= 6000
+request_memory 		= 8000
 initialdir              = {outdir}
 Should_Transfer_Files   = YES
 transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C

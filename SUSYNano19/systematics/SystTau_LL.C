@@ -14,9 +14,9 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -53,8 +53,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_val_ll_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_Up";
-    tauvetowgt = "TauSRSF + TauSRSF_Up";
-    septauvetowgt = "TauSRSF + TauSRSF_Up";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -62,8 +62,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_val_ll_tau.conf"){
   // tau - down
   {
     sys_name = "eff_tau_Down";
-    tauvetowgt = "TauSRSF - TauSRSF_Down";
-    septauvetowgt = "TauSRSF - TauSRSF_Down";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -72,7 +72,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_val_ll_tau.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

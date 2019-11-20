@@ -14,9 +14,9 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -68,7 +68,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_val_ll_toptag.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

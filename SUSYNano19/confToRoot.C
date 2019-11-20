@@ -34,12 +34,14 @@ std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString
         TString test = TString(arr[1]);
 	if(test.Contains("Up")){
 		binName_Up.push_back(arr[0]);
-		if(arr[3] == "-nan") val_up.push_back(1.);
-		else 		     val_up.push_back(std::stod(arr[3],&sz));
+		     if(arr[3] == "-nan") val_up.push_back(1.);
+		else if(arr[3] == "inf")  val_up.push_back(2.);
+		else 		          val_up.push_back(std::stod(arr[3],&sz));
 	} else{
 		binName_Down.push_back(arr[0]);
-		if(arr[3] == "-nan") val_down.push_back(1.);
-		else 		     val_down.push_back(std::stod(arr[3],&sz));
+		     if(arr[3] == "-nan") val_down.push_back(1.);
+		else if(arr[3] == "inf")  val_down.push_back(0.001);
+		else 		          val_down.push_back(std::stod(arr[3],&sz));
 	}
     }
     file.close();
@@ -68,12 +70,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
 
   std::string indir = indir_ + "/";
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
-  cout << "Made it here" << endl;
   std::vector<TString> rootFiles;
   std::vector<double> val_up_total, val_down_total;
   for(int i = 0; i != files.size(); i++){
     std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString>, vector<double> > > output = readFile(indir + files[i]);
-  cout << "Made it here" << endl;
     std::vector<TString> binName_Up, binName_Down;
     std::vector<double> val_up, val_down;
 
@@ -89,10 +89,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
         val_up_total.at(j) += (1-val_up[j])*(1-val_up[j]);
         val_down_total.at(j) += (1-val_down[j])*(1-val_down[j]);
       }
-      cout << "val_up[" << j << "]: " << val_up[j] << endl;
-      cout << "val_up_total[" << j << "]: " << val_up_total[j] << endl;
-      cout << "val_down[" << j << "]: " << val_down[j] << endl;
-      cout << "val_down_total[" << j << "]: " << val_down_total[j] << endl;
+      //cout << "val_up[" << j << "]: " << val_up[j] << endl;
+      //cout << "val_up_total[" << j << "]: " << val_up_total[j] << endl;
+      //cout << "val_down[" << j << "]: " << val_down[j] << endl;
+      //cout << "val_down_total[" << j << "]: " << val_down_total[j] << endl;
     }
 
     size_t lastindex = files[i].find_last_of("."); 
@@ -131,7 +131,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     delete gROOT->FindObject("hUp");
     delete gROOT->FindObject("hDown");
   }
-  cout << "Made it here" << endl;
 
   for(int i = 0; i != val_up_total.size(); i++){
     val_up_total.at(i) = 1+TMath::Sqrt(val_up_total.at(i));

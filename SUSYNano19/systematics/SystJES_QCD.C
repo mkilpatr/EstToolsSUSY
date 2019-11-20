@@ -14,7 +14,7 @@
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(TString sys_name = ""){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   if(sys_name == "JESUp"){
     qcdcfg.catMaps = srCatMap_JESUp();
     qcdcfg.crCatMaps = qcdCatMap_JESUp();
@@ -33,7 +33,7 @@ vector<Quantity> getQCDPred(TString sys_name = ""){
   }
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
@@ -71,7 +71,7 @@ void SystJES_QCD(std::string outfile_path = "values_unc_val_qcd_jes.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

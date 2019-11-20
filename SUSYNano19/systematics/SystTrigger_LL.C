@@ -14,7 +14,7 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   if(sys_name == "JESUp"){
     llbcfg.catMaps = srCatMap_JESUp();
     llbcfg.crCatMaps = lepCatMap_JESUp();
@@ -32,7 +32,7 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
     llbcfg.crCatMaps = lepCatMap();
   }
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -80,7 +80,7 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf")
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

@@ -17,29 +17,29 @@
 using namespace EstTools;
 
 vector<Quantity> getZnunuPred(){
-  auto phocfg = phoConfig2018();
+  auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
-  z.zllcr_cfg = zllConfig2018();
+  z.zllcr_cfg = zllConfig();
   z.zll_normMap = normMap;
   z.phocr_normMap = phoNormMap;
-  z.pred2018();
+  z.pred();
   z.printYields();
   return z.yields.at("_TF");
 }
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   return q.yields.at("_TF");
 }
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2018();
+  auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2018();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -79,7 +79,7 @@ void SystTopPT(std::string outfile_path = "values_unc_val_toppt.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

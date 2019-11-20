@@ -236,18 +236,74 @@ public:
 				    "qcd-2017RunF-withveto-sr", "qcd-2017RunF-withveto-cr",
 				    "qcd-2018preHEM-withveto-sr", "qcd-2018preHEM-withveto-cr",
 				    "qcd-2018postHEM-withveto-sr", "qcd-2018postHEM-withveto-cr"};
+
     doYieldsCalc(qcd_withveto, runBootstrapping ? 50 : 0);
     sumYields({"qcd-2016-withveto-cr", "qcd-2017RunBtoE-withveto-cr", "qcd-2017RunF-withveto-cr", "qcd-2018preHEM-withveto-cr", "qcd-2018postHEM-withveto-cr"}, "qcd-withveto-cr");
     sumYields({"qcd-2016-withveto-sr", "qcd-2017RunBtoE-withveto-sr", "qcd-2017RunF-withveto-sr", "qcd-2018preHEM-withveto-sr", "qcd-2018postHEM-withveto-sr"}, "qcd-withveto-sr");
 
     vector<TString> otherbkg_samples = {"ttbar-cr", "wjets-cr", "tW-cr", "ttW-cr"};
+    vector<TString> otherbkg_samples_eventsf = {"ttbar-eventsf-cr", "wjets-eventsf-cr", "tW-eventsf-cr", "ttW-eventsf-cr"};
+    vector<TString> otherbkg_samples_event = {"ttbar-event-cr", "wjets-event-cr", "tW-event-cr", "ttW-event-cr"};
     vector<TString> norm_samples = {"ttbar-2016-norm", "wjets-2016-norm", "tW-2016-norm", "ttW-2016-norm", "qcd-2016-norm",
 				    "ttbar-2017RunBtoE-norm", "wjets-2017RunBtoE-norm", "tW-2017RunBtoE-norm", "ttW-2017RunBtoE-norm", "qcd-2017RunBtoE-norm",
 				    "ttbar-2017RunF-norm", "wjets-2017RunF-norm", "tW-2017RunF-norm", "ttW-2017RunF-norm", "qcd-2017RunF-norm",
 				    "ttbar-2018preHEM-norm", "wjets-2018preHEM-norm", "tW-2018preHEM-norm", "ttW-2018preHEM-norm", "qcd-2018preHEM-norm",
 				    "ttbar-2018postHEM-norm", "wjets-2018postHEM-norm", "tW-2018postHEM-norm", "ttW-2018postHEM-norm", "qcd-2018postHEM-norm"};
     sumYields(otherbkg_samples, "non-qcd");
-    yields["otherbkgs-noznunu"] = yields.at("non-qcd");
+
+    if(doLepSyst){
+      vector<TString> calc_samples_event = {"ttbar-2016-event-cr", "wjets-2016-event-cr", "tW-2016-event-cr", "ttW-2016-event-cr", "znunu-2016-event-cr",
+  				   "ttbar-2017RunBtoE-event-cr", "wjets-2017RunBtoE-event-cr", "tW-2017RunBtoE-event-cr", "ttW-2017RunBtoE-event-cr", "znunu-2017RunBtoE-event-cr",
+  				   "ttbar-2017RunF-event-cr", "wjets-2017RunF-event-cr", "tW-2017RunF-event-cr", "ttW-2017RunF-event-cr", "znunu-2017RunF-event-cr",
+  				   "ttbar-2018preHEM-event-cr", "wjets-2018preHEM-event-cr", "tW-2018preHEM-event-cr", "ttW-2018preHEM-event-cr", "znunu-2018preHEM-event-cr",
+  				   "ttbar-2018postHEM-event-cr", "wjets-2018postHEM-event-cr", "tW-2018postHEM-event-cr", "ttW-2018postHEM-event-cr", "znunu-2018postHEM-event-cr"};
+      vector<TString> calc_samples_eventsf = {"ttbar-2016-eventsf-cr", "wjets-2016-eventsf-cr", "tW-2016-eventsf-cr", "ttW-2016-eventsf-cr", "znunu-2016-eventsf-cr",
+  				   "ttbar-2017RunBtoE-eventsf-cr", "wjets-2017RunBtoE-eventsf-cr", "tW-2017RunBtoE-eventsf-cr", "ttW-2017RunBtoE-eventsf-cr", "znunu-2017RunBtoE-eventsf-cr",
+  				   "ttbar-2017RunF-eventsf-cr", "wjets-2017RunF-eventsf-cr", "tW-2017RunF-eventsf-cr", "ttW-2017RunF-eventsf-cr", "znunu-2017RunF-eventsf-cr",
+  				   "ttbar-2018preHEM-eventsf-cr", "wjets-2018preHEM-eventsf-cr", "tW-2018preHEM-eventsf-cr", "ttW-2018preHEM-eventsf-cr", "znunu-2018preHEM-eventsf-cr",
+  				   "ttbar-2018postHEM-eventsf-cr", "wjets-2018postHEM-eventsf-cr", "tW-2018postHEM-eventsf-cr", "ttW-2018postHEM-eventsf-cr", "znunu-2018postHEM-eventsf-cr"};
+      vector<TString> qcd_eventsf_withveto = {"qcd-2016-eventsf-withveto-sr", "qcd-2016-eventsf-withveto-cr",
+  				    "qcd-2017RunBtoE-eventsf-withveto-sr", "qcd-2017RunBtoE-eventsf-withveto-cr",
+  				    "qcd-2017RunF-eventsf-withveto-sr", "qcd-2017RunF-eventsf-withveto-cr",
+  				    "qcd-2018preHEM-eventsf-withveto-sr", "qcd-2018preHEM-eventsf-withveto-cr",
+  				    "qcd-2018postHEM-eventsf-withveto-sr", "qcd-2018postHEM-eventsf-withveto-cr"};
+      vector<TString> qcd_event_withveto = {"qcd-2016-event-withveto-sr", "qcd-2016-event-withveto-cr",
+  				    "qcd-2017RunBtoE-event-withveto-sr", "qcd-2017RunBtoE-event-withveto-cr",
+  				    "qcd-2017RunF-event-withveto-sr", "qcd-2017RunF-event-withveto-cr",
+  				    "qcd-2018preHEM-event-withveto-sr", "qcd-2018preHEM-event-withveto-cr",
+  				    "qcd-2018postHEM-event-withveto-sr", "qcd-2018postHEM-event-withveto-cr"};
+      doYieldsCalc(calc_samples_event);
+      doYieldsCalc(calc_samples_eventsf);
+      doYieldsCalc(qcd_eventsf_withveto, runBootstrapping ? 50 : 0);
+      doYieldsCalc(qcd_event_withveto, runBootstrapping ? 50 : 0);
+      sumYields({"ttbar-2016-event-cr", "ttbar-2017RunBtoE-event-cr", "ttbar-2017RunF-event-cr", "ttbar-2018preHEM-event-cr", "ttbar-2018postHEM-event-cr"}, "ttbar-event-cr");
+      sumYields({"wjets-2016-event-cr", "wjets-2017RunBtoE-event-cr", "wjets-2017RunF-event-cr", "wjets-2018preHEM-event-cr", "wjets-2018postHEM-event-cr"}, "wjets-event-cr");
+      sumYields({"tW-2016-event-cr", "tW-2017RunBtoE-event-cr", "tW-2017RunF-event-cr", "tW-2018preHEM-event-cr", "tW-2018postHEM-event-cr"}, "tW-event-cr");
+      sumYields({"ttW-2016-event-cr", "ttW-2017RunBtoE-event-cr", "ttW-2017RunF-event-cr", "ttW-2018preHEM-event-cr", "ttW-2018postHEM-event-cr"}, "ttW-event-cr");
+      sumYields({"znunu-2016-event-cr", "znunu-2017RunBtoE-event-cr", "znunu-2017RunF-event-cr", "znunu-2018preHEM-event-cr", "znunu-2018postHEM-event-cr"}, "znunu-event-cr");
+      sumYields({"ttbar-2016-eventsf-cr", "ttbar-2017RunBtoE-eventsf-cr", "ttbar-2017RunF-eventsf-cr", "ttbar-2018preHEM-eventsf-cr", "ttbar-2018postHEM-eventsf-cr"}, "ttbar-eventsf-cr");
+      sumYields({"wjets-2016-eventsf-cr", "wjets-2017RunBtoE-eventsf-cr", "wjets-2017RunF-eventsf-cr", "wjets-2018preHEM-eventsf-cr", "wjets-2018postHEM-eventsf-cr"}, "wjets-eventsf-cr");
+      sumYields({"tW-2016-eventsf-cr", "tW-2017RunBtoE-eventsf-cr", "tW-2017RunF-eventsf-cr", "tW-2018preHEM-eventsf-cr", "tW-2018postHEM-eventsf-cr"}, "tW-eventsf-cr");
+      sumYields({"ttW-2016-eventsf-cr", "ttW-2017RunBtoE-eventsf-cr", "ttW-2017RunF-eventsf-cr", "ttW-2018preHEM-eventsf-cr", "ttW-2018postHEM-eventsf-cr"}, "ttW-eventsf-cr");
+      sumYields({"znunu-2016-eventsf-cr", "znunu-2017RunBtoE-eventsf-cr", "znunu-2017RunF-eventsf-cr", "znunu-2018preHEM-eventsf-cr", "znunu-2018postHEM-eventsf-cr"}, "znunu-eventsf-cr");
+      sumYields({"qcd-2016-eventsf-withveto-cr", "qcd-2017RunBtoE-eventsf-withveto-cr", "qcd-2017RunF-eventsf-withveto-cr", "qcd-2018preHEM-eventsf-withveto-cr", "qcd-2018postHEM-eventsf-withveto-cr"}, "qcd-eventsf-withveto-cr");
+      sumYields({"qcd-2016-eventsf-withveto-sr", "qcd-2017RunBtoE-eventsf-withveto-sr", "qcd-2017RunF-eventsf-withveto-sr", "qcd-2018preHEM-eventsf-withveto-sr", "qcd-2018postHEM-eventsf-withveto-sr"}, "qcd-eventsf-withveto-sr");
+      sumYields({"qcd-2016-event-withveto-cr", "qcd-2017RunBtoE-event-withveto-cr", "qcd-2017RunF-event-withveto-cr", "qcd-2018preHEM-event-withveto-cr", "qcd-2018postHEM-event-withveto-cr"}, "qcd-event-withveto-cr");
+      sumYields({"qcd-2016-event-withveto-sr", "qcd-2017RunBtoE-event-withveto-sr", "qcd-2017RunF-event-withveto-sr", "qcd-2018preHEM-event-withveto-sr", "qcd-2018postHEM-event-withveto-sr"}, "qcd-event-withveto-sr");
+      sumYields(otherbkg_samples_eventsf, "non-qcd-eventsf");
+      sumYields(otherbkg_samples_event, "non-qcd-event");
+    }
+
+    yields["lepSF_"] = yields.at("non-qcd")/yields.at("non-qcd");
+    yields["znunuSF_"] = yields.at("znunu-cr")/yields.at("znunu-cr");
+    yields["qcdcrSF_"] = yields.at("qcd-withveto-cr")/yields.at("qcd-withveto-cr");
+    if(doLepSyst){
+      yields["lepSF_"] = (yields.at("non-qcd") + (yields.at("non-qcd-event") - yields.at("non-qcd-eventsf")))/yields.at("non-qcd");
+      yields["znunuSF_"] = (yields.at("znunu-cr") + (yields.at("znunu-event-cr") - yields.at("znunu-eventsf-cr")))/yields.at("znunu-cr");
+      yields["qcdcrSF_"] = (yields.at("qcd-withveto-cr") + (yields.at("qcd-event-withveto-cr") - yields.at("qcd-eventsf-withveto-cr")))/yields.at("qcd-withveto-cr");
+    }
+
+    yields["otherbkgs-noznunu"] = yields.at("lepSF_")*yields.at("non-qcd");
 
     yields["_SubNormCorr"] = std::vector<Quantity>();
     unsigned ibin = 0;
@@ -276,7 +332,7 @@ public:
       }
     }
 
-    yields["otherbkgs"] = yields.at("otherbkgs-noznunu") + yields.at("znunu-cr");
+    yields["otherbkgs"] = yields.at("otherbkgs-noznunu") + yields["znunuSF_"]*yields.at("znunu-cr");
 
     auto vdata = yields.at("data-cr");
     Quantity::removeZeroes(vdata);
@@ -290,7 +346,7 @@ public:
     for (unsigned i=0; i<vdata.size(); ++i){
       double otherVal = yields.at("otherbkgs").at(i).value;
       double dataVal = vdata.at(i).value;
-      if (dataVal<10) dataVal = yields.at("qcd-withveto-cr").at(i).value + otherVal;
+      if (dataVal<10) dataVal = (yields.at("qcdcrSF_").at(i).value*yields.at("qcd-withveto-cr").at(i).value) + otherVal;
       dataVal = std::max(0.0001, dataVal); // FIXME
       double sub = otherVal/dataVal;
 //      Quantity corr(1-sub, sub*(1-sub)); // 100% unc on the subtraction: FIXME?
@@ -617,7 +673,7 @@ public:
 
   // whether to split TF when making prediction tables
   bool splitTF = false;
-
+  bool doLepSyst = false;
 };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

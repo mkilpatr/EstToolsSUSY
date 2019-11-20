@@ -104,7 +104,7 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -166,7 +166,6 @@ public:
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
-    //yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -231,7 +230,7 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -296,7 +295,7 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){

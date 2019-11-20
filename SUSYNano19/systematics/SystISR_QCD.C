@@ -14,10 +14,10 @@
 using namespace EstTools;
 
 vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig2018();
+  auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
   q.runBootstrapping = false;
-  q.pred2018();
+  q.pred();
   q.printYields();
   vector<Quantity> yields = q.yields.at("_TF");
   qcdcfg.reset();
@@ -53,7 +53,7 @@ void SystISR_QCD(std::string outfile_path = "values_unc_val_qcd_isr.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2018();
+  auto config = lepConfig();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
