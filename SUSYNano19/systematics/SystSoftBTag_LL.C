@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -31,7 +31,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystSoftBTag_LL(std::string outfile_path = "values_unc_val_ll_softbtag.conf"){
+void SystSoftBTag_LL(std::string outfile_path = "values_unc_ll_softbtag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -95,6 +95,14 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_val_ll_softbtag.conf
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_up   = TString(sPair.first); 
           auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
+	  if (std::isnan(uncs_up.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
+            uncs_up.at(ibin).value = 2;
+          }
+	  if (std::isnan(uncs_down.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
+            uncs_down.at(ibin).value = 2;
+          }
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
           ++ibin;

@@ -93,10 +93,9 @@ public:
     if(doLepSyst){
       sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
       sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+      yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
     }
 
-    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
-    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
@@ -104,7 +103,8 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -154,10 +154,11 @@ public:
 
       sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr", "ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
       sumYields({"diboson-2016-eventsf-sr", "diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr", "diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
+      yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+      for(unsigned i=0; i!=yields["lepSF_"].size(); i++){
+	cout << "LepSF: " << yields.at("lepSF_").at(i).value << endl;
+      }
     }
-
-    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
-    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
@@ -165,7 +166,8 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -219,10 +221,8 @@ public:
 
       sumYields({"ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr"}, "ttZ-eventsf-sr");
       sumYields({"diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr"}, "diboson-eventsf-sr");
+      yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
     }
-
-    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
-    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
@@ -230,7 +230,8 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -284,10 +285,8 @@ public:
 
       sumYields({"ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
       sumYields({"diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
+      yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
     }
-
-    yields["lepSF_"] = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr");
-    if(doLepSyst) yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)
@@ -295,7 +294,8 @@ public:
     // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
-    yields["_TF"]                   = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){

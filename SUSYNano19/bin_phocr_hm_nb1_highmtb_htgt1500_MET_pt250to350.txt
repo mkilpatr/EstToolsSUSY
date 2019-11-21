@@ -8,11 +8,11 @@ shapes * bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 FAKE
 bin          bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 
 observation  21.0            
 --------------------------------------------------------------------------------
-bin                                                                         bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 
-process                                                                     gjets           background      
-process                                                                     1               2               
-rate                                                                        20.4238         2.69344         
+bin                                                                        bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 
+process                                                                    gjets           otherbkgs       
+process                                                                    1               2               
+rate                                                                       20.4238         2.69344         
 --------------------------------------------------------------------------------
-mcstats_background_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 lnN     -               2               
-mcstats_gjets_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350      lnN     1.0788          -               
-R_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350                  rateParam  *          gjets      1  [0.01,5]
+mcstats_gjets_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350     lnN     1.0788          -               
+mcstats_otherbkgs_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350 lnN     -               2               
+R_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350                 rateParam  *          gjets      1  [0.01,5]

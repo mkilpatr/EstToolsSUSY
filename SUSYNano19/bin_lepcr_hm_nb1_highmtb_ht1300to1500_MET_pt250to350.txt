@@ -6,13 +6,13 @@ kmax    * number of nuisance parameters
 shapes * bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 FAKE
 --------------------------------------------------------------------------------
 bin          bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
-observation  110.0           
+observation  106.0           
 --------------------------------------------------------------------------------
 bin                                                                             bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
 process                                                                         signal          ttbarplusw      
 process                                                                         0               1               
-rate                                                                            15.4513         136.295         
+rate                                                                            25.8744         114.006         
 --------------------------------------------------------------------------------
 mcstats_signal_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350     lnN     2               -               
-mcstats_ttbarplusw_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               1.02321         
+mcstats_ttbarplusw_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               1.02583         
 R_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350                  rateParam  *          ttbarplusw 1  [0.01,5]
