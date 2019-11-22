@@ -116,6 +116,37 @@ public:
     printVec(yields["_pred"], "Final prediction", true);
   }
 
+  void pred2016lep(){
+    cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
+
+    // Yields
+    calcYields();
+    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+    sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+
+    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+    sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
+
+    // _SLep = N(Data,CR)/N(MC,CR)
+    // _TF   = N(MC,SR)/N(MC,CR)
+    // _pred = _TF * N(Data,CR)
+    // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
+    // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
+
+    if(splitTF){
+      sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
+      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
+      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+    }
+
+    printVec(yields["_pred"], "Final prediction", true);
+  }
+
   void pred(){
     cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
 
@@ -155,9 +186,6 @@ public:
       sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr", "ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
       sumYields({"diboson-2016-eventsf-sr", "diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr", "diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
       yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
-      for(unsigned i=0; i!=yields["lepSF_"].size(); i++){
-	cout << "LepSF: " << yields.at("lepSF_").at(i).value << endl;
-      }
     }
 
     // _SLep = N(Data,CR)/N(MC,CR)
@@ -168,6 +196,67 @@ public:
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
+
+    if(splitTF){
+      sumYields({"ttbar-2016-sr-int", "ttbar-2017RunBtoE-sr-int", "ttbar-2017RunF-sr-int", "ttbar-2018preHEM-sr-int", "ttbar-2018postHEM-sr-int"}, "ttbar-sr-int");
+      sumYields({"wjets-2016-sr-int", "wjets-2017RunBtoE-sr-int", "wjets-2017RunF-sr-int", "wjets-2018preHEM-sr-int", "wjets-2018postHEM-sr-int"}, "wjets-sr-int");
+      sumYields({"tW-2016-sr-int", "tW-2017RunBtoE-sr-int", "tW-2017RunF-sr-int", "tW-2018preHEM-sr-int", "tW-2018postHEM-sr-int"}, "tW-sr-int");
+      sumYields({"ttW-2016-sr-int", "ttW-2017RunBtoE-sr-int", "ttW-2017RunF-sr-int", "ttW-2018preHEM-sr-int", "ttW-2018postHEM-sr-int"}, "ttW-sr-int");
+      sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
+      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
+      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+    }
+
+    printVec(yields["_pred"], "Final prediction", true);
+  }
+
+  void predlep(){
+    cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
+
+    // Yields
+    calcYields();
+    sumYields({"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM"}, "ttbar");
+    sumYields({"wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM"}, "wjets");
+    sumYields({"tW-2016", "tW-2017RunBtoE", "tW-2017RunF", "tW-2018preHEM", "tW-2018postHEM"}, "tW");
+    sumYields({"ttW-2016", "ttW-2017RunBtoE", "ttW-2017RunF", "ttW-2018preHEM", "ttW-2018postHEM"}, "ttW");
+    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+
+    sumYields({"ttbar-2016-sr", "ttbar-2017RunBtoE-sr", "ttbar-2017RunF-sr", "ttbar-2018preHEM-sr", "ttbar-2018postHEM-sr"}, "ttbar-sr");
+    sumYields({"wjets-2016-sr", "wjets-2017RunBtoE-sr", "wjets-2017RunF-sr", "wjets-2018preHEM-sr", "wjets-2018postHEM-sr"}, "wjets-sr");
+    sumYields({"tW-2016-sr", "tW-2017RunBtoE-sr", "tW-2017RunF-sr", "tW-2018preHEM-sr", "tW-2018postHEM-sr"}, "tW-sr");
+    sumYields({"ttW-2016-sr", "ttW-2017RunBtoE-sr", "ttW-2017RunF-sr", "ttW-2018preHEM-sr", "ttW-2018postHEM-sr"}, "ttW-sr");
+    sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+
+    sumYields({"ttZ-2016-sr", "ttZ-2017RunBtoE-sr", "ttZ-2017RunF-sr", "ttZ-2018preHEM-sr", "ttZ-2018postHEM-sr"}, "ttZ-sr");
+    sumYields({"diboson-2016-sr", "diboson-2017RunBtoE-sr", "diboson-2017RunF-sr", "diboson-2018preHEM-sr", "diboson-2018postHEM-sr"}, "diboson-sr");
+
+    sumYields({"ttbar-2016-event-sr", "ttbar-2017RunBtoE-event-sr", "ttbar-2017RunF-event-sr", "ttbar-2018preHEM-event-sr", "ttbar-2018postHEM-event-sr"}, "ttbar-event-sr");
+    sumYields({"wjets-2016-event-sr", "wjets-2017RunBtoE-event-sr", "wjets-2017RunF-event-sr", "wjets-2018preHEM-event-sr", "wjets-2018postHEM-event-sr"}, "wjets-event-sr");
+    sumYields({"tW-2016-event-sr", "tW-2017RunBtoE-event-sr", "tW-2017RunF-event-sr", "tW-2018preHEM-event-sr", "tW-2018postHEM-event-sr"}, "tW-event-sr");
+    sumYields({"ttW-2016-event-sr", "ttW-2017RunBtoE-event-sr", "ttW-2017RunF-event-sr", "ttW-2018preHEM-event-sr", "ttW-2018postHEM-event-sr"}, "ttW-event-sr");
+    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+
+    sumYields({"ttZ-2016-event-sr", "ttZ-2017RunBtoE-event-sr", "ttZ-2017RunF-event-sr", "ttZ-2018preHEM-event-sr", "ttZ-2018postHEM-event-sr"}, "ttZ-event-sr");
+    sumYields({"diboson-2016-event-sr", "diboson-2017RunBtoE-event-sr", "diboson-2017RunF-event-sr", "diboson-2018preHEM-event-sr", "diboson-2018postHEM-event-sr"}, "diboson-event-sr");
+    
+    sumYields({"ttbar-2016-eventsf-sr", "ttbar-2017RunBtoE-eventsf-sr", "ttbar-2017RunF-eventsf-sr", "ttbar-2018preHEM-eventsf-sr", "ttbar-2018postHEM-eventsf-sr"}, "ttbar-eventsf-sr");
+    sumYields({"wjets-2016-eventsf-sr", "wjets-2017RunBtoE-eventsf-sr", "wjets-2017RunF-eventsf-sr", "wjets-2018preHEM-eventsf-sr", "wjets-2018postHEM-eventsf-sr"}, "wjets-eventsf-sr");
+    sumYields({"tW-2016-eventsf-sr", "tW-2017RunBtoE-eventsf-sr", "tW-2017RunF-eventsf-sr", "tW-2018preHEM-eventsf-sr", "tW-2018postHEM-eventsf-sr"}, "tW-eventsf-sr");
+    sumYields({"ttW-2016-eventsf-sr", "ttW-2017RunBtoE-eventsf-sr", "ttW-2017RunF-eventsf-sr", "ttW-2018preHEM-eventsf-sr", "ttW-2018postHEM-eventsf-sr"}, "ttW-eventsf-sr");
+    sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+
+    sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr", "ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
+    sumYields({"diboson-2016-eventsf-sr", "diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr", "diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
+    // _SLep = N(Data,CR)/N(MC,CR)
+    // _TF   = N(MC,SR)/N(MC,CR)
+    // _pred = _TF * N(Data,CR)
+    // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
+    // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){
@@ -247,6 +336,67 @@ public:
     printVec(yields["_pred"], "Final prediction", true);
   }
 
+  void pred2017lep(){
+    cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
+
+    // Yields
+    calcYields();
+    sumYields({"ttbar-2017RunBtoE", "ttbar-2017RunF"}, "ttbar");
+    sumYields({"wjets-2017RunBtoE", "wjets-2017RunF"}, "wjets");
+    sumYields({"tW-2017RunBtoE", "tW-2017RunF"}, "tW");
+    sumYields({"ttW-2017RunBtoE", "ttW-2017RunF"}, "ttW");
+    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+
+    sumYields({"ttbar-2017RunBtoE-sr", "ttbar-2017RunF-sr"}, "ttbar-sr");
+    sumYields({"wjets-2017RunBtoE-sr", "wjets-2017RunF-sr"}, "wjets-sr");
+    sumYields({"tW-2017RunBtoE-sr", "tW-2017RunF-sr"}, "tW-sr");
+    sumYields({"ttW-2017RunBtoE-sr", "ttW-2017RunF-sr"}, "ttW-sr");
+    sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+
+    sumYields({"ttZ-2017RunBtoE-sr", "ttZ-2017RunF-sr"}, "ttZ-sr");
+    sumYields({"diboson-2017RunBtoE-sr", "diboson-2017RunF-sr"}, "diboson-sr");
+
+    sumYields({"ttbar-2017RunBtoE-event-sr", "ttbar-2017RunF-event-sr"}, "ttbar-event-sr");
+    sumYields({"wjets-2017RunBtoE-event-sr", "wjets-2017RunF-event-sr"}, "wjets-event-sr");
+    sumYields({"tW-2017RunBtoE-event-sr", "tW-2017RunF-event-sr"}, "tW-event-sr");
+    sumYields({"ttW-2017RunBtoE-event-sr", "ttW-2017RunF-event-sr"}, "ttW-event-sr");
+    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+
+    sumYields({"ttZ-2017RunBtoE-event-sr", "ttZ-2017RunF-event-sr"}, "ttZ-event-sr");
+    sumYields({"diboson-2017RunBtoE-event-sr", "diboson-2017RunF-event-sr"}, "diboson-event-sr");
+    
+    sumYields({"ttbar-2017RunBtoE-eventsf-sr", "ttbar-2017RunF-eventsf-sr"}, "ttbar-eventsf-sr");
+    sumYields({"wjets-2017RunBtoE-eventsf-sr", "wjets-2017RunF-eventsf-sr"}, "wjets-eventsf-sr");
+    sumYields({"tW-2017RunBtoE-eventsf-sr", "tW-2017RunF-eventsf-sr"}, "tW-eventsf-sr");
+    sumYields({"ttW-2017RunBtoE-eventsf-sr", "ttW-2017RunF-eventsf-sr"}, "ttW-eventsf-sr");
+    sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+
+    sumYields({"ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr"}, "ttZ-eventsf-sr");
+    sumYields({"diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr"}, "diboson-eventsf-sr");
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
+    // _SLep = N(Data,CR)/N(MC,CR)
+    // _TF   = N(MC,SR)/N(MC,CR)
+    // _pred = _TF * N(Data,CR)
+    // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
+    // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
+
+    if(splitTF){
+      sumYields({"ttbar-2017RunBtoE-sr-int", "ttbar-2017RunF-sr-int"}, "ttbar-sr-int");
+      sumYields({"wjets-2017RunBtoE-sr-int", "wjets-2017RunF-sr-int"}, "wjets-sr-int");
+      sumYields({"tW-2017RunBtoE-sr-int", "tW-2017RunF-sr-int"}, "tW-sr-int");
+      sumYields({"ttW-2017RunBtoE-sr-int", "ttW-2017RunF-sr-int"}, "ttW-sr-int");
+      sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
+      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
+      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+    }
+
+    printVec(yields["_pred"], "Final prediction", true);
+  }
+
   void pred2018(){
     cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
 
@@ -296,6 +446,67 @@ public:
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     if(doLepSyst) yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     else          yields["_TF"]     = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
+
+    if(splitTF){
+      sumYields({"ttbar-2018preHEM-sr-int", "ttbar-2018postHEM-sr-int"}, "ttbar-sr-int");
+      sumYields({"wjets-2018preHEM-sr-int", "wjets-2018postHEM-sr-int"}, "wjets-sr-int");
+      sumYields({"tW-2018preHEM-sr-int", "tW-2018postHEM-sr-int"}, "tW-sr-int");
+      sumYields({"ttW-2018preHEM-sr-int", "ttW-2018postHEM-sr-int"}, "ttW-sr-int");
+      sumYields({"ttbar-sr-int", "wjets-sr-int", "tW-sr-int", "ttW-sr-int"}, "ttbarplusw-sr-int");
+      yields["_TF_CR_to_SR_noextrap"] = yields.at("ttbarplusw-sr-int")/yields.at("ttbarplusw");
+      yields["_TF_SR_extrap"]         = yields.at("ttbarplusw-sr")/yields.at("ttbarplusw-sr-int");
+    }
+
+    printVec(yields["_pred"], "Final prediction", true);
+  }
+
+  void pred2018lep(){
+    cerr << "\n--->" << "Running LLB prediction ..." << endl << endl;
+
+    // Yields
+    calcYields();
+    sumYields({"ttbar-2018preHEM", "ttbar-2018postHEM"}, "ttbar");
+    sumYields({"wjets-2018preHEM", "wjets-2018postHEM"}, "wjets");
+    sumYields({"tW-2018preHEM", "tW-2018postHEM"}, "tW");
+    sumYields({"ttW-2018preHEM", "ttW-2018postHEM"}, "ttW");
+    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+
+    sumYields({"ttbar-2018preHEM-sr", "ttbar-2018postHEM-sr"}, "ttbar-sr");
+    sumYields({"wjets-2018preHEM-sr", "wjets-2018postHEM-sr"}, "wjets-sr");
+    sumYields({"tW-2018preHEM-sr", "tW-2018postHEM-sr"}, "tW-sr");
+    sumYields({"ttW-2018preHEM-sr", "ttW-2018postHEM-sr"}, "ttW-sr");
+    sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
+
+    sumYields({"ttZ-2018preHEM-sr", "ttZ-2018postHEM-sr"}, "ttZ-sr");
+    sumYields({"diboson-2018preHEM-sr", "diboson-2018postHEM-sr"}, "diboson-sr");
+
+    sumYields({"ttbar-2018preHEM-event-sr", "ttbar-2018postHEM-event-sr"}, "ttbar-event-sr");
+    sumYields({"wjets-2018preHEM-event-sr", "wjets-2018postHEM-event-sr"}, "wjets-event-sr");
+    sumYields({"tW-2018preHEM-event-sr", "tW-2018postHEM-event-sr"}, "tW-event-sr");
+    sumYields({"ttW-2018preHEM-event-sr", "ttW-2018postHEM-event-sr"}, "ttW-event-sr");
+    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
+
+    sumYields({"ttZ-2018preHEM-event-sr", "ttZ-2018postHEM-event-sr"}, "ttZ-event-sr");
+    sumYields({"diboson-2018preHEM-event-sr", "diboson-2018postHEM-event-sr"}, "diboson-event-sr");
+    
+    sumYields({"ttbar-2018preHEM-eventsf-sr", "ttbar-2018postHEM-eventsf-sr"}, "ttbar-eventsf-sr");
+    sumYields({"wjets-2018preHEM-eventsf-sr", "wjets-2018postHEM-eventsf-sr"}, "wjets-eventsf-sr");
+    sumYields({"tW-2018preHEM-eventsf-sr", "tW-2018postHEM-eventsf-sr"}, "tW-eventsf-sr");
+    sumYields({"ttW-2018preHEM-eventsf-sr", "ttW-2018postHEM-eventsf-sr"}, "ttW-eventsf-sr");
+    sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+
+    sumYields({"ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
+    sumYields({"diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+
+    // _SLep = N(Data,CR)/N(MC,CR)
+    // _TF   = N(MC,SR)/N(MC,CR)
+    // _pred = _TF * N(Data,CR)
+    // _TF_CR_to_SR_noextrap = N(MC,SR with no extrapolation [= cr cats this round])/N(MC,CR)
+    // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
+    yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
+    yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){

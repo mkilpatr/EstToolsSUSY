@@ -7,7 +7,7 @@
 #include <fstream>
 
 //#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters_small.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -16,7 +16,7 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.predlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -55,6 +55,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_ll_muon.conf"){
     sys_name = "eff_mu_err_Up";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -64,6 +65,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_ll_muon.conf"){
     sys_name = "eff_mu_err_Down";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
