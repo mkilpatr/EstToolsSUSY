@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../EstMethods/QCDEstimator.hh"
@@ -94,7 +94,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   // jes - up
   {
-    sys_name = "JES_Up";
+    sys_name = "JES_up";
     EstTools::jes_postfix = "_JESUp";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
@@ -102,7 +102,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   }
 
   {
-    sys_name = "JES_Down";
+    sys_name = "JES_down";
     EstTools::jes_postfix = "_JESDown";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
@@ -111,7 +111,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   // metres - up
   {
-    sys_name = "metres_Up";
+    sys_name = "metres_up";
     EstTools::jes_postfix = "_METUnClustUp";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
@@ -119,7 +119,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   }
 
   {
-    sys_name = "metres_Down";
+    sys_name = "metres_down";
     EstTools::jes_postfix = "_METUnClustDown";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
     auto llb = getLLBPred(sys_name);
@@ -128,7 +128,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
 
   // trigger - up
   {
-    sys_name = "trigger_err_Up";
+    sys_name = "trigger_eff_up";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
     triggerwgtqcd = "Stop0l_trigger_eff_MET_loose_baseline_QCD_up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
@@ -137,7 +137,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
   }
 
   {
-    sys_name = "trigger_err_Down";
+    sys_name = "trigger_eff_down";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
     triggerwgtqcd = "Stop0l_trigger_eff_MET_loose_baseline_QCD_down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred(sys_name);
@@ -153,13 +153,13 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
+      if(sPair.first.EndsWith("_down")) continue; // ignore down: processed at the same time as up
       std::pair<vector<Quantity>, vector<Quantity>> uncs;
       vector<Quantity> uncs_up, uncs_down;
 
-      if(sPair.first.EndsWith("_Up")){
+      if(sPair.first.EndsWith("_up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
+        auto name_down = TString(sPair.first).ReplaceAll("_up", "_down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownSepUncs(varup, vardown);
 	uncs_up = uncs.first;
@@ -176,7 +176,7 @@ void SystJES(std::string outfile_path = "values_unc_jes.conf"){
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_up   = TString(sPair.first); 
-          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
+          auto uncType_down = TString(sPair.first).ReplaceAll("_up", "_down"); 
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
           ++ibin;

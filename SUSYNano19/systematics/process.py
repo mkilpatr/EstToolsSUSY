@@ -58,7 +58,7 @@ if args.config == "":
       exit 1
     fi
     
-    eosmkdir /store/user/mkilpatr/13TeV/$outputdir
+    eosmkdir -p /store/user/mkilpatr/13TeV/$outputdir
     
     cp {rootlogon} $workdir
     cp {pathtomacro}/$runmacro $workdir
@@ -72,7 +72,7 @@ if args.config == "":
     else:
     	script.write("""
     	    
-    source tarCMSSW_syst.sh
+    source tarCMSSW_syst.sh $outputdir
     
     echo "$runscript $runmacro $workdir $outputdir"    
     """)
@@ -121,9 +121,9 @@ else:
 outputdir={outdir}
 runmacro={macro}
 sysname={sysname}
-source tarCMSSW_syst.sh
+source tarCMSSW_syst.sh $outputdir
  
-eosmkdir /eos/uscms/store/user/mkilpatr/13TeV/$outputdir
+eosmkdir -p /eos/uscms/store/user/mkilpatr/13TeV/$outputdir
    
 echo "$runscript $runmacro $workdir $outputdir"    
     """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, sysname=args.sysname))

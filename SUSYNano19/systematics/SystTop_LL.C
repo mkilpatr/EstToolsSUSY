@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -50,7 +50,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
 
   // toptag up
   {
-    sys_name = "eff_toptag_err_Up";
+    sys_name = "eff_toptag_err_up";
     sdmvawgt = "(TopSF + TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -59,7 +59,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
 
   // toptag down 
   {
-    sys_name = "eff_toptag_err_Down";
+    sys_name = "eff_toptag_err_down";
     sdmvawgt = "(TopSF - TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -74,13 +74,13 @@ void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
+      if(sPair.first.EndsWith("_down")) continue; // ignore down: processed at the same time as up
       std::pair<vector<Quantity>, vector<Quantity>> uncs;
       vector<Quantity> uncs_up, uncs_down;
 
-      if(sPair.first.EndsWith("_Up")){
+      if(sPair.first.EndsWith("_up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_Up", "_Down");
+        auto name_down = TString(sPair.first).ReplaceAll("_up", "_down");
         auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
         uncs = Quantity::combineUpDownSepUncs(varup, vardown);
 	uncs_up = uncs.first;
@@ -97,7 +97,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_up   = TString(sPair.first); 
-          auto uncType_down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
+          auto uncType_down = TString(sPair.first).ReplaceAll("_up", "_down"); 
 	  if (std::isnan(uncs_up.at(ibin).value)) {
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
             uncs_up.at(ibin).value = 2;

@@ -29,9 +29,9 @@ echo "CMSSW: "$CMSSW_BASE
 cd ../../
 CMSSW=${CMSSW_BASE##*/}
 
-xrdcp root://cmseos.fnal.gov//store/user/$(whoami)/${CMSSW}.tgz .
-tar -xf ${CMSSW}.tgz
-rm ${CMSSW}.tgz
+xrdcp root://cmseos.fnal.gov//store/user/$(whoami)/${CMSSW}_${outdir}.tgz .
+tar -xf ${CMSSW}_${outdir}.tgz
+rm ${CMSSW}_${outdir}.tgz
 echo $pwd
 ls
 

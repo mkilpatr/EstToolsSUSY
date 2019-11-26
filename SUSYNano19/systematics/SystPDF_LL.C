@@ -26,12 +26,12 @@ map<TString, vector<Quantity>> getLLBPred(){
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //    //{"diboson",    l.yields.at("diboson-sr")},
-    };
+    //{"diboson",    l.yields.at("diboson-sr")},
+  };
 }
 
 
-void SystResTop_LL(std::string outfile_path = "values_unc_ll_restoptag.conf"){
+void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,8 +39,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_ll_restoptag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/trees/0221_wtopSyst";
-
+  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -48,20 +47,18 @@ void SystResTop_LL(std::string outfile_path = "values_unc_ll_restoptag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag up
+  // pdf - up
   {
-    sys_name = "eff_restop_up";
-    restopwgt = "(restopSF + restopSF_up)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "PDF_Weight_up";
+    pdfwgt = "pdfWeight_up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag down
+  // pdf - down
   {
-    sys_name = "eff_restop_down";
-    restopwgt = "(restopSF - restopSF_down)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "PDF_Weight_down";
+    pdfwgt = "pdfWeight_down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
