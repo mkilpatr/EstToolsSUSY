@@ -761,6 +761,7 @@ std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 std::map<TString, TString> qcdcrMapping =[]{
   auto crmap = lepcrMapping;
   for (auto &s : crmap){
+    s.second.ReplaceAll("lowmtb_nj7", "lowmtb_nj7_nrtgeq1");
     s.second.ReplaceAll("lm_", "lmNoDPhi_");
     s.second.ReplaceAll("hm_", "hmNoDPhi_");
   }
