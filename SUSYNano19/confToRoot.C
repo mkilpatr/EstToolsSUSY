@@ -32,7 +32,7 @@ std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString
 		++i;
 	}
         TString test = TString(arr[1]);
-	if(test.Contains("Up")){
+	if(test.Contains("up")){
 		binName_Up.push_back(arr[0]);
 		     if(arr[3] == "-nan") val_up.push_back(1.);
 		else if(arr[3] == "inf")  val_up.push_back(2.);
@@ -81,6 +81,16 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     binName_Down = output.second.first;
     val_up = output.first.second;
     val_down = output.second.second;
+
+    for(unsigned int j = 0; j != val_up.size(); j++){
+      if((val_up[j] > 1 && val_down[j] > 1) || (val_up[j] < 1 && val_down[j] < 1)){
+	float sign = val_up[j] > 1 ? 1 : -1;
+	float value = 0.5 * (std::abs(val_up[j] - 1) + std::abs(1 - val_down[j]));
+	val_up.at(j) = 1 + sign*value;
+	val_down.at(j) = 1 - sign*value;
+      }
+    }
+
     for(int j = 0; j != val_up.size(); j++){
       if(i == 0){
         val_up_total.push_back((1-val_up[j])*(1-val_up[j]));

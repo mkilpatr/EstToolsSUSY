@@ -1863,8 +1863,8 @@ std::map<TString, TString> phocrMapping{
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7"},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7"},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7_nrtgeq1"},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7_nrtgeq1"},
   
   // high mtb                                          
   // 0 taggged                                         
@@ -2037,8 +2037,8 @@ std::map<TString, TString> lepcrMapping {
 
   //---------- high deltaM ----------
   // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7"},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7"},
+  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7_nrtgeq1"},
+  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7_nrtgeq1"},
   
   // high mtb                                          
   // 0 taggged                                         
@@ -2187,7 +2187,6 @@ std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
 std::map<TString, TString> qcdcrMapping =[]{
   auto crmap = lepcrMapping;
   for (auto &s : crmap){
-    s.second.ReplaceAll("lowmtb_nj7", "lowmtb_nj7_nrtgeq1");
     s.second.ReplaceAll("lm_", "lmNoDPhi_");
     s.second.ReplaceAll("hm_", "hmNoDPhi_");
   }

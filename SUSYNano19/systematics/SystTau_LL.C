@@ -108,7 +108,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
           }
 	  if (std::isnan(uncs_down.at(ibin).value)) {
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
-            uncs_down.at(ibin).value = 2;
+            uncs_down.at(ibin).value = 0.001;
           }
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
