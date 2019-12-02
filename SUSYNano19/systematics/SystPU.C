@@ -62,9 +62,9 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
   // pu - up
   {
     sys_name = "PU_Weight_up";
-    puwgt = "puWeight_up";
-    BtoEpuwgt = "17BtoEpuWeight_up"; // PU
-    Fpuwgt = "17FpuWeight_up"; // PU
+    puwgt = "puWeight_Up";
+    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
+    Fpuwgt = "17FpuWeight_Up"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -72,9 +72,9 @@ void SystPU(std::string outfile_path = "values_unc_pu.conf"){
   // pu - down
   {
     sys_name = "PU_Weight_down";
-    puwgt = "puWeight_down";
-    BtoEpuwgt = "17BtoEpuWeight_down"; // PU
-    Fpuwgt = "17FpuWeight_down"; // PU
+    puwgt = "puWeight_Down";
+    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
+    Fpuwgt = "17FpuWeight_Down"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

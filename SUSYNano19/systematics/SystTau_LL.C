@@ -53,8 +53,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_up";
-    tauvetowgt = "(TauSRSF + TauSRSF_up)";
-    septauvetowgt = "(TauSRSF + TauSRSF_up)";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -62,8 +62,8 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
   // tau - down
   {
     sys_name = "eff_tau_down";
-    tauvetowgt = "(TauSRSF - TauSRSF_down)";
-    septauvetowgt = "(TauSRSF - TauSRSF_down)";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

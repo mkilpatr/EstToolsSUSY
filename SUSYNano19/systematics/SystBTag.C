@@ -63,7 +63,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
   // btag - up
   {
     sys_name = "b_up";
-    btagwgt = "BTagWeight_up";
+    btagwgt = "BTagWeight_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -72,7 +72,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
   // btag - down
   {
     sys_name = "b_down";
-    btagwgt = "BTagWeight_down";
+    btagwgt = "BTagWeight_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

@@ -46,16 +46,16 @@ void SystTau_QCD(std::string outfile_path = "values_unc_qcd_tau.conf"){
   // tau - up
   {
     sys_name = "eff_tau_up";
-    tauvetowgt = "(TauSRSF + TauSRSF_up)";
-    septauvetowgt = "(TauSRSF + TauSRSF_up)";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // tau - down
   {
     sys_name = "eff_tau_down";
-    tauvetowgt = "(TauSRSF - TauSRSF_down)";
-    septauvetowgt = "(TauSRSF - TauSRSF_down)";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // -----------------------

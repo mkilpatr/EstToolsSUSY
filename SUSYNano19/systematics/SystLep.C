@@ -107,8 +107,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // tau - up
   {
     sys_name = "eff_tau_up";
-    tauvetowgt = "TauSRSF_up";
-    septauvetowgt = "TauSRSF_up";
+    tauvetowgt = "TauSRSF_Up";
+    septauvetowgt = "TauSRSF_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -117,8 +117,8 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // tau - down
   {
     sys_name = "eff_tau_down";
-    tauvetowgt = "TauSRSF_down";
-    septauvetowgt = "TauSRSF_down";
+    tauvetowgt = "TauSRSF_Down";
+    septauvetowgt = "TauSRSF_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

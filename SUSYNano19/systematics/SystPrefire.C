@@ -62,7 +62,7 @@ void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
   // isr - up
   {
     sys_name = "Prefire_Weight_up";
-    prefirewgt = "PrefireWeight_up";
+    prefirewgt = "PrefireWeight_Up";
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -70,7 +70,7 @@ void SystPrefire(std::string outfile_path = "values_unc_prefire.conf"){
   // pu - down
   {
     sys_name = "Prefire_Weight_down";
-    prefirewgt = "PrefireWeight_down";
+    prefirewgt = "PrefireWeight_Down";
     //proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

@@ -50,7 +50,7 @@ void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
   // pdf - up
   {
     sys_name = "PDF_Weight_up";
-    pdfwgt = "pdfWeight_up";
+    pdfwgt = "pdfWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -58,7 +58,7 @@ void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
   // pdf - down
   {
     sys_name = "PDF_Weight_down";
-    pdfwgt = "pdfWeight_down";
+    pdfwgt = "pdfWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

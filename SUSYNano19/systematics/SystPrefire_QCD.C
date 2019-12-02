@@ -41,13 +41,13 @@ void SystPrefire_QCD(std::string outfile_path = "values_unc_qcd_prefire.conf"){
   // isr - up
   {
     sys_name = "Prefire_Weight_up";
-    prefirewgt = "PrefireWeight_up";
+    prefirewgt = "PrefireWeight_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // pu - down
   {
     sys_name = "Prefire_Weight_down";
-    prefirewgt = "PrefireWeight_down";
+    prefirewgt = "PrefireWeight_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 

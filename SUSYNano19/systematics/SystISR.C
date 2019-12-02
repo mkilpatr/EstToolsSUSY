@@ -62,7 +62,7 @@ void SystISR(std::string outfile_path = "values_unc_isr.conf"){
   // isr - up
   {
     sys_name = "ISR_Weight_up";
-    isrwgt = "ISRWeight_up";
+    isrwgt = "ISRWeight_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -70,7 +70,7 @@ void SystISR(std::string outfile_path = "values_unc_isr.conf"){
   // pu - down
   {
     sys_name = "ISR_Weight_down";
-    isrwgt = "ISRWeight_down";
+    isrwgt = "ISRWeight_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

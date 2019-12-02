@@ -123,7 +123,13 @@ TH1* addUnderflow(TH1 *h){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity getHistBin(const TH1* h, int ibin){
-  return Quantity(h->GetBinContent(ibin), h->GetBinError(ibin));
+  double value = h->GetBinContent(ibin);
+  double error = h->GetBinError(ibin);
+  if (std::isnan(value)) value = 0;
+  if (std::isnan(error)) error = 0;
+
+  return Quantity(value, error);
+  //return Quantity(h->GetBinContent(ibin), h->GetBinError(ibin));
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

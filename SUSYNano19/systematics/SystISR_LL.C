@@ -49,14 +49,14 @@ void SystISR_LL(std::string outfile_path = "values_unc_ll_isr.conf"){
   // isr - up
   {
     sys_name = "ISR_Weight_up";
-    isrwgt = "ISRWeight_up";
+    isrwgt = "ISRWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
   // pu - down
   {
     sys_name = "ISR_Weight_down";
-    isrwgt = "ISRWeight_down";
+    isrwgt = "ISRWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
