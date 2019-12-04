@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+//#include "Syst_SR_Parameters.hh"
+#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/QCDEstimator.hh"
 
@@ -93,6 +93,10 @@ void SystSoftBTag_QCD(std::string outfile_path = "values_unc_qcd_softbtag.conf")
 	  if (std::isnan(uncs_down.at(ibin).value)) {
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
             uncs_down.at(ibin).value = 0.001;
+          }
+	  if(!binname.Contains("nivf")){
+            uncs_up.at(ibin).value = 1;
+            uncs_down.at(ibin).value = 1;
           }
           outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;

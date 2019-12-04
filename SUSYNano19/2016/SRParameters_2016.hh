@@ -92,7 +92,7 @@ const TString baseline = "Pass_MET && Pass_NJets30";
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-        {"lmNoDPhi",    "Stop0l_ISRJetPt>=300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>=10"},
+        {"lmNoDPhi",    "Stop0l_ISRJetPt>=200 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>=10"},
         {"dPhiLM",      "Pass_dPhiMETLowDM"},
         {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM"},
@@ -261,7 +261,7 @@ std::vector<TString> srbins{
   "lm_nb1_nivf0_lowmtb_highptisr_lowptb",
   "lm_nb1_nivf0_lowmtb_highptisr_medptb",
   // ---
-  "lm_nb1_nivf1_lowmtb_lowptb",
+  "lm_nb1_nivf1_lowmtb_medptisr_lowptb",
 
   // 2b
   "lm_nb2_lowmtb_lowptisr_lowptb12",
@@ -382,7 +382,7 @@ std::map<TString, std::vector<int>> srMETbins{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",            {450, 550, 650, 750, 1000}},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb",            {450, 550, 650, 750, 1000}},
 
-  {"lm_nb1_nivf1_lowmtb_lowptb",                 {300, 400, 500, 1000}},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 {300, 400, 500, 1000}},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12",            {300, 400, 500, 1000}},
@@ -511,7 +511,7 @@ std::map<TString, TString> phocrMapping{
   {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb",       "lm_nb1_nivf0_lowmtb_highptisr_medptb"},
-  {"lm_nb1_nivf1_lowmtb_lowptb",                 "lm_nb1_nivf1_lowmtb_lowptb"},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 "lm_nb1_nivf1_lowmtb_medptisr_lowptb"},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12",            "lm_nb2_lowmtb_lowptisr_lowptb12"},
@@ -627,7 +627,7 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb"},
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb",       "lm_nb1_nivf0_lowmtb_highptisr_medptb"},
-  {"lm_nb1_nivf1_lowmtb_lowptb",                 "lm_nb1_nivf1_lowmtb_lowptb"},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 "lm_nb1_nivf1_lowmtb_medptisr_lowptb"},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12",            "lm_nb2_lowmtb_lowptisr_lowptb12"},
@@ -770,7 +770,7 @@ std::map<TString, std::vector<int>> qcdcrMETbins {
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",            {450, 550, 650,      1000}}, // merge last 2 bins
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb",            {450, 550, 650,      1000}}, // merge last 2 bins
   
-  {"lm_nb1_nivf1_lowmtb_lowptb",                 {300, 400,      1000}}, // merge last 2 bins
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 {300, 400,      1000}}, // merge last 2 bins
   
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12",            {300,           1000}}, // merge all 3 bins
