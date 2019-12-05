@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_110619_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_110619_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_110619_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_120419_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_120419_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_120419_limits/";
 const TString inputdir_sig  = "nanoaod_SBv3_2016_081219/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_111319_limits/";
+const TString datadir = "nanoaod_data_all_skim_120419_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -70,11 +70,11 @@ bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
+const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100  && Pass_exHEMVetoElec30";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
+const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100  && Pass_exHEMVetoElec30 && MET_pt>100";
 
 
 // lepton trigger eff.
@@ -106,8 +106,8 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30 && Pass_exHEMVetoElec30))";
-const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run >= 319077 || run == 1) && Pass_exHEMVeto30 && Pass_exHEMVetoElec30";
+const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30))";
+const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run >= 319077 || run == 1) && Pass_exHEMVeto30";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut =   " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) || ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && (Pass_dPhiMETMedDM)) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -192,7 +192,7 @@ std::vector<TString> srbins{
   "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400",
   "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400",
   // ---
-  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",
+  "lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300",
 
   // 2b
   "lm_nb2_lowmtb_lowptisr_lowptb12_met300",
@@ -265,7 +265,7 @@ std::map<TString, std::vector<int>> srMETbins{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", 	{250, 400}},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", 	{250, 400}},
   // ---
-  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300", 	{250, 300}},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300", 	{250, 300}},
 
   // 2b
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300", 		{250, 300}},
@@ -359,7 +359,7 @@ std::map<TString, TString> phocrMapping{
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
   // ---                                 
-  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300"},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300",  "lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300"},
                                             
   // 2b                                 
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",      "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},
@@ -436,7 +436,7 @@ std::map<TString, TString> lepcrMapping {
   {"lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_lowptb_met400"},
   {"lm_nb1_nivf0_lowmtb_highptisr_medptb_met400", "lm_nb1_nivf0_lowmtb_highptisr_medptb_met400"},
   // ---                                 
-  {"lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300",  "lm_nb1_nivf1_lowmtb_lowptb_medptisr_met300"},
+  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300",  "lm_nb1_nivf1_lowmtb_medptisr_lowptb_met300"},
                                             
   // 2b                                 
   {"lm_nb2_lowmtb_lowptisr_lowptb12_met300",      "lm_nb2_lowmtb_lowptisr_lowptb12_met300"},

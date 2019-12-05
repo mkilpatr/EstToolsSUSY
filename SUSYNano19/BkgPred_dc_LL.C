@@ -55,12 +55,12 @@ void runBkgPred(){
   l.printYields();
   l.prepDatacard();
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
-  binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
-  binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
+  //binMaps["qcdcr"] = updateBinMap(l.binMap, qcdcrBinMap, binlist);
+  //binMaps["phocr"] = updateBinMap(l.binMap, phocrBinMap, binlist);
 
 
-  //vector<const BaseEstimator*> allPreds = {&l, &s};
-  vector<const BaseEstimator*> allPreds = {&l};
+  vector<const BaseEstimator*> allPreds = {&l, &s};
+  //vector<const BaseEstimator*> allPreds = {&l};
 
   for (const auto *v : allPreds){
     yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
@@ -85,13 +85,13 @@ void runBkgPred(){
   j["binNum"] = lepcrBinNumMap;
   j["unitSRNum"] = lepcrUnitNumMap;
   j["unitCRNum"]["lepcr"] = lepcrUnitCRNumMap;
-  j["unitCRNum"]["phocr"] = phocrUnitCRNumMap;
-  j["unitCRNum"]["qcdcr"] = qcdcrUnitCRNumMap;
+  //j["unitCRNum"]["phocr"] = phocrUnitCRNumMap;
+  //j["unitCRNum"]["qcdcr"] = qcdcrUnitCRNumMap;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open(outputdir+"/dc_BkgPred_BinMaps_master.json");
-  //jout.open(outputdir+"/ll_BkgPred.json");
+  //jout.open(outputdir+"/dc_BkgPred_BinMaps_master.json");
+  jout.open(outputdir+"/ll_BkgPred.json");
   jout << j.dump(2);
   jout.close();
 
@@ -110,7 +110,7 @@ void runSignalYields(){
   map<std::string, map<std::string, vector<double>>> yieldsMap;
 
   //for (const auto &signal : signals){
-  for (const auto &signal : signals_small){
+  for (const auto &signal : signals){
     BaseEstimator s(signalConfig(signal));
     s.calcYields();
     s.convertYields(signal, "");
@@ -137,8 +137,7 @@ void runSignalYields(){
   }
 
   json j;
-  //j["signals"] = signals;
-  j["signals"] = signals_small;
+  j["signals"] = signals;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
   jout.open(outputdir+"/dc_SigYields.json");
