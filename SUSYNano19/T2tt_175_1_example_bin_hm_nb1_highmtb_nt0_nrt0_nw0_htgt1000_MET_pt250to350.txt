@@ -6,37 +6,38 @@ kmax    * number of nuisance parameters
 shapes * bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 FAKE
 --------------------------------------------------------------------------------
 bin          bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 
-observation  445.9780        
+observation  632.8796        
 --------------------------------------------------------------------------------
 bin                                                                                bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 
 process                                                                            signal          ttbarplusw      znunu           qcd             ttZ             diboson         
 process                                                                            0               1               2               3               4               5               
-rate                                                                               0.730773        1               1               1               1.83807         3.3886          
+rate                                                                               9.14402         1               1               1               1.73918         6.63444         
 --------------------------------------------------------------------------------
-ISR_Weight                                                                 lnN     0.745114/1.14945 1.01244/0.992847 -               1/1             -               -               
-JES                                                                        lnN     0.983199/1.07105 1.00457/0.997025 -               0.966463/1.06259 1.07181         1.04201         
-MET_Unc                                                                    lnN     0.876649/1.28265 -               -               -               -               -               
-PDF_Weight                                                                 lnN     1/1             0.997194/1.00244 -               -               1.01078         1.06886         
-PU_Weight                                                                  lnN     0.984764/1.01684 -               -               0.950886/1.04932 1.0014          1.0119          
-Prefire_Weight                                                             lnN     0.996339/1.00364 0.999747/1.00026 -               1.00014/0.999902 1.00499         1.00224         
-Scale_Unc                                                                  lnN     0.999903/1.0001 -               -               -               -               -               
-b                                                                          lnN     0.990031/1.00751 0.988665/1.01087 -               0.991081/1.0078 1.01376         1.04719         
-eff_e                                                                      lnN     0.97019/1.02981 1.05416/0.947292 -               0.999131/1.00085 -               -               
-eff_restop                                                                 lnN     1/1             1.01249/0.987828 -               1.00905/0.991108 -               -               
-eff_tau                                                                    lnN     0.995997/1.0034 1.03345/0.966549 -               1/1             -               -               
-eff_toptag                                                                 lnN     1/1             1.01367/0.986692 -               1.0025/0.997513 -               -               
-eff_wtag                                                                   lnN     1/1             1.00316/0.996862 -               1.00108/0.998918 -               -               
-err_mu                                                                     lnN     0.998481/1.00152 1.00319/0.996816 -               0.999946/1.00005 -               -               
-ivfunc                                                                     lnN     0.996376/1.00362 1/1             -               1/1             -               -               
-mcstats_diboson_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350    lnN     -               -               -               -               -               1.22278         
+ISR_Weight                                                                 lnN     0.745237/1.14938 1.01244/0.992847 -               1/1             -               -               
+JES                                                                        lnN     0.955953/1.01982 1.00457/0.997025 -               0.966463/1.06259 0.924388/1.07561 0.975366/1.02463 
+MET_Unc                                                                    lnN     0.754791/1.16343 -               -               -               -               -               
+PDF_Weight                                                                 lnN     1/1             0.997194/1.00244 -               -               0.989299/1.0107 0.956243/1.04376 
+PU_Weight                                                                  lnN     1.00021/0.999801 -               -               0.950886/1.04932 0.999391/1.00061 0.997822/1.00218 
+Prefire_Weight                                                             lnN     0.995445/1.00451 0.999747/1.00026 -               1.00014/0.999902 0.9949/1.0051   0.998006/1.00199 
+Scale_Unc                                                                  lnN     0.999939/1.00006 -               -               -               -               -               
+b                                                                          lnN     0.989096/1.00912 0.988665/1.01087 -               0.991081/1.0078 0.987071/1.01293 0.961271/1.03873 
+eff_e                                                                      lnN     1/1             1.05416/0.947292 -               0.999131/1.00085 1/1             1/1             
+eff_restop                                                                 lnN     -               1.01249/0.987828 -               1.00905/0.991108 1/1             1/1             
+eff_restoptag                                                              lnN     1/1             -               -               -               -               -               
+eff_tau                                                                    lnN     1/1             1.03345/0.966549 -               1/1             1/1             1/1             
+eff_toptag                                                                 lnN     1/1             1.01367/0.986692 -               1.0025/0.997513 1/1             1/1             
+eff_wtag                                                                   lnN     1/1             1.00316/0.996862 -               1.00108/0.998918 1/1             1/1             
+err_mu                                                                     lnN     1/1             1.00319/0.996816 -               0.999946/1.00005 1/1             1/1             
+ivfunc                                                                     lnN     1/1             1/1             -               1/1             1/1             1/1             
+mcstats_diboson_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350    lnN     -               -               -               -               -               1.16861         
 mcstats_qcd_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350        lnN     -               -               -               1.01527         -               -               
-mcstats_signal_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350     lnN     1.10066         -               -               -               -               -               
-mcstats_ttZ_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350        lnN     -               -               -               -               1.07155         -               
+mcstats_signal_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350     lnN     1.07609         -               -               -               -               -               
+mcstats_ttZ_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350        lnN     -               -               -               -               1.07256         -               
 mcstats_ttbarplusw_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350 lnN     -               1.01536         -               -               -               -               
-mcstats_znunu_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350      lnN     -               -               1.01907         -               -               -               
-metres                                                                     lnN     0.988694/1.04066 0.996265/1.00374 -               0.001/2         1.00341         0.977694        
-trigger_err                                                                lnN     0.998148/1.0017 1.00001/0.999993 -               0.999794/1.00019 1.00179         1.00192         
-ttZ_SF                                                                     lnN     -               -               -               -               1.13675         -               
+mcstats_znunu_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350      lnN     -               -               1.01241         -               -               -               
+metres                                                                     lnN     1.03905/0.99492 0.996265/1.00374 -               0.001/2         0.996604/1.0034 0.986278/1.01372 
+trigger_err                                                                lnN     0.998229/1.00163 1.00001/0.999993 -               0.999794/1.00019 0.9982/1.0018   0.998112/1.00189 
+ttZ_SF                                                                     lnN     -               -               -               -               0.893554/1.10645 -               
 R_qcd_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350              rateParam  *          qcd        (@0*60.303522+@1*14.168854+@2*56.790391) R_bin_qcdcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_qcdcr_hm_nb1_highmtb_htgt1500_MET_pt250to350
 R_ttbarplusw_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350       rateParam  *          ttbarplusw (@0*159.445933+@1*45.881273+@2*57.290734) R_bin_lepcr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_lepcr_hm_nb1_highmtb_htgt1500_MET_pt250to350
-R_znunu_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350            rateParam  *          znunu      (@0*42.208518+@1*12.512125+@2*15.727317) R_bin_phocr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350
+R_znunu_bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350            rateParam  *          znunu      (@0*109.049678+@1*30.471561+@2*39.475517) R_bin_phocr_hm_nb1_highmtb_ht1000to1300_MET_pt250to350,R_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350,R_bin_phocr_hm_nb1_highmtb_htgt1500_MET_pt250to350
