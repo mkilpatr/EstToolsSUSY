@@ -11,8 +11,25 @@ observation  106.0
 bin                                                                             bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
 process                                                                         signal          ttbarplusw      
 process                                                                         0               1               
-rate                                                                            25.8744         114.006         
+rate                                                                            0.0910157       114.006         
 --------------------------------------------------------------------------------
-mcstats_signal_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350     lnN     2               -               
+ISR_Weight                                                              lnN     0.902185        -               
+JES                                                                     lnN     0.858459        -               
+MET_Unc                                                                 lnN     1.46889         -               
+PDF_Weight                                                              lnN     1               -               
+PU_Weight                                                               lnN     0.972987        -               
+Prefire_Weight                                                          lnN     0.998963        -               
+Scale_Unc                                                               lnN     0.998878        -               
+b                                                                       lnN     0.983141        -               
+eff_e                                                                   lnN     1               -               
+eff_restop                                                              lnN     0.998175        -               
+eff_tau                                                                 lnN     1               -               
+eff_toptag                                                              lnN     0.967124        -               
+eff_wtag                                                                lnN     1               -               
+err_mu                                                                  lnN     1               -               
+ivfunc                                                                  lnN     1               -               
+mcstats_signal_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350     lnN     1.29353         -               
 mcstats_ttbarplusw_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               1.02583         
+metres                                                                  lnN     0.858459        -               
+trigger_err                                                             lnN     0.998246        -               
 R_bin_lepcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350                  rateParam  *          ttbarplusw 1  [0.01,5]

@@ -6,13 +6,13 @@ kmax    * number of nuisance parameters
 shapes * bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 FAKE
 --------------------------------------------------------------------------------
 bin          bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
-observation  669.0           
+observation  768.0           
 --------------------------------------------------------------------------------
 bin                                                                            bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
 process                                                                        qcd             otherbkgs       
 process                                                                        1               2               
-rate                                                                           525.489         99.078          
+rate                                                                           629.701         75.6776         
 --------------------------------------------------------------------------------
 mcstats_otherbkgs_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               2               
-mcstats_qcd_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350       lnN     1.00519         -               
+mcstats_qcd_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350       lnN     1.00494         -               
 R_bin_qcdcr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350                 rateParam  *          qcd        1  [0.01,5]

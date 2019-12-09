@@ -6,13 +6,13 @@ kmax    * number of nuisance parameters
 shapes * bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 FAKE
 --------------------------------------------------------------------------------
 bin          bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
-observation  37.0            
+observation  79.0            
 --------------------------------------------------------------------------------
 bin                                                                            bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 
 process                                                                        gjets           otherbkgs       
 process                                                                        1               2               
-rate                                                                           17.2277         4.4369          
+rate                                                                           58.6332         3.61732         
 --------------------------------------------------------------------------------
-mcstats_gjets_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350     lnN     1.08579         -               
-mcstats_otherbkgs_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               2               
+mcstats_gjets_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350     lnN     1.04585         -               
+mcstats_otherbkgs_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350 lnN     -               1.19075         
 R_bin_phocr_hm_nb1_highmtb_ht1300to1500_MET_pt250to350                 rateParam  *          gjets      1  [0.01,5]
