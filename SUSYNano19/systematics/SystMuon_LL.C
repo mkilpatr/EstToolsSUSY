@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters.hh"
+#include "Syst_SR_Parameters_small.hh"
+//#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -42,7 +42,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_ll_muon.conf"){
   // nominal
   {
     sys_name = "nominal";
-    muonvetowgt = "1"; 
+    nolepmuonvetowgt = "1"; 
     EstTools::lepsel = "MuonVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();

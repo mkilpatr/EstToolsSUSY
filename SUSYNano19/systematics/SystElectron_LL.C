@@ -42,7 +42,7 @@ void SystElectron_LL(std::string outfile_path = "values_unc_ll_electron.conf"){
   // nominal
   {
     sys_name = "nominal";
-    elevetowgt = "1"; 
+    nolepelevetowgt = "1"; 
     EstTools::lepsel = "ElecVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();

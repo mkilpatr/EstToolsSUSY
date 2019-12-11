@@ -42,7 +42,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
   // nominal
   {
     sys_name = "nominal";
-    tauvetowgt = "1"; 
+    noleptauvetowgt = "1"; 
     EstTools::lepsel = "TauVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
