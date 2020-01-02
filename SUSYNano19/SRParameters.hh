@@ -6,14 +6,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_120419_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_120419_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_120419_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_122819_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_122819_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_122819_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_120419_limits/";
+const TString datadir = "nanoaod_data_all_skim_122819_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -101,6 +101,7 @@ const TString qcdvetowgt_postHEM = lepvetowgt_postHEM + "*qcdRespTailWeight";
 const TString sigwgt = lepvetowgt;
 
 // triggers
+const TString ttbarHTCut = " && LHE_HTIncoming
 const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";

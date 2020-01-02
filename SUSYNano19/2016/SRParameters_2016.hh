@@ -6,12 +6,12 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_120419_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_122819_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_120419_limits/";
+const TString datadir = "nanoaod_data_all_skim_122819_limits/";
 
 const TString lumistr = "35.815165";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -1113,7 +1113,7 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  //config.addSample("data-sr",          "Data",             datadir+"met",                  "1.0",  datasel + trigSR + vetoes);
+  config.addSample("data-sr",          "Data",             inputdir_2016+"met",                  "1.0",  datasel + trigSR + vetoes);
 
   config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
   config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);

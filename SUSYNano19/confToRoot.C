@@ -107,14 +107,21 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
 
     size_t lastindex = files[i].find_last_of("."); 
     string rawname = files[i].substr(0, lastindex); 
-    std::string toErase = "values_unc_val_";
+    std::string toErase = "values_unc_";
     size_t pos = rawname.find(toErase);
     if (pos != std::string::npos) rawname.erase(pos, toErase.length());
     TString type = TString(rawname);
     rootFiles.push_back(type);
 
-    auto hUp = convertToHist(val_up, "Up", ";Validation Region; Systematics " + type, nullptr);
-    auto hDown = convertToHist(val_down, "Down", ";Validation Region; Systematics " + type, nullptr);
+    TH1* hUp = nullptr;
+    TH1* hDown = nullptr;
+    if(val_up.size() > 100){
+      hUp = convertToHist(val_up, "Up", ";Search Region; Systematics " + type, nullptr);
+      hDown = convertToHist(val_down, "Down", ";Search Region; Systematics " + type, nullptr);
+    } else{
+      hUp = convertToHist(val_up, "Up", ";Validation Region; Systematics " + type, nullptr);
+      hDown = convertToHist(val_down, "Down", ";Validation Region; Systematics " + type, nullptr);
+    }
 
     prepHists({hUp, hDown}, false, false, false, {kRed, kBlue});
 
@@ -126,7 +133,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     auto leg = prepLegends({}, {""}, "l");
     appendLegends(leg, {hUp}, {type + " Up"}, "l");
     appendLegends(leg, {hDown}, {type + " Down"}, "l");
-    leg->SetTextSize(0.03);
+    leg->SetTextSize(0.05);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
     c->SetTitle(type);
@@ -151,8 +158,15 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   if(rootFiles[0].Contains("ll")) totalName = "ll";
   else				  totalName = "qcd";
 
-  auto hUp = convertToHist(val_up_total, "Up_total", ";Validation Region; Total Systematics " + totalName, nullptr);
-  auto hDown = convertToHist(val_down_total, "Down_total", ";Validation Region; Total Systematics " + totalName, nullptr);
+  TH1* hUp = nullptr;
+  TH1* hDown = nullptr;
+  if(val_up_total.size() > 100){
+    hUp = convertToHist(val_up_total, "Up", ";Search Region; Systematics " + totalName, nullptr);
+    hDown = convertToHist(val_down_total, "Down", ";Search Region; Systematics " + totalName, nullptr);
+  } else{
+    hUp = convertToHist(val_up_total, "Up", ";Validation Region; Systematics " + totalName, nullptr);
+    hDown = convertToHist(val_down_total, "Down", ";Validation Region; Systematics " + totalName, nullptr);
+  }
 
   prepHists({hUp, hDown}, false, false, false, {kRed, kBlue});
 
@@ -164,9 +178,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   auto leg = prepLegends({}, {""}, "l");
   appendLegends(leg, {hUp}, {totalName + " Up"}, "l");
   appendLegends(leg, {hDown}, {totalName + " Down"}, "l");
-  leg->SetTextSize(0.03);
+  leg->SetTextSize(0.05);
   leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-  TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
+  TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
   c->SetTitle(totalName);
   c->Print("LLB/"+indir+totalName+".pdf");
   c->Print("LLB/"+indir+totalName+".C");

@@ -6,8 +6,8 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_120419_limits/";
-const TString datadir = "nanoaod_all_skim_2016_120419_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_122819_limits/";
+const TString datadir = "nanoaod_all_skim_2016_122819_limits/";
 const TString outputdir = "LowMET";
 
 const TString lumistr = "35.815165";
@@ -606,7 +606,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          datadir+"met",             "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",        "Data",     inputdir_2016+"met",             "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("tW",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
@@ -733,7 +733,7 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("data-sr",        "Data",      datadir+"met",                    "1.0",  datasel + trigSR + vetoes);
+  config.addSample("data-sr",        "Data",      inputdir_2016+"met",                    "1.0",  datasel + trigSR + vetoes);
 
   // raw MC w/o top/W SF
   //config.addSample("znunu-raw-sr",                 "Z#rightarrow#nu#nu", inputdir_2016+"znunu",           lepvetowgt_no_wtopsf,                 datasel + vetoes);

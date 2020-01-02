@@ -91,7 +91,7 @@ void runBkgPred(){
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
   //jout.open(outputdir+"/dc_BkgPred_BinMaps_master.json");
-  jout.open(outputdir+"/ll_BkgPred.json");
+  jout.open(outputdir+"/ll_BkgPred_LHE.json");
   jout << j.dump(2);
   jout.close();
 

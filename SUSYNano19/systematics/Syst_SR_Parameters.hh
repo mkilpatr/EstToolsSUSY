@@ -7,12 +7,12 @@ namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_120419_limits/";
-TString inputdir_2017 = "nanoaod_all_skim_2017_120419_limits/";
-TString inputdir_2018 = "nanoaod_all_skim_2018_120419_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_122819_limits/";
+TString inputdir_2017 = "nanoaod_all_skim_2017_122819_limits/";
+TString inputdir_2018 = "nanoaod_all_skim_2018_122819_limits/";
 TString outputdir() {return "syst/"+sys_name;}
 
-const TString datadir = "nanoaod_data_all_skim_120419_limits/";
+const TString datadir = "nanoaod_data_all_skim_122819_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -156,8 +156,8 @@ TString trigSR() { return " && Pass_trigger_MET"+jes_postfix;}
 TString trigPhoCR = " && passtrigphoOR && origmet<200";
 TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-TString datasel() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30"+jes_postfix+"))"; }
-TString dataselHEM() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run >= 319077 || run == 1) && Pass_exHEMVeto30"+jes_postfix+""; }
+TString datasel() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30"+jes_postfix+")) && Pass_LHETTbar"+jes_postfix; }
+TString dataselHEM() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run >= 319077 || run == 1) && Pass_exHEMVeto30"+jes_postfix+" && Pass_LHETTbar"+jes_postfix; }
 TString qcdSpikeRemovals = "";
 TString dphi_invert() {return " && Pass_dPhiQCD"+jes_postfix;}
 TString dphi_cut() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; } // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
