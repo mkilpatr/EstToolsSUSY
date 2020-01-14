@@ -7,12 +7,12 @@ namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_122819_limits/";
-TString inputdir_2017 = "nanoaod_all_skim_2017_122819_limits/";
-TString inputdir_2018 = "nanoaod_all_skim_2018_122819_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_011020_limits/";
+TString inputdir_2017 = "nanoaod_all_skim_2017_011020_limits/";
+TString inputdir_2018 = "nanoaod_all_skim_2018_011020_limits/";
 TString outputdir() {return "syst/"+sys_name;}
 
-const TString datadir = "nanoaod_data_all_skim_122819_limits/";
+const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
