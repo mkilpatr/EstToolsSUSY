@@ -249,6 +249,7 @@ public:
     sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017RunBtoE-eventsf-sr", "ttZ-2017RunF-eventsf-sr", "ttZ-2018preHEM-eventsf-sr", "ttZ-2018postHEM-eventsf-sr"}, "ttZ-eventsf-sr");
     sumYields({"diboson-2016-eventsf-sr", "diboson-2017RunBtoE-eventsf-sr", "diboson-2017RunF-eventsf-sr", "diboson-2018preHEM-eventsf-sr", "diboson-2018postHEM-eventsf-sr"}, "diboson-eventsf-sr");
     yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+    cout << "lepSF: " << yields["lepSF_"] << endl;
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)

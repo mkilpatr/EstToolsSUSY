@@ -49,7 +49,7 @@ void SystBTag_LL(std::string outfile_path = "values_unc_ll_btag.conf"){
 
   // btag - up
   {
-    sys_name = "b_up";
+    sys_name = "b_Up";
     btagwgt = "BTagWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -57,7 +57,7 @@ void SystBTag_LL(std::string outfile_path = "values_unc_ll_btag.conf"){
 
   // btag - down
   {
-    sys_name = "b_down";
+    sys_name = "b_Down";
     btagwgt = "BTagWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -71,19 +71,19 @@ void SystBTag_LL(std::string outfile_path = "values_unc_ll_btag.conf"){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_down")) continue; // ignore down: processed at the same time as up
+      if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
       std::pair<vector<Quantity>, vector<Quantity>> uncs;
-      vector<Quantity> uncs_up, uncs_down;
+      vector<Quantity> uncs_Up, uncs_Down;
 
-      if(sPair.first.EndsWith("_up")){
+      if(sPair.first.EndsWith("_Up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_up", "_down");
-        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
+        auto name_Down = TString(sPair.first).ReplaceAll("_Up", "_Down");
+        auto vardown = proc_syst_pred[bkg].at(name_Down) / nominal_pred;
         uncs = Quantity::combineUpDownSepUncs(varup, vardown);
-	uncs_up = uncs.first;
-	uncs_down = uncs.second;
+	uncs_Up = uncs.first;
+	uncs_Down = uncs.second;
       } else{
-        uncs_down = sPair.second / nominal_pred;
+        uncs_Down = sPair.second / nominal_pred;
       }
 
       unsigned ibin = 0;
@@ -93,18 +93,18 @@ void SystBTag_LL(std::string outfile_path = "values_unc_ll_btag.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType_up   = TString(sPair.first); 
-          auto uncType_down = TString(sPair.first).ReplaceAll("_up", "_down"); 
-	  if (std::isnan(uncs_up.at(ibin).value)) {
-            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
-            uncs_up.at(ibin).value = 2;
+          auto uncType_Up   = TString(sPair.first); 
+          auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
+	  if (std::isnan(uncs_Up.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+            uncs_Up.at(ibin).value = 2;
           }
-	  if (std::isnan(uncs_down.at(ibin).value)) {
-            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
-            uncs_down.at(ibin).value = 0.001;
+	  if (std::isnan(uncs_Down.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
+            uncs_Down.at(ibin).value = 0.001;
           }
-          outfile << binname << "\t" << uncType_up << "\t" << bkg << "\t" << uncs_up.at(ibin).value << endl;
-          outfile << binname << "\t" << uncType_down << "\t" << bkg << "\t" << uncs_down.at(ibin).value << endl;
+          outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+          outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
         }
       }

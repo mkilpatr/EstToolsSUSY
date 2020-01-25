@@ -122,9 +122,13 @@ TH1* addUnderflow(TH1 *h){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Quantity getHistBin(const TH1* h, int ibin){
+Quantity getHistBin(const TH1* h, int ibin, TString Samples = "", double wgtvar = 0.){
   double value = h->GetBinContent(ibin);
   double error = h->GetBinError(ibin);
+       if(Samples.Contains("2017RunBtoE")) error = error*(1 + (13.220313/wgtvar));
+  else if(Samples.Contains("2017RunF"))    error = error*(1 + (27.987721/wgtvar));
+  else if(Samples.Contains("2018preHEM"))  error = error*(1 + (38.630913/wgtvar));
+  else if(Samples.Contains("2018postHEM")) error = error*(1 + (21.068576/wgtvar));
   if (std::isnan(value)) value = 0;
   if (std::isnan(error)) error = 0;
 
@@ -197,6 +201,27 @@ TH1D* convertToHist(const vector<double> &vec, TString hname, TString title, con
   hist->Sumw2();
   for (unsigned i=0; i<nbins; ++i){
     hist->SetBinContent(i+1, vec.at(i+start));
+  }
+  return hist;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
+  auto nbins = vec[0]->GetNbinsX();
+  if(manualBins > 0) nbins = manualBins;
+  TH1D *hist;
+
+  if (bin && bin->nbins==nbins){
+    hist = new TH1D(hname, title, nbins, bin->plotbins.data());
+    hist->SetXTitle(bin->label + (bin->unit=="" ? "" : "["+bin->unit+"]"));
+  }else{
+    hist = new TH1D(hname, title, nbins, start, start + nbins);
+  }
+  hist->Sumw2();
+  for (unsigned j=0; j!=vec.size();j++){
+    for (unsigned i=0; i<nbins; ++i){
+      hist->SetBinContent(i+1, vec[j]->GetBinContent(i+start));
+    }
   }
   return hist;
 }
