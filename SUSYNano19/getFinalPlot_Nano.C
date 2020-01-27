@@ -25,8 +25,7 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   vector<TString> datalabel = {"Observed"};
 
   vector<TString> split = {"lm_nb0",
-			   "lm_nb1_nivf0_lowmtb_lowptisr",
-			   "lm_nb1_otherptisr",
+			   "lm_nb1",
 			   "lm_nb2",
 			   "hm_nb[0-9]_lowmtb",
 			   "hm_nb[0-9]_highmtb_nt0_nrt0_nw0",
@@ -39,8 +38,7 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
 			   "hm_nb3_highmtb_taggeq2"};
   vector<TString> splitlabels = {
       "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{}",
-      "#splitline{Low #Deltam, N_{b}=1, N_{SV} = 0}{M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175, 300 #leq p_{T}(ISR) < 500}",
-      "#splitline{Low #Deltam, N_{b}=1, N_{SV} = 0,#geq1}{M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}",
+      "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{}",
       "#splitline{Low #Deltam, N_{b}=2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{300 #leq p_{T}(ISR) < 500, #geq 500}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{j} #geq 7, N_{res} #geq 1}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{H_{T} #geq 1000, N_{W} = 0, N_{T} = 0, N_{res} = 0}",
@@ -59,13 +57,28 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   tl.SetTextSize(0.025);
   tl.SetTextAlign(31);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.70, "2-5 jets"); tl.DrawLatexNDC(0.5, 0.70, "#geq 6 jets"); tl.DrawLatexNDC(0.7, 0.70, "2-5 jets"); tl.DrawLatexNDC(0.9, 0.70, "#geq 6 jets");},
-    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "p_{T}(b) < 40"); tl.DrawLatexNDC(0.8, 0.66, "40 < p_{T}(b) < 70");},
-    [&tl](){ tl.DrawLatexNDC(0.35, 0.66, "#splitline{p_{T}(ISR) #geq 500}{p_{T}(b) < 40}"); tl.DrawLatexNDC(0.65, 0.66, "#splitline{p_{T}(ISR) #geq 500}{40 < p_{T}(b) < 70}"); tl.DrawLatexNDC(0.9, 0.66, "#splitline{p_{T}(ISR) #geq 300}{p_{T}(b) < 40}");}, 
-    [&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); tl.DrawLatexNDC(0.43, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); tl.DrawLatexNDC(0.55, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}"); tl.DrawLatexNDC(0.67, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); tl.DrawLatexNDC(0.83, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); tl.DrawLatexNDC(0.95, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}");}, 
+    [&tl](){ tl.DrawLatexNDC(0.3, 0.70, "2-5 jets"); 
+	     tl.DrawLatexNDC(0.5, 0.70, "#geq 6 jets"); 
+	     tl.DrawLatexNDC(0.7, 0.70, "2-5 jets"); 
+	     tl.DrawLatexNDC(0.9, 0.70, "#geq 6 jets");},
+    [&tl](){ tl.DrawLatexNDC(0.43, 0.73, "#splitline{N_{SV} = 0}{300 #leq p_{T}(ISR) < 500}"); 
+	     tl.DrawLatexNDC(0.27, 0.66, "p_{T}(b) < 40");
+	     tl.DrawLatexNDC(0.45, 0.66, "40 < p_{T}(b) < 70");
+    	     tl.DrawLatexNDC(0.725, 0.73,"#splitline{N_{SV} = 0}{p_{T}(ISR) #geq 500}"); 
+	     tl.DrawLatexNDC(0.62, 0.66, "p_{T}(b) < 40");
+	     tl.DrawLatexNDC(0.80, 0.66, "40 < p_{T}(b) < 70");
+	     tl.DrawLatexNDC(0.95, 0.73, "#splitline{N_{SV} #geq 1}{#splitline{p_{T}(ISR) #geq 300}{p_{T}(b) < 40}}");}, 
+    [&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
+	     tl.DrawLatexNDC(0.43, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
+	     tl.DrawLatexNDC(0.55, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}"); 
+	     tl.DrawLatexNDC(0.67, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
+	     tl.DrawLatexNDC(0.83, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
+	     tl.DrawLatexNDC(0.95, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}");}, 
 
-    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
-    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
+    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
+	     tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
+    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
+	     tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
     [&tl](){ tl.DrawLatexNDC(0.35, 0.73, "#splitline{N_{T} #geq 1}{#splitline{H_{T} #leq 1000}{#splitline{1000 < H_{T} #leq 1500}{H_{T} > 1500}}}"); 
 	     tl.DrawLatexNDC(0.53, 0.73, "#splitline{N_{W} #geq 1}{#splitline{H_{T} #leq 1300}{H_{T} > 1300}}"); 
 	     tl.DrawLatexNDC(0.8, 0.73, "#splitline{N_{res} #geq 1}{#splitline{H_{T} #leq 1000}{#splitline{1000 < H_{T} #leq 1500}{H_{T} > 1500}}}");},
@@ -95,19 +108,55 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,  LOG_YMIN, 4,  2000); drawLine(8,  LOG_YMIN, 8,  2000); drawLine(12,  LOG_YMIN, 12,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(20, LOG_YMIN, 20, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(28, LOG_YMIN, 28, 2000); drawLine(32, LOG_YMIN, 32, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(38, LOG_YMIN, 38, 2000); drawLine(41, LOG_YMIN, 41, 2000); drawLine(44, LOG_YMIN, 44, 2000); drawLine(47, LOG_YMIN, 47, 2000); drawLine(50, LOG_YMIN, 50, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,  LOG_YMIN, 4,  2000); 
+								    drawLine(8,  LOG_YMIN, 8,  2000); 
+								    drawLine(12,  LOG_YMIN, 12,  2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(20, LOG_YMIN, 20, 2000); 
+								    drawLine(24, LOG_YMIN, 24, 2000); 
+								    drawLine(28, LOG_YMIN, 28, 2000); 
+								    drawLine(32, LOG_YMIN, 32, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(38, LOG_YMIN, 38, 2000); 
+								    drawLine(41, LOG_YMIN, 41, 2000); 
+								    drawLine(44, LOG_YMIN, 44, 2000); 
+								    drawLine(47, LOG_YMIN, 47, 2000); 
+								    drawLine(50, LOG_YMIN, 50, 2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57, LOG_YMIN, 57, 2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(65, LOG_YMIN, 65, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(72, LOG_YMIN, 72, 2000); drawLine(75, LOG_YMIN, 75, 2000); drawLine(78, LOG_YMIN, 78, 2000); drawLine(81, LOG_YMIN, 81, 2000); drawLine(84, LOG_YMIN, 84, 2000); drawLine(89, LOG_YMIN, 89, 2000); c->cd(); drawLine(94, LOG_YMIN, 94, 2000); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(101, LOG_YMIN, 101, 2000); drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); drawLine(111, LOG_YMIN, 111, 2000); drawLine(114, LOG_YMIN, 114, 2000); drawLine(117, LOG_YMIN, 117, 2000); drawLine(120, LOG_YMIN, 120, 2000); drawLine(125, LOG_YMIN, 125, 2000); drawLine(130, LOG_YMIN, 130, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 2000); drawLine(140, LOG_YMIN, 140, 2000); drawLine(143, LOG_YMIN, 143, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 2000); drawLine(148, LOG_YMIN, 148, 2000); drawLine(150, LOG_YMIN, 150, 2000); drawLine(152, LOG_YMIN, 152, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(156, LOG_YMIN, 156, 2000); drawLine(159, LOG_YMIN, 159, 2000); drawLine(162, LOG_YMIN, 162, 2000); drawLine(165, LOG_YMIN, 165, 2000); drawLine(168, LOG_YMIN, 168, 2000); drawLine(171, LOG_YMIN, 171, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(175, LOG_YMIN, 175, 2000); drawLine(177, LOG_YMIN, 177, 2000); drawLine(178, LOG_YMIN, 178, 2000); drawLine(179, LOG_YMIN, 179, 2000); drawLine(180, LOG_YMIN, 180, 2000); drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(72, LOG_YMIN, 72, 2000); 
+								    drawLine(75, LOG_YMIN, 75, 2000); 
+								    drawLine(78, LOG_YMIN, 78, 2000); 
+								    drawLine(81, LOG_YMIN, 81, 2000); 
+								    drawLine(84, LOG_YMIN, 84, 2000); 
+								    drawLine(89, LOG_YMIN, 89, 2000); 
+								    drawLine(94, LOG_YMIN, 94, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(101, LOG_YMIN, 101, 2000); 
+								    drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); 
+								    drawLine(111, LOG_YMIN, 111, 2000); 
+								    drawLine(114, LOG_YMIN, 114, 2000); 
+								    drawLine(117, LOG_YMIN, 117, 2000); 
+								    drawLine(120, LOG_YMIN, 120, 2000); 
+								    drawLine(125, LOG_YMIN, 125, 2000); 
+								    drawLine(130, LOG_YMIN, 130, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 2000); 
+								    drawLine(140, LOG_YMIN, 140, 2000); 
+								    drawLine(143, LOG_YMIN, 143, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 2000); 
+								    drawLine(148, LOG_YMIN, 148, 2000); 
+								    drawLine(150, LOG_YMIN, 150, 2000); 
+								    drawLine(152, LOG_YMIN, 152, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(156, LOG_YMIN, 156, 2000); 
+								    drawLine(159, LOG_YMIN, 159, 2000); 
+								    drawLine(162, LOG_YMIN, 162, 2000); 
+								    drawLine(165, LOG_YMIN, 165, 2000); 
+								    drawLine(168, LOG_YMIN, 168, 2000); 
+								    drawLine(171, LOG_YMIN, 171, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(175, LOG_YMIN, 175, 2000); 
+								    drawLine(177, LOG_YMIN, 177, 2000); 
+								    drawLine(178, LOG_YMIN, 178, 2000); 
+								    drawLine(179, LOG_YMIN, 179, 2000); 
+								    drawLine(180, LOG_YMIN, 180, 2000); 
+								    drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);

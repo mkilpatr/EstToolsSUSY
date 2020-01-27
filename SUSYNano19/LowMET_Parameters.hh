@@ -177,6 +177,56 @@ std::map<TString, TString> cutMap = []{
     return cmap;
 }();
 
+std::map<TString, TString> labelMap{
+  {"lowptisr", R"($300\leq\ptisr<500$\,GeV)"},
+  {"ntgeq1", R"($\nt\geq1$)"},
+  {"nt2", R"($\nt=2$)"},
+  {"nivf0", R"($\nsv=0$)"},
+  {"nivf1", R"($\nsv\geq1$)"},
+  {"nw2", R"($\nw=2$)"},
+  {"nj2to5", R"($2\leq\nj\leq5$)"},
+  {"nb2", R"($\nb\geq2$)"},
+  {"nbeq2", R"($\nb=2$)"},
+  {"nb3", R"($\nb\geq3$)"},
+  {"nb1", R"($\nb=1$)"},
+  {"nbgeq1", R"($\nb\geq1$)"},
+  {"nb0", R"($\nb=0$)"},
+  {"nrt2", R"($\nrt=2$)"},
+  {"medptisr", R"($\ptisr\geq300$\,GeV)"},
+  {"highptisr", R"($\ptisr\geq500$\,GeV)"},
+  {"nj7", R"($\nj\geq7$)"},
+  {"highptb", R"($\ptb\geq70$\,GeV)"},
+  {"hm", R"(high \dm)"},
+  {"nw0", R"($\nw=0$)"},
+  {"nwgeq1", R"($\nw\geq1$)"},
+  {"nw1", R"($\nw=1$)"},
+  {"nrt0", R"($\nrt=0$)"},
+  {"nrt1", R"($\nrt=1$)"},
+  {"lowptb", R"($\ptb<40$\,GeV)"},
+  {"medptb", R"($40<\ptb<70$\,GeV)"},
+  {"nt0", R"($\nt=0$)"},
+  {"lm", R"(low \dm)"},
+  {"lowptb12", R"($\ptbonetwo<80$\,GeV)"},
+  {"highptb12", R"($\ptbonetwo\geq140$\,GeV)"},
+  {"lowmtb", R"($\mtb<175$~\GeV)"},
+  {"highmtb", R"($\mtb\geq175$~\GeV)"},
+  {"nt1", R"($\nt=1$)"},
+  {"medptb12", R"($80<\ptbonetwo<140$\,GeV)"},
+  {"nrtgeq1", R"($\nrt\geq1$)"},
+  {"nj6", R"($\nj\geq6$)"},
+  {"nrtntnwgeq2", R"($(\nt+\nrt+\nw)\geq2$)"},
+  {"nrtntnwgeq3", R"($(\nt+\nrt+\nw)\geq3$)"},
+  {"htlt1000",    R"($\Ht<1000$)"},
+  {"htgt1000",    R"($\Ht\geq1000$)"},
+  {"ht1000to1500",R"($1000\leq\Ht<1500$)"},
+  {"htgt1500",    R"($\Ht\geq1500$)"},
+  {"htlt1300",    R"($\Ht<1300$)"},
+  {"htgt1300",    R"($\Ht\geq1300$)"},
+  {"lmNoDPhi",    R"(low $\Delta m$)"},
+  {"hmNoDPhi",    R"(high $\Delta m$)"},
+
+};
+
 
 std::vector<TString> srbins{
 //---------- low deltaM ----------
