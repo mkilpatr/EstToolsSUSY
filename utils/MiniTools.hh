@@ -220,7 +220,7 @@ TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const
   hist->Sumw2();
   for (unsigned j=0; j!=vec.size();j++){
     for (unsigned i=0; i<nbins; ++i){
-      hist->SetBinContent(i+1, vec[j]->GetBinContent(i+start));
+      hist->SetBinContent(i, vec[j]->GetBinContent(i+start));
     }
   }
   return hist;
@@ -242,6 +242,16 @@ TGraphAsymmErrors* convertToGraphAsymmErrors(const vector<QuantityAsymmErrors> &
   for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
     gr->SetPointEYhigh(ibin, vec.at(ibin).errHigh);
     gr->SetPointEYlow(ibin, vec.at(ibin).errLow);
+  }
+  return gr;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* convertToGraphAsymmErrors(TGraphAsymmErrors vec, TString hname, TString title, const BinInfo *bin=nullptr){
+  TGraphAsymmErrors *gr = new TGraphAsymmErrors(vec);
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    gr->SetPointEYhigh(ibin, vec.GetErrorYhigh(ibin));
+    gr->SetPointEYlow(ibin, vec.GetErrorYlow(ibin));
   }
   return gr;
 }

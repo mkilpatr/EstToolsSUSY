@@ -39,7 +39,8 @@ vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.splitTF = SPLITTF;
+  //l.splitTF = SPLITTF;
+  l.splitTF = false;
   l.predSeparate();
 
   l.printYields();
@@ -107,21 +108,35 @@ vector<Quantity> LLBPredSeparate(){
   }
 
   vector<TString> tf = {"_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap"};
+  vector<TString> tf_val = {"_TF"};
   vector<TString> sep = {"", "_LM", "_HM_1", "_HM_2"};
+  vector<TString> sep_val = {"", "_LM", "_HM"};
 
   int start = 0, manualBins = 0;
-  for(int j = 0; j <= 3; j++){
-    if(j == 1){ 
-      start = 0;
-      manualBins = 53;
-    } else if(j == 2){
-      start = 53;
-      manualBins = 65;
-    } else if(j == 3){
-      start = 117;
-      manualBins = 65;
+  int max_graph = l.yields.at(tf[0]).size() > 100 ? 3 : 2;
+  int max_tf = l.yields.at(tf[0]).size() > 100 ? 2 : 0;
+  for(int j = 0; j <= max_graph; j++){
+    if(l.yields.at(tf[0]).size() > 100){
+      if(j == 1){ 
+        start = 0;
+        manualBins = 53;
+      } else if(j == 2){
+        start = 53;
+        manualBins = 65;
+      } else if(j == 3){
+        start = 117;
+        manualBins = 65;
+      }
+    } else if (l.yields.at(tf[0]).size() < 100){
+      if(j == 1){ 
+        start = 0;
+        manualBins = 19;
+      } else if(j == 2){
+        start = 19;
+        manualBins = 24;
+      }
     }
-    for(int i = 0; i != tf.size(); i++){
+    for(int i = 0; i != max_tf; i++){
       auto hAll = convertToHist(l.yields.at(tf[i]),"TF All" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2016 = convertToHist(l.yields.at(tf[i]+"-2016"),"TF 2016" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2017RunBtoE = convertToHist(l.yields.at(tf[i]+"-2017RunBtoE"),"TF 2017RunBtoE" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
