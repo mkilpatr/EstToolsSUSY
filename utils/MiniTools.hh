@@ -247,11 +247,11 @@ TGraphAsymmErrors* convertToGraphAsymmErrors(const vector<QuantityAsymmErrors> &
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TGraphAsymmErrors* convertToGraphAsymmErrors(TGraphAsymmErrors vec, TString hname, TString title, const BinInfo *bin=nullptr){
-  TGraphAsymmErrors *gr = new TGraphAsymmErrors(vec);
+TGraphAsymmErrors* convertToGraphAsymmErrors(TGraphAsymmErrors* vec, TString hname, TString title, const BinInfo *bin=nullptr){
+  TGraphAsymmErrors *gr = new TGraphAsymmErrors(*vec);
   for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
-    gr->SetPointEYhigh(ibin, vec.GetErrorYhigh(ibin));
-    gr->SetPointEYlow(ibin, vec.GetErrorYlow(ibin));
+    gr->SetPointEYhigh(ibin, vec->GetErrorYhigh(ibin));
+    gr->SetPointEYlow(ibin, vec->GetErrorYlow(ibin));
   }
   return gr;
 }

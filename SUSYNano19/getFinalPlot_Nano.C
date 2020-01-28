@@ -167,12 +167,13 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   TFile *f = TFile::Open(inputFile);
   assert(f);
   for (auto &b : bkgs){
-    TH1D* hist = convertToHist({(TH1*)f->Get(b)}, "hist", ";Search Region;Events", nullptr);
+    TH1D* hist = convertToHist({(TH1*)f->Get(b)}, b, ";Search Region;Events", nullptr);
     pred.push_back(hist);
   }
+  TH1D* total = convertToHist({(TH1*)f->Get("hpred")}, "hpred", ";Search Region;Events", nullptr);
   //TH1* hdata = (TH1*)f->Get(data);
-  TGraphAsymmErrors* unc = convertToGraphAsymmErrors(f->Get("bkgtotal_unc_sr"), "hist_unc", ";Search Region;Events", nullptr);
-  //TGraphAsymmErrors* unc = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
+  //TGraphAsymmErrors* unc = convertToGraphAsymmErrors((TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr"), "hist_unc", ";Search Region;Events", nullptr);
+  TGraphAsymmErrors* unc = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
   //for (auto &s : sigs){
   //  TH1 *h = (TH1*)f->Get(s);
   //  h->SetLineStyle(kDashed);
@@ -180,6 +181,7 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   //}
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
+  prepHists({total}, false, false, true, {kRed});
   //prepHists({hdata}, false, false, false, {kBlack});
   //prepHists(hsigs, false, false, false, {kRed, kGreen+3});
   //setBinLabels(hdata, xlabels);
@@ -249,10 +251,13 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
     //c->SetTitle(basename);
     c->Print(basename+".pdf");
     c->Print(basename +".C");
-
-
   }
 
+  TFile *output = new TFile("TestFile.root", "RECREATE");
+  for (auto *h : pred) h->Write();
+  //hdata->Write();
+  total->Write();
+  output->Close();
 
 
 
