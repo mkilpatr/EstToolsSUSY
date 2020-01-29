@@ -224,6 +224,8 @@ std::map<TString, TString> labelMap{
   {"htgt1300",    R"($\Ht\geq1300$)"},
   {"lmNoDPhi",    R"(low $\Delta m$)"},
   {"hmNoDPhi",    R"(high $\Delta m$)"},
+  {"met400",	  R"(#slash{E}_{T} < 400)"},
+  {"met300",	  R"(#slash{E}_{T} < 300)"},
 
 };
 

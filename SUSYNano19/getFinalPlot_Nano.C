@@ -39,7 +39,7 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
   vector<TString> splitlabels = {
       "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{}",
       "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{}",
-      "#splitline{Low #Deltam, N_{b}=2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{300 #leq p_{T}(ISR) < 500, #geq 500}",
+      "#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{300 #leq p_{T}(ISR) < 500, #geq 500}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{j} #geq 7, N_{res} #geq 1}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{H_{T} #geq 1000, N_{W} = 0, N_{T} = 0, N_{res} = 0}",
       "#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
@@ -109,46 +109,46 @@ void getFinalPlot_Nano(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,   LOG_YMIN, 4,   2000); 
-								    drawLine(8,   LOG_YMIN, 8,   20000, kGray+2, 7); 
+								    drawLine(8,   LOG_YMIN, 8,   20000); 
 								    drawLine(12,  LOG_YMIN, 12,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(20,  LOG_YMIN, 20,  2000); 
-								    drawLine(24,  LOG_YMIN, 24,  20000, kGray+2, 7); 
+								    drawLine(24,  LOG_YMIN, 24,  20000); 
 								    drawLine(28,  LOG_YMIN, 28,  2000); 
-								    drawLine(32,  LOG_YMIN, 32,  20000, kGray+2, 7); c->cd(); },
+								    drawLine(32,  LOG_YMIN, 32,  20000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(38,  LOG_YMIN, 38,  2000); 
 								    drawLine(41,  LOG_YMIN, 41,  2000); 
-								    drawLine(44,  LOG_YMIN, 44,  20000, kGray+2, 7); 
+								    drawLine(44,  LOG_YMIN, 44,  20000); 
 								    drawLine(47,  LOG_YMIN, 47,  2000); 
 								    drawLine(50,  LOG_YMIN, 50,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57,  LOG_YMIN, 57,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(65,  LOG_YMIN, 65,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(72,  LOG_YMIN, 72,  2000); 
 								    drawLine(75,  LOG_YMIN, 75,  2000); 
-								    drawLine(78,  LOG_YMIN, 78,  20000, kGray+2, 7); 
+								    drawLine(78,  LOG_YMIN, 78,  20000); 
 								    drawLine(81,  LOG_YMIN, 81,  2000); 
-								    drawLine(84,  LOG_YMIN, 84,  20000, kGray+2, 7); 
+								    drawLine(84,  LOG_YMIN, 84,  20000); 
 								    drawLine(89,  LOG_YMIN, 89,  2000); 
 								    drawLine(94,  LOG_YMIN, 94,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(101, LOG_YMIN, 101, 2000); 
 								    drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); 
 								    drawLine(111, LOG_YMIN, 111, 2000); 
-								    drawLine(114, LOG_YMIN, 114, 20000, kGray+2, 7); 
+								    drawLine(114, LOG_YMIN, 114, 20000); 
 								    drawLine(117, LOG_YMIN, 117, 2000); 
-								    drawLine(120, LOG_YMIN, 120, 20000, kGray+2, 7); 
+								    drawLine(120, LOG_YMIN, 120, 20000); 
 								    drawLine(125, LOG_YMIN, 125, 2000); 
 								    drawLine(130, LOG_YMIN, 130, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 20000, kGray+2, 7); 
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 20000); 
 								    drawLine(140, LOG_YMIN, 140, 2000); 
-								    drawLine(143, LOG_YMIN, 143, 20000, kGray+2, 7); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 20000, kGray+2, 7); 
-								    drawLine(148, LOG_YMIN, 148, 20000, kGray+2, 7); 
+								    drawLine(143, LOG_YMIN, 143, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 20000); 
+								    drawLine(148, LOG_YMIN, 148, 20000); 
 								    drawLine(150, LOG_YMIN, 150, 2000); 
-								    drawLine(152, LOG_YMIN, 152, 20000, kGray+2, 7); c->cd(); },
+								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(156, LOG_YMIN, 156, 2000); 
 								    drawLine(159, LOG_YMIN, 159, 2000); 
-								    drawLine(162, LOG_YMIN, 162, 20000, kGray+2, 7); 
-								    drawLine(165, LOG_YMIN, 165, 20000, kGray+2, 7); 
+								    drawLine(162, LOG_YMIN, 162, 20000); 
+								    drawLine(165, LOG_YMIN, 165, 20000); 
 								    drawLine(168, LOG_YMIN, 168, 2000); 
 								    drawLine(171, LOG_YMIN, 171, 2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(175, LOG_YMIN, 175, 2000); 

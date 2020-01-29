@@ -108,15 +108,13 @@ vector<Quantity> LLBPredSeparate(){
   }
 
   vector<TString> tf = {"_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap"};
-  vector<TString> tf_val = {"_TF"};
   vector<TString> sep = {"", "_LM", "_HM_1", "_HM_2"};
-  vector<TString> sep_val = {"", "_LM", "_HM"};
 
   int start = 0, manualBins = 0;
-  int max_graph = l.yields.at(tf[0]).size() > 100 ? 3 : 2;
-  int max_tf = l.yields.at(tf[0]).size() > 100 ? 2 : 0;
+  int max_graph = l.splitTF ? 3 : 2;
+  int max_tf = l.splitTF ? 2 : 0;
   for(int j = 0; j <= max_graph; j++){
-    if(l.yields.at(tf[0]).size() > 100){
+    if(l.splitTF){
       if(j == 1){ 
         start = 0;
         manualBins = 53;
@@ -127,7 +125,7 @@ vector<Quantity> LLBPredSeparate(){
         start = 117;
         manualBins = 65;
       }
-    } else if (l.yields.at(tf[0]).size() < 100){
+    }else{
       if(j == 1){ 
         start = 0;
         manualBins = 19;
