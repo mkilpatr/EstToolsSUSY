@@ -39,8 +39,8 @@ vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  //l.splitTF = SPLITTF;
-  l.splitTF = false;
+  l.splitTF = SPLITTF;
+  //l.splitTF = false;
   l.predSeparate();
 
   l.printYields();
@@ -230,9 +230,7 @@ vector<Quantity> LLBPredSeparate(){
 
       delete gROOT->FindObject("hTF_0"); 
       delete gROOT->FindObject("hTF_1");  
-      delete gROOT->FindObject("hTF_2"); 
       delete gROOT->FindObject("hTF_3"); 
-      delete gROOT->FindObject("hTF_4");
     }
   }
 
