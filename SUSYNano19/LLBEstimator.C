@@ -1,7 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "LowMET_Parameters.hh"
+#include "SRParameters.hh"
+//#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -52,18 +52,12 @@ vector<Quantity> LLBPredSeparate(){
   digits["singlelep-2016"] = 0; // indicate it's data for proper formatting
   digits["_TF_CR_to_SR_noextrap-2016"] = -3;
   digits["_TF_SR_extrap-2016"] = -3;
-  digits["singlelep-2017RunBtoE"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2017RunBtoE"] = -3;
-  digits["_TF_SR_extrap-2017RunBtoE"] = -3;
-  digits["singlelep-2017RunF"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2017RunF"] = -3;
-  digits["_TF_SR_extrap-2017RunF"] = -3;
-  digits["singlelep-2018preHEM"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2018preHEM"] = -3;
-  digits["_TF_SR_extrap-2018preHEM"] = -3;
-  digits["singlelep-2018postHEM"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2018postHEM"] = -3;
-  digits["_TF_SR_extrap-2018postHEM"] = -3;
+  digits["singlelep-2017"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap-2017"] = -3;
+  digits["_TF_SR_extrap-2017"] = -3;
+  digits["singlelep-2018"] = 0; // indicate it's data for proper formatting
+  digits["_TF_CR_to_SR_noextrap-2018"] = -3;
+  digits["_TF_SR_extrap-2018"] = -3;
 
   l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
@@ -79,32 +73,18 @@ vector<Quantity> LLBPredSeparate(){
     l.printYieldsTableLatex({"singlelep-2016", "_TF-2016", "_pred-2016"}, labelMap, "LLB/yields_llb_2016_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2017", "_TF-2017", "_pred-2017"}, labelMap, "LLB/yields_llb_2017_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_TF_CR_to_SR_noextrap-2017RunBtoE", "_TF_SR_extrap-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017", "_TF-2017", "_TF_CR_to_SR_noextrap-2017", "_TF_SR_extrap-2017", "_pred-2017"}, labelMap, "LLB/yields_llb_2017_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2017RunBtoE", "_TF-2017RunBtoE", "_pred-2017RunBtoE"}, labelMap, "LLB/yields_llb_2017RunBtoE_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2017", "_TF-2017", "_pred-2017"}, labelMap, "LLB/yields_llb_2017_hm.tex", "hm", digits);
   }
 
-  l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_lm.tex", "lm", digits); // LM
+  l.printYieldsTableLatex({"singlelep-2018", "_TF-2018", "_pred-2018"}, labelMap, "LLB/yields_llb_2018_lm.tex", "lm", digits); // LM
   if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_TF_CR_to_SR_noextrap-2017RunF", "_TF_SR_extrap-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018", "_TF-2018", "_TF_CR_to_SR_noextrap-2018", "_TF_SR_extrap-2018", "_pred-2018"}, labelMap, "LLB/yields_llb_2018_hm.tex", "hm", digits);
   }else{
-    l.printYieldsTableLatex({"singlelep-2017RunF", "_TF-2017RunF", "_pred-2017RunF"}, labelMap, "LLB/yields_llb_2017RunF_hm.tex", "hm", digits);
-  }
-
-  l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_lm.tex", "lm", digits); // LM
-  if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_TF_CR_to_SR_noextrap-2018preHEM", "_TF_SR_extrap-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_hm.tex", "hm", digits);
-  }else{
-    l.printYieldsTableLatex({"singlelep-2018preHEM", "_TF-2018preHEM", "_pred-2018preHEM"}, labelMap, "LLB/yields_llb_2018preHEM_hm.tex", "hm", digits);
-  }
-
-  l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_lm.tex", "lm", digits); // LM
-  if(l.splitTF){
-    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_TF_CR_to_SR_noextrap-2018postHEM", "_TF_SR_extrap-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_hm.tex", "hm", digits);
-  }else{
-    l.printYieldsTableLatex({"singlelep-2018postHEM", "_TF-2018postHEM", "_pred-2018postHEM"}, labelMap, "LLB/yields_llb_2018postHEM_hm.tex", "hm", digits);
+    l.printYieldsTableLatex({"singlelep-2018", "_TF-2018", "_pred-2018"}, labelMap, "LLB/yields_llb_2018_hm.tex", "hm", digits);
   }
 
   vector<TString> tf = {"_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap"};
@@ -137,51 +117,37 @@ vector<Quantity> LLBPredSeparate(){
     for(int i = 0; i != max_tf; i++){
       auto hAll = convertToHist(l.yields.at(tf[i]),"TF All" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2016 = convertToHist(l.yields.at(tf[i]+"-2016"),"TF 2016" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
-      auto h2017RunBtoE = convertToHist(l.yields.at(tf[i]+"-2017RunBtoE"),"TF 2017RunBtoE" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
-      auto h2017RunF = convertToHist(l.yields.at(tf[i]+"-2017RunF"),"TF 2017RunF" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
-      auto h2018preHEM = convertToHist(l.yields.at(tf[i]+"-2018preHEM"),"TF 2018preHEM" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
-      auto h2018postHEM = convertToHist(l.yields.at(tf[i]+"-2018postHEM"),"TF 2018postHEM" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
+      auto h2017 = convertToHist(l.yields.at(tf[i]+"-2017"),"TF 2017" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
+      auto h2018 = convertToHist(l.yields.at(tf[i]+"-2018"),"TF 2018" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
 
-      prepHists({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, false, false, false, {kBlack, kRed, kAzure+6, kSpring-9, 876, kBlue});
+      prepHists({hAll, h2016, h2017, h2018}, false, false, false, {kBlack, kRed, kAzure+6, kSpring-9, 876, kBlue});
 
       TH1* h2016_div = (TH1*)h2016->Clone();
       h2016_div->Divide(hAll);
       h2016_div->SetLineWidth(2);
       prepHists({h2016_div}, false, false, false, {kRed});
 
-      TH1* h2017RunBtoE_div = (TH1*)h2017RunBtoE->Clone();
-      h2017RunBtoE_div->Divide(hAll);
-      h2017RunBtoE_div->SetLineWidth(2);
-      prepHists({h2017RunBtoE_div}, false, false, false, {kAzure+6});
+      TH1* h2017_div = (TH1*)h2017->Clone();
+      h2017_div->Divide(hAll);
+      h2017_div->SetLineWidth(2);
+      prepHists({h2017_div}, false, false, false, {kAzure+6});
 
-      TH1* h2017RunF_div = (TH1*)h2017RunF->Clone();
-      h2017RunF_div->Divide(hAll);
-      h2017RunF_div->SetLineWidth(2);
-      prepHists({h2017RunF_div}, false, false, false, {kSpring-9});
-
-      TH1* h2018preHEM_div = (TH1*)h2018preHEM->Clone();
-      h2018preHEM_div->Divide(hAll);
-      h2018preHEM_div->SetLineWidth(2);
-      prepHists({h2018preHEM_div}, false, false, false, {876});
-
-      TH1* h2018postHEM_div = (TH1*)h2018postHEM->Clone();
-      h2018postHEM_div->Divide(hAll);
-      h2018postHEM_div->SetLineWidth(2);
-      prepHists({h2018postHEM_div}, false, false, false, {kBlue});
+      TH1* h2018_div = (TH1*)h2018->Clone();
+      h2018_div->Divide(hAll);
+      h2018_div->SetLineWidth(2);
+      prepHists({h2018_div}, false, false, false, {876});
 
       auto leg = prepLegends({}, {""}, "l");
       appendLegends(leg, {hAll}, {"TF All"}, "l");
       appendLegends(leg, {h2016}, {"TF 2016"}, "l");
-      appendLegends(leg, {h2017RunBtoE}, {"TF 2017 RunBtoE"}, "l");
-      appendLegends(leg, {h2017RunF}, {"TF 2017 RunF"}, "l");
-      appendLegends(leg, {h2018preHEM}, {"TF 2018 preHEM"}, "l");
-      appendLegends(leg, {h2018postHEM}, {"TF 2018 postHEM"}, "l");
+      appendLegends(leg, {h2017}, {"TF 2017 RunBtoE"}, "l");
+      appendLegends(leg, {h2018}, {"TF 2018 preHEM"}, "l");
       leg->SetTextSize(0.03);
 //        leg->SetNColumns(2);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
       TCanvas* c = nullptr;
-      if(i != 1) c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.00001, 110);
-      else       c = drawCompAndRatio({hAll, h2016, h2017RunBtoE, h2017RunF, h2018preHEM, h2018postHEM}, {h2016_div, h2017RunBtoE_div, h2017RunF_div, h2018preHEM_div, h2018postHEM_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.1, 110);
+      if(i != 1) c = drawCompAndRatio({hAll, h2016, h2017, h2018}, {h2016_div, h2017_div, h2018_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.00001, 110);
+      else       c = drawCompAndRatio({hAll, h2016, h2017, h2018}, {h2016_div, h2017_div, h2018_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.1, 110);
       TString outputBase = "LostLepton"+tf[i]+"_Comparison" + sep[j];
       c->SetTitle(outputBase);
       c->Print(l.config.outputdir+"/TransferFactor/"+outputBase+".pdf");
@@ -190,45 +156,32 @@ vector<Quantity> LLBPredSeparate(){
       TFile *output = new TFile(l.config.outputdir+"/"+outputBase+".root", "RECREATE");
       hAll->Write();
       h2016->Write();
-      h2017RunBtoE->Write();
-      h2017RunF->Write();
-      h2018preHEM->Write();
-      h2018postHEM->Write();
+      h2017->Write();
+      h2018->Write();
       output->Close();
 
       TCanvas* TFSumCanvas  = new TCanvas(outputBase+"_TF", "Transfer Factors", 200, 10, 700, 500);
       TH1F* h2016Sum        = new TH1F("hTF_0", "Transfer Factors", 41, -0.025, 2.025);
-      TH1F* h2017RunBtoESum = new TH1F("hTF_1", "Transfer Factors", 41, -0.025, 2.025);
-      TH1F* h2017RunFSum    = new TH1F("hTF_2", "Transfer Factors", 41, -0.025, 2.025);
-      TH1F* h2018preHEMSum  = new TH1F("hTF_3", "Transfer Factors", 41, -0.025, 2.025);
-      TH1F* h2018postHEMSum = new TH1F("hTF_4", "Transfer Factors", 41, -0.025, 2.025);
+      TH1F* h2017Sum = new TH1F("hTF_1", "Transfer Factors", 41, -0.025, 2.025);
+      TH1F* h2018Sum  = new TH1F("hTF_3", "Transfer Factors", 41, -0.025, 2.025);
       for(unsigned int i = 1; i != h2016_div->GetNbinsX(); i++){
         h2016Sum->Fill(h2016_div->GetBinContent(i));
-        h2017RunBtoESum->Fill(h2017RunBtoE_div->GetBinContent(i));
-        h2017RunFSum->Fill(h2017RunF_div->GetBinContent(i));
-        h2018preHEMSum->Fill(h2018preHEM_div->GetBinContent(i));
-        h2018postHEMSum->Fill(h2018postHEM_div->GetBinContent(i));
-        //cout << "2016: " << h2016_div->GetBinContent(i) << ", 2017 RunBtoE: " << h2017RunBtoE_div->GetBinContent(i) << ", 2017 RunF: " << h2017RunF_div->GetBinContent(i) << ", 2018 preHEM: " << h2018preHEM_div->GetBinContent(i) << ", 2018 postHEM: " << h2018postHEM_div->GetBinContent(i) << endl;
+        h2017Sum->Fill(h2017_div->GetBinContent(i));
+        h2018Sum->Fill(h2018_div->GetBinContent(i));
       }
       TFSumCanvas->cd();
       h2016Sum->SetLineWidth(2);
       h2016Sum->SetLineColor(kRed);
-      h2017RunBtoESum->SetLineWidth(2);
-      h2017RunBtoESum->SetLineColor(kAzure+6);
-      h2017RunFSum->SetLineWidth(2);
-      h2017RunFSum->SetLineColor(kSpring-9);
-      h2018preHEMSum->SetLineWidth(2);
-      h2018preHEMSum->SetLineColor(876);
-      h2018postHEMSum->SetLineWidth(2);
-      h2018postHEMSum->SetLineColor(kBlue);
+      h2017Sum->SetLineWidth(2);
+      h2017Sum->SetLineColor(kAzure+6);
+      h2018Sum->SetLineWidth(2);
+      h2018Sum->SetLineColor(876);
 
       int max2016 = h2016Sum->GetMaximum();
-      int max2017RunBtoE = h2017RunBtoESum->GetMaximum();
-      int max2017RunF = h2017RunFSum->GetMaximum();
-      int max2018preHEM = h2018preHEMSum->GetMaximum();
-      int max2018PostHEM = h2018postHEMSum->GetMaximum();
+      int max2017 = h2017Sum->GetMaximum();
+      int max2018 = h2018Sum->GetMaximum();
       
-      int max = std::max(max2016, std::max(std::max(max2017RunBtoE, max2017RunF), std::max(max2018preHEM, max2018PostHEM)));
+      int max = std::max(max2016, std::max(max2017, max2018));
       h2016Sum->SetMaximum(1.1*max);
 
       h2016Sum->GetYaxis()->SetTitleFont(62);
@@ -239,22 +192,16 @@ vector<Quantity> LLBPredSeparate(){
       h2016Sum->GetXaxis()->SetTitle("(TF_{era})/(TF_{All})");
       
       float Mean2016 = h2016Sum->GetMean();
-      float Mean2017RunBtoE = h2017RunBtoESum->GetMean();
-      float Mean2017RunF = h2017RunFSum->GetMean();
-      float Mean2018preHEM = h2018preHEMSum->GetMean();
-      float Mean2018postHEM = h2018postHEMSum->GetMean();
+      float Mean2017 = h2017Sum->GetMean();
+      float Mean2018 = h2018Sum->GetMean();
 
       h2016Sum->Draw();
-      h2017RunBtoESum->Draw("same");
-      h2017RunFSum->Draw("same");
-      h2018preHEMSum->Draw("same");
-      h2018postHEMSum->Draw("same");
+      h2017Sum->Draw("same");
+      h2018Sum->Draw("same");
       auto legend = new TLegend(0.75,0.60,0.95,0.90);
       legend->AddEntry(h2016Sum, "TF 2016", "l");
-      legend->AddEntry(h2017RunBtoESum, "TF 2017 RunBtoE", "l");
-      legend->AddEntry(h2017RunFSum, "TF 2017 RunF", "l");
-      legend->AddEntry(h2018preHEMSum, "TF 2018 preHEM", "l");
-      legend->AddEntry(h2018postHEMSum, "TF 2018 postHEM", "l");
+      legend->AddEntry(h2017Sum, "TF 2017 RunBtoE", "l");
+      legend->AddEntry(h2018Sum, "TF 2018 preHEM", "l");
       legend->Draw();
 
       float ymax = h2016Sum->GetMaximum();
@@ -269,15 +216,11 @@ vector<Quantity> LLBPredSeparate(){
 
 //  drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
       drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.2, 0.80);
-      drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017RunBtoE), 0.2, 0.75);
-      drawTLatexNDC("TF 2017 RunF Mean: " + to_string(Mean2017RunF), 0.2, 0.70);
-      drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018preHEM), 0.2, 0.65);
-      drawTLatexNDC("TF 2018 postHEM Mean: " + to_string(Mean2018postHEM), 0.2, 0.60);
+      drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017), 0.2, 0.75);
+      drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018), 0.2, 0.65);
       cout << "TF 2016 Mean: " << Mean2016 << endl;
-      cout << "TF 2017 RunBtoE Mean: " << Mean2017RunBtoE << endl;
-      cout << "TF 2017 RunF Mean: " << Mean2017RunF << endl;
-      cout << "TF 2018 preHEM Mean: " << Mean2018preHEM << endl;
-      cout << "TF 2018 postHEM Mean: " << Mean2018postHEM << endl;
+      cout << "TF 2017 RunBtoE Mean: " << Mean2017 << endl;
+      cout << "TF 2018 preHEM Mean: " << Mean2018 << endl;
       CMS_lumi(TFSumCanvas, 4, 10);
       TFSumCanvas->Update();   
  
@@ -327,8 +270,8 @@ void plotLepCRAllEras(){
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM", "wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM", 
-				"tW-2016", "tW-2017RunBtoE", "tW-2017RunF", "tW-2018preHEM", "tW-2018postHEM", "ttW-2016", "ttW-2017RunBtoE", "ttW-2017RunF", "ttW-2018preHEM", "ttW-2018postHEM"};
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   TString data_sample = "singlelep";
 
   for (auto category : z.config.categories){
@@ -636,19 +579,15 @@ void plot1LepInclusive(){
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017RunBtoE", "ttbar-2017RunF", "ttbar-2018preHEM", "ttbar-2018postHEM", "wjets-2016", "wjets-2017RunBtoE", "wjets-2017RunF", "wjets-2018preHEM", "wjets-2018postHEM", 
-				"tW-2016", "tW-2017RunBtoE", "tW-2017RunF", "tW-2018preHEM", "tW-2018postHEM", "ttW-2016", "ttW-2017RunBtoE", "ttW-2017RunF", "ttW-2018preHEM", "ttW-2018postHEM"};
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
-  vector<TString> mc_samples_2017RunBtoE = {"ttbar-2017RunBtoE", "wjets-2017RunBtoE", "tW-2017RunBtoE", "ttW-2017RunBtoE"};
-  vector<TString> mc_samples_2017RunF = {"ttbar-2017RunF", "wjets-2017RunF", "tW-2017RunF", "ttW-2017RunF"};
-  vector<TString> mc_samples_2018preHEM = {"ttbar-2018preHEM", "wjets-2018preHEM", "tW-2018preHEM", "ttW-2018preHEM"};
-  vector<TString> mc_samples_2018postHEM = {"ttbar-2018postHEM", "wjets-2018postHEM", "tW-2018postHEM", "ttW-2018postHEM"};
+  vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
+  vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018"};
   TString data_sample = "singlelep";
   TString data_sample_2016 = "singlelep-2016";
-  TString data_sample_2017RunBtoE = "singlelep-2017RunBtoE";
-  TString data_sample_2017RunF = "singlelep-2017RunF";
-  TString data_sample_2018preHEM = "singlelep-2018preHEM";
-  TString data_sample_2018postHEM = "singlelep-2018postHEM";
+  TString data_sample_2017 = "singlelep-2017";
+  TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
 	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -674,33 +613,19 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
-    z.setSelection(LLCR_LM, "llcr_lm_2017RunBtoE", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2017RunBtoE", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunBtoE LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017RunBtoE, data_sample_2017RunBtoE, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
-    z.setSelection(LLCR_LM, "llcr_lm_2017RunF", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunF LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017RunF, data_sample_2017RunF, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2017RunF", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017RunF LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017RunF, data_sample_2017RunF, Category::dummy_category(), false, "", true, &plotextra);
-
-    z.setSelection(LLCR_LM, "llcr_lm_2018preHEM", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018preHEM LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2018preHEM, data_sample_2018preHEM, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2018preHEM", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018preHEM LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2018preHEM, data_sample_2018preHEM, Category::dummy_category(), false, "", true, &plotextra);
-
-    z.setSelection(LLCR_LM, "llcr_lm_2018postHEM", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018postHEM LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2018postHEM, data_sample_2018postHEM, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2018postHEM", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018postHEM LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2018postHEM, data_sample_2018postHEM, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR HM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
 
   }
   
