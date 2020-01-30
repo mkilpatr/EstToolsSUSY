@@ -12,7 +12,6 @@ vector<Quantity> LLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  //l.pred2016();
   l.pred();
 
   l.printYields();

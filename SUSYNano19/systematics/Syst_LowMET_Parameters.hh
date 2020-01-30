@@ -58,6 +58,7 @@ TString mcwgt = "1000*Stop0l_evtWeight"; // ttbarnorm / wjetsnorm
 TString qcdrestail = "qcdRespTailWeight"; //qcd response tail
 
 // lumi and base weight
+TString jes_postfix = "";
 TString HEMVeto()     { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + "))";}
 TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVetoElec30" + jes_postfix + "))";}
 
@@ -70,7 +71,6 @@ TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wta
 TString phowgt() { return wgtvar(); }
 //TString phowgt = wgtvar + "*qcdRespTailWeight";
 
-TString jes_postfix = "";
 bool doLepSyst = false;
 
 // No Lepton SF
