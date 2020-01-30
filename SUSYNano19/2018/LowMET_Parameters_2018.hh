@@ -20,10 +20,12 @@ const TString lumistr_2018PostHEM = "38.630913";
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVetoElec30))";
+const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30 && !Pass_exHEMVetoElec30))";
 
 // lumi and base weight
 const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -36,7 +38,7 @@ const TString phowgt = wgtvar;
 
 // Tag-and-Probe Lepton SF
 const TString lepvetowgt_2018 =         wgtvar_2018	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_2018  =         wgtvar_2018	+ "*" + HEMVetoElec + "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepselwgt_2018  =         wgtvar_2018_1LepCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF

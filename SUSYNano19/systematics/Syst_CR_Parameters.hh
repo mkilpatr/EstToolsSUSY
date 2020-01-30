@@ -61,12 +61,13 @@ TString qcdrestail = "qcdRespTailWeight"; //qcd response tail
 // lumi and base weight
 TString jes_postfix = "";
 TString HEMVeto()     { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + "))";}
-TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVetoElec30" + jes_postfix + "))";}
+TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + " && !Pass_exHEMVetoElec30" + jes_postfix + "))";}
 
 TString isrwgtvar()     { return isrwgt; }
 TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
 TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
 TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
 
 // photon trigger eff.
 TString phowgt() { return wgtvar(); }
@@ -92,7 +93,7 @@ TString lepselwgt()  	     { return wgtvar() +"*"+triggerwgt+"*"+muonwgt+"*"+ele
 TString lepvetowgt_2017() { return wgtvar_2017() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
 TString lepselwgt_2017()  { return wgtvar_2017() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
 TString lepvetowgt_2018()  { return wgtvar_2018() +"*"+triggerwgt+"*"+muonvetowgt+"*"+elevetowgt+"*"+tauvetowgt; }
-TString lepselwgt_2018()   { return wgtvar_2018() +"*"+HEMVetoElec()+"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
+TString lepselwgt_2018()   { return wgtvar_2018_1LepCR() +"*"+triggerwgt+"*"+muonwgt+"*"+elewgt; }
 TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 
 // 1LCR Lepton SF

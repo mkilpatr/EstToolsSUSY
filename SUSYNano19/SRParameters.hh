@@ -30,7 +30,7 @@ const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && P
 const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
 const TString wgtvar_2017 = lumistr_2017+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
 const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
-const TString wgtvar_2018_1LeCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -47,7 +47,7 @@ const TString lepselwgt  =      	wgtvar		+ "*Stop0l_trigger_eff_MET_loose_baseli
 const TString lepvetowgt_2017 =         wgtvar_2017	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
 const TString lepselwgt_2017  =         wgtvar_2017	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString lepvetowgt_2018 =         wgtvar_2018	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_2018  =         wgtvar_2018_1LeCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepselwgt_2018  =         wgtvar_2018_1LepCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF

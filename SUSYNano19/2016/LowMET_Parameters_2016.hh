@@ -45,11 +45,11 @@ const TString lepvetowgt_no_wtopsf = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100  && Pass_exHEMVetoElec30";
+const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
-const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100  && Pass_exHEMVetoElec30 && MET_pt>100";
+const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100&& MET_pt>100";
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
