@@ -6,16 +6,16 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2017();
+  auto llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
-  l.predYear();
+  l.predYearlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -29,8 +29,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-
-void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
+void SystElectron_LL(std::string outfile_path = "values_unc_2018_ll_electron.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,33 +37,38 @@ void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
+    nolepelevetowgt = "1"; 
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // ele - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "eff_e_err_Up";
+    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // ele - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "eff_e_err_Down";
+    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2017();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

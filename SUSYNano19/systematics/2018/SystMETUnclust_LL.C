@@ -6,14 +6,30 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2017();
+map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+  auto llbcfg = lepConfig2018();
+  if(sys_name == "JES_Up"){
+    llbcfg.catMaps = srCatMap_JESUp();
+    llbcfg.crCatMaps = lepCatMap_JESUp();
+  } else if(sys_name == "JES_Down"){
+    llbcfg.catMaps = srCatMap_JESDown();
+    llbcfg.crCatMaps = lepCatMap_JESDown();
+  } else if(sys_name == "metres_Up"){
+    llbcfg.catMaps = srCatMap_METUnClustUp();
+    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
+  } else if(sys_name == "metres_Down"){
+    llbcfg.catMaps = srCatMap_METUnClustDown();
+    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
+  } else{
+    llbcfg.catMaps = srCatMap();
+    llbcfg.crCatMaps = lepCatMap();
+  }
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -29,8 +45,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-
-void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
+void SystMETUnclust_LL(std::string outfile_path = "values_unc_2018_ll_metres.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,33 +53,33 @@ void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
+    //inputdir = ".";
     sys_name = "nominal";
+    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // metres - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
-    auto llb = getLLBPred();
+    sys_name = "metres_Up";
+    EstTools::jes_postfix = "_METUnClustUp";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
-    auto llb = getLLBPred();
+    sys_name = "metres_Down";
+    EstTools::jes_postfix = "_METUnClustDown";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2017();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

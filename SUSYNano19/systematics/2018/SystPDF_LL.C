@@ -6,14 +6,14 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2017();
+  auto llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
+void SystPDF_LL(std::string outfile_path = "values_unc_2018_ll_pdf.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -46,25 +46,25 @@ void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // pdf - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "PDF_Weight_Up";
+    pdfwgt = "pdfWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // pdf - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "PDF_Weight_Down";
+    pdfwgt = "pdfWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2017();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

@@ -6,20 +6,20 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2017();
+  auto llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
@@ -29,8 +29,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-
-void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
+void SystTau_LL(std::string outfile_path = "values_unc_2018_ll_tau.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,33 +37,41 @@ void SystBTag_LL(std::string outfile_path = "values_unc_2017_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
+    noleptauvetowgt = "1"; 
+    EstTools::lepsel = "TauVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // -----------------------
+  // tau - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "eff_tau_Up";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // tau - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "eff_tau_Down";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
+  // -----------------------
+
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2017();
+  auto config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
