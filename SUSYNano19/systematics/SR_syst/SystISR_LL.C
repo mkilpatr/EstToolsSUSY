@@ -6,37 +6,20 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
@@ -46,7 +29,8 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   };
 }
 
-void SystTrigger_LL(std::string outfile_path = "values_unc_ll_trigger.conf"){
+
+void SystISR_LL(std::string outfile_path = "values_unc_sb_ll_isr.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -56,25 +40,23 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_ll_trigger.conf"){
 
   // nominal
   {
-    //inputdir = ".";
     sys_name = "nominal";
-    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // trigger - up
+  // isr - up
   {
-    sys_name = "trigger_eff_Up";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Up";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "ISR_Weight_Up";
+    isrwgt = "ISRWeight_Up";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
+  // pu - down
   {
-    sys_name = "trigger_eff_Down";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Down";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "ISR_Weight_Down";
+    isrwgt = "ISRWeight_Down";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 

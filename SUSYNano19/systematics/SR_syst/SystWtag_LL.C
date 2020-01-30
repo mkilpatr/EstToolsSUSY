@@ -6,47 +6,31 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
+    //    //{"diboson",    l.yields.at("diboson-sr")},
+    };
 }
 
-void SystMETUnclust_LL(std::string outfile_path = "values_unc_ll_metres.conf"){
+
+void SystWtag_LL(std::string outfile_path = "values_unc_sb_ll_wtag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -54,27 +38,30 @@ void SystMETUnclust_LL(std::string outfile_path = "values_unc_ll_metres.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
+  //inputdir = "/data/hqu/trees/0221_wtopSyst";
+
   // nominal
   {
-    //inputdir = ".";
     sys_name = "nominal";
-    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // metres - up
+  // wtag up
   {
-    sys_name = "metres_Up";
-    EstTools::jes_postfix = "_METUnClustUp";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "eff_wtag_err_Up";
+    wtagwgt = "(WtagSF + WtagSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
+  // wtag down
   {
-    sys_name = "metres_Down";
-    EstTools::jes_postfix = "_METUnClustDown";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "eff_wtag_err_Down";
+    wtagwgt = "(WtagSF - WtagSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 

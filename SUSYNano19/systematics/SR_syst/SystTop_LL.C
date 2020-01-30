@@ -6,32 +6,31 @@
 
 #include <fstream>
 
-//#include "Syst_SR_Parameters.hh"
-#include "Syst_SR_Parameters_small.hh"
-//#include "Syst_LowMET_Parameters_small.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.predlep();
+  l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
+    //    //{"diboson",    l.yields.at("diboson-sr")},
+    };
 }
 
-void SystTau_LL(std::string outfile_path = "values_unc_sb_ll_tau.conf"){
+
+void SystTop_LL(std::string outfile_path = "values_unc_sb_ll_toptag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,37 +38,32 @@ void SystTau_LL(std::string outfile_path = "values_unc_sb_ll_tau.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/ramdisk/0207_syst/others";
+  //inputdir = "/data/hqu/trees/0221_wtopSyst";
+
   // nominal
   {
     sys_name = "nominal";
-    noleptauvetowgt = "1"; 
-    EstTools::lepsel = "TauVeto";
-    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // -----------------------
-  // tau - up
+  // toptag up
   {
-    sys_name = "eff_tau_Up";
-    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
-    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    sys_name = "eff_toptag_err_Up";
+    sdmvawgt = "(TopSF + TopSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // tau - down
+  // toptag down 
   {
-    sys_name = "eff_tau_Down";
-    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
-    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    sys_name = "eff_toptag_err_Down";
+    sdmvawgt = "(TopSF - TopSFErr)"; 
+    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-  // -----------------------
-
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);

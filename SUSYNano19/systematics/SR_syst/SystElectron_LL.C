@@ -6,32 +6,30 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.predlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //    //{"diboson",    l.yields.at("diboson-sr")},
-    };
+    //{"diboson",    l.yields.at("diboson-sr")},
+  };
 }
 
-
-void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
+void SystElectron_LL(std::string outfile_path = "values_unc_sb_ll_electron.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,29 +37,31 @@ void SystTop_LL(std::string outfile_path = "values_unc_ll_toptag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/trees/0221_wtopSyst";
-
+  //inputdir = "/data/hqu/ramdisk/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
+    nolepelevetowgt = "1"; 
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // toptag up
+  // ele - up
   {
-    sys_name = "eff_toptag_err_Up";
-    sdmvawgt = "(TopSF + TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "eff_e_err_Up";
+    elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // toptag down 
+  // ele - down
   {
-    sys_name = "eff_toptag_err_Down";
-    sdmvawgt = "(TopSF - TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "eff_e_err_Down";
+    elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
+    sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

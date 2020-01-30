@@ -6,10 +6,9 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-//#include "Syst_LowMET_Parameters.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
@@ -20,18 +19,18 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
     {"ttbarplusw", yields},
     //{"ttZ",        l.yields.at("ttZ-sr")},
-    //    //{"diboson",    l.yields.at("diboson-sr")},
-    };
+    //{"diboson",    l.yields.at("diboson-sr")},
+  };
 }
 
 
-void SystWtag_LL(std::string outfile_path = "values_unc_ll_wtag.conf"){
+void SystPDF_LL(std::string outfile_path = "values_unc_sb_ll_pdf.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,8 +38,7 @@ void SystWtag_LL(std::string outfile_path = "values_unc_ll_wtag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/data/hqu/trees/0221_wtopSyst";
-
+  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -48,20 +46,18 @@ void SystWtag_LL(std::string outfile_path = "values_unc_ll_wtag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // wtag up
+  // pdf - up
   {
-    sys_name = "eff_wtag_err_Up";
-    wtagwgt = "(WtagSF + WtagSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "PDF_Weight_Up";
+    pdfwgt = "pdfWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // wtag down
+  // pdf - down
   {
-    sys_name = "eff_wtag_err_Down";
-    wtagwgt = "(WtagSF - WtagSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "PDF_Weight_Down";
+    pdfwgt = "pdfWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

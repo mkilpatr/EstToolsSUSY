@@ -19,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields = l.yields.at("ttbarplusw");
   llbcfg.reset();
   
   return {

@@ -6,10 +6,9 @@
 
 #include <fstream>
 
-#include "Syst_SR_Parameters.hh"
-////#include "Syst_LowMET_Parameters.hh"
+#include "../Syst_SR_Parameters.hh"
 
-#include "../../EstMethods/LLBEstimator.hh"
+#include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
@@ -20,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
@@ -31,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
+void SystPrefire_LL(std::string outfile_path = "values_unc_sb_ll_prefire.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -39,7 +38,6 @@ void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -47,18 +45,17 @@ void SystPDF_LL(std::string outfile_path = "values_unc_ll_pdf.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // pdf - up
+  // isr - up
   {
-    sys_name = "PDF_Weight_Up";
-    pdfwgt = "pdfWeight_Up";
+    sys_name = "Prefire_Weight_Up";
+    prefirewgt = "PrefireWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
-  // pdf - down
+  // pu - down
   {
-    sys_name = "PDF_Weight_Down";
-    pdfwgt = "pdfWeight_Down";
+    sys_name = "Prefire_Weight_Down";
+    prefirewgt = "PrefireWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
