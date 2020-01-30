@@ -6,20 +6,36 @@
 
 #include <fstream>
 
-#include "../Syst_CR_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(){
+map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   auto llbcfg = lepConfig();
+  if(sys_name == "JES_Up"){
+    llbcfg.catMaps = srCatMap_JESUp();
+    llbcfg.crCatMaps = lepCatMap_JESUp();
+  } else if(sys_name == "JES_Down"){
+    llbcfg.catMaps = srCatMap_JESDown();
+    llbcfg.crCatMaps = lepCatMap_JESDown();
+  } else if(sys_name == "metres_Up"){
+    llbcfg.catMaps = srCatMap_METUnClustUp();
+    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
+  } else if(sys_name == "metres_Down"){
+    llbcfg.catMaps = srCatMap_METUnClustDown();
+    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
+  } else{
+    llbcfg.catMaps = srCatMap();
+    llbcfg.crCatMaps = lepCatMap();
+  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
@@ -29,8 +45,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-
-void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
+void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,27 +53,27 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
+    //inputdir = ".";
     sys_name = "nominal";
+    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // trigger - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
-    auto llb = getLLBPred();
+    sys_name = "trigger_eff_Up";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Up";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
-    auto llb = getLLBPred();
+    sys_name = "trigger_eff_Down";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Down";
+    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 

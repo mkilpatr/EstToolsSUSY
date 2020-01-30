@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_CR_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -15,11 +15,11 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.predlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
@@ -29,8 +29,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-
-void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
+void SystMuon_LL(std::string outfile_path = "values_unc_val_ll_muon.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,26 +37,34 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
+  //inputdir = "/data/hqu/ramdisk/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
+    nolepmuonvetowgt = "1"; 
+    EstTools::lepsel = "MuonVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // -----------------------
+  // mu - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "eff_mu_Up";
+    muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
+    sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - down
+  // mu - up
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "eff_mu_Down";
+    muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
+    sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

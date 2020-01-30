@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_CR_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -19,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
+void SystBTag_LL(std::string outfile_path = "values_unc_val_ll_btag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}

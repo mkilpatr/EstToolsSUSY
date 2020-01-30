@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_CR_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -19,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
+void SystISR_LL(std::string outfile_path = "values_unc_val_ll_isr.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,7 +38,6 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -46,18 +45,17 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // btag - up
+  // isr - up
   {
-    sys_name = "b_Up";
-    btagwgt = "BTagWeight_Up";
+    sys_name = "ISR_Weight_Up";
+    isrwgt = "ISRWeight_Up";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-
-  // btag - down
+  // pu - down
   {
-    sys_name = "b_Down";
-    btagwgt = "BTagWeight_Down";
+    sys_name = "ISR_Weight_Down";
+    isrwgt = "ISRWeight_Down";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
