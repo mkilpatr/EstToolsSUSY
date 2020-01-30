@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_CR_Parameters_small.hh"
+#include "../Syst_CR_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 

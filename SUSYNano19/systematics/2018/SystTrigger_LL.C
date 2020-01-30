@@ -65,14 +65,14 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_2018_ll_trigger.conf"
   // trigger - up
   {
     sys_name = "trigger_eff_Up";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Up";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
     sys_name = "trigger_eff_Down";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_Down";
+    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
