@@ -7,7 +7,8 @@
 #include <fstream>
 
 //#include "Syst_SR_Parameters.hh"
-#include "Syst_LowMET_Parameters_small.hh"
+#include "Syst_SR_Parameters_small.hh"
+//#include "Syst_LowMET_Parameters_small.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
 
@@ -16,11 +17,11 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred2016lep();
+  l.predlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
   llbcfg.reset();
   
   return {
@@ -30,7 +31,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   };
 }
 
-void SystTau_LL(std::string outfile_path = "values_unc_ll_tau.conf"){
+void SystTau_LL(std::string outfile_path = "values_unc_sb_ll_tau.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}

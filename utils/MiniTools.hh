@@ -122,13 +122,9 @@ TH1* addUnderflow(TH1 *h){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Quantity getHistBin(const TH1* h, int ibin, TString Samples = "", double wgtvar = 0.){
+Quantity getHistBin(const TH1* h, int ibin){
   double value = h->GetBinContent(ibin);
   double error = h->GetBinError(ibin);
-       if(Samples.Contains("2017RunBtoE")) error = error*(1 + (13.220313/wgtvar));
-  else if(Samples.Contains("2017RunF"))    error = error*(1 + (27.987721/wgtvar));
-  else if(Samples.Contains("2018preHEM"))  error = error*(1 + (38.630913/wgtvar));
-  else if(Samples.Contains("2018postHEM")) error = error*(1 + (21.068576/wgtvar));
   if (std::isnan(value)) value = 0;
   if (std::isnan(error)) error = 0;
 
