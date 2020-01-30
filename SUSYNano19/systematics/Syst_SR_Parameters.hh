@@ -28,8 +28,6 @@ TString restopwgt = "restopSF";
 TString softbwgt = "SoftBSF";
 
 TString puwgt = "puWeight"; // PU
-TString BtoEpuwgt = "17BtoEpuWeight"; // PU
-TString Fpuwgt = "17FpuWeight"; // PU
 
 TString muonwgt = "MuonLooseCRSF"; // tnp (el/mu)
 TString elewgt = "ElectronVetoCRSF";
@@ -66,7 +64,7 @@ TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec
 
 TString isrwgtvar()     { return isrwgt; }
 TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+BtoEpuwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
 TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
 
 // photon trigger eff.

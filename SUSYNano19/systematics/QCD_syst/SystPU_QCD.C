@@ -42,16 +42,12 @@ void SystPU_QCD(std::string outfile_path = "values_unc_qcd_pu.conf"){
   {
     sys_name = "PU_Weight_up";
     puwgt = "puWeight_Up";
-    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
-    Fpuwgt = "17FpuWeight_Up"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // pu - down
   {
     sys_name = "PU_Weight_down";
     puwgt = "puWeight_Down";
-    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
-    Fpuwgt = "17FpuWeight_Down"; // PU
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
