@@ -612,7 +612,7 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
-    lumistr = lumistr_2017
+    lumistr = lumistr_2017;
     z.setSelection(LLCR_LM, "llcr_lm_2017", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);

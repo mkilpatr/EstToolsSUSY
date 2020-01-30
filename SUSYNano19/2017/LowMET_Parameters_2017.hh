@@ -18,9 +18,6 @@ const TString lumistr_2017 = "41.208034";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
-const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018 + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30) + " + lumistr_2018 + "*(!Pass_exHEMVetoElec30))";
-
 // lumi and base weight
 const TString wgtvar_2017 = lumistr_2017+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2017
 
