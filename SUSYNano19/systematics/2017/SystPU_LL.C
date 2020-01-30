@@ -13,7 +13,7 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2016();
+  auto llbcfg = lepConfig2017();
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"){
+void SystPU_LL(std::string outfile_path = "values_unc_2017_ll_pu.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -45,24 +45,28 @@ void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // isr - up
+  // pu - up
   {
-    sys_name = "Prefire_Weight_Up";
-    prefirewgt = "PrefireWeight_Up";
+    sys_name = "PU_Weight_Up";
+    puwgt = "puWeight_Up";
+    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
+    Fpuwgt = "17FpuWeight_Up"; // PU
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
   // pu - down
   {
-    sys_name = "Prefire_Weight_Down";
-    prefirewgt = "PrefireWeight_Down";
+    sys_name = "PU_Weight_Down";
+    puwgt = "puWeight_Down";
+    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
+    Fpuwgt = "17FpuWeight_Down"; // PU
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2016();
+  auto config = lepConfig2017();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

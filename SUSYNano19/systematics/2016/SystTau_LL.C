@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -15,7 +15,7 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2016();
   LLBEstimator l(llbcfg);
-  l.predYearlep();
+  l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));

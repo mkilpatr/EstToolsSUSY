@@ -14,6 +14,7 @@ parser.add_argument("-r", "--runscript", dest="script", default="runjobs", help=
 parser.add_argument("-t", "--submittype", dest="submittype", default="condor", choices=["interactive","lsf","condor"], help="Method of job submission. [Options: interactive, lsf, condor. Default: condor]")
 parser.add_argument("-q", "--queue", dest="queue", default="1nh", help="LSF submission queue. [Default: 1nh]")
 parser.add_argument("-a", "--tar", dest="tar", default="", help="add the tar command to the submit script")
+parser.add_argument("-l", "--location", dest="location", default=".", help="move to location of files")
 parser.add_argument("--output-suffix", dest="suffix", default="_tree.root", help="Suffix of output file. [Default: %(default)s. Use '.json' with dumpJSON.C.]")
 parser.add_argument("--jobdir", dest="jobdir", default="jobs", help="Job dir. [Default: %(default)s]")
 parser.add_argument("--path-to-rootlogon", dest="rootlogon", default="../../rootlogon.C", help="Path to the root logon file. [Default: %(default)s]")
@@ -44,6 +45,7 @@ if args.config == "":
     script.write("""#!/bin/bash
     outputdir={outdir}
     runmacro={macro}
+    location={location}
     sysname={sysname}
     """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, sysname=args.sysname))
     
@@ -89,7 +91,7 @@ if args.config == "":
     cat > submit.cmd << EOF
     universe                = vanilla
     Executable              = {runscript}{stype}.sh
-    Arguments               = {macro} . {workdir} {outdir} {scram}
+    Arguments               = {macro} . {workdir} {outdir} {scram} {location}
     Output                  = logs/{sysname}.out
     Error                   = logs/{sysname}.err
     Log                     = logs/{sysname}.log
@@ -105,7 +107,7 @@ if args.config == "":
     
       condor_submit submit.cmd;
       rm submit.cmd""".format(
-    runscript=args.script, stype=args.submittype, macro=args.macro, sysname=args.sysname, workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}"
+    runscript=args.script, stype=args.submittype, macro=args.macro, sysname=args.sysname, workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location
     ))
     jobscript.close()
     script.write("./{jobdir}/submit_{name}.sh\n".format(jobdir=args.jobdir, name=args.sysname))
@@ -120,13 +122,14 @@ else:
     script.write("""#!/bin/bash 
 outputdir={outdir}
 runmacro={macro}
+location={location}
 sysname={sysname}
 source tarCMSSW_syst.sh $outputdir
  
 eosmkdir -p /eos/uscms/store/user/mkilpatr/13TeV/$outputdir
    
 echo "$runscript $runmacro $workdir $outputdir"    
-    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, sysname=args.sysname))
+    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, location=args.location, sysname=args.sysname))
         
     for i in xrange(len(macro)):
 	print(sysname[i])
@@ -134,8 +137,9 @@ echo "$runscript $runmacro $workdir $outputdir"
         scriptSep.write("""#!/bin/bash
 outputdir={outdir}
 runmacro={macro}
+location={location}
 sysname={sysname}
-        """.format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], sysname=sysname[i]))
+        """.format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], location=args.location, sysname=sysname[i]))
         if args.submittype == "lsf" or args.submittype == "condor" :
             scriptSep.write("""
 workdir=$CMSSW_BASE
@@ -163,7 +167,7 @@ cp {pathtomacro}/$runmacro $workdir
 cat > submit.cmd << EOF
 universe                = vanilla
 Executable              = {runscript}{stype}.sh
-Arguments               = {macro} . {workdir} {outdir} {scram}
+Arguments               = {macro} . {workdir} {outdir} {scram} {location}
 Output                  = logs/{sysname}.out
 Error                   = logs/{sysname}.err
 Log                     = logs/{sysname}.log
@@ -179,7 +183,7 @@ EOF
 
   condor_submit submit.cmd;
   rm submit.cmd""".format(
-        runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}"
+        runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location
         ))
         jobscript.close()
         scriptSep.write("./{jobdir}/submit_{name}.sh\n".format(jobdir=args.jobdir, name=sysname[i]))

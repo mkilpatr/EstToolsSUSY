@@ -13,7 +13,7 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2016();
+  auto llbcfg = lepConfig2017();
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"){
+void SystSoftBTag_LL(std::string outfile_path = "values_unc_2017_ll_softbtag.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -38,6 +38,7 @@ void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
+  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
     sys_name = "nominal";
@@ -45,24 +46,25 @@ void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // isr - up
+  // soft btag - up
   {
-    sys_name = "Prefire_Weight_Up";
-    prefirewgt = "PrefireWeight_Up";
+    sys_name = "ivfunc_err_Up";
+    softbwgt = "(SoftBSF + SoftBSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
-  // pu - down
+
+  // soft btag - down
   {
-    sys_name = "Prefire_Weight_Down";
-    prefirewgt = "PrefireWeight_Down";
+    sys_name = "ivfunc_err_Down";
+    softbwgt = "(SoftBSF - SoftBSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2016();
+  auto config = lepConfig2017();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
@@ -100,6 +102,10 @@ void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
+	  if(!binname.Contains("nivf")){
+	    uncs_Up.at(ibin).value = 1;
+	    uncs_Down.at(ibin).value = 1;
+	  }
           outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;

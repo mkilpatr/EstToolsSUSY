@@ -13,7 +13,7 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig2016();
+  auto llbcfg = lepConfig2017();
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"){
+void SystPrefire_LL(std::string outfile_path = "values_unc_2017_ll_prefire.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -62,7 +62,7 @@ void SystPrefire_LL(std::string outfile_path = "values_unc_2016_ll_prefire.conf"
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig2016();
+  auto config = lepConfig2017();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];

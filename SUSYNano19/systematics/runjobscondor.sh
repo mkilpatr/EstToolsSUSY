@@ -5,6 +5,7 @@ outputdir=$2
 scramdir=$3
 outdir=${4}
 scram=${5}
+location=${6}
 
 workdir=`pwd`
 cmssw=${scramdir##*/}
@@ -41,8 +42,9 @@ cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
 echo $outdir
 
 ulimit -s unlimited
+cd $location
 root -l -b -q $runmacro+
-xrdcp -np values*.conf root://cmseos.fnal.gov//store/user/$(whoami)/13TeV/${outdir}/.
+xrdcp -np values*.conf root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}/.
 ls -a
 
 status=`echo $?`
