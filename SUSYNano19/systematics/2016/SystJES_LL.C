@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -79,7 +79,7 @@ void SystJES_LL(std::string outfile_path = "values_unc_2016_ll_jes.conf"){
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig();
+  auto config = lepConfig2016();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
