@@ -812,11 +812,9 @@ public:
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
 	TString sMC = TString(sname);
-	if(sMC.Contains("2016")) 	     sMC = sMC.ReplaceAll("-2016","");
-	else if(sMC.Contains("2017RunBtoE")) sMC = sMC.ReplaceAll("-2017RunBtoE","");
-	else if(sMC.Contains("2017RunF"))    sMC = sMC.ReplaceAll("-2017RunF","");
-	else if(sMC.Contains("2018preHEM"))  sMC = sMC.ReplaceAll("-2018preHEM","");
-	else if(sMC.Contains("2018postHEM")) sMC = sMC.ReplaceAll("-2018postHEM","");
+	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
+	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
+	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
 	sMC = sMC.ReplaceAll("-cr","");
 	sMC = sMC.ReplaceAll("-withveto","");
 	if(sMC == scomb){

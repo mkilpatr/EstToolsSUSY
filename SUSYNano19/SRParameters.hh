@@ -15,16 +15,16 @@ const TString outputdir = ".";
 
 const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
-const TString lumistr = "136.722688";
+TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
 const TString lumistr_2017 = "41.208034";
-const TString lumistr_2018  = "59.699489";
+const TString lumistr_2018PreHEM  = "21.068576";
 const TString lumistr_2018PostHEM = "38.630913";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
-const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018 + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30) + " + lumistr_2018 + "*(!Pass_exHEMVetoElec30))";
+const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30))";
+const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVetoElec30))";
 
 // lumi and base weight
 const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016

@@ -140,8 +140,8 @@ vector<Quantity> LLBPredSeparate(){
       auto leg = prepLegends({}, {""}, "l");
       appendLegends(leg, {hAll}, {"TF All"}, "l");
       appendLegends(leg, {h2016}, {"TF 2016"}, "l");
-      appendLegends(leg, {h2017}, {"TF 2017 RunBtoE"}, "l");
-      appendLegends(leg, {h2018}, {"TF 2018 preHEM"}, "l");
+      appendLegends(leg, {h2017}, {"TF 2017"}, "l");
+      appendLegends(leg, {h2018}, {"TF 2018"}, "l");
       leg->SetTextSize(0.03);
 //        leg->SetNColumns(2);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
@@ -200,8 +200,8 @@ vector<Quantity> LLBPredSeparate(){
       h2018Sum->Draw("same");
       auto legend = new TLegend(0.75,0.60,0.95,0.90);
       legend->AddEntry(h2016Sum, "TF 2016", "l");
-      legend->AddEntry(h2017Sum, "TF 2017 RunBtoE", "l");
-      legend->AddEntry(h2018Sum, "TF 2018 preHEM", "l");
+      legend->AddEntry(h2017Sum, "TF 2017", "l");
+      legend->AddEntry(h2018Sum, "TF 2018", "l");
       legend->Draw();
 
       float ymax = h2016Sum->GetMaximum();
@@ -216,11 +216,11 @@ vector<Quantity> LLBPredSeparate(){
 
 //  drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
       drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.2, 0.80);
-      drawTLatexNDC("TF 2017 RunBtoE Mean: " + to_string(Mean2017), 0.2, 0.75);
-      drawTLatexNDC("TF 2018 preHEM Mean: " + to_string(Mean2018), 0.2, 0.65);
+      drawTLatexNDC("TF 2017 Mean: " + to_string(Mean2017), 0.2, 0.75);
+      drawTLatexNDC("TF 2018 Mean: " + to_string(Mean2018), 0.2, 0.65);
       cout << "TF 2016 Mean: " << Mean2016 << endl;
-      cout << "TF 2017 RunBtoE Mean: " << Mean2017 << endl;
-      cout << "TF 2018 preHEM Mean: " << Mean2018 << endl;
+      cout << "TF 2017 Mean: " << Mean2017 << endl;
+      cout << "TF 2018 Mean: " << Mean2018 << endl;
       CMS_lumi(TFSumCanvas, 4, 10);
       TFSumCanvas->Update();   
  
@@ -573,7 +573,7 @@ void plot1LepInclusive(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "lepcr_inclusive_v4";
+  TString region = "lepcr_inclusive_v5";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -604,6 +604,7 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
 
+    lumistr = lumistr_2016;
     z.setSelection(LLCR_LM, "llcr_lm_2016", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
@@ -611,6 +612,7 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
+    lumistr = lumistr_2017
     z.setSelection(LLCR_LM, "llcr_lm_2017", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
@@ -618,6 +620,7 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
+    lumistr = "59.699489";
     z.setSelection(LLCR_LM, "llcr_lm_2018", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR LM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
