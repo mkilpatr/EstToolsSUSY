@@ -86,13 +86,14 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
       }
 
       unsigned ibin = 0;
+      auto bin = "";
       for (auto &cat_name : config.categories){
         auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType_Up   = TString(sPair.first); 
+          auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
+	  auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
@@ -102,9 +103,11 @@ void SystBTag_LL(std::string outfile_path = "values_unc_cb_ll_btag.conf"){
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
+	  if (bin == binname) continue;
           outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
+	  bin = binname;
         }
       }
     }
