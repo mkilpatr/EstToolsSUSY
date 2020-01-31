@@ -1,7 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-#include "SRParameters.hh"
-//#include "LowMET_Parameters.hh"
+//#include "SRParameters.hh"
+#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -39,7 +39,6 @@ vector<Quantity> LLBPredSeparate(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  //l.splitTF = false;
   l.predSeparate();
 
   l.printYields();
@@ -90,8 +89,8 @@ vector<Quantity> LLBPredSeparate(){
   vector<TString> sep = {"", "_LM", "_HM_1", "_HM_2"};
 
   int start = 0, manualBins = 0;
-  int max_graph = l.splitTF ? 3 : 2;
-  int max_tf = l.splitTF ? 2 : 0;
+  int max_graph = l.yields.at(tf[0]).size() > 100 ? 3 : 2;
+  int max_tf = 2;
   for(int j = 0; j <= max_graph; j++){
     if(l.splitTF){
       if(j == 1){ 
@@ -113,7 +112,7 @@ vector<Quantity> LLBPredSeparate(){
         manualBins = 24;
       }
     }
-    for(int i = 0; i != max_tf; i++){
+    for(int i = 0; i <= max_tf; i++){
       auto hAll = convertToHist(l.yields.at(tf[i]),"TF All" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2016 = convertToHist(l.yields.at(tf[i]+"-2016"),"TF 2016" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2017 = convertToHist(l.yields.at(tf[i]+"-2017"),"TF 2017" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
@@ -163,7 +162,7 @@ vector<Quantity> LLBPredSeparate(){
       TH1F* h2016Sum        = new TH1F("hTF_0", "Transfer Factors", 41, -0.025, 2.025);
       TH1F* h2017Sum = new TH1F("hTF_1", "Transfer Factors", 41, -0.025, 2.025);
       TH1F* h2018Sum  = new TH1F("hTF_3", "Transfer Factors", 41, -0.025, 2.025);
-      for(unsigned int i = 1; i != h2016_div->GetNbinsX(); i++){
+      for(int i = 1; i != h2016_div->GetNbinsX(); i++){
         h2016Sum->Fill(h2016_div->GetBinContent(i));
         h2017Sum->Fill(h2017_div->GetBinContent(i));
         h2018Sum->Fill(h2018_div->GetBinContent(i));
@@ -216,7 +215,7 @@ vector<Quantity> LLBPredSeparate(){
 //  drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
       drawTLatexNDC("TF 2016 Mean: " + to_string(Mean2016), 0.2, 0.80);
       drawTLatexNDC("TF 2017 Mean: " + to_string(Mean2017), 0.2, 0.75);
-      drawTLatexNDC("TF 2018 Mean: " + to_string(Mean2018), 0.2, 0.65);
+      drawTLatexNDC("TF 2018 Mean: " + to_string(Mean2018), 0.2, 0.70);
       cout << "TF 2016 Mean: " << Mean2016 << endl;
       cout << "TF 2017 Mean: " << Mean2017 << endl;
       cout << "TF 2018 Mean: " << Mean2018 << endl;

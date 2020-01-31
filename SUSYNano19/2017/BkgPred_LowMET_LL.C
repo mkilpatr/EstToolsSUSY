@@ -32,7 +32,7 @@ void BkgPred_LowMET_LL(){
   EstTools::ADD_LEP_TO_MET = false;
   auto altllbcfg = lepConfig();
   LLBEstimator l(altllbcfg);
-  l.pred2017();
+  l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));

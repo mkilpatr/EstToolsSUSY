@@ -2,7 +2,7 @@
  * Znunu.C
  *
  *  Created on: Sep 23, 2015
- *      Author: hqu
+ *      Author: mkilpatr
  */
 
 #include <fstream>

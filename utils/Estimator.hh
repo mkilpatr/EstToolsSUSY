@@ -796,7 +796,7 @@ public:
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
     TH1 *hdata = nullptr;
-    const Sample* d_sample;
+    const Sample* d_sample = nullptr;
     if (data_sample!=""){
       d_sample = &config.samples.at(data_sample);
       auto hname = filterString(plotvar) + "_" + data_sample + "_" + category.name + "_" + postfix_;

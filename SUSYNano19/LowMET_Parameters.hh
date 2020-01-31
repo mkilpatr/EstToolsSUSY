@@ -15,7 +15,7 @@ const TString outputdir = "LowMET";
 
 const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
-const TString lumistr = "136.722688";
+TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
 const TString lumistr_2017 = "41.208034";
 const TString lumistr_2018PreHEM  = "21.068576";
@@ -184,6 +184,7 @@ std::map<TString, TString> labelMap{
   {"nrt2", R"($\nrt=2$)"},
   {"medptisr", R"($\ptisr\geq300$\,GeV)"},
   {"highptisr", R"($\ptisr\geq500$\,GeV)"},
+  {"nj5", R"($\nj\geq5$)"},
   {"nj7", R"($\nj\geq7$)"},
   {"highptb", R"($\ptb\geq70$\,GeV)"},
   {"hm", R"(high \dm)"},

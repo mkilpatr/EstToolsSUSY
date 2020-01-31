@@ -203,7 +203,7 @@ TH1D* convertToHist(const vector<double> &vec, TString hname, TString title, con
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
-  auto nbins = vec[0]->GetNbinsX();
+  auto nbins = (unsigned)vec[0]->GetNbinsX();
   if(manualBins > 0) nbins = manualBins;
   TH1D *hist;
 
