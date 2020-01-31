@@ -91,7 +91,7 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);

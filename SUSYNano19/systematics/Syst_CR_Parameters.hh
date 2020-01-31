@@ -1957,6 +1957,7 @@ BaseConfig lepConfig(){
   config.categories = srbins;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
+  config.crMapping = lepcrMapping;
 
   return config;
 }
