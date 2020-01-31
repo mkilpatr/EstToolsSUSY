@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binnum_"){
+void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binmet_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -30,8 +30,7 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
 			   "hm_nb[0-9]_lowmtb",
 			   "hm_nb[0-9]_highmtb_nt0_nrt0_nw0",
 			   "hm_nb1_highmtb_1tag_ntnw",
-			   "hm_nb1_highmtb_nt0_nrtgeq1_nw0",
-			   "hm_nb1_highmtb_2tag",
+			   "hm_nb1_highmtb_nrt_2tags",
 			   "hm_nbeq2_highmtb_1tag_ntnw",
 			   "hm_nbeq2_highmtb_nt0_nrt1_nw0",
 			   "hm_nbeq2_highmtb_2tag",
@@ -39,13 +38,12 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
 			   "hm_nb3_highmtb_1tag",
 			   "hm_nb3_highmtb_taggeq2"};
   vector<TString> splitlabels = {
-      "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{}",
-      "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{}",
-      "#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175}{300 #leq p_{T}(ISR) < 500, #geq 500}",
+      "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{p_{T}(ISR) #geq 500 GeV}",
+      "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{}",
+      "#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{300 #leq p_{T}(ISR) < 500, #geq 500}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{j} #geq 7, N_{res} #geq 1}",
       "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{H_{T} #geq 1000, N_{W} = 0, N_{T} = 0, N_{res} = 0}",
       "#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}=1}{M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV, N_{res} #geq 1}",
       "#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
       "#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
       "#splitline{High #Deltam, N_{b}=2}{M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV, N_{res} = 1}",
@@ -85,42 +83,43 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
     [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
 	     tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
     [&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} #geq 1");
-	     tl.DrawLatexNDC(0.29, 0.66, "H_{T} #leq 1000");
-	     tl.DrawLatexNDC(0.47, 0.66, "1000 < H_{T} #leq 1500");
-	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} > 1500");
+	     tl.DrawLatexNDC(0.29, 0.66, "H_{T}<1000");
+	     tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
+	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
 	     tl.DrawLatexNDC(0.83, 0.70, "N_{W} #geq 1");
-	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} #leq 1300");
-	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} > 1300");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "H_{T} #leq 1000");
-	     tl.DrawLatexNDC(0.63, 0.66, "1000 < H_{T} #leq 1500");
-	     tl.DrawLatexNDC(0.85, 0.66, "H_{T} > 1500");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "#splitline{N_{T} #geq 1}{N_{W} #geq 1}"); 
-	     tl.DrawLatexNDC(0.57, 0.66, "#splitline{N_{T} #geq 1}{N_{res} #geq 1}"); 
-	     tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{res} #geq 1}{N_{W} #geq 1}");},
+	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
+	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
+    [&tl](){ tl.DrawLatexNDC(0.475, 0.70, "N_{res} #geq 1");
+	     tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
+	     tl.DrawLatexNDC(0.525, 0.66, "1000 #leq H_{T} < 1500");
+	     tl.DrawLatexNDC(0.65, 0.66, "H_{T} #geq 1500");
+    	     tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{T} #geq 1}{N_{W} #geq 1}"); 
+	     tl.DrawLatexNDC(0.875, 0.66, "#splitline{N_{T} #geq 1}{N_{res} #geq 1}"); 
+	     tl.DrawLatexNDC(0.945, 0.66, "#splitline{N_{res} #geq 1}{N_{W} #geq 1}");},
     [&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} = 1");
-	     tl.DrawLatexNDC(0.29, 0.66, "H_{T} #leq 1000");
-	     tl.DrawLatexNDC(0.47, 0.66, "1000 < H_{T} #leq 1500");
-	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} > 1500");
+	     tl.DrawLatexNDC(0.29, 0.66, "H_{T} < 1000");
+	     tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
+	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
 	     tl.DrawLatexNDC(0.83, 0.70, "N_{W} = 1");
-	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} #leq 1300");
-	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} > 1300");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "H_{T} #leq 1000");
-	     tl.DrawLatexNDC(0.63, 0.66, "1000 < H_{T} #leq 1500");
-	     tl.DrawLatexNDC(0.85, 0.66, "H_{T} > 1500");},
+	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
+	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
+    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
+	     tl.DrawLatexNDC(0.63, 0.66, "1000 #leq H_{T} < 1500");
+	     tl.DrawLatexNDC(0.85, 0.66, "H_{T} #geq 1500");},
     [&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}"); 
 	     tl.DrawLatexNDC(0.63, 0.66, "#splitline{N_{T} = 1, N_{res} = 1}{}");
-	     tl.DrawLatexNDC(0.48, 0.62, "H_{T} #leq 1300");
-	     tl.DrawLatexNDC(0.72, 0.62, "H_{T} > 1300");
+	     tl.DrawLatexNDC(0.48, 0.62, "H_{T} < 1300");
+	     tl.DrawLatexNDC(0.72, 0.62, "H_{T} #geq 1300");
 	     tl.DrawLatexNDC(0.9, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");},
     [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "#splitline{N_{T} = 2}{}"); 
 	     tl.DrawLatexNDC(0.43, 0.66, "#splitline{N_{W} = 2}{}"); 
 	     tl.DrawLatexNDC(0.68, 0.66, "#splitline{N_{res} = 2}{}");
-	     tl.DrawLatexNDC(0.62, 0.62, "H_{T} #leq 1300");
-	     tl.DrawLatexNDC(0.80, 0.62, "H_{T} > 1300");
+	     tl.DrawLatexNDC(0.62, 0.62, "H_{T} < 1300");
+	     tl.DrawLatexNDC(0.80, 0.62, "H_{T} #geq 1300");
 	     tl.DrawLatexNDC(0.93, 0.66, "#splitline{N_{T}+N_{W}+N_{res} #geq 3}{}");},
-    [&tl](){ tl.DrawLatexNDC(0.45, 0.66, "#splitline{N_{T} = 1, H_{T} #leq 1000}{1000 < H_{T} #leq 1500, H_{T} > 1500}");
+    [&tl](){ tl.DrawLatexNDC(0.45, 0.66, "#splitline{N_{T} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");
              tl.DrawLatexNDC(0.59, 0.66, "#splitline{N_{W} = 1}{}");
-             tl.DrawLatexNDC(0.90, 0.66, "#splitline{N_{res} = 1, H_{T} #leq 1000}{1000 < H_{T} #leq 1500, H_{T} > 1500}");},
+             tl.DrawLatexNDC(0.90, 0.66, "#splitline{N_{res} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");},
     [&tl](){ tl.DrawLatexNDC(0.23, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}");
              tl.DrawLatexNDC(0.37, 0.66, "#splitline{N_{T} = 1}{N_{res} = 1}");
              tl.DrawLatexNDC(0.5, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");
@@ -152,8 +151,9 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
 								    drawLine(78,  LOG_YMIN, 78,  20000); 
 								    drawLine(81,  LOG_YMIN, 81,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(89,  LOG_YMIN, 89,  2000); 
-								    drawLine(94,  LOG_YMIN, 94,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(101, LOG_YMIN, 101, 2000); 
+								    drawLine(94,  LOG_YMIN, 94,  2000); 
+								    drawLine(99,  LOG_YMIN, 99,  20000); 
+    								    drawLine(101, LOG_YMIN, 101, 2000); 
 								    drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); 
 								    drawLine(111, LOG_YMIN, 111, 2000); 
@@ -204,19 +204,19 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
   //prepHists({hdata}, false, false, false, {kBlack});
   prepHists(hsigs, false, false, false, {kRed});
-  //setBinLabels(pred[0], xlabels);
-  //setBinLabels(pred[1], xlabels);
-  //setBinLabels(pred[2], xlabels);
-  //setBinLabels(pred[3], xlabels);
-  //setBinLabels(pred[4], xlabels);
-  //setBinLabels(hsigs[0], xlabels);
-  ////hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //pred[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //pred[1]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //pred[2]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //pred[3]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //pred[4]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  //hsigs[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  setBinLabels(pred[0], xlabels);
+  setBinLabels(pred[1], xlabels);
+  setBinLabels(pred[2], xlabels);
+  setBinLabels(pred[3], xlabels);
+  setBinLabels(pred[4], xlabels);
+  setBinLabels(hsigs[0], xlabels);
+  //hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  pred[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  pred[1]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  pred[2]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  pred[3]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  pred[4]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  hsigs[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
   // plot raw MC
 //  TH1 *hmctotal = nullptr;
@@ -241,7 +241,7 @@ void getFinalPlot_Nano(TString inputFile="getFinalPlot/SumOfBkg.root", TString o
       if (cat_name.Contains(TRegexp(region)) || 
 	 (TString(region).Contains("otherptisr") && (cat_name.Contains("nb1_nivf0_lowmtb_highptisr_lowptb") || cat_name.Contains("nb1_nivf0_lowmtb_highptisr_medptb") || cat_name.Contains("medptisr"))) || //lm_nb1_otherptisr
 	 (TString(region).Contains("nb1_highmtb_1tag") && (cat_name.Contains("ntgeq1_nrt0_nw0") || cat_name.Contains("nt0_nrt0_nwgeq1"))) || //hm_nb1_highmtb_1tag  
-	 (TString(region).Contains("nb1_highmtb_2tag") && (cat_name.Contains("ntgeq1_nrt0_nwgeq1") || cat_name.Contains("nt0_nrtgeq1_nwgeq1") || cat_name.Contains("ntgeq1_nrtgeq1_nw0"))) || //hm_nb1_highmtb_2tag  
+	 (TString(region).Contains("hm_nb1_highmtb_nrt_2tags") && (cat_name.Contains("hm_nb1_highmtb_nt0_nrtgeq1_nw0") || cat_name.Contains("ntgeq1_nrt0_nwgeq1") || cat_name.Contains("nt0_nrtgeq1_nwgeq1") || cat_name.Contains("ntgeq1_nrtgeq1_nw0"))) || //hm_nb1_highmtb_nrt_2tags
 	 (TString(region).Contains("nbeq2_highmtb_1tag") && (cat_name.Contains("nbeq2_highmtb_nt1_nrt0_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt0_nw1"))) || //hm_nb2_highmtb_1tag  
 	 (TString(region).Contains("nbeq2_highmtb_2tag") && (cat_name.Contains("nbeq2_highmtb_nt1_nrt0_nw1") || cat_name.Contains("nbeq2_highmtb_nt1_nrt1_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt1_nw1"))) || //hm_nb2_highmtb_2tag
 	 (TString(region).Contains("nbeq2_highmtb_taggt2") && (cat_name.Contains("nbeq2_highmtb_nt2_nrt0_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt0_nw2") || cat_name.Contains("nbeq2_highmtb_nt0_nrt2_nw0") || cat_name.Contains("nbeq2_highmtb_nrtntnwgeq3"))) || //hm_nb2_highmtb_taggt2
