@@ -89,7 +89,8 @@ const TString qcdvetowgt_2018  = lepvetowgt_2018 + "*qcdRespTailWeight";
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
-const TString sigwgt = lepvetowgt;
+const TString sigwgt = lumistr+"/"+lumistr_2016+"*"+lepvetowgt+"*ISRWeight";
+const TString siglepselwgt = lumistr+"/"+lumistr_2016+"*"+lepselwgt+"*ISRWeight";
 
 // triggers
 const TString trigSR = " && Pass_trigger_MET";

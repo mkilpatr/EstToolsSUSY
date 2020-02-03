@@ -32,7 +32,7 @@ std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString
 		++i;
 	}
         TString test = TString(arr[1]);
-	if(test.Contains("up")){
+	if(test.Contains("Up")){
 		binName_Up.push_back(arr[0]);
 		     if(arr[3] == "-nan") val_up.push_back(1.);
 		else if(arr[3] == "inf")  val_up.push_back(2.);
@@ -137,10 +137,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
     c->SetTitle(type);
-    c->Print("LLB/"+indir+type+".pdf");
-    c->Print("LLB/"+indir+type+".C");
+    c->Print(indir+type+".pdf");
+    c->Print(indir+type+".C");
 
-    TFile *outFile = new TFile("LLB/"+indir+type+".root", "RECREATE");
+    TFile *outFile = new TFile(indir+type+".root", "RECREATE");
     hUp->Write();
     hDown->Write();
     outFile->Close();
@@ -182,10 +182,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   leg->SetY1NDC(leg->GetY2NDC() - 0.2);
   TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
   c->SetTitle(totalName);
-  c->Print("LLB/"+indir+totalName+".pdf");
-  c->Print("LLB/"+indir+totalName+".C");
+  c->Print(indir+totalName+".pdf");
+  c->Print(indir+totalName+".C");
 
-  TFile *outFile = new TFile("LLB/"+indir+totalName+".root", "RECREATE");
+  TFile *outFile = new TFile(indir+totalName+".root", "RECREATE");
   hUp->Write();
   hDown->Write();
   outFile->Close();

@@ -14,5 +14,5 @@ Must run datacard maker from Limits directory first.
 ```
 root -l -b formatFinalPlots.C+
 python getUncertainty.py getFinalPlot/SumOgBkg.root --printTable
-root -l -b getFinalPlot_Nano.C+
+root -l -b getFinalPlot.C+
 ```

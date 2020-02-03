@@ -39,6 +39,7 @@ vector<Quantity> LLBPredSeparate(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
+  l.outputdir += "TransferFactor";
   l.predSeparate();
 
   l.printYields();
@@ -148,8 +149,8 @@ vector<Quantity> LLBPredSeparate(){
       else       c = drawCompAndRatio({hAll, h2016, h2017, h2018}, {h2016_div, h2017_div, h2018_div}, leg, "TF_{era}/TF_{All}", 0.001, 2.999, true, 0.1, 110);
       TString outputBase = "LostLepton"+tf[i]+"_Comparison" + sep[j];
       c->SetTitle(outputBase);
-      c->Print(l.config.outputdir+"/TransferFactor/"+outputBase+".pdf");
-      c->Print(l.config.outputdir+"/TransferFactor/"+outputBase+".C");
+      c->Print(l.config.outputdir+"/"+outputBase+".pdf");
+      c->Print(l.config.outputdir+"/"+outputBase+".C");
 
       TFile *output = new TFile(l.config.outputdir+"/"+outputBase+".root", "RECREATE");
       hAll->Write();

@@ -1,7 +1,7 @@
 #ifndef ESTTOOLS_LMPARAMETERS_HH_
 #define ESTTOOLS_LMPARAMETERS_HH_
 
-#include "../utils/EstHelper.hh"
+#include "../../utils/EstHelper.hh"
 
 namespace EstTools{
 
@@ -14,17 +14,17 @@ const TString outputdir = "LowMET";
 const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
 const TString lumistr = "136.722688";
-const TString lumistr_2018PreHEM  = "21.068576";
-const TString lumistr_2018PostHEM = "38.630913";
+const TString lumistrPreHEM  = "21.068576";
+const TString lumistrPostHEM = "38.630913";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
-const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30 && !Pass_exHEMVetoElec30))";
+const TString HEMVeto     = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30) + " + lumistrPreHEM + "*(!Pass_exHEMVeto30))";
+const TString HEMVetoElec = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistrPreHEM + "*(!Pass_exHEMVeto30 && !Pass_exHEMVetoElec30))";
 
 // lumi and base weight
-const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
-const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
+const TString wgtvar_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
 
 
 // photon trigger eff.
@@ -37,8 +37,8 @@ const TString phowgt = wgtvar;
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
 // Tag-and-Probe Lepton SF
-const TString lepvetowgt_2018 =         wgtvar_2018	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
-const TString lepselwgt_2018  =         wgtvar_2018_1LepCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
+const TString lepvetowgt =         wgtvar	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
+const TString lepselwgt  =         wgtvar_1LepCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
 
 // 1LCR Lepton SF
@@ -47,7 +47,7 @@ const TString vetoes = " && Pass_LeptonVeto";
 //const TString vetoes = " && ((nvetolep==0 && nvetotau==0) || (ismc && (ngoodgenele>0 || ngoodgenmu>0 || npromptgentau>0)))";
 
 // sr weight w/o top/W SF
-const TString lepvetowgt_no_wtopsf_2018 = lumistr_2018+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight";
+const TString lepvetowgt_no_wtopsf_2018 = lumistr+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight";
 
 // 1Lep LLB method
 bool ADD_LEP_TO_MET = false;
@@ -69,8 +69,8 @@ const TString trigLepCR = "";
 const TString onelepcrwgt  = lepselwgt;
 
 // qcd weights
-const TString qcdwgt_2018    = wgtvar_2018 + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
-const TString qcdvetowgt_2018  = lepvetowgt_2018 + "*qcdRespTailWeight";
+const TString qcdwgt_2018    = wgtvar + "*qcdRespTailWeight*Stop0l_trigger_eff_MET_loose_baseline_QCD";
+const TString qcdvetowgt_2018  = lepvetowgt + "*qcdRespTailWeight";
 
 // signal weights
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
@@ -666,31 +666,31 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",        "Data",          inputdir_2018+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("wjets",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("tW",            "tW",            inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("ttW",           "ttW",           inputdir_2018+"ttW",             lepselwgt_2018,      datasel + revert_vetoes);
-    //config.addSample("ttZ",           "ttZ",           inputdir_2018+"ttZ",           lepselwgt_2018,      datasel + revert_vetoes);
-    //config.addSample("diboson",       "Diboson",       inputdir_2018+"diboson",       lepselwgt_2018,      datasel + revert_vetoes);
-    //config.addSample("qcd",           "QCD",           inputdir_2018+"qcd_smear",     lepselwgt_2018,      datasel + revert_vetoes);
+    config.addSample("ttbar",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt,      datasel + revert_vetoes);
+    config.addSample("wjets",         "W+jets",        inputdir_2018+"wjets",           lepselwgt,      datasel + revert_vetoes);
+    config.addSample("tW",            "tW",            inputdir_2018+"tW",              lepselwgt,      datasel + revert_vetoes);
+    config.addSample("ttW",           "ttW",           inputdir_2018+"ttW",             lepselwgt,      datasel + revert_vetoes);
+    //config.addSample("ttZ",           "ttZ",           inputdir_2018+"ttZ",           lepselwgt,      datasel + revert_vetoes);
+    //config.addSample("diboson",       "Diboson",       inputdir_2018+"diboson",       lepselwgt,      datasel + revert_vetoes);
+    //config.addSample("qcd",           "QCD",           inputdir_2018+"qcd_smear",     lepselwgt,      datasel + revert_vetoes);
   }
 
   // samples for sr categories
-  config.addSample("ttbar-sr",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt_2018, datasel + vetoes);
-  config.addSample("wjets-sr",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt_2018, datasel + vetoes);
-  config.addSample("tW-sr",       "tW",            inputdir_2018+"tW",               lepvetowgt_2018, datasel + vetoes);
-  config.addSample("ttW-sr",      "ttW",           inputdir_2018+"ttW",              lepvetowgt_2018, datasel + vetoes);
-  config.addSample("ttZ-sr",      "ttZ",           inputdir_2018+"ttZ",              lepvetowgt_2018, datasel + vetoes);
-  config.addSample("diboson-sr",  "Diboson",       inputdir_2018+"diboson",          lepvetowgt_2018, datasel + vetoes);
+  config.addSample("ttbar-sr",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt, datasel + vetoes);
+  config.addSample("wjets-sr",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt, datasel + vetoes);
+  config.addSample("tW-sr",       "tW",            inputdir_2018+"tW",               lepvetowgt, datasel + vetoes);
+  config.addSample("ttW-sr",      "ttW",           inputdir_2018+"ttW",              lepvetowgt, datasel + vetoes);
+  config.addSample("ttZ-sr",      "ttZ",           inputdir_2018+"ttZ",              lepvetowgt, datasel + vetoes);
+  config.addSample("diboson-sr",  "Diboson",       inputdir_2018+"diboson",          lepvetowgt, datasel + vetoes);
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
-    config.addSample("ttbar-sr-int",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt_2018, datasel + vetoes);
-    config.addSample("wjets-sr-int",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt_2018, datasel + vetoes);
-    config.addSample("tW-sr-int",       "tW",            inputdir_2018+"tW",               lepvetowgt_2018, datasel + vetoes);
-    config.addSample("ttW-sr-int",      "ttW",           inputdir_2018+"ttW",              lepvetowgt_2018, datasel + vetoes);
-    config.addSample("ttZ-sr-int",      "ttZ",           inputdir_2018+"ttZ",              lepvetowgt_2018, datasel + vetoes);
-    config.addSample("diboson-sr-int",  "Diboson",       inputdir_2018+"diboson",          lepvetowgt_2018, datasel + vetoes);
+    config.addSample("ttbar-sr-int",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt, datasel + vetoes);
+    config.addSample("wjets-sr-int",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt, datasel + vetoes);
+    config.addSample("tW-sr-int",       "tW",            inputdir_2018+"tW",               lepvetowgt, datasel + vetoes);
+    config.addSample("ttW-sr-int",      "ttW",           inputdir_2018+"ttW",              lepvetowgt, datasel + vetoes);
+    config.addSample("ttZ-sr-int",      "ttZ",           inputdir_2018+"ttZ",              lepvetowgt, datasel + vetoes);
+    config.addSample("diboson-sr-int",  "Diboson",       inputdir_2018+"diboson",          lepvetowgt, datasel + vetoes);
   }
 
   config.sel = baseline;
@@ -768,19 +768,19 @@ BaseConfig qcdConfig(){
   config.addSample("qcd-withveto-sr",  "QCD",  inputdir_2018+"qcd_smear",       qcdvetowgt_2018,  datasel + vetoes + qcdSpikeRemovals);
 
   // qcdcr: other bkg subtraction
-  config.addSample("ttbar-cr",       "t#bar{t}",      inputdir_2018+"ttbar",        lepvetowgt_2018,  datasel + vetoes + dphi_invert);
-  config.addSample("wjets-cr",       "W+jets",        inputdir_2018+"wjets",        lepvetowgt_2018,  datasel + vetoes + dphi_invert);
-  config.addSample("tW-cr",          "tW",            inputdir_2018+"tW",           lepvetowgt_2018,  datasel + vetoes + dphi_invert);
-  config.addSample("ttW-cr",         "ttW",           inputdir_2018+"ttW",          lepvetowgt_2018,  datasel + vetoes + dphi_invert);
-  config.addSample("znunu-cr",       "Znunu",         inputdir_2018+"znunu",        lepvetowgt_2018,  datasel + vetoes + dphi_invert);
+  config.addSample("ttbar-cr",       "t#bar{t}",      inputdir_2018+"ttbar",        lepvetowgt,  datasel + vetoes + dphi_invert);
+  config.addSample("wjets-cr",       "W+jets",        inputdir_2018+"wjets",        lepvetowgt,  datasel + vetoes + dphi_invert);
+  config.addSample("tW-cr",          "tW",            inputdir_2018+"tW",           lepvetowgt,  datasel + vetoes + dphi_invert);
+  config.addSample("ttW-cr",         "ttW",           inputdir_2018+"ttW",          lepvetowgt,  datasel + vetoes + dphi_invert);
+  config.addSample("znunu-cr",       "Znunu",         inputdir_2018+"znunu",        lepvetowgt,  datasel + vetoes + dphi_invert);
 
   // onelepcr: norm correction for other bkg subtraction
   config.addSample("data-norm",           "Data",          inputdir_2018+"met", "1.0",      datasel + trigSR + revert_vetoes + dphi_cut);
-  config.addSample("ttbar-norm",     "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt_2018,   datasel + revert_vetoes + dphi_cut);
-  config.addSample("wjets-norm",     "W+jets",        inputdir_2018+"wjets",     lepselwgt_2018,   datasel + revert_vetoes + dphi_cut);
-  config.addSample("tW-norm",        "tW",            inputdir_2018+"tW",        lepselwgt_2018,   datasel + revert_vetoes + dphi_cut);
-  config.addSample("ttW-norm",       "ttW",           inputdir_2018+"ttW",       lepselwgt_2018,   datasel + revert_vetoes + dphi_cut);
-  config.addSample("qcd-norm",       "QCD",           inputdir_2018+"qcd_smear",       lepselwgt_2018,   datasel + revert_vetoes + dphi_cut + qcdSpikeRemovals);
+  config.addSample("ttbar-norm",     "t#bar{t}",      inputdir_2018+"ttbar",     lepselwgt,   datasel + revert_vetoes + dphi_cut);
+  config.addSample("wjets-norm",     "W+jets",        inputdir_2018+"wjets",     lepselwgt,   datasel + revert_vetoes + dphi_cut);
+  config.addSample("tW-norm",        "tW",            inputdir_2018+"tW",        lepselwgt,   datasel + revert_vetoes + dphi_cut);
+  config.addSample("ttW-norm",       "ttW",           inputdir_2018+"ttW",       lepselwgt,   datasel + revert_vetoes + dphi_cut);
+  config.addSample("qcd-norm",       "QCD",           inputdir_2018+"qcd_smear",       lepselwgt,   datasel + revert_vetoes + dphi_cut + qcdSpikeRemovals);
 
   // qcdsr
   config.addSample("qcd-sr",  "QCD",           inputdir_2018+"qcd_smear",       qcdwgt_2018,   datasel + qcdSpikeRemovals);
