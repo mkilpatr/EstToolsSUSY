@@ -15,7 +15,7 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.predtau();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -102,6 +102,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
+	  std::cout << binname << std::endl;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
@@ -112,7 +113,6 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
-	  if (bin == binname) continue;
           outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
