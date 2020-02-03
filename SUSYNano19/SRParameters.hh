@@ -19,12 +19,12 @@ TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
 const TString lumistr_2017 = "41.208034";
 const TString lumistr_2018PreHEM  = "21.068576";
-const TString lumistr_2018PostHEM = "38.630913";
+const TString lumistr_2018PostHEM = "59.699489";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30 && !Pass_exHEMVetoElec30))";
+const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
 const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2016
@@ -65,7 +65,7 @@ bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
+const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;

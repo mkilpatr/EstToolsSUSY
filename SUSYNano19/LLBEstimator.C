@@ -1,7 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "LowMET_Parameters.hh"
+#include "SRParameters.hh"
+//#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -37,9 +37,10 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
+  TString region = "TransferFactor_new";
+  llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
-  l.outputdir += "TransferFactor";
   l.predSeparate();
 
   l.printYields();
@@ -119,7 +120,7 @@ vector<Quantity> LLBPredSeparate(){
       auto h2017 = convertToHist(l.yields.at(tf[i]+"-2017"),"TF 2017" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
       auto h2018 = convertToHist(l.yields.at(tf[i]+"-2018"),"TF 2018" + to_string(i) + to_string(j),";Search Region;Transfer Factor", nullptr, start, manualBins);
 
-      prepHists({hAll, h2016, h2017, h2018}, false, false, false, {kBlack, kRed, kAzure+6, kSpring-9, 876, kBlue});
+      prepHists({hAll, h2016, h2017, h2018}, false, false, false, {kBlack, kRed, kAzure+6, 876});
 
       TH1* h2016_div = (TH1*)h2016->Clone();
       h2016_div->Divide(hAll);
@@ -223,9 +224,9 @@ vector<Quantity> LLBPredSeparate(){
       CMS_lumi(TFSumCanvas, 4, 10);
       TFSumCanvas->Update();   
  
-      TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum.pdf");
-      TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum.C");
-      TFSumCanvas->Print(l.config.outputdir+"/TransferFactor/" + outputBase +"_sum_canvas.root");
+      TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.pdf");
+      TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum.C");
+      TFSumCanvas->Print(l.config.outputdir+"/" + outputBase +"_sum_canvas.root");
 
       delete gROOT->FindObject("hTF_0"); 
       delete gROOT->FindObject("hTF_1");  
@@ -603,21 +604,21 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
 
-    lumistr = lumistr_2016;
-    z.setSelection(LLCR_LM, "llcr_lm_2016", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2016", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
+    //lumistr = lumistr_2016;
+    //z.setSelection(LLCR_LM, "llcr_lm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
-    lumistr = lumistr_2017;
-    z.setSelection(LLCR_LM, "llcr_lm_2017", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2017", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    //lumistr = lumistr_2017;
+    //z.setSelection(LLCR_LM, "llcr_lm_2017", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2017", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
+    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
     lumistr = "59.699489";
     z.setSelection(LLCR_LM, "llcr_lm_2018", "");

@@ -15,12 +15,12 @@ const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistrPreHEM  = "21.068576";
-const TString lumistrPostHEM = "38.630913";
+const TString lumistrPostHEM = "59.699489";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 const TString HEMVeto     = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30) + " + lumistrPreHEM + "*(!Pass_exHEMVeto30))";
-const TString HEMVetoElec = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistrPreHEM + "*(!Pass_exHEMVeto30 && !Pass_exHEMVetoElec30))";
+const TString HEMVetoElec = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistrPreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
 const TString wgtvar = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*restopSF";// //2018
@@ -54,7 +54,7 @@ bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 
 bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
-const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100";
+const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))";
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;

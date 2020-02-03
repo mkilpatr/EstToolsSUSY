@@ -18,7 +18,7 @@ const TString lumistr = "136.722688";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
 const TString lumistr_2017 = "41.208034";
 const TString lumistr_2018PreHEM  = "21.068576";
-const TString lumistr_2018PostHEM = "38.630913";
+const TString lumistr_2018PostHEM = "59.699489";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights
@@ -61,7 +61,7 @@ TString qcdrestail = "qcdRespTailWeight"; //qcd response tail
 // lumi and base weight
 TString jes_postfix = "";
 TString HEMVeto()     { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + "))";}
-TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + " && !Pass_exHEMVetoElec30" + jes_postfix + "))";}
+TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ")))";}
 
 TString isrwgtvar()     { return isrwgt; }
 TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
@@ -105,7 +105,7 @@ TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 TString lepsel = "ElecVeto";
-TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100"; }
+TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))"; }
 TString revert_vetoes_sep() {return " && Pass_" + lepsel + " == 0"; }
 //TString revert_vetoes_() {return " && Pass_MuonVeto == 0"; }
 //TString revert_vetoes_()  {return " && Pass_IsoTrkVeto == 0 && Pass_TauVeto == 0"; }
