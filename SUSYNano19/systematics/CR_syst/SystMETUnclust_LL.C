@@ -101,7 +101,6 @@ void SystMETUnclust_LL(std::string outfile_path = "values_unc_cb_ll_metres.conf"
       }
 
       unsigned ibin = 0;
-      auto bin = "";
       for (auto &cat_name : config.categories){
         auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
@@ -118,11 +117,9 @@ void SystMETUnclust_LL(std::string outfile_path = "values_unc_cb_ll_metres.conf"
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
-          if (bin == binname) continue;
 	  outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
-	  bin = binname;
         }
       }
     }

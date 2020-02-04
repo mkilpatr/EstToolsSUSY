@@ -86,7 +86,6 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_cb_ll_softbtag.conf"
       }
 
       unsigned ibin = 0;
-      auto bin = "";
       for (auto &cat_name : config.categories){
         auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
@@ -107,11 +106,9 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_cb_ll_softbtag.conf"
 	    uncs_Up.at(ibin).value = 1;
 	    uncs_Down.at(ibin).value = 1;
 	  }
-          if (bin == binname) continue;
 	  outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
-	  bin = binname;
         }
       }
     }

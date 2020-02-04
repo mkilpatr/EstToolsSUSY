@@ -125,7 +125,7 @@ public:
 
     sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
     sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
-    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-eventsf-sr") - yields.at("ttbarplusw-event-sr")))/yields.at("ttbarplusw-sr"); 
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
 
 
     // _SLep = N(Data,CR)/N(MC,CR)
@@ -309,7 +309,7 @@ public:
 
     sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017-eventsf-sr", "ttZ-2018-eventsf-sr"}, "ttZ-eventsf-sr");
     sumYields({"diboson-2016-eventsf-sr", "diboson-2017-eventsf-sr", "diboson-2018-eventsf-sr"}, "diboson-eventsf-sr");
-    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-eventsf-sr") - yields.at("ttbarplusw-event-sr")))/yields.at("ttbarplusw-sr"); 
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
     cout << "lepSF: " << yields["lepSF_"] << endl;
 
     // _SLep = N(Data,CR)/N(MC,CR)

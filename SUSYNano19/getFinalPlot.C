@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binmet_"){
+void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -24,7 +24,11 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   vector<TString> siglabels = {"T2tt(1000,0)"};
   vector<TString> datalabel = {"Observed"};
 
-  vector<TString> split = {"lm_nb0",
+  vector<TString> split = {"lm",
+			   "hm_nb1_bins",
+			   "hm_nbeq2",
+			   "hm_nb3",
+			   "lm_nb0",
 			   "lm_nb1",
 			   "lm_nb2",
 			   "hm_nb[0-9]_lowmtb",
@@ -38,6 +42,10 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
 			   "hm_nb3_highmtb_1tag",
 			   "hm_nb3_highmtb_taggeq2"};
   vector<TString> splitlabels = {
+      "#splitline{Low #Deltam}{}",
+      "#splitline{High #Deltam, N_{b}=1, #geq 2}{}",
+      "#splitline{High #Deltam, N_{b}=2}{}",
+      "#splitline{High #Deltam, N_{b} #geq 3}{}",
       "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{p_{T}(ISR) #geq 500 GeV}",
       "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{}",
       "#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{300 #leq p_{T}(ISR) < 500, #geq 500}",
@@ -59,6 +67,10 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   tl.SetTextSize(0.025);
   tl.SetTextAlign(31);
   vector<std::function<void()>> drawRegionLabels {
+    [&tl](){},
+    [&tl](){},
+    [&tl](){},
+    [&tl](){},
 	     //LM bins
     [&tl](){ tl.DrawLatexNDC(0.3, 0.70, "2-5 jets"); 
 	     tl.DrawLatexNDC(0.5, 0.70, "#geq 6 jets"); 
@@ -130,6 +142,22 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
+//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(60,   LOG_YMIN, 60,  2000); 
+//								    drawLine(68,   LOG_YMIN, 68,  2000); 
+//								    drawLine(98,   LOG_YMIN, 98,  2000); 
+//								    drawLine(68,   LOG_YMIN, 68,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
+//								    drawLine(8,    LOG_YMIN, 8,   2000); 
+//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
+//								    drawLine(8,    LOG_YMIN, 8,   2000); 
+//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
 	//LM bins
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,   LOG_YMIN, 4,   2000); 
 								    drawLine(8,   LOG_YMIN, 8,   20000); 
@@ -204,19 +232,19 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
   //prepHists({hdata}, false, false, false, {kBlack});
   prepHists(hsigs, false, false, false, {kRed});
-  setBinLabels(pred[0], xlabels);
-  setBinLabels(pred[1], xlabels);
-  setBinLabels(pred[2], xlabels);
-  setBinLabels(pred[3], xlabels);
-  setBinLabels(pred[4], xlabels);
-  setBinLabels(hsigs[0], xlabels);
-  //hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  pred[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  pred[1]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  pred[2]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  pred[3]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  pred[4]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
-  hsigs[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //setBinLabels(pred[0], xlabels);
+  //setBinLabels(pred[1], xlabels);
+  //setBinLabels(pred[2], xlabels);
+  //setBinLabels(pred[3], xlabels);
+  //setBinLabels(pred[4], xlabels);
+  //setBinLabels(hsigs[0], xlabels);
+  ////hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //pred[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //pred[1]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //pred[2]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //pred[3]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //pred[4]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
+  //hsigs[0]->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
   // plot raw MC
 //  TH1 *hmctotal = nullptr;
@@ -239,6 +267,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
     for (auto &cat_name : srbins){
       auto nbins = catMap.at(cat_name).bin.nbins;
       if (cat_name.Contains(TRegexp(region)) || 
+	 (TString(region).Contains("hm_nb1_bins") && (cat_name.Contains("hm_nb1") || cat_name.Contains("highmtb_nt0_nrt0_nw0") || cat_name.Contains("lowmtb_nj7_nrtgeq1"))) || //hm_nb1_bins
 	 (TString(region).Contains("otherptisr") && (cat_name.Contains("nb1_nivf0_lowmtb_highptisr_lowptb") || cat_name.Contains("nb1_nivf0_lowmtb_highptisr_medptb") || cat_name.Contains("medptisr"))) || //lm_nb1_otherptisr
 	 (TString(region).Contains("nb1_highmtb_1tag") && (cat_name.Contains("ntgeq1_nrt0_nw0") || cat_name.Contains("nt0_nrt0_nwgeq1"))) || //hm_nb1_highmtb_1tag  
 	 (TString(region).Contains("hm_nb1_highmtb_nrt_2tags") && (cat_name.Contains("hm_nb1_highmtb_nt0_nrtgeq1_nw0") || cat_name.Contains("ntgeq1_nrt0_nwgeq1") || cat_name.Contains("nt0_nrtgeq1_nwgeq1") || cat_name.Contains("ntgeq1_nrtgeq1_nw0"))) || //hm_nb1_highmtb_nrt_2tags

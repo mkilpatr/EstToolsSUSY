@@ -11,30 +11,8 @@
 //#include "Syst_LowMET_Parameters.hh"
 
 #include "../../EstMethods/LLBEstimator.hh"
-#include "../../EstMethods/ZnunuEstimator.hh"
-#include "../../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
-
-vector<Quantity> getZnunuPred(){
-  auto phocfg = phoConfig();
-  ZnunuEstimator z(phocfg);
-  z.zllcr_cfg = zllConfig();
-  z.zll_normMap = normMap;
-  z.phocr_normMap = phoNormMap;
-  z.pred();
-  z.printYields();
-  return z.yields.at("_TF");
-}
-
-vector<Quantity> getQCDPred(){
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-  return q.yields.at("_TF");
-}
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
@@ -45,9 +23,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   return {
-    {"ttbarplusw", l.yields.at("_TF")},
-    {"ttZ",        l.yields.at("ttZ-sr")},
-    {"diboson",    l.yields.at("diboson-sr")},
+    {"ttbarplusw", l.yields.at("ttbarplusw-sr")},
   };
 }
 
@@ -60,8 +36,6 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_wtopfrac.conf"){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
-  inputdir = "/uscms/home/hqu/nobackup/trees/0206_lepSF";
-
   // nominal
   {
     sys_name = "nominal";
@@ -69,40 +43,61 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_wtopfrac.conf"){
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ttbarNorm +20%
+  // ttbarNorm +6%
   {
-    sys_name = "ttbarNorm";
-    mcwgt = "weight*((process==2)*1.2+(process!=2)*1.0)";
+    sys_name = "ttbarNorm_Up";
+    ttbarxsec = "1.06";
+    wjetsxsec = "1.00";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // wjetsNorm +20%
   {
-    sys_name = "wjetsNorm";
-    mcwgt = "weight*((process==3)*1.2+(process!=3)*1.0)";
+    sys_name = "ttbarNorm_Down";
+    ttbarxsec = "0.94";
+    wjetsxsec = "1.00";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
+
+  //// wjetsNorm +4%
+  //{
+  //  sys_name = "wjetsNorm_Up";
+  //  ttbarxsec = "1.00";
+  //  wjetsxsec = "1.04";
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
+
+  //{
+  //  sys_name = "wjetsNorm_Down";
+  //  ttbarxsec = "1.00";
+  //  wjetsxsec = "0.96";
+  //  auto llb = getLLBPred();
+  //  for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
+  //}
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
   auto config = lepConfig();
 
-  for (auto &bkg : bkgnames){
+    for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
-      if(sPair.first.EndsWith("_DOWN")) continue; // ignore down: processed at the same time as up
-      vector<Quantity> uncs;
+      if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
+      std::pair<vector<Quantity>, vector<Quantity>> uncs;
+      vector<Quantity> uncs_Up, uncs_Down;
 
-      if(sPair.first.EndsWith("_UP")){
+      if(sPair.first.EndsWith("_Up")){
         auto varup = sPair.second / nominal_pred;
-        auto name_down = TString(sPair.first).ReplaceAll("_UP", "_DOWN");
-        auto vardown = proc_syst_pred[bkg].at(name_down) / nominal_pred;
-        uncs = Quantity::combineUpDownUncs(varup, vardown);
-      }else{
-        uncs = sPair.second / nominal_pred;
+        auto name_Down = TString(sPair.first).ReplaceAll("_Up", "_Down");
+        auto vardown = proc_syst_pred[bkg].at(name_Down) / nominal_pred;
+        uncs = Quantity::combineUpDownSepUncs(varup, vardown);
+	uncs_Up = uncs.first;
+	uncs_Down = uncs.second;
+      } else{
+        uncs_Down = sPair.second / nominal_pred;
       }
 
       unsigned ibin = 0;
@@ -112,17 +107,18 @@ void SystFractionWTTbar(std::string outfile_path = "values_unc_wtopfrac.conf"){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-          auto uncType = TString(sPair.first).ReplaceAll("_UP", ""); // get rid of "up"
-//          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-          double val = uncs.at(ibin).value;
-          if (val>2 || std::isnan(val)) {
-            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-            val = 2;
-          }else if (val<0.5){
-            cout << "Invalid unc, set to -100%: " << binname << "\t" << uncType << "\t" << bkg << "\t" << uncs.at(ibin).value << endl;
-            val = 0.001;
+          auto uncType_Up   = TString(sPair.first); 
+          auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
+	  if (std::isnan(uncs_Up.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+            uncs_Up.at(ibin).value = 2;
           }
-          outfile << binname << "\t" << uncType << "\t" << bkg << "\t" << val << endl;
+	  if (std::isnan(uncs_Down.at(ibin).value)) {
+            cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
+            uncs_Down.at(ibin).value = 0.001;
+          }
+          outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+          outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
         }
       }
