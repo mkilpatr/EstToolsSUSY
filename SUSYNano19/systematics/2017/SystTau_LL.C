@@ -15,7 +15,7 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2017();
   LLBEstimator l(llbcfg);
-  l.predYeartau();
+  l.predYearlep();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -41,7 +41,6 @@ void SystTau_LL(std::string outfile_path = "values_unc_2017_ll_tau.conf"){
   // nominal
   {
     sys_name = "nominal";
-    noleptauvetowgt = "1"; 
     EstTools::lepsel = "TauVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
@@ -53,7 +52,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_2017_ll_tau.conf"){
   {
     sys_name = "eff_tau_Up";
     tauvetowgt = "(TauSRSF + TauSRSF_Up)";
-    septauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    septauvetowgt = "(TauSRSF_Up)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -62,7 +61,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_2017_ll_tau.conf"){
   {
     sys_name = "eff_tau_Down";
     tauvetowgt = "(TauSRSF - TauSRSF_Down)";
-    septauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    septauvetowgt = "(TauSRSF_Down)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
