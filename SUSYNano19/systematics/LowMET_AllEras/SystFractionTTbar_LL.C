@@ -1,4 +1,5 @@
 /*
+ * Znunu.C
  *
  *  Created on: Oct 23, 2019
  *      Author: mkilpatr
@@ -12,40 +13,21 @@
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
   LLBEstimator l(llbcfg);
   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
+
   return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
+    {"ttbarplusw", l.yields.at("ttbarplusw-sr")},
   };
 }
 
-void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf"){
+
+void SystFractionTTbar_LL(std::string outfile_path = "values_unc_val_ll_ttbarfrac.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -55,25 +37,25 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf")
 
   // nominal
   {
-    //inputdir = ".";
     sys_name = "nominal";
-    EstTools::jes_postfix = "";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // trigger - up
+  // ttbarNorm +6%
   {
-    sys_name = "trigger_eff_Up";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "ttbarNorm_Up";
+    ttbarxsec = "1.06";
+    wjetsxsec = "1.00";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
-    sys_name = "trigger_eff_Down";
-    triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
-    auto llb = getLLBPred(sys_name);
+    sys_name = "ttbarNorm_Down";
+    ttbarxsec = "0.94";
+    wjetsxsec = "1.00";
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
@@ -81,7 +63,7 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf")
   ofstream outfile(outfile_path);
   auto config = lepConfig();
 
-  for (auto &bkg : bkgnames){
+    for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
