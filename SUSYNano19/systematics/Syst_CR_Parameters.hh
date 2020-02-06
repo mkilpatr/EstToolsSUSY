@@ -14,9 +14,9 @@ TString outputdir() {return "syst/"+sys_name;}
 
 const TString datadir = "nanoaod_data_all_skim_011020_limits/";
 
-const TString lumistr = "136.722688";
+const TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
-const TString lumistr_2017 = "41.208034";
+const TString lumistr_2017 = "41.486136";
 const TString lumistr_2018PreHEM  = "21.068576";
 const TString lumistr_2018PostHEM = "59.699489";
 
