@@ -49,7 +49,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_cb_ll_restoptag.conf")
 
   // restoptag up
   {
-    sys_name = "eff_restop_Up";
+    sys_name = "eff_restoptag_Up";
     restopwgt = "(restopSF + restopSF_Up)";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -58,7 +58,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_cb_ll_restoptag.conf")
 
   // restoptag down
   {
-    sys_name = "eff_restop_Down";
+    sys_name = "eff_restoptag_Down";
     restopwgt = "(restopSF - restopSF_Down)";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();

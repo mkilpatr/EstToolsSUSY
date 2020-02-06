@@ -49,7 +49,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_2017_ll_toptag.conf"){
 
   // toptag up
   {
-    sys_name = "eff_toptag_err_Up";
+    sys_name = "eff_toptag_Up";
     sdmvawgt = "(TopSF + TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -58,7 +58,7 @@ void SystTop_LL(std::string outfile_path = "values_unc_2017_ll_toptag.conf"){
 
   // toptag down 
   {
-    sys_name = "eff_toptag_err_Down";
+    sys_name = "eff_toptag_Down";
     sdmvawgt = "(TopSF - TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();

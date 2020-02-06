@@ -64,7 +64,7 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_2016_ll_trigger.conf"
 
   // trigger - up
   {
-    sys_name = "trigger_eff_Up";
+    sys_name = "trigger_err_Up";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

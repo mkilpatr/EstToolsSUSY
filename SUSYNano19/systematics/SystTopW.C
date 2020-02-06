@@ -63,7 +63,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // wtag up
   {
-    sys_name = "eff_wtag_err_up";
+    sys_name = "eff_wtag_up";
     wtagwgt = "(WtagSF + WtagSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -73,7 +73,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // wtag down
   {
-    sys_name = "eff_wtag_err_down";
+    sys_name = "eff_wtag_down";
     wtagwgt = "(WtagSF - WtagSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -83,7 +83,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // toptag up
   {
-    sys_name = "eff_toptag_err_up";
+    sys_name = "eff_toptag_up";
     sdmvawgt = "(TopSF + TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -93,7 +93,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // toptag down 
   {
-    sys_name = "eff_toptag_err_down";
+    sys_name = "eff_toptag_down";
     sdmvawgt = "(TopSF - TopSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -103,7 +103,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // restoptag up
   {
-    sys_name = "eff_restop_up";
+    sys_name = "eff_restoptag_up";
     restopwgt = "(restopSF + restopSF_Up)";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -113,7 +113,7 @@ void SystTopW(std::string outfile_path = "values_unc_wtoptag.conf"){
 
   // restoptag down
   {
-    sys_name = "eff_restop_down";
+    sys_name = "eff_restoptag_down";
     restopwgt = "(restopSF - restopSF_Down)";
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();

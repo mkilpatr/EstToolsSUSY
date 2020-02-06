@@ -44,7 +44,7 @@ void SystElectron_QCD(std::string outfile_path = "values_unc_qcd_electron.conf")
 
   // ele - up
   {
-    sys_name = "eff_e_err_up";
+    sys_name = "eff_e_up";
     elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -52,7 +52,7 @@ void SystElectron_QCD(std::string outfile_path = "values_unc_qcd_electron.conf")
 
   // ele - down
   {
-    sys_name = "eff_e_err_down";
+    sys_name = "eff_e_down";
     elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();

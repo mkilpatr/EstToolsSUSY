@@ -42,14 +42,14 @@ void SystSoftBTag_QCD(std::string outfile_path = "values_unc_qcd_softbtag.conf")
 
   // soft btag - up
   {
-    sys_name = "ivfunc_err_up";
+    sys_name = "ivfunc_up";
     softbwgt = "(SoftBSF + SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // soft btag - down
   {
-    sys_name = "ivfunc_err_down";
+    sys_name = "ivfunc_down";
     softbwgt = "(SoftBSF - SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }

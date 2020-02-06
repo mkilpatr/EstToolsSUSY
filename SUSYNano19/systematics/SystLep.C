@@ -64,7 +64,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
   // ele - up
   {
-    sys_name = "eff_e_err_up";
+    sys_name = "eff_e_up";
     elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -74,7 +74,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
   // ele - down
   {
-    sys_name = "eff_e_err_down";
+    sys_name = "eff_e_down";
     elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -85,7 +85,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
   // -----------------------
   // mu - up
   {
-    sys_name = "eff_mu_up";
+    sys_name = "err_mu_up";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -95,7 +95,7 @@ void SystLep(std::string outfile_path = "values_unc_lepton.conf"){
 
   // mu - up
   {
-    sys_name = "eff_mu_down";
+    sys_name = "err_mu_down";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();

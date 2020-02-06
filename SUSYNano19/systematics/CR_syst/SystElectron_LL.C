@@ -50,7 +50,7 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
 
   // ele - up
   {
-    sys_name = "eff_e_err_Up";
+    sys_name = "eff_e_Up";
     elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
     auto llb = getLLBPred();
@@ -59,7 +59,7 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
 
   // ele - down
   {
-    sys_name = "eff_e_err_Down";
+    sys_name = "eff_e_Down";
     elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
     auto llb = getLLBPred();

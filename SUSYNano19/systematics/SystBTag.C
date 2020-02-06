@@ -80,7 +80,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
 
   // soft btag - up
   {
-    sys_name = "ivfunc_err_up";
+    sys_name = "ivfunc_up";
     btagwgt = "BTagWeight";
     softbwgt = "(SoftBSF + SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
@@ -90,7 +90,7 @@ void SystBTag(std::string outfile_path = "values_unc_btag.conf"){
 
   // soft btag - down
   {
-    sys_name = "ivfunc_err_down";
+    sys_name = "ivfunc_down";
     softbwgt = "(SoftBSF - SoftBSFErr)";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
     auto llb = getLLBPred();

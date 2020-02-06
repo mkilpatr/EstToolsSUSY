@@ -47,7 +47,7 @@ if args.config == "":
     runmacro={macro}
     location={location}
     sysname={sysname}
-    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, sysname=args.sysname))
+    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, location=args.location, sysname=args.sysname))
     
     if args.submittype == "lsf" or args.submittype == "condor" :
         script.write("""
@@ -63,8 +63,8 @@ if args.config == "":
     eosmkdir -p /store/user/mkilpatr/13TeV/$outputdir
     
     cp {rootlogon} $workdir
-    cp {pathtomacro}/$runmacro $workdir
-    """.format(pathtomacro=args.path,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
+    cp {pathtomacro}/{location}/$runmacro $workdir
+    """.format(pathtomacro=args.path,runscript=args.script,stype=args.submittype,location=args.location,rootlogon=args.rootlogon))
     if "No" in args.tar:
     	script.write("""
     	    
@@ -152,8 +152,8 @@ if [ ! "$CMSSW_BASE" ]; then
 fi
         
 cp {rootlogon} $workdir
-cp {pathtomacro}/$runmacro $workdir
-        """.format(pathtomacro=args.path,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
+cp {pathtomacro}/{location}/$runmacro $workdir
+        """.format(pathtomacro=args.path,location=args.location,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
 
         if args.submittype == "interactive" :
             scriptSep.write("""root -l -q -b {rootlogon} {pathtomacro}/$runmacro+\()\n""".format(

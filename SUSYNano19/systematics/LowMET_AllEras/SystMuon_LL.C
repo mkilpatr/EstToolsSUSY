@@ -51,7 +51,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_val_ll_muon.conf"){
   // -----------------------
   // mu - up
   {
-    sys_name = "eff_mu_Up";
+    sys_name = "err_mu_Up";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;
@@ -61,7 +61,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_val_ll_muon.conf"){
 
   // mu - up
   {
-    sys_name = "eff_mu_Down";
+    sys_name = "err_mu_Down";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;

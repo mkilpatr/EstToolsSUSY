@@ -49,7 +49,7 @@ void SystWtag_LL(std::string outfile_path = "values_unc_2018_ll_wtag.conf"){
 
   // wtag up
   {
-    sys_name = "eff_wtag_err_Up";
+    sys_name = "eff_wtag_Up";
     wtagwgt = "(WtagSF + WtagSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -58,7 +58,7 @@ void SystWtag_LL(std::string outfile_path = "values_unc_2018_ll_wtag.conf"){
 
   // wtag down
   {
-    sys_name = "eff_wtag_err_Down";
+    sys_name = "eff_wtag_Down";
     wtagwgt = "(WtagSF - WtagSFErr)"; 
     cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();

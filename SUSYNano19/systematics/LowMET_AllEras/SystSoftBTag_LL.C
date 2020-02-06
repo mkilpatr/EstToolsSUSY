@@ -48,7 +48,7 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_val_ll_softbtag.conf
 
   // soft btag - up
   {
-    sys_name = "ivfunc_err_Up";
+    sys_name = "ivfunc_Up";
     softbwgt = "(SoftBSF + SoftBSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -56,7 +56,7 @@ void SystSoftBTag_LL(std::string outfile_path = "values_unc_val_ll_softbtag.conf
 
   // soft btag - down
   {
-    sys_name = "ivfunc_err_Down";
+    sys_name = "ivfunc_Down";
     softbwgt = "(SoftBSF - SoftBSFErr)";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
