@@ -49,8 +49,6 @@ void SystPU_LL(std::string outfile_path = "values_unc_cb_ll_pu.conf"){
   {
     sys_name = "PU_Weight_Up";
     puwgt = "puWeight_Up";
-    BtoEpuwgt = "17BtoEpuWeight_Up"; // PU
-    Fpuwgt = "17FpuWeight_Up"; // PU
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -58,8 +56,6 @@ void SystPU_LL(std::string outfile_path = "values_unc_cb_ll_pu.conf"){
   {
     sys_name = "PU_Weight_Down";
     puwgt = "puWeight_Down";
-    BtoEpuwgt = "17BtoEpuWeight_Down"; // PU
-    Fpuwgt = "17FpuWeight_Down"; // PU
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

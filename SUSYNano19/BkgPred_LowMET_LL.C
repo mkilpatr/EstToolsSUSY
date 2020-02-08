@@ -51,9 +51,15 @@ void BkgPred_LowMET_LL(){
 
   vector<TH1*> mc_low;
   mc_low.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
+  vector<TH1*> lepcr_low;
+  lepcr_low.push_back(convertToHist(l.yields.at("ttbarplusw"),"ttbarplusw_mc_cr",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
+  lepcr_low.push_back(convertToHist(l.yields.at("singlelep"),"data_cr",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
 
   vector<TH1*> mc_high;
   mc_high.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";High #Deltam Validation Region;Events", nullptr, 19, 24));
+  vector<TH1*> lepcr_high;
+  lepcr_high.push_back(convertToHist(l.yields.at("ttbarplusw"),"ttbarplusw_mc_cr",";High #Deltam Validation Region;Events", nullptr, 19, 24));
+  lepcr_high.push_back(convertToHist(l.yields.at("singlelep"),"data_cr",";High #Deltam Validation Region;Events", nullptr, 19, 24));
 
   auto sigcfg = sigConfig();
   BaseEstimator s(sigcfg);
@@ -62,7 +68,7 @@ void BkgPred_LowMET_LL(){
   auto hdata_low = convertToHist(s.yields.at("data-sr"),"data",";Low #Deltam Validation Region;Events", nullptr, 0, 19);
   auto hdata_high = convertToHist(s.yields.at("data-sr"),"data",";High #Deltam Validation Region;Events", nullptr, 19, 24);
 
-  auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs, const vector<TH1*> &vraw, TString outputBase, TString region = "") {
+  auto plot = [&](const vector<TH1*> &vpred, const vector<TGraphAsymmErrors*> &vgraphs, const vector<TH1*> &vraw, vector<TH1*> &vcr,TString outputBase, TString region = "") {
     // plot pred and data
     prepHists(vpred, false, false, true);
     if(region == "Low") prepHists({hdata_low}, false, false, false, {kBlack});
@@ -74,10 +80,13 @@ void BkgPred_LowMET_LL(){
       if (!hmctotal) hmctotal = (TH1*) hmc->Clone();
       else hmctotal->Add(hmc);
     }
+
+    vcr.push_back(hmctotal);
+    prepHists(vcr, false, false, false, {kRed, kMagenta, kOrange});
+
     TH1* hPredRawMC = (TH1*)vpred[0]->Clone("hPredRawMC");
     hPredRawMC->Divide(hmctotal);
     hPredRawMC->SetLineWidth(2);
-    prepHists({hmctotal}, false, false, false, {kOrange});
     prepHists({hPredRawMC}, false, false, false, {kOrange});
 
     auto leg = prepLegends(vpred, bkglabels, "F");
@@ -86,8 +95,8 @@ void BkgPred_LowMET_LL(){
     leg->SetTextSize(0.03);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = nullptr;
-    if(region == "Low")       c = drawStackAndRatio(vpred, hdata_low, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {hmctotal}, nullptr, {hPredRawMC});
-    else if(region == "High") c = drawStackAndRatio(vpred, hdata_high, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, {hmctotal}, nullptr, {hPredRawMC});
+    if(region == "Low")       c = drawStackAndRatio(vpred, hdata_low, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, vcr, nullptr, {hPredRawMC});
+    else if(region == "High") c = drawStackAndRatio(vpred, hdata_high, leg, true, "N_{obs}/N_{exp}", 0.001, 2.999, 0, -1, vcr, nullptr, {hPredRawMC});
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);
     c->Print(s.config.outputdir+"/" + outputBase +".pdf");
@@ -104,8 +113,8 @@ void BkgPred_LowMET_LL(){
     output->Close();
   };
 
-  plot(altpred_low, altgraphs_low, mc_low, "std_pred_trad_LM", "Low");
-  plot(altpred_high, altgraphs_high, mc_high, "std_pred_trad_HM", "High");
+  plot(altpred_low, altgraphs_low, mc_low, lepcr_low, "std_pred_trad_LM", "Low");
+  plot(altpred_high, altgraphs_high, mc_high, lepcr_high, "std_pred_trad_HM", "High");
 
 
   cout << "\n\n Traditional \n";
