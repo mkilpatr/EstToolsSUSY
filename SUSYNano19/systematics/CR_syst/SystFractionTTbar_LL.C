@@ -22,7 +22,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   return {
-    {"ttbarplusw", l.yields.at("ttbarplusw-sr")},
+    {"ttbarplusw", l.yields.at("ttbarplusw")},
   };
 }
 
@@ -84,11 +84,11 @@ void SystFractionTTbar_LL(std::string outfile_path = "values_unc_cb_ll_ttbarfrac
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = "bin_lepcr_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {

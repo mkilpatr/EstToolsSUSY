@@ -112,8 +112,6 @@ bool ICHEPCR = false;
 TString lepsel = "ElecVeto";
 TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))"; }
 TString revert_vetoes_sep() {return " && Pass_" + lepsel + " == 0"; }
-//TString revert_vetoes_() {return " && Pass_MuonVeto == 0"; }
-//TString revert_vetoes_()  {return " && Pass_IsoTrkVeto == 0 && Pass_TauVeto == 0"; }
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
