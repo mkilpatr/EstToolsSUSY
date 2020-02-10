@@ -85,6 +85,8 @@ bool doLepSyst = false;
 //TString lepselwgt()  {return wgtvar();}
 //const TString vetoes = " && nvetolep==0 && nvetotau==0";
 
+TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt+"*("+nolepmuonvetowgt+"-"+sepmuonvetowgt+")*("+nolepelevetowgt+"-"+sepelevetowgt+")*("+noleptauvetowgt+"-"+septauvetowgt+")";}
+
 TString seplepvetowgt()      		{ return wgtvar() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
 TString seplepvetowgt_2017()      	{ return wgtvar_2017() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}
 TString seplepvetowgt_2018()      	{ return wgtvar_2018() +"*"+triggerwgt+"*"+sepmuonvetowgt+"*"+sepelevetowgt+"*"+septauvetowgt;}

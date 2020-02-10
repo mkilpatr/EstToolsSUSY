@@ -19,7 +19,8 @@ rt.gROOT.SetBatch(True)
 uncdir = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
 uncfiles=[
- uncdir + 'values_unc_ll.conf',
+ uncdir + 'values_unc_sb_ll.conf',
+ uncdir + 'values_unc_cb_ll.conf',
  uncdir + 'values_unc_zinv.conf',
  uncdir + 'values_unc_qcd_sb.conf',
  uncdir + 'values_unc_qcd_cr.conf',
@@ -220,169 +221,6 @@ binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550',
     'bin_hm_nb3_highmtb_nt0_nrt2_nw0_MET_pt350toinf', 
     'bin_hm_nb3_highmtb_nrtntnwgeq3_MET_pt250toinf')
 
-
-binMap={
-'lm_nb0_nivf0_highptisr_nj2to5': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf==0 && ak8isrpt>500 && njets>=2 && njets<=5',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb0_nivf0_highptisr_nj6': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf==0 && ak8isrpt>500 && njets>=6',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb0_nivf1_highptisr_nj2to5': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf>=1 && ak8isrpt>500 && njets>=2 && njets<=5',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb0_nivf1_highptisr_nj6': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==0 && nivf>=1 && ak8isrpt>500 && njets>=6',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb1_nivf0_lowmtb_lowptisr_lowptb': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && csvj1pt<40',
-  'var': 'met',
-  'bin': [300, 400, 500, 600, 1000]
-  },
-'lm_nb1_nivf0_lowmtb_lowptisr_medptb': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && csvj1pt>40 && csvj1pt<70',
-  'var': 'met',
-  'bin': [300, 400, 500, 600, 1000]
-  },
-'lm_nb1_nivf0_lowmtb_highptisr_lowptb': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>500 && csvj1pt<40',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb1_nivf0_lowmtb_highptisr_medptb': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf==0 && mtcsv12met<175 && ak8isrpt>500 && csvj1pt>40 && csvj1pt<70',
-  'var': 'met',
-  'bin': [450, 550, 650, 750, 1000]
-  },
-'lm_nb1_nivf1_lowmtb_lowptb': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets==1 && nivf>=1 && mtcsv12met<175 && csvj1pt<40',
-  'var': 'met',
-  'bin': [300, 400, 500, 1000]
-  },
-'lm_nb2_lowmtb_lowptisr_lowptb12': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)<80',
-  'var': 'met',
-  'bin': [300, 400, 500, 1000]
-  },
-'lm_nb2_lowmtb_lowptisr_medptb12': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)>80 && (csvj1pt+csvj2pt)<140',
-  'var': 'met',
-  'bin': [300, 400, 500, 1000]
-  },
-'lm_nb2_lowmtb_lowptisr_highptb12_nj7': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>300 && ak8isrpt<500 && (csvj1pt+csvj2pt)>140 && njets>=7',
-  'var': 'met',
-  'bin': [300, 400, 500, 1000]
-  },
-'lm_nb2_lowmtb_highptisr_lowptb12': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)<80',
-  'var': 'met',
-  'bin': [450, 550, 650, 1000]
-  },
-'lm_nb2_lowmtb_highptisr_medptb12': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)>80 && (csvj1pt+csvj2pt)<140',
-  'var': 'met',
-  'bin': [450, 550, 650, 1000]
-  },
-'lm_nb2_lowmtb_highptisr_highptb12_nj7': {
-  'cut': 'ak8isrpt>200 && dphiisrmet>2 && nsdtop==0 && nsdw==0 && nrestop==0 && metovsqrtht>10 && dphij1met>0.5 && dphij2met>0.15 && dphij3met>0.15 && nbjets>=2 && mtcsv12met<175 && ak8isrpt>500 && (csvj1pt+csvj2pt)>140 && njets>=7',
-  'var': 'met',
-  'bin': [450, 550, 650, 1000]
-  },
-'hm_nb1_lowmtb_nj7_nrtgeq1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met<175 && njets>=7 && nrestop>=1',
-  'var': 'met',
-  'bin': [250, 300, 400, 500, 1000]
-  },
-'hm_nb2_lowmtb_nj7_nrtgeq1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met<175 && njets>=7 && nrestop>=1',
-  'var': 'met',
-  'bin': [250, 300, 400, 500, 1000]
-  },
-'hm_nb1_highmtb_nj7_nt0_nrt0_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && njets>=7 && nsdtop==0 && nrestop==0 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 1000]
-  },
-'hm_nb2_highmtb_nj7_nt0_nrt0_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && njets>=7 && nsdtop==0 && nrestop==0 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 1000]
-  },
-'hm_nb1_highmtb_ntgeq1_nrt0_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop>=1 && nrestop==0 && nsdw==0',
-  'var': 'met',
-  'bin': [550, 650, 1000]
-  },
-'hm_nb1_highmtb_nt0_nrtgeq1_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop==0 && nrestop>=1 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 650, 1000]
-  },
-'hm_nb1_highmtb_ntgeq1_nrt0_nwgeq1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop>=1 && nrestop==0 && nsdw>=1',
-  'var': 'met',
-  'bin': [550, 1000]
-  },
-'hm_nb1_highmtb_nt0_nrtgeq1_nwgeq1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets==1 && mtcsv12met>175 && nsdtop==0 && nrestop>=1 && nsdw>=1',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 1000]
-  },
-'hm_nb2_highmtb_nt1_nrt0_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==0 && nsdw==0',
-  'var': 'met',
-  'bin': [550, 650, 1000]
-  },
-'hm_nb2_highmtb_nt0_nrt1_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==1 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 650, 1000]
-  },
-'hm_nb2_highmtb_nt0_nrt0_nw1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==0 && nsdw==1',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 650, 1000]
-  },
-'hm_nb2_highmtb_nt1_nrt0_nw1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==0 && nsdw==1',
-  'var': 'met',
-  'bin': [550, 1000]
-  },
-'hm_nb2_highmtb_nt0_nrt1_nw1': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==1 && nsdw==1',
-  'var': 'met',
-  'bin': [250, 350, 450, 550, 1000]
-  },
-'hm_nb2_highmtb_nt1_nrt1_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==1 && nrestop==1 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 350, 450, 1000]
-  },
-'hm_nb2_highmtb_nt2_nrt0_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop>=2 && nrestop==0 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 1000]
-  },
-'hm_nb2_highmtb_nt0_nrt2_nw0': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop>=2 && nsdw==0',
-  'var': 'met',
-  'bin': [250, 1000]
-  },
-'hm_nb2_highmtb_nt0_nrt0_nw2': {
-  'cut': 'njets>=5 && nbjets>=1 && dphij1met>0.5 && dphij2met>0.5 && dphij3met>0.5 && dphij4met>0.5 && nbjets>=2 && mtcsv12met>175 && nsdtop==0 && nrestop==0 && nsdw>=2',
-  'var': 'met',
-  'bin': [250, 1000]
-  },
-}
 
 labelMap = {
     'lowptisr': r'($300\leq\ptisr<500$\,GeV)',
@@ -596,9 +434,9 @@ def readYields(pred_file):
             if bin not in yields:
                 yields[bin] = {}
                 statUnc_pieces[bin] = {}
-            y = h.GetBinContent(ibin)
-            e_up = h.GetBinError(ibin)
-            e_low = h.GetBinError(ibin)
+            y = h.GetBinContent(ibin+1)
+            e_up = h.GetBinError(ibin+1)
+            e_low = h.GetBinError(ibin+1)
             yields[bin][sample] = y
             if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
@@ -709,9 +547,6 @@ def makeTable():
         if sec not in sections:
             sections.append(sec)
             s += chunkHeader(sec)
-#         metbins = binMap[sec]['bin']
-#         print metbins
-#         idx = metbins.index(int(met))
         xlow, xhigh = met.lstrip('met').split('to')
         metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
         s += '%d & '%ibin
