@@ -15,7 +15,8 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.predlep();
+  if (EstTools::doLepSyst == true) l.predlep();
+  else				   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -41,9 +42,8 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
   // nominal
   {
     sys_name = "nominal";
-    nolepelevetowgt = "1"; 
-    EstTools::lepsel = "ElecVeto";
-    EstTools::doLepSyst = true;
+    nolepelevetowgt = "ElectronVetoSRSF"; 
+    sepelevetowgt = "ElectronVetoSRSF";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -51,8 +51,11 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
   // ele - up
   {
     sys_name = "eff_e_Up";
+    nolepelevetowgt = "1"; 
     elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -60,8 +63,10 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
   // ele - down
   {
     sys_name = "eff_e_Down";
+    nolepelevetowgt = "1"; 
     elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -91,11 +96,11 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.crCatMaps.at(cat_name);
+        auto &cat = config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-	  auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
@@ -106,7 +111,7 @@ void SystElectron_LL(std::string outfile_path = "values_unc_cb_ll_electron.conf"
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
-	  outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+          outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
         }

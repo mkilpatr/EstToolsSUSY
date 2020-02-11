@@ -15,7 +15,8 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   LLBEstimator l(llbcfg);
-  l.predlep();
+  if (EstTools::doLepSyst == true) l.predlep();
+  else				   l.pred();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -41,9 +42,8 @@ void SystMuon_LL(std::string outfile_path = "values_unc_cb_ll_muon.conf"){
   // nominal
   {
     sys_name = "nominal";
-    nolepmuonvetowgt = "1"; 
-    EstTools::lepsel = "MuonVeto";
-    EstTools::doLepSyst = true;
+    nolepmuonvetowgt = "MuonLooseSRSF";
+    sepmuonvetowgt = "MuonLooseSRSF";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -52,8 +52,10 @@ void SystMuon_LL(std::string outfile_path = "values_unc_cb_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Up";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
+    EstTools::lepsel = "MuonVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -62,6 +64,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_cb_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Down";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;
@@ -94,11 +97,11 @@ void SystMuon_LL(std::string outfile_path = "values_unc_cb_ll_muon.conf"){
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.crCatMaps.at(cat_name);
+        auto &cat = config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-	  auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
@@ -109,7 +112,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_cb_ll_muon.conf"){
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
-	  outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+          outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
         }
