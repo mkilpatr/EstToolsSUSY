@@ -15,7 +15,8 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2017();
   LLBEstimator l(llbcfg);
-  l.predYearlep();
+  if (EstTools::doLepSyst == true) l.predYearlep();
+  else				   l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -41,9 +42,8 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2017_ll_muon.conf"){
   // nominal
   {
     sys_name = "nominal";
-    nolepmuonvetowgt = "1"; 
-    EstTools::lepsel = "MuonVeto";
-    EstTools::doLepSyst = true;
+    nolepmuonvetowgt = "MuonLooseSRSF";
+    sepmuonvetowgt = "MuonLooseSRSF";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -52,8 +52,10 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2017_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Up";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
+    EstTools::lepsel = "MuonVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -62,6 +64,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2017_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Down";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;

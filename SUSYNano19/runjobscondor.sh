@@ -1,6 +1,6 @@
 #!/bin/bash
 
-runmacro=$1
+runmacro=${1}
 outputdir=$2
 scramdir=$3
 outdir=${4}
@@ -38,13 +38,14 @@ ls
 
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
-cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
+cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/
 echo $outdir
 
-root -l
-.L $runmacro+
+echo $runmacro
+root -l -b $runmacro+
+.L ${runmacro}+
 ${function}
-xrdcp -npr LLB/  root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}/.
+xrdcp -np -r LLB/*  root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}/.
 ls -a
 
 status=`echo $?`

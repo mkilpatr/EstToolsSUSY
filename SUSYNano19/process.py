@@ -16,7 +16,7 @@ parser.add_argument("-q", "--queue", dest="queue", default="1nh", help="LSF subm
 parser.add_argument("-a", "--tar", dest="tar", default="", help="add the tar command to the submit script")
 parser.add_argument("--output-suffix", dest="suffix", default="_tree.root", help="Suffix of output file. [Default: %(default)s. Use '.json' with dumpJSON.C.]")
 parser.add_argument("--jobdir", dest="jobdir", default="jobs", help="Job dir. [Default: %(default)s]")
-parser.add_argument("--path-to-rootlogon", dest="rootlogon", default="../../rootlogon.C", help="Path to the root logon file. [Default: %(default)s]")
+parser.add_argument("--path-to-rootlogon", dest="rootlogon", default="../rootlogon.C", help="Path to the root logon file. [Default: %(default)s]")
 #parser.print_help()
 args = parser.parse_args()
 

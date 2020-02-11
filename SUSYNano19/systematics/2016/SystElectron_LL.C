@@ -42,9 +42,8 @@ void SystElectron_LL(std::string outfile_path = "values_unc_2016_ll_electron.con
   // nominal
   {
     sys_name = "nominal";
-    nolepelevetowgt = "1"; 
-    EstTools::lepsel = "ElecVeto";
-    EstTools::doLepSyst = true;
+    nolepelevetowgt = "ElectronVetoSRSF"; 
+    sepelevetowgt = "ElectronVetoSRSF";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -52,8 +51,11 @@ void SystElectron_LL(std::string outfile_path = "values_unc_2016_ll_electron.con
   // ele - up
   {
     sys_name = "eff_e_Up";
+    nolepelevetowgt = "1"; 
     elewgt = "(ElectronVetoCRSF + ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF + ElectronVetoSRSFErr)";
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -61,8 +63,10 @@ void SystElectron_LL(std::string outfile_path = "values_unc_2016_ll_electron.con
   // ele - down
   {
     sys_name = "eff_e_Down";
+    nolepelevetowgt = "1"; 
     elewgt = "(ElectronVetoCRSF - ElectronVetoCRSFErr)";
     sepelevetowgt = "(ElectronVetoSRSF - ElectronVetoSRSFErr)";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
