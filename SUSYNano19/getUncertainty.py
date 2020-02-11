@@ -32,7 +32,7 @@ all_bin_unc_file = uncdir + 'values_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd')
 graph_names=('httbar_stack_5', 'hznunu_stack_4', 'httz_stack_2', 'hdiboson_stack_1', 'hqcd_stack_3')
-table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & rare & QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
+table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'hpred'
 
@@ -223,52 +223,52 @@ binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550',
 
 
 labelMap = {
-    'lowptisr': r'($300\leq\ptisr<500$\,GeV)',
-    'ntgeq1': r'($\nt\geq1$)',
-    'nt2': r'($\nt=2$)',
-    'nivf0': r'($\nsv=0$)',
-    'nivf1': r'($\nsv\geq1$)',
-    'nw2': r'($\nw=2$)',
-    'nj2to5': r'($2\leq\nj\leq5$)',
-    'nb2': r'($\nb\geq2$)',
-    'nbeq2': r'($\nb=2$)',
-    'nb3': r'($\nb\geq3$)',
-    'nb1': r'($\nb=1$)',
-    'nbgeq1': r'($\nb\geq1$)',
-    'nb0': r'($\nb=0$)',
-    'nrt2': r'($\nrt=2$)',
-    'medptisr': r'($\ptisr\geq300$\,GeV)',
-    'highptisr': r'($\ptisr\geq500$\,GeV)',
-    'nj7': r'($\nj\geq7$)',
-    'highptb': r'($\ptb\geq70$\,GeV)',
-    'hm': r'(high \dm)',
-    'nw0': r'($\nw=0$)',
-    'nwgeq1': r'($\nw\geq1$)',
-    'nw1': r'($\nw=1$)',
-    'nrt0': r'($\nrt=0$)',
-    'nrt1': r'($\nrt=1$)',
-    'lowptb': r'($\ptb<40$\,GeV)',
-    'medptb': r'($40<\ptb<70$\,GeV)',
-    'nt0': r'($\nt=0$)',
-    'lm': r'(low \dm)',
-    'lowptb12': r'($\ptbonetwo<80$\,GeV)',
-    'highptb12': r'($\ptbonetwo\geq140$\,GeV)',
-    'lowmtb': r'($\mtb<175$~\GeV)',
-    'highmtb': r'($\mtb\geq175$~\GeV)',
-    'nt1': r'($\nt=1$)',
-    'medptb12': r'($80<\ptbonetwo<140$\,GeV)',
-    'nrtgeq1': r'($\nrt\geq1$)',
-    'nj6': r'($\nj\geq6$)',
-    'nrtntnwgeq2': r'($(\nt+\nrt+\nw)\geq2$)',
-    'nrtntnwgeq3': r'($(\nt+\nrt+\nw)\geq3$)',
-    'htlt1000': r'($\Ht<1000$)',
-    'htgt1000': r'($\Ht\geq1000$)',
-    'ht1000to1500': r'($1000\leq\Ht<1500$)',
-    'htgt1500': r'($\Ht\geq1500$)',
-    'htlt1300': r'($\Ht<1300$)',
-    'htgt1300': r'($\Ht\geq1300$)',
-    'lmNoDPhi': r'(low $\Delta m$)',
-    'hmNoDPhi': r'(high $\Delta m$)',
+    'lowptisr': r'$300\leq\ptISR<500$\,GeV',
+    'ntgeq1': r'$\Nt\geq1$',
+    'nt2': r'$\Nt=2$',
+    'nivf0': r'$\Nsv=0$',
+    'nivf1': r'$\Nsv\geq1$',
+    'nw2': r'$\Nw=2$',
+    'nj2to5': r'$2\leq\Nj\leq5$',
+    'nb2': r'$\Nb\geq2$',
+    'nbeq2': r'$\Nb=2$',
+    'nb3': r'$\Nb\geq3$',
+    'nb1': r'$\Nb=1$',
+    'nbgeq1': r'$\Nb\geq1$',
+    'nb0': r'$\Nb=0$',
+    'nrt2': r'$\Nres=2$',
+    'medptisr': r'$\ptISR\geq300$\,GeV',
+    'highptisr': r'$\ptISR\geq500$\,GeV',
+    'nj7': r'$\Nj\geq7$',
+    'highptb': r'$\ptb\geq70$\,GeV',
+    'hm': r'high \dm',
+    'nw0': r'$\Nw=0$',
+    'nwgeq1': r'$\Nw\geq1$',
+    'nw1': r'$\Nw=1$',
+    'nrt0': r'$\Nres=0$',
+    'nrt1': r'$\Nres=1$',
+    'lowptb': r'$\ptb<40$\,GeV',
+    'medptb': r'$40<\ptb<70$\,GeV',
+    'nt0': r'$\Nt=0$',
+    'lm': r'low \dm',
+    'lowptb12': r'$\ptbonetwo<80$\,GeV',
+    'highptb12': r'$\ptbonetwo\geq140$\,GeV',
+    'lowmtb': r'$\mtb<175$~\GeV',
+    'highmtb': r'$\mtb\geq175$~\GeV',
+    'nt1': r'$\Nt=1$',
+    'medptb12': r'$80<\ptbonetwo<140$\,GeV',
+    'nrtgeq1': r'$\Nres\geq1$',
+    'nj6': r'$\Nj\geq6$',
+    'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw)\geq2$',
+    'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw)\geq3$',
+    'htlt1000': r'$\Ht<1000$',
+    'htgt1000': r'$\Ht\geq1000$',
+    'ht1000to1500': r'$1000\leq\Ht<1500$',
+    'htgt1500': r'$\Ht\geq1500$',
+    'htlt1300': r'$\Ht<1300$',
+    'htgt1300': r'$\Ht\geq1300$',
+    'lmNoDPhi': r'low $\Delta m$',
+    'hmNoDPhi': r'high $\Delta m$',
     'MET': r'',
     }
 
@@ -513,7 +513,7 @@ def makeYieldTable(output='pred_sr.tex'):
     s += table_header
     s += '\\hline\n'
     s += makeTable()
-    s += endTable()
+    s += endTable(135,182)
     print s
     with open(output, 'w') as f:
         print >> f, s
@@ -521,17 +521,24 @@ def makeYieldTable(output='pred_sr.tex'):
 def beginTable():
     '''Add a break between the bins to fit on each page'''
     s  = '\\begin{table}[!h]\n'
-    s += '\begin{center}\n'
-    s += '\\resizebox*{0.6\textwidth}{!}{\n'
+    s += '\\begin{center}\n'
+    s += '\\resizebox*{0.6\\textwidth}{!}{\n'
     s += '\\begin{tabular}{|c||c||c|c|c|c|c|c|}'
     s += '\\hline\n'
     return s
 
-def endTable():
+def endTable(ibini, ibinf):
     '''Add a break between the bins to fit on each page'''
+    label='tab:pred-lm'
+    if ibini == 53:
+        label='tab:pred-hm-1'
+    elif ibini == 94:
+        label='tab:pred-hm-2'
+    elif ibini == 135:
+        label='tab:pred-hm-3'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[]{}\n'
+    s += '\\caption[' + label + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of ttZ and diboson MC.}\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -542,6 +549,7 @@ def makeTable():
     sections=[]
     s=''
     ibin=0
+    ibini=0
     for bin in binlist: 
         sec, met= bin.lstrip('bin_').rsplit('_', 1)
         if sec not in sections:
@@ -565,9 +573,10 @@ def makeTable():
         s += ' & ' + str(int(n))
         s += ' \\\\ \n'
         if ibin == 53 or ibin == 94 or ibin == 135:
+	    s += endTable(ibini, ibin-1)
             s += beginTable()
             s += table_header
-	    s += endTable()
+	    ibini=ibin
     return s
 
 # formats the prediction nEvents +/- error
