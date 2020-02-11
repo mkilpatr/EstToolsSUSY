@@ -84,9 +84,8 @@ public:
     sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
     sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr"}, "ttbarplusw-sr");
 
-    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
     sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr"}, "ttbarplusw-eventsf-sr");
-    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + yields.at("ttbarplusw-eventsf-sr"))/yields.at("ttbarplusw-sr"); 
 
 
     // _SLep = N(Data,CR)/N(MC,CR)
@@ -169,15 +168,6 @@ public:
     sumYields({"ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"}, "ttZ-sr");
     sumYields({"diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr"}, "diboson-sr");
 
-    sumYields({"ttbar-2016-event-sr", "ttbar-2017-event-sr", "ttbar-2018-event-sr"}, "ttbar-event-sr");
-    sumYields({"wjets-2016-event-sr", "wjets-2017-event-sr", "wjets-2018-event-sr"}, "wjets-event-sr");
-    sumYields({"tW-2016-event-sr", "tW-2017-event-sr", "tW-2018-event-sr"}, "tW-event-sr");
-    sumYields({"ttW-2016-event-sr", "ttW-2017-event-sr", "ttW-2018-event-sr"}, "ttW-event-sr");
-    sumYields({"ttbar-event-sr", "wjets-event-sr", "tW-event-sr", "ttW-event-sr"}, "ttbarplusw-event-sr");
-
-    sumYields({"ttZ-2016-event-sr", "ttZ-2017-event-sr", "ttZ-2018-event-sr"}, "ttZ-event-sr");
-    sumYields({"diboson-2016-event-sr", "diboson-2017-event-sr", "diboson-2018-event-sr"}, "diboson-event-sr");
-    
     sumYields({"ttbar-2016-eventsf-sr", "ttbar-2017-eventsf-sr", "ttbar-2018-eventsf-sr"}, "ttbar-eventsf-sr");
     sumYields({"wjets-2016-eventsf-sr", "wjets-2017-eventsf-sr", "wjets-2018-eventsf-sr"}, "wjets-eventsf-sr");
     sumYields({"tW-2016-eventsf-sr", "tW-2017-eventsf-sr", "tW-2018-eventsf-sr"}, "tW-eventsf-sr");
@@ -186,7 +176,7 @@ public:
 
     sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017-eventsf-sr", "ttZ-2018-eventsf-sr"}, "ttZ-eventsf-sr");
     sumYields({"diboson-2016-eventsf-sr", "diboson-2017-eventsf-sr", "diboson-2018-eventsf-sr"}, "diboson-eventsf-sr");
-    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + (yields.at("ttbarplusw-event-sr") - yields.at("ttbarplusw-eventsf-sr")))/yields.at("ttbarplusw-sr"); 
+    yields["lepSF_"] = (yields.at("ttbarplusw-sr") + yields.at("ttbarplusw-eventsf-sr"))/yields.at("ttbarplusw-sr"); 
 
     // _SLep = N(Data,CR)/N(MC,CR)
     // _TF   = N(MC,SR)/N(MC,CR)

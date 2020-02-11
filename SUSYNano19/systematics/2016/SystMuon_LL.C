@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters.hh"
+#include "../Syst_LowMET_Parameters_small.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -41,7 +41,8 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2016_ll_muon.conf"){
   // nominal
   {
     sys_name = "nominal";
-    nolepmuonvetowgt = "1"; 
+    nolepmuonvetowgt = "MuonLooseSRSF";
+    sepmuonvetowgt = "MuonLooseSRSF";
     EstTools::lepsel = "MuonVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
@@ -52,6 +53,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2016_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Up";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;
@@ -62,6 +64,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2016_ll_muon.conf"){
   // mu - up
   {
     sys_name = "err_mu_Down";
+    nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF - MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF - MuonLooseSRSFErr)";
     EstTools::doLepSyst = true;
