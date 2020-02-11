@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters_small.hh"
+#include "../Syst_LowMET_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -15,7 +15,8 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2016();
   LLBEstimator l(llbcfg);
-  l.predYearlep();
+  if (EstTools::doLepSyst == true) l.predYearlep();
+  else				   l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
@@ -43,8 +44,6 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2016_ll_muon.conf"){
     sys_name = "nominal";
     nolepmuonvetowgt = "MuonLooseSRSF";
     sepmuonvetowgt = "MuonLooseSRSF";
-    EstTools::lepsel = "MuonVeto";
-    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -56,6 +55,7 @@ void SystMuon_LL(std::string outfile_path = "values_unc_2016_ll_muon.conf"){
     nolepmuonvetowgt = "1";
     muonwgt = "(MuonLooseCRSF + MuonLooseCRSFErr)";
     sepmuonvetowgt = "(MuonLooseSRSF + MuonLooseSRSFErr)";
+    EstTools::lepsel = "MuonVeto";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

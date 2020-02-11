@@ -15,7 +15,8 @@ using namespace EstTools;
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2016();
   LLBEstimator l(llbcfg);
-  l.predYearlep();
+  if (EstTools::doLepSyst == true) l.predYearlep();
+  else				   l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
