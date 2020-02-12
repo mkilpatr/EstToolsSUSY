@@ -1,7 +1,6 @@
 #include "../EstMethods/LLBEstimator.hh"
 
 #include "SRParameters.hh"
-//#include "SRParameters_ANQuestions.hh"
 
 using namespace EstTools;
 
@@ -37,7 +36,7 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
-  TString region = "TransferFactor_AN";
+  TString region = "TransferFactor_new";
   llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
@@ -234,6 +233,113 @@ vector<Quantity> LLBPredSeparate(){
     }
   }
 
+  return l.yields.at("_pred");
+}
+
+//--------------------------------------------------
+vector<Quantity> ANQuestion(){
+
+  auto llbcfg = lepConfig();
+  TString outputBase = "ANQuestion";
+  TString region = "TransferFactor_new";
+  llbcfg.outputdir += "/" +region;
+  LLBEstimator l(llbcfg);
+  l.splitTF = SPLITTF;
+  l.predSeparate();
+
+  l.printYields();
+
+  vector<TH1*> mc_cr;
+  mc_cr.push_back(convertToHist(l.yields.at("ttbar-2016"),"ttbar 2016",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttbar-2017"),"ttbar 2017",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttbar-2018"),"ttbar 2018",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttbar"),"ttbar",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("wjets-2016"),"wjets 2016",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("wjets-2017"),"wjets 2017",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("wjets-2018"),"wjets 2018",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("wjets"),"wjets",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("tW-2016"),"tW 2016",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("tW-2017"),"tW 2017",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("tW-2018"),"tW 2018",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("tW"),"tW",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttW-2016"),"ttW 2016",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttW-2017"),"ttW 2017",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttW-2018"),"ttW 2018",";AN Region;Events", nullptr));
+  mc_cr.push_back(convertToHist(l.yields.at("ttW"),"ttW",";AN Region;Events", nullptr));
+
+  vector<TH1*> mc_sr;
+  mc_sr.push_back(convertToHist(l.yields.at("ttbar-2016-sr"),"ttbar 2016",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttbar-2017-sr"),"ttbar 2017",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttbar-2018-sr"),"ttbar 2018",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttbar-sr"),"ttbar",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("wjets-2016-sr"),"wjets 2016",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("wjets-2017-sr"),"wjets 2017",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("wjets-2018-sr"),"wjets 2018",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("wjets-sr"),"wjets",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("tW-2016-sr"),"tW 2016",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("tW-2017-sr"),"tW 2017",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("tW-2018-sr"),"tW 2018",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("tW-sr"),"tW",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttW-2016-sr"),"ttW 2016",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttW-2017-sr"),"ttW 2017",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttW-2018-sr"),"ttW 2018",";AN Region;Events", nullptr));
+  mc_sr.push_back(convertToHist(l.yields.at("ttW-sr"),"ttW",";AN Region;Events", nullptr));
+
+  vector<TH1*> mc;
+  mc.push_back(convertToHist(l.yields.at("ttbar-2016"),"ttbar 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-2017"),"ttbar 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-2018"),"ttbar 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar"),"ttbar",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2016"),"wjets 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2017"),"wjets 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2018"),"wjets 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets"),"wjets",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2016"),"tW 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2017"),"tW 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2018"),"tW 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW"),"tW",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2016"),"ttW 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2017"),"ttW 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2018"),"ttW 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW"),"ttW",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-2016-sr"),"ttbar 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-2017-sr"),"ttbar 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-2018-sr"),"ttbar 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttbar-sr"),"ttbar",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2016-sr"),"wjets 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2017-sr"),"wjets 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-2018-sr"),"wjets 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("wjets-sr"),"wjets",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2016-sr"),"tW 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2017-sr"),"tW 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-2018-sr"),"tW 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("tW-sr"),"tW",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2016-sr"),"ttW 2016",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2017-sr"),"ttW 2017",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-2018-sr"),"ttW 2018",";AN Region;Events", nullptr));
+  mc.push_back(convertToHist(l.yields.at("ttW-sr"),"ttW",";AN Region;Events", nullptr));
+
+  prepHists(mc, false, false, false);
+  prepHists(mc_cr, false, false, false);
+  prepHists(mc_sr, false, false, false);
+
+  vector<TH1*> mc_ratio;
+  for(int i = 0; i <= mc_cr.size(); i++){
+    int color = 2 + i;
+    TH1* hPredRawMC = (TH1*)mc_sr[i]->Clone(TString(mc_sr[i]->GetName()) + "_ratio");
+    hPredRawMC->Divide(mc_cr[i]);
+    hPredRawMC->SetLineWidth(2);
+    prepHists({hPredRawMC}, false, false, false);
+    mc_ratio.push_back(hPredRawMC);
+  }
+
+  TCanvas* c = drawCompAndRatio(mc, mc_ratio);
+  c->SetTitle(outputBase);
+  c->SetCanvasSize(800, 600);
+  c->Print(l.config.outputdir+"/" + outputBase +".pdf");
+  c->Print(l.config.outputdir+"/" + outputBase +".C");
+  c->Print(l.config.outputdir+"/" + outputBase +"_canvas.root");
+  
   return l.yields.at("_pred");
 }
 
