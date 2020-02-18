@@ -68,7 +68,6 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_2016_ll_trigger.conf"
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
-	cout << "Made it here 1" << endl;
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
       std::pair<vector<Quantity>, vector<Quantity>> uncs;
@@ -87,15 +86,11 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_2016_ll_trigger.conf"
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-	cout << "Made it here 2" << endl;
-	cout << cat_name << endl;
         auto &cat = config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
-	cout << "Made it here 3" << endl;
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
-	  cout << binname << endl;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
