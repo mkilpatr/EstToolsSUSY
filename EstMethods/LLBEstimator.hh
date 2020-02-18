@@ -185,6 +185,7 @@ public:
     // _TF_SR_extrap         = N(MC,SR with extrapolation)/N(MC,SR with no extrapolation)
     yields["_SLep"] = calcSLep(); // is yields.at("singlelep")/yields.at("ttbarplusw")
     yields["_TF"]     = yields.at("lepSF_")*yields.at("ttbarplusw-sr")/yields.at("ttbarplusw");
+    yields["_LepSR"]  = yields.at("lepSF_")*yields.at("ttbarplusw-sr");
     yields["_pred"]                 = yields.at("singlelep") * yields.at("_TF");
 
     if(splitTF){

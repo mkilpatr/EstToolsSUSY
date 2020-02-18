@@ -72,7 +72,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
   std::vector<TString> rootFiles;
   std::vector<double> val_up_total, val_down_total;
-  for(int i = 0; i != files.size(); i++){
+  for(unsigned i = 0; i != files.size(); i++){
     std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString>, vector<double> > > output = readFile(indir + files[i]);
     std::vector<TString> binName_Up, binName_Down;
     std::vector<double> val_up, val_down;
@@ -82,7 +82,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     val_up = output.first.second;
     val_down = output.second.second;
 
-    for(unsigned int j = 0; j != val_up.size(); j++){
+    for(unsigned j = 0; j != val_up.size(); j++){
       if((val_up[j] > 1 && val_down[j] > 1) || (val_up[j] < 1 && val_down[j] < 1)){
 	float sign = val_up[j] > 1 ? 1 : -1;
 	float value = 0.5 * (std::abs(val_up[j] - 1) + std::abs(1 - val_down[j]));
@@ -91,7 +91,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
       }
     }
 
-    for(int j = 0; j != val_up.size(); j++){
+    for(unsigned j = 0; j != val_up.size(); j++){
       if(i == 0){
         val_up_total.push_back((1-val_up[j])*(1-val_up[j]));
         val_down_total.push_back((1-val_down[j])*(1-val_down[j]));
@@ -149,7 +149,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     delete gROOT->FindObject("hDown");
   }
 
-  for(int i = 0; i != val_up_total.size(); i++){
+  for(unsigned i = 0; i != val_up_total.size(); i++){
     val_up_total.at(i) = 1+TMath::Sqrt(val_up_total.at(i));
     val_down_total.at(i) = 1-TMath::Sqrt(val_down_total.at(i));
   }
