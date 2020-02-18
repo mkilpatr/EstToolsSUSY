@@ -12,7 +12,7 @@
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
   if(sys_name == "JES_Up"){
     llbcfg.catMaps = srCatMap_JESUp();
@@ -66,14 +66,14 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_val_ll_trigger.conf")
   {
     sys_name = "trigger_err_Up";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
-    auto llb = getLLBPred(sys_name);
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
-    sys_name = "trigger_eff_Down";
+    sys_name = "trigger_err_Down";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
-    auto llb = getLLBPred(sys_name);
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 

@@ -129,7 +129,7 @@ source tarCMSSW_syst.sh $outputdir
 eosmkdir -p /eos/uscms/store/user/mkilpatr/13TeV/$outputdir
    
 echo "$runscript $runmacro $workdir $outputdir"    
-    """.format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, location=args.location, sysname=args.sysname))
+""".format(outdir=args.outdir, pathtomacro=args.path, macro=args.macro, location=args.location, sysname=args.sysname))
         
     for i in xrange(len(macro)):
 	print(sysname[i])
@@ -139,7 +139,7 @@ outputdir={outdir}
 runmacro={macro}
 location={location}
 sysname={sysname}
-        """.format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], location=args.location, sysname=sysname[i]))
+""".format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], location=args.location, sysname=sysname[i]))
         if args.submittype == "lsf" or args.submittype == "condor" :
             scriptSep.write("""
 workdir=$CMSSW_BASE
@@ -153,7 +153,7 @@ fi
         
 cp {rootlogon} $workdir
 cp {pathtomacro}/{location}/$runmacro $workdir
-        """.format(pathtomacro=args.path,location=args.location,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
+""".format(pathtomacro=args.path,location=args.location,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
 
         if args.submittype == "interactive" :
             scriptSep.write("""root -l -q -b {rootlogon} {pathtomacro}/$runmacro+\()\n""".format(

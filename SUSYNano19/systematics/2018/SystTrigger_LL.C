@@ -12,24 +12,8 @@
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig2018();
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
   LLBEstimator l(llbcfg);
   l.predYear();
   l.printYields();
@@ -66,14 +50,14 @@ void SystTrigger_LL(std::string outfile_path = "values_unc_2018_ll_trigger.conf"
   {
     sys_name = "trigger_err_Up";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_up";
-    auto llb = getLLBPred(sys_name);
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   {
-    sys_name = "trigger_eff_Down";
+    sys_name = "trigger_err_Down";
     triggerwgt = "Stop0l_trigger_eff_MET_loose_baseline_down";
-    auto llb = getLLBPred(sys_name);
+    auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
