@@ -42,9 +42,9 @@ void SystFractionTTbar_LL(std::string outfile_path = "values_unc_cb_ll_ttbarfrac
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // ttbarNorm +6%
+  // xsecNorm_ttbar +6%
   {
-    sys_name = "ttbarNorm_Up";
+    sys_name = "xsecNorm_ttbar_Up";
     ttbarxsec = "1.06";
     wjetsxsec = "1.00";
     auto llb = getLLBPred();
@@ -52,7 +52,7 @@ void SystFractionTTbar_LL(std::string outfile_path = "values_unc_cb_ll_ttbarfrac
   }
 
   {
-    sys_name = "ttbarNorm_Down";
+    sys_name = "xsecNorm_ttbar_Down";
     ttbarxsec = "0.94";
     wjetsxsec = "1.00";
     auto llb = getLLBPred();

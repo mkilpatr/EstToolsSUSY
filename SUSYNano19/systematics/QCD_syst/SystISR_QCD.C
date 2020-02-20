@@ -40,13 +40,13 @@ void SystISR_QCD(std::string outfile_path = "values_unc_qcd_isr.conf"){
 
   // isr - up
   {
-    sys_name = "ISR_Weight_up";
+    sys_name = "ISR_Weight_background_up";
     isrwgt = "ISRWeight_Up";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
   // pu - down
   {
-    sys_name = "ISR_Weight_down";
+    sys_name = "ISR_Weight_background_down";
     isrwgt = "ISRWeight_Down";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
