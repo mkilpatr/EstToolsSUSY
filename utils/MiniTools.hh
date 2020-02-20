@@ -202,21 +202,20 @@ TH1D* convertToHist(const vector<double> &vec, TString hname, TString title, con
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
+TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
   auto nbins = (unsigned)vec[0]->GetNbinsX();
-  if(manualBins > 0) nbins = manualBins;
   TH1D *hist;
 
   if (bin && bin->nbins==nbins){
     hist = new TH1D(hname, title, nbins, bin->plotbins.data());
     hist->SetXTitle(bin->label + (bin->unit=="" ? "" : "["+bin->unit+"]"));
   }else{
-    hist = new TH1D(hname, title, nbins, start, start + nbins);
+    hist = new TH1D(hname, title, nbins, 0, nbins);
   }
   hist->Sumw2();
   for (unsigned j=0; j!=vec.size();j++){
-    for (unsigned i=0; i<nbins; ++i){
-      hist->SetBinContent(i, vec[j]->GetBinContent(i+start));
+    for (unsigned i=1; i<nbins+1; ++i){
+      hist->SetBinContent(i, vec[j]->GetBinContent(i));
     }
   }
   return hist;

@@ -332,10 +332,6 @@ def sumUnc(unc_list):
 relUnc={}
 absUnc={}
 absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
-absUnc_Up={}
-absUnc_Up_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
-absUnc_Down={}
-absUnc_Down_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
 yields={}
 yields_data={}
 statUnc={} #asymm
@@ -444,16 +440,9 @@ def calcAbsUnc():
             for sample in all_samples:
                 # Add the same type of unc. linearly
                 tempUnc = relUnc[type][bin][sample] * yields[bin][sample]
-		if "Up" in type:
-                    absUnc_Up[bin][type]                += tempUnc
-                    absUnc_Up_pieces[sample][bin][type] += tempUnc
-		elif "Down" in type:
-                    absUnc_Down[bin][type]                += tempUnc
-                    absUnc_Down_pieces[sample][bin][type] += tempUnc
-		else:
-                    absUnc[bin][type]                += tempUnc
-                    absUnc_pieces[sample][bin][type] += tempUnc
-
+                absUnc[bin][type]                += tempUnc
+                absUnc_pieces[sample][bin][type] += tempUnc
+		
     for bin in absUnc:
         # Add different types of unc. in quadrature
         systUnc[bin] = sumUnc(absUnc[bin].values())
@@ -538,7 +527,7 @@ def makeTable():
         if sec not in sections:
             sections.append(sec)
             s += chunkHeader(sec)
-        xlow, xhigh = met.lstrip('met').split('to')
+        xlow, xhigh = met.lstrip('met_pt').split('to')
         metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
         s += '%d & '%ibin
         ibin = ibin+1

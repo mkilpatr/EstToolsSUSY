@@ -14,7 +14,6 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
 
-
   vector<TString> bkgs = {"httz_stack_2", "hdiboson_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
   vector<TString> sigs = {"T2tt_1000_0"};
@@ -27,38 +26,39 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   vector<TString> split = {"lm",
 			   "hm_nb1_bins",
 			   "hm_nbeq2",
-			   "hm_nb3",
-			   "lm_nb0",
-			   "lm_nb1",
-			   "lm_nb2",
-			   "hm_nb[0-9]_lowmtb",
-			   "hm_nb[0-9]_highmtb_nt0_nrt0_nw0",
-			   "hm_nb1_highmtb_1tag_ntnw",
-			   "hm_nb1_highmtb_nrt_2tags",
-			   "hm_nbeq2_highmtb_1tag_ntnw",
-			   "hm_nbeq2_highmtb_nt0_nrt1_nw0",
-			   "hm_nbeq2_highmtb_2tag",
-			   "hm_nbeq2_highmtb_taggt2",
-			   "hm_nb3_highmtb_1tag",
-			   "hm_nb3_highmtb_taggeq2"};
+			   "hm_nb3"
+			   //"lm_nb0",
+			   //"lm_nb1",
+			   //"lm_nb2",
+			   //"hm_nb[0-9]_lowmtb",
+			   //"hm_nb[0-9]_highmtb_nt0_nrt0_nw0",
+			   //"hm_nb1_highmtb_1tag_ntnw",
+			   //"hm_nb1_highmtb_nrt_2tags",
+			   //"hm_nbeq2_highmtb_1tag_ntnw",
+			   //"hm_nbeq2_highmtb_nt0_nrt1_nw0",
+			   //"hm_nbeq2_highmtb_2tag",
+			   //"hm_nbeq2_highmtb_taggt2",
+			   //"hm_nb3_highmtb_1tag",
+			   //"hm_nb3_highmtb_taggeq2"
+			   };
   vector<TString> splitlabels = {
       "#splitline{Low #Deltam}{}",
       "#splitline{High #Deltam, N_{b}=1, #geq 2}{}",
       "#splitline{High #Deltam, N_{b}=2}{}",
-      "#splitline{High #Deltam, N_{b} #geq 3}{}",
-      "#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{p_{T}(ISR) #geq 500 GeV}",
-      "#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{}",
-      "#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{300 #leq p_{T}(ISR) < 500, #geq 500}",
-      "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{j} #geq 7, N_{res} #geq 1}",
-      "#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{H_{T} #geq 1000, N_{W} = 0, N_{T} = 0, N_{res} = 0}",
-      "#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}=2}{M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV, N_{res} = 1}",
-      "#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}#geq3, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
-      "#splitline{High #Deltam, N_{b}#geq3, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}"
+      "#splitline{High #Deltam, N_{b} #geq 3}{}"
+      //"#splitline{Low #Deltam, N_{b}=0, N_{SV} = 0,#geq1}{p_{T}(ISR) #geq 500 GeV}",
+      //"#splitline{Low #Deltam, N_{b}=1, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{}",
+      //"#splitline{Low #Deltam, N_{b} #geq 2, M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175 GeV}{300 #leq p_{T}(ISR) < 500, #geq 500}",
+      //"#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) < 175 GeV}{N_{j} #geq 7, N_{res} #geq 1}",
+      //"#splitline{High #Deltam, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{H_{T} #geq 1000, N_{W} = 0, N_{T} = 0, N_{res} = 0}",
+      //"#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}=1, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}=2}{M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV, N_{res} = 1}",
+      //"#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}=2, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}#geq3, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}",
+      //"#splitline{High #Deltam, N_{b}#geq3, M_{T}(b_{1,2},#slash{E}_{T}) > 175 GeV}{}"
   };
 
   vector<double> ratioYmax = {2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999};
@@ -72,73 +72,73 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
     [&tl](){},
     [&tl](){},
 	     //LM bins
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.70, "2-5 jets"); 
-	     tl.DrawLatexNDC(0.5, 0.70, "#geq 6 jets"); 
-	     tl.DrawLatexNDC(0.7, 0.70, "2-5 jets"); 
-	     tl.DrawLatexNDC(0.9, 0.70, "#geq 6 jets");},
-    [&tl](){ tl.DrawLatexNDC(0.43, 0.73, "#splitline{N_{SV} = 0}{300 #leq p_{T}(ISR) < 500}"); 
-	     tl.DrawLatexNDC(0.27, 0.68, "p_{T}(b) < 40");
-	     tl.DrawLatexNDC(0.45, 0.68, "40 < p_{T}(b) < 70");
-    	     tl.DrawLatexNDC(0.725, 0.73,"#splitline{N_{SV} = 0}{p_{T}(ISR) #geq 500}"); 
-	     tl.DrawLatexNDC(0.62, 0.68, "p_{T}(b) < 40");
-	     tl.DrawLatexNDC(0.80, 0.68, "40 < p_{T}(b) < 70");
-	     tl.DrawLatexNDC(0.95, 0.73, "#splitline{N_{SV} #geq 1}{#splitline{p_{T}(ISR) #geq 300}{p_{T}(b) < 40}}");}, 
-    [&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
-	     tl.DrawLatexNDC(0.43, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
-	     tl.DrawLatexNDC(0.55, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}"); 
-	     tl.DrawLatexNDC(0.67, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
-	     tl.DrawLatexNDC(0.83, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
-	     tl.DrawLatexNDC(0.95, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}");}, 
-	     //HM bins
-    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
-	     tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
-    [&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
-	     tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
-    [&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} #geq 1");
-	     tl.DrawLatexNDC(0.29, 0.66, "H_{T}<1000");
-	     tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
-	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
-	     tl.DrawLatexNDC(0.83, 0.70, "N_{W} #geq 1");
-	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
-	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
-    [&tl](){ tl.DrawLatexNDC(0.475, 0.70, "N_{res} #geq 1");
-	     tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
-	     tl.DrawLatexNDC(0.525, 0.66, "1000 #leq H_{T} < 1500");
-	     tl.DrawLatexNDC(0.65, 0.66, "H_{T} #geq 1500");
-    	     tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{T} #geq 1}{N_{W} #geq 1}"); 
-	     tl.DrawLatexNDC(0.875, 0.66, "#splitline{N_{T} #geq 1}{N_{res} #geq 1}"); 
-	     tl.DrawLatexNDC(0.945, 0.66, "#splitline{N_{res} #geq 1}{N_{W} #geq 1}");},
-    [&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} = 1");
-	     tl.DrawLatexNDC(0.29, 0.66, "H_{T} < 1000");
-	     tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
-	     tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
-	     tl.DrawLatexNDC(0.83, 0.70, "N_{W} = 1");
-	     tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
-	     tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
-	     tl.DrawLatexNDC(0.63, 0.66, "1000 #leq H_{T} < 1500");
-	     tl.DrawLatexNDC(0.85, 0.66, "H_{T} #geq 1500");},
-    [&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}"); 
-	     tl.DrawLatexNDC(0.63, 0.66, "#splitline{N_{T} = 1, N_{res} = 1}{}");
-	     tl.DrawLatexNDC(0.48, 0.62, "H_{T} < 1300");
-	     tl.DrawLatexNDC(0.72, 0.62, "H_{T} #geq 1300");
-	     tl.DrawLatexNDC(0.9, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.66, "#splitline{N_{T} = 2}{}"); 
-	     tl.DrawLatexNDC(0.43, 0.66, "#splitline{N_{W} = 2}{}"); 
-	     tl.DrawLatexNDC(0.68, 0.66, "#splitline{N_{res} = 2}{}");
-	     tl.DrawLatexNDC(0.62, 0.62, "H_{T} < 1300");
-	     tl.DrawLatexNDC(0.80, 0.62, "H_{T} #geq 1300");
-	     tl.DrawLatexNDC(0.93, 0.66, "#splitline{N_{T}+N_{W}+N_{res} #geq 3}{}");},
-    [&tl](){ tl.DrawLatexNDC(0.45, 0.66, "#splitline{N_{T} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");
-             tl.DrawLatexNDC(0.59, 0.66, "#splitline{N_{W} = 1}{}");
-             tl.DrawLatexNDC(0.90, 0.66, "#splitline{N_{res} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");},
-    [&tl](){ tl.DrawLatexNDC(0.23, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}");
-             tl.DrawLatexNDC(0.37, 0.66, "#splitline{N_{T} = 1}{N_{res} = 1}");
-             tl.DrawLatexNDC(0.5, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");
-             tl.DrawLatexNDC(0.57, 0.66, "#splitline{N_{T} = 2}{}");
-             tl.DrawLatexNDC(0.67, 0.66, "#splitline{N_{W} = 2}{}");
-             tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{res} = 2}{}");
-             tl.DrawLatexNDC(0.93, 0.66, "#splitline{N_{T}+N_{W}+N_{res} #geq 3}{}");},
+    //[&tl](){ tl.DrawLatexNDC(0.3, 0.70, "2-5 jets"); 
+    //         tl.DrawLatexNDC(0.5, 0.70, "#geq 6 jets"); 
+    //         tl.DrawLatexNDC(0.7, 0.70, "2-5 jets"); 
+    //         tl.DrawLatexNDC(0.9, 0.70, "#geq 6 jets");},
+    //[&tl](){ tl.DrawLatexNDC(0.43, 0.73, "#splitline{N_{SV} = 0}{300 #leq p_{T}(ISR) < 500}"); 
+    //         tl.DrawLatexNDC(0.27, 0.68, "p_{T}(b) < 40");
+    //         tl.DrawLatexNDC(0.45, 0.68, "40 < p_{T}(b) < 70");
+    //	     tl.DrawLatexNDC(0.725, 0.73,"#splitline{N_{SV} = 0}{p_{T}(ISR) #geq 500}"); 
+    //         tl.DrawLatexNDC(0.62, 0.68, "p_{T}(b) < 40");
+    //         tl.DrawLatexNDC(0.80, 0.68, "40 < p_{T}(b) < 70");
+    //         tl.DrawLatexNDC(0.95, 0.73, "#splitline{N_{SV} #geq 1}{#splitline{p_{T}(ISR) #geq 300}{p_{T}(b) < 40}}");}, 
+    //[&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
+    //         tl.DrawLatexNDC(0.43, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
+    //         tl.DrawLatexNDC(0.55, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}"); 
+    //         tl.DrawLatexNDC(0.67, 0.66, "#splitline{p_{T}(b_{12}) < 80}{}"); 
+    //         tl.DrawLatexNDC(0.83, 0.66, "#splitline{80 < p_{T}(b_{12}) < 140}{}"); 
+    //         tl.DrawLatexNDC(0.95, 0.66, "#splitline{p_{T}(b_{12}) #geq 140}{N_{j} #geq 7}");}, 
+    //         //HM bins
+    //[&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
+    //         tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
+    //[&tl](){ tl.DrawLatexNDC(0.4, 0.66, "N_{b}=1"); 
+    //         tl.DrawLatexNDC(0.8, 0.66, "N_{b} #geq 2");},
+    //[&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} #geq 1");
+    //         tl.DrawLatexNDC(0.29, 0.66, "H_{T}<1000");
+    //         tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
+    //         tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
+    //         tl.DrawLatexNDC(0.83, 0.70, "N_{W} #geq 1");
+    //         tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
+    //         tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
+    //[&tl](){ tl.DrawLatexNDC(0.475, 0.70, "N_{res} #geq 1");
+    //         tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
+    //         tl.DrawLatexNDC(0.525, 0.66, "1000 #leq H_{T} < 1500");
+    //         tl.DrawLatexNDC(0.65, 0.66, "H_{T} #geq 1500");
+    //	     tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{T} #geq 1}{N_{W} #geq 1}"); 
+    //         tl.DrawLatexNDC(0.875, 0.66, "#splitline{N_{T} #geq 1}{N_{res} #geq 1}"); 
+    //         tl.DrawLatexNDC(0.945, 0.66, "#splitline{N_{res} #geq 1}{N_{W} #geq 1}");},
+    //[&tl](){ tl.DrawLatexNDC(0.42, 0.70, "N_{T} = 1");
+    //         tl.DrawLatexNDC(0.29, 0.66, "H_{T} < 1000");
+    //         tl.DrawLatexNDC(0.47, 0.66, "1000 #leq H_{T} < 1500");
+    //         tl.DrawLatexNDC(0.60, 0.66, "H_{T} #geq 1500");
+    //         tl.DrawLatexNDC(0.83, 0.70, "N_{W} = 1");
+    //         tl.DrawLatexNDC(0.77, 0.66, "H_{T} < 1300");
+    //         tl.DrawLatexNDC(0.90, 0.66, "H_{T} #geq 1300");},
+    //[&tl](){ tl.DrawLatexNDC(0.3, 0.66, "H_{T} < 1000");
+    //         tl.DrawLatexNDC(0.63, 0.66, "1000 #leq H_{T} < 1500");
+    //         tl.DrawLatexNDC(0.85, 0.66, "H_{T} #geq 1500");},
+    //[&tl](){ tl.DrawLatexNDC(0.27, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}"); 
+    //         tl.DrawLatexNDC(0.63, 0.66, "#splitline{N_{T} = 1, N_{res} = 1}{}");
+    //         tl.DrawLatexNDC(0.48, 0.62, "H_{T} < 1300");
+    //         tl.DrawLatexNDC(0.72, 0.62, "H_{T} #geq 1300");
+    //         tl.DrawLatexNDC(0.9, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");},
+    //[&tl](){ tl.DrawLatexNDC(0.3, 0.66, "#splitline{N_{T} = 2}{}"); 
+    //         tl.DrawLatexNDC(0.43, 0.66, "#splitline{N_{W} = 2}{}"); 
+    //         tl.DrawLatexNDC(0.68, 0.66, "#splitline{N_{res} = 2}{}");
+    //         tl.DrawLatexNDC(0.62, 0.62, "H_{T} < 1300");
+    //         tl.DrawLatexNDC(0.80, 0.62, "H_{T} #geq 1300");
+    //         tl.DrawLatexNDC(0.93, 0.66, "#splitline{N_{T}+N_{W}+N_{res} #geq 3}{}");},
+    //[&tl](){ tl.DrawLatexNDC(0.45, 0.66, "#splitline{N_{T} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");
+    //         tl.DrawLatexNDC(0.59, 0.66, "#splitline{N_{W} = 1}{}");
+    //         tl.DrawLatexNDC(0.90, 0.66, "#splitline{N_{res} = 1, H_{T} < 1000}{1000 #leq H_{T} < 1500, H_{T} #geq 1500}");},
+    //[&tl](){ tl.DrawLatexNDC(0.23, 0.66, "#splitline{N_{T} = 1}{N_{W} = 1}");
+    //         tl.DrawLatexNDC(0.37, 0.66, "#splitline{N_{T} = 1}{N_{res} = 1}");
+    //         tl.DrawLatexNDC(0.5, 0.66, "#splitline{N_{res} = 1}{N_{W} = 1}");
+    //         tl.DrawLatexNDC(0.57, 0.66, "#splitline{N_{T} = 2}{}");
+    //         tl.DrawLatexNDC(0.67, 0.66, "#splitline{N_{W} = 2}{}");
+    //         tl.DrawLatexNDC(0.8, 0.66, "#splitline{N_{res} = 2}{}");
+    //         tl.DrawLatexNDC(0.93, 0.66, "#splitline{N_{T}+N_{W}+N_{res} #geq 3}{}");},
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
@@ -146,68 +146,56 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
-//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
-//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
-//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(60,   LOG_YMIN, 60,  2000); 
-//								    drawLine(68,   LOG_YMIN, 68,  2000); 
-//								    drawLine(98,   LOG_YMIN, 98,  2000); 
-//								    drawLine(68,   LOG_YMIN, 68,  2000); c->cd(); },
-//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
-//								    drawLine(8,    LOG_YMIN, 8,   2000); 
-//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
-//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(16,   LOG_YMIN, 16,  2000); 
-//								    drawLine(8,    LOG_YMIN, 8,   2000); 
-//								    drawLine(34,   LOG_YMIN, 34,  2000); c->cd(); },
 	//LM bins
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,   LOG_YMIN, 4,   2000); 
-								    drawLine(8,   LOG_YMIN, 8,   20000); 
-								    drawLine(12,  LOG_YMIN, 12,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(20,  LOG_YMIN, 20,  2000); 
-								    drawLine(24,  LOG_YMIN, 24,  20000); 
-								    drawLine(28,  LOG_YMIN, 28,  2000); 
-								    drawLine(32,  LOG_YMIN, 32,  20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(38,  LOG_YMIN, 38,  2000); 
-								    drawLine(41,  LOG_YMIN, 41,  2000); 
-								    drawLine(44,  LOG_YMIN, 44,  20000); 
-								    drawLine(47,  LOG_YMIN, 47,  2000); 
-								    drawLine(50,  LOG_YMIN, 50,  2000); c->cd(); },
-	//HM bins
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57,  LOG_YMIN, 57,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(65,  LOG_YMIN, 65,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(72,  LOG_YMIN, 72,  2000); 
-								    drawLine(75,  LOG_YMIN, 75,  2000); 
-								    drawLine(78,  LOG_YMIN, 78,  20000); 
-								    drawLine(81,  LOG_YMIN, 81,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(89,  LOG_YMIN, 89,  2000); 
-								    drawLine(94,  LOG_YMIN, 94,  2000); 
-								    drawLine(99,  LOG_YMIN, 99,  20000); 
-    								    drawLine(101, LOG_YMIN, 101, 2000); 
-								    drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); 
-								    drawLine(111, LOG_YMIN, 111, 2000); 
-								    drawLine(114, LOG_YMIN, 114, 20000); 
-								    drawLine(117, LOG_YMIN, 117, 2000); c->cd(); }, 
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(125, LOG_YMIN, 125, 2000); 
-								    drawLine(130, LOG_YMIN, 130, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 20000); 
-								    drawLine(140, LOG_YMIN, 140, 2000); 
-								    drawLine(143, LOG_YMIN, 143, 20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 20000); 
-								    drawLine(148, LOG_YMIN, 148, 20000); 
-								    drawLine(150, LOG_YMIN, 150, 2000); 
-								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(156, LOG_YMIN, 156, 2000); 
-								    drawLine(159, LOG_YMIN, 159, 2000); 
-								    drawLine(162, LOG_YMIN, 162, 20000); 
-								    drawLine(165, LOG_YMIN, 165, 20000); 
-								    drawLine(168, LOG_YMIN, 168, 2000); 
-								    drawLine(171, LOG_YMIN, 171, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(175, LOG_YMIN, 175, 2000); 
-								    drawLine(177, LOG_YMIN, 177, 2000); 
-								    drawLine(178, LOG_YMIN, 178, 2000); 
-								    drawLine(179, LOG_YMIN, 179, 2000); 
-								    drawLine(180, LOG_YMIN, 180, 2000); 
-								    drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(4,   LOG_YMIN, 4,   2000); 
+//								    drawLine(8,   LOG_YMIN, 8,   20000); 
+//								    drawLine(12,  LOG_YMIN, 12,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(20,  LOG_YMIN, 20,  2000); 
+//								    drawLine(24,  LOG_YMIN, 24,  20000); 
+//								    drawLine(28,  LOG_YMIN, 28,  2000); 
+//								    drawLine(32,  LOG_YMIN, 32,  20000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(38,  LOG_YMIN, 38,  2000); 
+//								    drawLine(41,  LOG_YMIN, 41,  2000); 
+//								    drawLine(44,  LOG_YMIN, 44,  20000); 
+//								    drawLine(47,  LOG_YMIN, 47,  2000); 
+//								    drawLine(50,  LOG_YMIN, 50,  2000); c->cd(); },
+//	//HM bins
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57,  LOG_YMIN, 57,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(65,  LOG_YMIN, 65,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(72,  LOG_YMIN, 72,  2000); 
+//								    drawLine(75,  LOG_YMIN, 75,  2000); 
+//								    drawLine(78,  LOG_YMIN, 78,  20000); 
+//								    drawLine(81,  LOG_YMIN, 81,  2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(89,  LOG_YMIN, 89,  2000); 
+//								    drawLine(94,  LOG_YMIN, 94,  2000); 
+//								    drawLine(99,  LOG_YMIN, 99,  20000); 
+//    								    drawLine(101, LOG_YMIN, 101, 2000); 
+//								    drawLine(103, LOG_YMIN, 103, 2000);c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(108, LOG_YMIN, 108, 2000); 
+//								    drawLine(111, LOG_YMIN, 111, 2000); 
+//								    drawLine(114, LOG_YMIN, 114, 20000); 
+//								    drawLine(117, LOG_YMIN, 117, 2000); c->cd(); }, 
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(125, LOG_YMIN, 125, 2000); 
+//								    drawLine(130, LOG_YMIN, 130, 2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(137, LOG_YMIN, 137, 20000); 
+//								    drawLine(140, LOG_YMIN, 140, 2000); 
+//								    drawLine(143, LOG_YMIN, 143, 20000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(147, LOG_YMIN, 147, 20000); 
+//								    drawLine(148, LOG_YMIN, 148, 20000); 
+//								    drawLine(150, LOG_YMIN, 150, 2000); 
+//								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(156, LOG_YMIN, 156, 2000); 
+//								    drawLine(159, LOG_YMIN, 159, 2000); 
+//								    drawLine(162, LOG_YMIN, 162, 20000); 
+//								    drawLine(165, LOG_YMIN, 165, 20000); 
+//								    drawLine(168, LOG_YMIN, 168, 2000); 
+//								    drawLine(171, LOG_YMIN, 171, 2000); c->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(175, LOG_YMIN, 175, 2000); 
+//								    drawLine(177, LOG_YMIN, 177, 2000); 
+//								    drawLine(178, LOG_YMIN, 178, 2000); 
+//								    drawLine(179, LOG_YMIN, 179, 2000); 
+//								    drawLine(180, LOG_YMIN, 180, 2000); 
+//								    drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -290,7 +278,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
 
 
     if (region.Contains("nj5t")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1;}
-    else {LOG_YMIN = 0.1; PLOT_MAX_YSCALE = 0.1;}
+    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.01;}
 
     //auto leg = prepLegends({hdata}, datalabel, "LP");
     auto leg = prepLegends(pred, bkglabels, "F");
