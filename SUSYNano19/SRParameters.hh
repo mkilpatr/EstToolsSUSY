@@ -3,7 +3,6 @@
 
 #include "../utils/EstHelper.hh"
 #include "binDefinitions.hh"
-//#include "binDefinitions_ANQuestions.hh"
 
 namespace EstTools{
 
@@ -187,7 +186,7 @@ std::map<TString, TString> labelMap{
   {"highptisr", R"($\ptisr\geq500$\,GeV)"},
   {"nj7", R"($\nj\geq7$)"},
   {"highptb", R"($\ptb\geq70$\,GeV)"},
-  {"hm", R"(high \dm)"},
+  {"hm", R"(High \dm)"},
   {"nw0", R"($\nw=0$)"},
   {"nwgeq1", R"($\nw\geq1$)"},
   {"nw1", R"($\nw=1$)"},
@@ -196,7 +195,7 @@ std::map<TString, TString> labelMap{
   {"lowptb", R"($\ptb<40$\,GeV)"},
   {"medptb", R"($40<\ptb<70$\,GeV)"},
   {"nt0", R"($\nt=0$)"},
-  {"lm", R"(low \dm)"},
+  {"lm", R"(Low \dm)"},
   {"lowptb12", R"($\ptbonetwo<80$\,GeV)"},
   {"highptb12", R"($\ptbonetwo\geq140$\,GeV)"},
   {"lowmtb", R"($\mtb<175$~\GeV)"},
@@ -213,8 +212,8 @@ std::map<TString, TString> labelMap{
   {"htgt1500",    R"($\Ht\geq1500$)"},	
   {"htlt1300",    R"($\Ht<1300$)"},	
   {"htgt1300",    R"($\Ht\geq1300$)"},	
-  {"lmNoDPhi",    R"(low $\Delta m$)"},
-  {"hmNoDPhi",    R"(high $\Delta m$)"},
+  {"lmNoDPhi",    R"(Low $\Delta m$)"},
+  {"hmNoDPhi",    R"(High $\Delta m$)"},
   
 };
 
@@ -237,7 +236,7 @@ std::map<TString, TString> plotLabelMap{
   {"highptisr", R"(p_{T}(ISR) #geq 500)"},
   {"nj7", R"(N_{j} #geq 7)"},
   {"highptb", R"(p_{T}(b) #geq 70)"},
-  {"hm", R"(high #Deltam)"},
+  {"hm", R"(High #Deltam)"},
   {"nw0", R"(N_{W} = 0)"},
   {"nwgeq1", R"(N_{W} #geq 1)"},
   {"nw1", R"(N_{W} = 1)"},
@@ -246,7 +245,7 @@ std::map<TString, TString> plotLabelMap{
   {"lowptb", R"(p_{T}(b) < 40)"},
   {"medptb", R"(40 < p_{T}(b) < 70)"},
   {"nt0", R"(N_{t} = 0)"},
-  {"lm", R"(low #Deltam)"},
+  {"lm", R"(Low #Deltam)"},
   {"lowptb12", R"(p_{T}(b_{12}) < 80)"},
   {"highptb12", R"(p_{T}(b_{12}) #geq 140)"},
   {"lowmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175)"},
@@ -263,8 +262,8 @@ std::map<TString, TString> plotLabelMap{
   {"htgt1500",    R"(H_{T}#geq1500)"},	
   {"htlt1300",    R"(H_{T}<1300)"},	
   {"htgt1300",    R"(H_{T}#geq1300)"},	
-  {"lmNoDPhi",    R"(low #Delta m)"},
-  {"hmNoDPhi",    R"(high #Delta m)"},
+  {"lmNoDPhi",    R"(Low #Delta m)"},
+  {"hmNoDPhi",    R"(High #Delta m)"},
 };
 
 std::map<TString, TString> srcuts = []{

@@ -49,6 +49,27 @@ TString joinString(const vector<TString>& vec, TString delimiter){
   return rlt;
 }
 
+TString joinStringSplit(const vector<TString>& vec_1, const vector<TString>& vec_2, TString delimiter){
+  TString rlt = "", rlt_1 = "", rlt_2 = "";
+  for (unsigned i=0; i<vec_1.size(); ++i){
+    if (i==0){
+      rlt_1 = vec_1.at(i);
+    }else{
+      rlt_1 = rlt_1 + delimiter + vec_1.at(i);
+    }
+  }
+  for (unsigned i=0; i<vec_2.size(); ++i){
+    if (i==0){
+      rlt_2 = vec_2.at(i);
+    }else{
+      rlt_2 = rlt_2 + delimiter + vec_2.at(i);
+    }
+  }
+
+  rlt = "#splitline{" + rlt_1 + "}{" + rlt_2 + "}";
+  return rlt;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TString addCuts(const vector<TString>& cuts, TString prefix=""){
   vector<TString> cCuts;
@@ -68,18 +89,31 @@ vector<TString> splitString(const TString &instr, const TString &delimiter){
   return v;
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TString translateString(TString name, const std::map<TString, TString>& strMap, TString splitBy, TString concatBy){
+TString translateString(TString name, const std::map<TString, TString>& strMap, TString splitBy, TString concatBy, bool splitline = false){
   auto keys = splitString(name, splitBy);
-  vector<TString> substrs;
+  vector<TString> substrs, substrs_1, substrs_2;
+  int size = keys.size();
+  bool isOdd = ((size % 2) != 0) ? false : true;
+  int i = 0;
   for (auto k : keys){
     try{
-      substrs.push_back(strMap.at(k));
+      if(splitline){
+        if((isOdd && i <= (size - 1)/2) || i <= size/2){
+	  substrs_1.push_back(strMap.at(k));
+        } else {
+	  substrs_2.push_back(strMap.at(k));
+        }
+      } else {
+        substrs.push_back(strMap.at(k));
+      }
     }catch (const std::out_of_range &e) {
       cerr << "No string mapping for " << k << endl;
       throw e;
     }
+    i++;
   }
-  return joinString(substrs, concatBy);
+  if(splitline) return joinStringSplit(substrs_1, substrs_2, concatBy);
+  else          return joinString(substrs, concatBy);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

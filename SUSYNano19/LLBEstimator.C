@@ -355,7 +355,10 @@ void plotLepCRAllEras(){
 
   for (auto category : z.config.categories){
     const auto &cat = z.config.catMaps.at(category);
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.72); };
+    auto cat_label = translateString(cat.name, plotLabelMap, "_", ", ", true);
+    cout << cat.label << endl;
+    cout << cat_label << endl;
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.72); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
 
