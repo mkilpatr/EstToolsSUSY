@@ -46,17 +46,17 @@ vector<Quantity> LLBPredSeparate(){
 
   std::map<TString,int> digits;
   digits["singlelep"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap"] = -3;
-  digits["_TF_SR_extrap"] = -3;
+  digits["_TF_CR_to_SR_noextrap"] = -5;
+  digits["_TF_SR_extrap"] = -5;
   digits["singlelep-2016"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2016"] = -3;
-  digits["_TF_SR_extrap-2016"] = -3;
+  digits["_TF_CR_to_SR_noextrap-2016"] = -5;
+  digits["_TF_SR_extrap-2016"] = -5;
   digits["singlelep-2017"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2017"] = -3;
-  digits["_TF_SR_extrap-2017"] = -3;
+  digits["_TF_CR_to_SR_noextrap-2017"] = -5;
+  digits["_TF_SR_extrap-2017"] = -5;
   digits["singlelep-2018"] = 0; // indicate it's data for proper formatting
-  digits["_TF_CR_to_SR_noextrap-2018"] = -3;
-  digits["_TF_SR_extrap-2018"] = -3;
+  digits["_TF_CR_to_SR_noextrap-2018"] = -5;
+  digits["_TF_SR_extrap-2018"] = -5;
 
   l.printYieldsTableLatex({"singlelep", "_TF", "_pred"}, labelMap, "LLB/yields_llb_all_lm.tex", "lm", digits); // LM
   if(l.splitTF){
@@ -168,6 +168,7 @@ vector<Quantity> LLBPredSeparate(){
         h2017Sum->Fill(h2017_div->GetBinContent(i));
         h2018Sum->Fill(h2018_div->GetBinContent(i));
       }
+
       TFSumCanvas->cd();
       h2016Sum->SetLineWidth(2);
       h2016Sum->SetLineColor(kRed);
@@ -354,11 +355,11 @@ void plotLepCRAllEras(){
   TString data_sample = "singlelep";
 
   for (auto category : z.config.categories){
-    const auto &cat = z.config.catMaps.at(category);
-    auto cat_label = translateString(cat.name, plotLabelMap, "_", ", ", true);
+    const auto &cat = z.config.crCatMaps.at(category);
+    auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
     cout << cat.label << endl;
     cout << cat_label << endl;
-    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.72); };
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
 
