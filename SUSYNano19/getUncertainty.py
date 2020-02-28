@@ -274,29 +274,24 @@ labelMap = {
     }
 
 def addAsymm(e, asymm):
-    #print e, asymm
+    print e, asymm
     e_low = math.sqrt(e[0]*e[0] + asymm[0]*asymm[0])
     e_up  = math.sqrt(e[1]*e[1] + asymm[1]*asymm[1])
     return (e_low, e_up)
 
 def sumUncLogNorm(unc_list, p):
 # syst_histo[systemaitc][bintype][region][direction]
-    syst_up_sum = 0.
-    syst_down_sum = 0.
     log_syst_up_sum = 0.
     log_syst_down_sum = 0.
-    if p == 0: return (1,1)
+    #print(unc_list)
+    #print(p)
+    if p == 0: return [0,0]
     for err in unc_list:
         p_up    = err[1]
         p_down  = err[0]
         if p_up == 0 or p_down == 0: continue
-        syst_up         = (p_up - p  ) / p
-        syst_down       = (p - p_down) / p
         log_syst_up     = p_up / p
         log_syst_down   = p_down / p
-        # sum in quadrature 
-        syst_up_sum     += syst_up**2
-        syst_down_sum   += syst_down**2
         # If both systematics go the same direction, need to symmetrize
         # Because all the nuisance parameters are log-normal, symmetrize by dividing by the geometric mean
         if ((log_syst_up > 1) and (log_syst_down > 1)) or ((log_syst_up < 1) and (log_syst_down < 1)):
@@ -313,16 +308,12 @@ def sumUncLogNorm(unc_list, p):
         else:
             log_syst_up_sum     += np.log(log_syst_down)**2
             log_syst_down_sum   += np.log(log_syst_up)**2
-        syst_up_total   = np.sqrt(syst_up_sum)
-        syst_down_total = np.sqrt(syst_down_sum)
-        final_up   = 1.0 + syst_up_total
-        final_down = 1.0 - syst_down_total
         log_syst_up_total   = np.exp( np.sqrt(log_syst_up_sum))
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
         log_final_up   = log_syst_up_total
         log_final_down = log_syst_down_total
-        #print "pred={0}, syst_up={1}, syst_down={2}, log_final_up={3}, log_final_down={4}".format(p, final_up, final_down, log_final_up, log_final_down)
-    return (log_final_down, log_final_up)
+    print "pred={0}, log_final_up={1}, log_final_down={2}".format(p, log_final_up, log_final_down)
+    return [p - log_final_down*p, log_final_up*p - p]
 
 def sumUnc(unc_list):
     '''Add uncertainties in quadrature.'''
@@ -377,15 +368,15 @@ def readRelUnc(config_path):
                     relUnc[type][bin] = {}
                 if sample in all_samples:
                     if isUp:
-                        up = float(value)-1 if float(value) > 1 else 1 - float(value)
+                        up = float(value)
                     elif isDown:
-                        down = float(value)-1 if float(value) > 1 else 1 - float(value)
+                        down = float(value)
                         relUnc[type][bin][sample] = (down, up)
                         isUp, isDown = False, False
                     else:
                         up = float(value)-1 if float(value) > 1 else 1 - float(value)
                         down = float(value)-1 if float(value) > 1 else 1 - float(value)
-                        relUnc[type][bin][sample] = (down, up)
+                        relUnc[type][bin][sample] = (1-down, 1+up)
 
     # for all bin uncs
     if all_bin_unc_file != '':
@@ -449,8 +440,8 @@ def readYields(pred_file):
     h = f.Get(pred_total_name)
     for ibin in xrange(0, h.GetNbinsX()):
         bin = binlist[ibin]
-        e_up = h.GetBinError(ibin)
-        e_low = h.GetBinError(ibin)
+        e_up = h.GetBinError(ibin+1)
+        e_low = h.GetBinError(ibin+1)
         statUnc[bin] = (e_low, e_up)
     f.Close()
 
@@ -474,6 +465,7 @@ def calcAbsUnc():
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 		
     for bin in absUnc:
+        print(bin)
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
         systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin])

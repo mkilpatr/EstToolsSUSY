@@ -271,6 +271,7 @@ TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const
   for (unsigned j=0; j!=vec.size();j++){
     for (unsigned i=1; i<nbins+1; ++i){
       hist->SetBinContent(i, vec[j]->GetBinContent(i));
+      hist->SetBinError(i, vec[j]->GetBinError(i));
     }
   }
   return hist;
