@@ -49,8 +49,8 @@ TString joinString(const vector<TString>& vec, TString delimiter){
   return rlt;
 }
 
-TString joinStringSplit(const vector<TString>& vec_1, const vector<TString>& vec_2, const vector<TString>& vec_3, TString delimiter){
-  TString rlt = "", rlt_1 = "", rlt_2 = "", rlt_3 = "";
+TString joinStringSplit(const vector<TString>& vec_1, const vector<TString>& vec_2, const vector<TString>& vec_3, const vector<TString>& vec_4, TString delimiter){
+  TString rlt = "", rlt_1 = "", rlt_2 = "", rlt_3 = "", rlt_4 = "";
   for (unsigned i=0; i<vec_1.size(); ++i){
     if (i==0){
       rlt_1 = vec_1.at(i);
@@ -72,8 +72,15 @@ TString joinStringSplit(const vector<TString>& vec_1, const vector<TString>& vec
       rlt_3 = rlt_3 + delimiter + vec_3.at(i);
     }
   }
+  for (unsigned i=0; i<vec_4.size(); ++i){
+    if (i==0){
+      rlt_4 = vec_4.at(i);
+    }else{
+      rlt_4 = rlt_4 + delimiter + vec_4.at(i);
+    }
+  }
 
-  rlt = "#splitline{" + rlt_1 + "}{#splitline{" + rlt_2 + "}{" + rlt_3 + "}}";
+  rlt = "#splitline{" + rlt_1 + "}{#splitline{" + rlt_2 + "}{#splitline{" + rlt_3 + "}{" + rlt_4 + "}}}";
   return rlt;
 }
 
@@ -98,7 +105,7 @@ vector<TString> splitString(const TString &instr, const TString &delimiter){
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TString translateString(TString name, const std::map<TString, TString>& strMap, TString splitBy, TString concatBy, bool splitline = false){
   auto keys = splitString(name, splitBy);
-  vector<TString> substrs, substrs_1, substrs_2, substrs_3;
+  vector<TString> substrs, substrs_1, substrs_2, substrs_3, substrs_4;
   int size = keys.size();
   bool isOdd = ((size % 2) != 0) ? false : true;
   int i = 0;
@@ -106,8 +113,10 @@ TString translateString(TString name, const std::map<TString, TString>& strMap, 
     //cout << "i: " << i << ", k: " << k << endl;
     try{
       if(splitline){
-	if(k.Contains("lowptisr") || k.Contains("medptb") || k.Contains("ht1000to1500")){
+	if(k.Contains("ptisr") || k.Contains("ht")){
 	  substrs_3.push_back(strMap.at(k));
+	} else if(k.Contains("ptb")){
+	  substrs_4.push_back(strMap.at(k));
         } else if(substrs_1.size() < 2 || k.Contains("nivf") || k.Contains("nj7")){
 	  substrs_1.push_back(strMap.at(k));
         } else if(substrs_2.size() < 2){
@@ -124,7 +133,7 @@ TString translateString(TString name, const std::map<TString, TString>& strMap, 
     }
     i++;
   }
-  if(splitline) return joinStringSplit(substrs_1, substrs_2, substrs_3, concatBy);
+  if(splitline) return joinStringSplit(substrs_1, substrs_2, substrs_3, substrs_4, concatBy);
   else          return joinString(substrs, concatBy);
 }
 

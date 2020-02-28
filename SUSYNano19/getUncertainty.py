@@ -14,6 +14,7 @@ import json
 import argparse
 import ROOT as rt
 from ROOT import TGraphAsymmErrors
+import numpy as np
 rt.gROOT.SetBatch(True)
 
 uncdir = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
@@ -273,16 +274,22 @@ labelMap = {
     }
 
 def addAsymm(e, asymm):
-    print e, asymm
-    e_low = math.sqrt(e*e + asymm[0]*asymm[0])
-    e_up  = math.sqrt(e*e + asymm[1]*asymm[1])
+    #print e, asymm
+    e_low = math.sqrt(e[0]*e[0] + asymm[0]*asymm[0])
+    e_up  = math.sqrt(e[1]*e[1] + asymm[1]*asymm[1])
     return (e_low, e_up)
 
-def sumUncLogNorm(unc_list):
+def sumUncLogNorm(unc_list, p):
 # syst_histo[systemaitc][bintype][region][direction]
+    syst_up_sum = 0.
+    syst_down_sum = 0.
+    log_syst_up_sum = 0.
+    log_syst_down_sum = 0.
+    if p == 0: return (1,1)
     for err in unc_list:
-        p_up    = 1+asymm[0]
-        p_down  = 1-asymm[1]
+        p_up    = err[1]
+        p_down  = err[0]
+        if p_up == 0 or p_down == 0: continue
         syst_up         = (p_up - p  ) / p
         syst_down       = (p - p_down) / p
         log_syst_up     = p_up / p
@@ -314,8 +321,8 @@ def sumUncLogNorm(unc_list):
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
         log_final_up   = log_syst_up_total
         log_final_down = log_syst_down_total
-        print "bin {0}, pred={1}, syst_up={2}, syst_down={3}, log_final_up={4}, log_final_down={5}".format(b_i, p, final_up, final_down, log_final_up, log_final_down)
-    return (log_final_up, log_final_down)
+        #print "pred={0}, syst_up={1}, syst_down={2}, log_final_up={3}, log_final_down={4}".format(p, final_up, final_down, log_final_up, log_final_down)
+    return (log_final_down, log_final_up)
 
 def sumUnc(unc_list):
     '''Add uncertainties in quadrature.'''
@@ -333,6 +340,7 @@ relUnc={}
 absUnc={}
 absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
 yields={}
+yields_total={}
 yields_data={}
 statUnc={} #asymm
 statUnc_pieces={} #asymm 
@@ -346,21 +354,39 @@ def readRelUnc(config_path):
     '''Read in percentage syst. uncertainty from the config files.'''
     for unc_fn in uncfiles:
         with open(os.path.join(config_path, unc_fn), 'r') as f:
+	    isUp, isDown = False, False
             for line in f.readlines():
                 try:
-                    bin, type, sample, value = line.split()
+                    bin, type_, sample, value = line.split()
                 except ValueError:
                     continue
                 if bin not in binlist or sample not in all_samples:
                     # ignore CR syst., e.g., "bin_onelepcr_250_5_1_0_0"
                     continue
+		if "Up" in type_:
+                    isUp = True
+                    isDown = False
+		if "Down" in type_:
+                    isUp = False
+                    isDown = True
+                type = type_.strip("_Up")
+                type = type_.strip("_Down")
                 if type not in relUnc:
                     relUnc[type] = {}
                 if bin not in relUnc[type]:
                     relUnc[type][bin] = {}
                 if sample in all_samples:
-                    relUnc[type][bin][sample] = float(value)-1
-    
+                    if isUp:
+                        up = float(value)-1 if float(value) > 1 else 1 - float(value)
+                    elif isDown:
+                        down = float(value)-1 if float(value) > 1 else 1 - float(value)
+                        relUnc[type][bin][sample] = (down, up)
+                        isUp, isDown = False, False
+                    else:
+                        up = float(value)-1 if float(value) > 1 else 1 - float(value)
+                        down = float(value)-1 if float(value) > 1 else 1 - float(value)
+                        relUnc[type][bin][sample] = (down, up)
+
     # for all bin uncs
     if all_bin_unc_file != '':
         with open(os.path.join(config_path, all_bin_unc_file), 'r') as f:
@@ -378,19 +404,19 @@ def readRelUnc(config_path):
                     # bin=='all' in config file
                     for bin in binlist:
                         if bin not in relUnc[type]:
-                            relUnc[type][bin] = {sample : float(value)-1}
+                            relUnc[type][bin] = {sample : (float(value)-1, float(value)-1)}
 
     # if a type of unc. is not define for some samples/bins, then fill zero
     for type in relUnc:
         for bin in binlist:
             if bin not in relUnc[type]:
                 # for bin-specific unc. (e.g., qcd-tf) : set other bins to 0
-                relUnc[type][bin] = {sample:0 for sample in all_samples}
+                relUnc[type][bin] = {sample: (1.0,1.0) for sample in all_samples}
             else:
                 for sample in all_samples:
                     # for sample specific unc.: set other samples to 0
                     if sample not in relUnc[type][bin]:
-                        relUnc[type][bin][sample] = 0
+                        relUnc[type][bin][sample] = (1.0, 1.0)
 
 
 def readYields(pred_file):
@@ -405,11 +431,13 @@ def readYields(pred_file):
             bin = binlist[ibin]
             if bin not in yields:
                 yields[bin] = {}
+                yields_total[bin] = 0.
                 statUnc_pieces[bin] = {}
             y = h.GetBinContent(ibin+1)
             e_up = h.GetBinError(ibin+1)
             e_low = h.GetBinError(ibin+1)
             yields[bin][sample] = y
+            yields_total[bin]  += y
             if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
     #h = f.Get('data')
@@ -434,21 +462,24 @@ def calcAbsUnc():
     absUnc = {bin:{} for bin in binlist}
     for sample in all_samples: absUnc_pieces[sample] = {bin:{} for bin in binlist}
     for bin in binlist:
-        absUnc[bin] = {type:0 for type in relUnc.keys()}
-        for sample in all_samples: absUnc_pieces[sample][bin] = {type:0 for type in relUnc.keys()}
+        absUnc[bin] = {type: [0, 0] for type in relUnc.keys()}
+        for sample in all_samples: absUnc_pieces[sample][bin] = {type:[0, 0] for type in relUnc.keys()}
         for type in relUnc:
             for sample in all_samples:
                 # Add the same type of unc. linearly
-                tempUnc = relUnc[type][bin][sample] * yields[bin][sample]
-                absUnc[bin][type]                += tempUnc
-                absUnc_pieces[sample][bin][type] += tempUnc
+                tempUnc_down, tempUnc_up = relUnc[type][bin][sample][0] * yields[bin][sample], relUnc[type][bin][sample][1] * yields[bin][sample]
+                absUnc[bin][type][0]                += tempUnc_down
+                absUnc_pieces[sample][bin][type][0] += tempUnc_down
+                absUnc[bin][type][1]                += tempUnc_up
+                absUnc_pieces[sample][bin][type][1] += tempUnc_up
 		
     for bin in absUnc:
         # Add different types of unc. in quadrature
-        systUnc[bin] = sumUnc(absUnc[bin].values())
+        #systUnc[bin] = sumUnc(absUnc[bin].values())
+        systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin])
         fullUnc[bin] = addAsymm(systUnc[bin], statUnc[bin])
         for sample in all_samples:
-            systUnc_pieces[sample][bin] = sumUnc(absUnc_pieces[sample][bin].values())
+            systUnc_pieces[sample][bin] = sumUncLogNorm(absUnc_pieces[sample][bin].values(), yields[bin][sample])
             fullUnc_pieces[sample][bin] = addAsymm(systUnc_pieces[sample][bin], statUnc_pieces[bin][sample])
             
 
