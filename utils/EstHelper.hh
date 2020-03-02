@@ -307,17 +307,24 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     if (getHistMaximumPlusError(h)>ymax) ymax = getHistMaximumPlusError(h);
   }
   bool isFirst = true;
+  double val = 0.;
+  for (auto *h : hists){
+    double m = h->GetMaximum();
+    val = m > val ? m : val;
+  }
+
   for (auto *h : hists){
     h->SetLineWidth(2);
     h->GetXaxis()->SetLabelOffset(0.20);
     if (isFirst){
       isFirst = false;
       if(isVal){
-	float val = h->GetMaximum();
-	float max = val > 1 ? val : 1 + (1 - val);
-	float min = val > 1 ? 1 - (val - 1) : 1 - (1 - val);
-	h->GetYaxis()->SetRangeUser(0.9*min, 1.1*max);
-	h->SetMinimum(0.9*min);
+	double m = h->GetMaximum();
+        val = m > val ? m : val;
+	double max = val > 1 ? val : 1 + (1 - val);
+	double min = val > 1 ? 1 - (val - 1) : 1 - (1 - val);
+	h->GetYaxis()->SetRangeUser(0.85*min, 1.15*max);
+	h->SetMinimum(0.85*min);
       }
       if(!isVal) h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
       if(forceymax>0) h->GetYaxis()->SetRangeUser(0,plotMax*forceymax);
