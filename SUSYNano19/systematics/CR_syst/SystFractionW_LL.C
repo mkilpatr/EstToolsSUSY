@@ -46,7 +46,7 @@ void SystFractionW_LL(std::string outfile_path = "values_unc_cb_ll_wfrac.conf"){
   {
     sys_name = "xsecNorm_wjets_Up";
     ttbarxsec = "1.00";
-    wjetsxsec = "1.04";
+    wjetsxsec = "1.20";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -54,7 +54,7 @@ void SystFractionW_LL(std::string outfile_path = "values_unc_cb_ll_wfrac.conf"){
   {
     sys_name = "xsecNorm_wjets_Down";
     ttbarxsec = "1.00";
-    wjetsxsec = "0.96";
+    wjetsxsec = "0.80";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
