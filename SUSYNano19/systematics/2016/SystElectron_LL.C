@@ -42,7 +42,11 @@ void SystElectron_LL(std::string outfile_path = "values_unc_2016_ll_electron.con
   // nominal
   {
     sys_name = "nominal";
-    nolepelevetowgt = "ElectronVetoSRSF"; 
+    //nolepelevetowgt = "ElectronVetoSRSF"; 
+    nolepelevetowgt = "1"; 
+    sepelevetowgt = "ElectronVetoSRSF";
+    EstTools::lepsel = "ElecVeto";
+    EstTools::doLepSyst = true;
     sepelevetowgt = "ElectronVetoSRSF";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

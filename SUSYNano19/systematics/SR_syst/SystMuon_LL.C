@@ -44,8 +44,10 @@ void SystMuon_LL(std::string outfile_path = "values_unc_sb_ll_muon.conf"){
   // nominal
   {
     sys_name = "nominal";
-    nolepmuonvetowgt = "MuonLooseSRSF";
     sepmuonvetowgt = "MuonLooseSRSF";
+    nolepmuonvetowgt = "1";
+    EstTools::lepsel = "MuonVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

@@ -42,6 +42,11 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
   // nominal
   {
     sys_name = "nominal";
+    noleptauvetowgt = "1";
+    tauvetowgt = "(TauSRSF)";
+    septauvetowgt = "(TauSRSF)";
+    EstTools::lepsel = "TauVeto";
+    EstTools::doLepSyst = true;
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -51,7 +56,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
   {
     sys_name = "eff_tau_Up";
     noleptauvetowgt = "1";
-    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
+    tauvetowgt = "(TauSRSF_Up)";
     septauvetowgt = "(TauSRSF_Up)";
     EstTools::lepsel = "TauVeto";
     EstTools::doLepSyst = true;
@@ -62,7 +67,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
   // tau - down
   {
     sys_name = "eff_tau_Down";
-    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
+    tauvetowgt = "(TauSRSF_Down)";
     septauvetowgt = "(TauSRSF_Down)";
     EstTools::doLepSyst = true;
     auto llb = getLLBPred();
@@ -96,11 +101,11 @@ void SystTau_LL(std::string outfile_path = "values_unc_cb_ll_tau.conf"){
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
