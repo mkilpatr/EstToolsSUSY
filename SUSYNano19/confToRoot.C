@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <cmath>
 
 #include "../utils/json.hpp"
 using json = nlohmann::json;
@@ -89,11 +90,38 @@ std::vector<std::string> readFileTotal(std::string FILENAME){
   return filenames;
 }
 
+std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
+  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
+  double log_syst_up_total = 0., log_syst_down_total = 0.;
+  double log_final_up = 0., log_final_down = 0.;
+  for(unsigned p = 0; p != p_down.size(); p++){
+    double log_syst_up     = p_up[p];
+    double log_syst_down   = p_down[p];
+    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
+      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
+      log_syst_up   /= geometric_mean;
+      log_syst_down /= geometric_mean;
+    }
+    if (log_syst_up > 1 || log_syst_down < 1){
+        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
+    } else{
+        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
+    }
+    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
+    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
+    log_final_up   = log_syst_up_total;
+    log_final_down = log_syst_down_total;
+  }
+
+  return make_pair(log_final_down, log_final_up);
+}
+
 void confToRoot(std::string indir_ = "values_unc_val_2016"){
 
   std::string indir = indir_ + "/";
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
-  std::vector<TString> rootFiles;
   std::vector<double> val_up_total, val_down_total;
   json j, j_bin, jtot;
   std::ofstream jout;
@@ -115,7 +143,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     vector<TH1*> hUp, hDown, hdiv, hTotal;
     vector<double> hist_up(j_bin["binNum"].size()), hist_down(j_bin["binNum"].size());
     TString type = TString(unc.key());
-    rootFiles.push_back(type);
     cout << type << endl;
     for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
       TString bkg = TString(back.key());
@@ -147,7 +174,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     prepHists(hUp, false, false, false);
     prepHists(hDown, false, false, false);
 
-    for(int h = 0; h != hUp.size(); h++){
+    for(unsigned h = 0; h != hUp.size(); h++){
       TH1* hDiv = (TH1*)hUp[h]->Clone();
       hDiv->Divide(hDown[h]);
       hDiv->SetLineWidth(2);
@@ -158,7 +185,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     prepHists({hdiv}, false, false, false);
 
     auto leg = prepLegends({}, {""}, "l");
-    for(int h = 0; h != hUp.size(); h++){
+    for(unsigned h = 0; h != hUp.size(); h++){
       appendLegends(leg, {hUp[h]}, {hUp[h]->GetName()}, "l");
       //appendLegends(leg, {hDown[h]}, {hDown[h]->GetName()}, "l");
     }
@@ -170,7 +197,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     c->Print(indir+type+".C");
 
     TFile *outFile = new TFile(indir+type+".root", "RECREATE");
-    for(int h = 0; h != hUp.size(); h++){
+    for(unsigned h = 0; h != hUp.size(); h++){
       hUp[h]->Write();
       hDown[h]->Write();
     }
@@ -180,47 +207,61 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     delete gROOT->FindObject("hDown");
   }
 
-  //for(unsigned i = 0; i != val_up_total.size(); i++){
-  //  val_up_total.at(i) = 1+TMath::Sqrt(val_up_total.at(i));
-  //  val_down_total.at(i) = 1-TMath::Sqrt(val_down_total.at(i));
-  //}
+  vector<double> hist_up_total(j_bin["binNum"].size()), hist_down_total(j_bin["binNum"].size());
+  for (json::iterator bin = j_bin["binNum"].begin(); bin != j_bin["binNum"].end(); ++bin) {
+    vector<double> hUp, hDown;
+    string binstr = j_bin["binNum"][bin.key()];
+    int binnum = stoi(binstr, nullptr, 0);
+    for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {
+      for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
+        TString bkg = TString(back.key());
+        if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
+          double up = jtot[unc.key()][back.key()][bin.key()][1];
+          if(up > 5.) continue;
+          hUp.push_back(jtot[unc.key()][back.key()][bin.key()][1]);
+          hDown.push_back(jtot[unc.key()][back.key()][bin.key()][0]);
+        } 
+      }
+    }
+    pair<double, double> comb = doLogNorm(hDown, hUp);
+    cout << "up: " << comb.second << ", down: " << comb.first << endl;
+    hist_down_total.at(binnum) = std::isnan(comb.first) ? 0.001 : comb.first;
+    hist_up_total.at(binnum) = comb.second;
+  }
 
-  //TString totalName = "";
-  //if(rootFiles[0].Contains("ll")) totalName = "ll";
-  //else				  totalName = "qcd";
+  TString totalName = "Total";
+  TH1* hUp = nullptr;
+  TH1* hDown = nullptr;
+  if(j_bin["binNum"].size() > 100){
+    hUp = convertToHist(hist_up_total, "Up", ";Search Region; Systematics", nullptr);
+    hDown = convertToHist(hist_down_total, "Down", ";Search Region; Systematics", nullptr);
+  } else{
+    hUp = convertToHist(hist_up_total, "Up", ";Validation Region; Systematics", nullptr);
+    hDown = convertToHist(hist_down_total, "Down", ";Validation Region; Systematics", nullptr);
+  }
 
-  //TH1* hUp = nullptr;
-  //TH1* hDown = nullptr;
-  //if(val_up_total.size() > 100){
-  //  hUp = convertToHist(val_up_total, "Up", ";Search Region; Systematics " + totalName, nullptr);
-  //  hDown = convertToHist(val_down_total, "Down", ";Search Region; Systematics " + totalName, nullptr);
-  //} else{
-  //  hUp = convertToHist(val_up_total, "Up", ";Validation Region; Systematics " + totalName, nullptr);
-  //  hDown = convertToHist(val_down_total, "Down", ";Validation Region; Systematics " + totalName, nullptr);
-  //}
+  prepHists({hUp, hDown}, false, false, false, {kRed, kBlue});
 
-  //prepHists({hUp, hDown}, false, false, false, {kRed, kBlue});
+  TH1* hDiv = (TH1*)hUp->Clone();
+  hDiv->Divide(hDown);
+  hDiv->SetLineWidth(2);
+  prepHists({hDiv}, false, false, false, {kRed});
 
-  //TH1* hDiv = (TH1*)hUp->Clone();
-  //hDiv->Divide(hDown);
-  //hDiv->SetLineWidth(2);
-  //prepHists({hDiv}, false, false, false, {kRed});
+  auto leg = prepLegends({}, {""}, "l");
+  appendLegends(leg, {hUp}, {totalName + " Up"}, "l");
+  appendLegends(leg, {hDown}, {totalName + " Down"}, "l");
+  leg->SetTextSize(0.05);
+  leg->SetY1NDC(leg->GetY2NDC() - 0.2);
+  TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
+  c->SetTitle(totalName);
+  c->Print(indir+totalName+".pdf");
+  c->Print(indir+totalName+".C");
 
-  //auto leg = prepLegends({}, {""}, "l");
-  //appendLegends(leg, {hUp}, {totalName + " Up"}, "l");
-  //appendLegends(leg, {hDown}, {totalName + " Down"}, "l");
-  //leg->SetTextSize(0.05);
-  //leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-  //TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
-  //c->SetTitle(totalName);
-  //c->Print(indir+totalName+".pdf");
-  //c->Print(indir+totalName+".C");
+  TFile *outFile = new TFile(indir+totalName+".root", "RECREATE");
+  hUp->Write();
+  hDown->Write();
+  outFile->Close();
 
-  //TFile *outFile = new TFile(indir+totalName+".root", "RECREATE");
-  //hUp->Write();
-  //hDown->Write();
-  //outFile->Close();
-
-  //delete gROOT->FindObject("hUp");
-  //delete gROOT->FindObject("hDown");
+  delete gROOT->FindObject("hUp");
+  delete gROOT->FindObject("hDown");
 }
