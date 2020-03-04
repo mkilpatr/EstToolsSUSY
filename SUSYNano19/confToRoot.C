@@ -59,13 +59,7 @@ json readFile(std::string FILENAME){
       	down = 2-std::stod(arr[3],&sz);
       }
       if(!test.Contains("Up")){ 
-      	if((down > 1 && up > 1) || (down < 1 && up < 1)){
-      	  float sign = up >= 1 ? 1. : -1.;
-      	  double val = 0.5 * (abs(up - 1) + abs(1 - down));
-      	  j[s][arr[2]][arr[0]] = {1 - val, 1 + val};
-      	} else {
-      	  j[s][arr[2]][arr[0]] = {down, up};
-          }
+      	j[s][arr[2]][arr[0]] = {down, up};
       	up = 1., down = 1.;
       }
     }
@@ -229,7 +223,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
       }
     }
     pair<double, double> comb = doLogNorm(hDown, hUp);
-    cout << "up: " << comb.second << ", down: " << comb.first << endl;
     hist_down_total.at(binnum) = std::isnan(comb.first) ? 0.001 : comb.first;
     hist_up_total.at(binnum) = comb.second;
   }
