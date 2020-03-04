@@ -136,18 +136,23 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   jout << jtot.dump(3);
   jout.close();
 
-  std::ifstream bin(indir+"/binlist.json");
+  std::ifstream bin("binlist.json");
   bin >> j_bin;
+
+  string binName = "";
+       if(TString(indir_).Contains("sb")) binName = "binNum_SUSYNano";
+  else if(TString(indir_).Contains("LowMET")) binName = "binNum_Validation";
+  else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
 
   for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {
     vector<TH1*> hUp, hDown, hdiv, hTotal;
-    vector<double> hist_up(j_bin["binNum"].size()), hist_down(j_bin["binNum"].size());
+    vector<double> hist_up(j_bin[binName].size()), hist_down(j_bin[binName].size());
     TString type = TString(unc.key());
     cout << type << endl;
     for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
       TString bkg = TString(back.key());
-      for (json::iterator bin = j_bin["binNum"].begin(); bin != j_bin["binNum"].end(); ++bin) {
-	string binstr = j_bin["binNum"][bin.key()];
+      for (json::iterator bin = j_bin[binName].begin(); bin != j_bin[binName].end(); ++bin) {
+	string binstr = j_bin[binName][bin.key()];
         int binnum = stoi(binstr, nullptr, 0);
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
@@ -162,7 +167,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
           hist_down.at(binnum) = 1.;
         }
       }
-      if(j_bin["binNum"].size() > 100){
+      if(j_bin[binName].size() > 100){
         hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Search Region; Systematics " + type, nullptr));
         hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Search Region; Systematics " + type, nullptr));
       } else{
@@ -207,10 +212,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     delete gROOT->FindObject("hDown");
   }
 
-  vector<double> hist_up_total(j_bin["binNum"].size()), hist_down_total(j_bin["binNum"].size());
-  for (json::iterator bin = j_bin["binNum"].begin(); bin != j_bin["binNum"].end(); ++bin) {
+  vector<double> hist_up_total(j_bin[binName].size()), hist_down_total(j_bin[binName].size());
+  for (json::iterator bin = j_bin[binName].begin(); bin != j_bin[binName].end(); ++bin) {
     vector<double> hUp, hDown;
-    string binstr = j_bin["binNum"][bin.key()];
+    string binstr = j_bin[binName][bin.key()];
     int binnum = stoi(binstr, nullptr, 0);
     for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {
       for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
@@ -232,7 +237,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   TString totalName = "Total";
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
-  if(j_bin["binNum"].size() > 100){
+  if(j_bin[binName].size() > 100){
     hUp = convertToHist(hist_up_total, "Up", ";Search Region; Systematics", nullptr);
     hDown = convertToHist(hist_down_total, "Down", ";Search Region; Systematics", nullptr);
   } else{

@@ -57,7 +57,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_sb_ll_tau.conf"){
   {
     sys_name = "eff_tau_Up";
     noleptauvetowgt = "1";
-    tauvetowgt = "(TauSRSF_Up)";
+    tauvetowgt = "(TauSRSF + TauSRSF_Up)";
     septauvetowgt = "(TauSRSF_Up)";
     EstTools::lepsel = "TauVeto";
     EstTools::doLepSyst = true;
@@ -68,6 +68,7 @@ void SystTau_LL(std::string outfile_path = "values_unc_sb_ll_tau.conf"){
   // tau - down
   {
     sys_name = "eff_tau_Down";
+    tauvetowgt = "(TauSRSF - TauSRSF_Down)";
     tauvetowgt = "(TauSRSF_Down)";
     septauvetowgt = "(TauSRSF_Down)";
     EstTools::doLepSyst = true;
