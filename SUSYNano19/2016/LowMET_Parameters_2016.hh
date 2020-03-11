@@ -7,8 +7,8 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_011020_limits/";
-const TString datadir = "nanoaod_all_skim_2016_011020_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_030420_devv6_limits/";
+const TString datadir = "nanoaod_all_skim_2016_030420_devv6_limits/";
 const TString outputdir = "LowMET";
 
 const TString lumistr = "35.815165";
@@ -17,7 +17,7 @@ const TString lumistr_2016 = "35.815165"; //Units are in pb
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*restopSF*SoftBSF*restopSF"; //2016
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*Stop0l_ResTopWeight*SoftBSF*Stop0l_ResTopWeight"; //2016
 
 // photon trigger eff.
 const TString phowgt = wgtvar;

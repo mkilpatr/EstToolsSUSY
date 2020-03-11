@@ -346,7 +346,7 @@ void plotLepCRAllEras(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_allEras";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_restop";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -658,7 +658,7 @@ void plot1LepInclusive(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "lepcr_inclusive_v5";
+  TString region = "lepcr_inclusive_v6";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -673,8 +673,9 @@ void plot1LepInclusive(){
   TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
-	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	//{"njets",     BinInfo("Stop0l_nJets", "N_{j}", 11, -0.5, 10.5)},
+	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
+	{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
   };

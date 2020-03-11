@@ -10,31 +10,14 @@
 #include "SRParameters_unblind.hh"
 
 #include "../EstMethods/LLBEstimator.hh"
-#include "../EstMethods/ZnunuEstimator.hh"
-#include "../EstMethods/QCDEstimator.hh"
 
 using namespace EstTools;
 
 void BkgPredHM_unblind(){
   auto start = chrono::steady_clock::now();
 
-  auto phocfg = phoConfig();
-  ZnunuEstimator z(phocfg);
-  z.zllcr_cfg = zllConfig();
-  z.zll_normMap = normMap;
-  z.phocr_normMap = phoNormMap;
-  z.pred();
-  z.printYields();
-
-  auto qcdcfg = qcdConfig();
-  QCDEstimator q(qcdcfg);
-//  q.runBootstrapping = false;
-  q.pred();
-  q.printYields();
-
-
-  vector<std::string> bkgnames  = {"qcd_pred", "diboson_pred", "ttZ_pred", "ttbarplusw_pred", "znunu_pred"};
-  vector<TString> bkglabels = {"QCD", "Diboson", "ttZ", "t#bar{t}/W", "Z#rightarrow#nu#nu"};
+  vector<std::string> bkgnames  = {"ttbarplusw_pred"};
+  vector<TString> bkglabels = {"t#bar{t}/W"};
   vector<TString> datalabel = {"Data"};
 
   auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs){
@@ -55,13 +38,7 @@ void BkgPredHM_unblind(){
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
 
   ToyCombination lc;
-  lc.addBackground("znunu_pred",        &z.yields.at("singlepho"), &z.yields.at("_TF"));
   lc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
-  lc.addBackground("qcd_pred",          &q.yields.at("_DATA"), &q.yields.at("_TF"));
-//  lc.addBackground("qcd_pred",          nullptr, nullptr, &l.yields.at("qcd-sr"));
-  lc.addBackground("diboson_pred",      nullptr, nullptr, &l.yields.at("diboson-sr"));
-  lc.addBackground("ttZ_pred",          nullptr, nullptr, &l.yields.at("ttZ-sr"));
-//  lc.addBackground("rare_pred",         nullptr, nullptr, &l.yields.at("rare-sr"));
   lc.combine();
 
   vector<TH1*> altpred;
@@ -69,13 +46,7 @@ void BkgPredHM_unblind(){
   convert(lc, altpred, altgraphs);
 
   vector<TH1*> mc;
-  mc.push_back(convertToHist(q.yields.at("qcd-withveto-sr"),"qcd_mc",";Search Region;Events"));
-//  mc.push_back(convertToHist(l.yields.at("qcd-sr"),"qcd_mc",";Search Region;Events"));
-  mc.push_back(convertToHist(l.yields.at("ttZ-sr"),"ttZ_mc",";Search Region;Events"));
-  mc.push_back(convertToHist(l.yields.at("diboson-sr"),"diboson_mc",";Search Region;Events"));
-  //  mc.push_back(convertToHist(l.yields.at("rare-sr"),"rare_mc",";Search Region;Events"));
   mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Search Region;Events"));
-  mc.push_back(convertToHist(z.yields.at("znunu-sr"),"znunu_mc",";Search Region;Events"));
 
   auto sigcfg = sigConfig();
   BaseEstimator s(sigcfg);
@@ -101,7 +72,7 @@ void BkgPredHM_unblind(){
 
     // plot raw MC - w/o top/W SF
     TH1 *hmcnosf = nullptr;
-    vector<TString> mcnosf = {"znunu-raw-sr","ttbar-raw-sr","wjets-raw-sr","tW-raw-sr","ttW-raw-sr","qcd-raw-sr","ttZ-raw-sr","diboson-raw-sr"};
+    vector<TString> mcnosf = {"ttbar-raw-sr","wjets-raw-sr","tW-raw-sr","ttW-raw-sr"};
     for (auto &sname : mcnosf){
       auto hmc = convertToHist(s.yields.at(sname), sname, ";Search Region;Events");
       if (!hmcnosf) hmcnosf = (TH1*)hmc->Clone();

@@ -8,12 +8,12 @@ namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_011020_limits/";
-TString inputdir_2017 = "nanoaod_all_skim_2017_011020_limits/";
-TString inputdir_2018 = "nanoaod_all_skim_2018_011020_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_030420_devv6_limits/";
+TString inputdir_2017 = "nanoaod_all_skim_2017_030420_devv6_limits/";
+TString inputdir_2018 = "nanoaod_all_skim_2018_030420_devv6_limits/";
 TString outputdir() {return "syst/"+sys_name;}
 
-const TString datadir = "nanoaod_data_all_skim_011020_limits/";
+const TString datadir = "nanoaod_data_all_skim_030420_devv6_limits/";
 const TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
 const TString lumistr_2017 = "41.486136";
@@ -24,7 +24,7 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights
 TString wtagwgt = "WtagSF";
 TString sdmvawgt = "TopSF"; // top/W
-TString restopwgt = "restopSF";
+TString restopwgt= "Stop0l_ResTopWeight";
 TString softbwgt = "SoftBSF";
 
 TString puwgt = "puWeight"; // PU
@@ -69,10 +69,10 @@ TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" 
 TString isrwgtvar()     { return isrwgt; }
 TString ttbarxsecvar()  { return ttbarxsec; }
 TString wjetsxsecvar()  { return wjetsxsec; }
-TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+"*"+sdmvawgt+"*"+restopwgt+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
 
 // photon trigger eff.
 TString phowgt() { return wgtvar(); }

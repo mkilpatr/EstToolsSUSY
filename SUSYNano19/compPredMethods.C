@@ -32,27 +32,27 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "sig/std_pred_trad.root";
+  TString predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
 //  TString predFile_statOnly = "/tmp/validation/plots/fullPredOnly/sig/std_pred_trad_orig.root";
-  TString predFile_ichepcr = "sig/std_pred_trad.root";
+  TString predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
 //  TString output  = "";
 
   TFile *fpred = TFile::Open(predFile);
 //  TFile *fpred_statOnly = TFile::Open(predFile_statOnly);
-  TFile *fpred_ichepcr = TFile::Open(predFile_ichepcr);
-  assert(fpred); assert(fpred_ichepcr);
+  TFile *fpred_noextrap = TFile::Open(predFile_noextrap);
+  assert(fpred); assert(fpred_noextrap);
 
   TGraphAsymmErrors* pred = (TGraphAsymmErrors*)fpred->Get(bkg+"_unc_sr");
   TGraphAsymmErrors* pred_statOnly = (TGraphAsymmErrors*)fpred->Get(TString::Format("Graph_from_%s_pred_gr", bkg.Data()));
-  TGraphAsymmErrors* pred_ichepcr = (TGraphAsymmErrors*)fpred_ichepcr->Get(TString::Format("Graph_from_%s_pred_gr", bkg.Data()));
-  for (int i=0; i<pred_ichepcr->GetN(); ++i){
+  TGraphAsymmErrors* pred_noextrap = (TGraphAsymmErrors*)fpred_noextrap->Get(TString::Format("Graph_from_%s_pred_gr", bkg.Data()));
+  for (int i=0; i<pred_noextrap->GetN(); ++i){
     pred->GetX()[i] += 0.1;
     pred_statOnly->GetX()[i] += 0.1;
-    pred_ichepcr->GetX()[i] += 0.3;
+    pred_noextrap->GetX()[i] += 0.3;
   }
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
   pred_statOnly->SetLineColor(kRed); pred_statOnly->SetMarkerColor(kRed);
-  for (auto *gr : {pred, pred_statOnly, pred_ichepcr}){
+  for (auto *gr : {pred, pred_statOnly, pred_noextrap}){
     for (int i=0; i<gr->GetN(); ++i){
       gr->GetEXlow()[i] = 0;
       gr->GetEXhigh()[i] = 0;
@@ -63,14 +63,14 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   TH1* mc = (TH1*)fpred->Get(bkg+"_mc");
   auto ratio_pred = getRatioGraph(pred, mc);
   auto ratio_pred_statOnly = getRatioGraph(pred_statOnly, mc);
-  auto ratio_pred_ichepcr = getRatioGraph(pred_ichepcr, mc);
-  for (int i=0; i<ratio_pred_ichepcr->GetN(); ++i){
+  auto ratio_pred_noextrap = getRatioGraph(pred_noextrap, mc);
+  for (int i=0; i<ratio_pred_noextrap->GetN(); ++i){
     ratio_pred->GetX()[i] += 0.1;
     ratio_pred_statOnly->GetX()[i] += 0.1;
-    ratio_pred_ichepcr->GetX()[i] += 0.3;
+    ratio_pred_noextrap->GetX()[i] += 0.3;
   }
 
-  auto leg = prepLegends<TGraphAsymmErrors>({pred_statOnly, pred, pred_ichepcr}, {"Stats. unc. only", "Stats. + Syst. unc.", "w/o extrapolation"}, "LP");
+  auto leg = prepLegends<TGraphAsymmErrors>({pred_statOnly, pred, pred_noextrap}, {"Stats. unc. only", "Stats. + Syst. unc.", "w/o extrapolation"}, "LP");
 
   auto c = MakeCanvas(1000, 600);
   TPad *p1 = new TPad("p1","p1",0,PAD_SPLIT_Y,1,1);
@@ -92,7 +92,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   pred->GetXaxis()->SetLabelOffset(0.6);
   pred->Draw("PA0");
   pred_statOnly->Draw("P0same[]");
-  pred_ichepcr->Draw("P0same");
+  pred_noextrap->Draw("P0same");
   leg->Draw();
   CMS_lumi(p1, 4, 10);
 
@@ -127,7 +127,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
   ratio_pred->Draw("PA0");
   ratio_pred_statOnly->Draw("P0same[]");
-  ratio_pred_ichepcr->Draw("P0same");
+  ratio_pred_noextrap->Draw("P0same");
 
   c->cd();
   c->SaveAs("/tmp/bkgpred_comp_"+bkg+".pdf");

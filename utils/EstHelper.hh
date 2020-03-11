@@ -246,6 +246,43 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0)
+{
+  double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
+
+  vector<TH1*> hists;
+  for (auto *h : inhists) hists.push_back((TH1*)h->Clone());
+
+  auto c = MakeCanvas();
+  c->cd();
+  double ymax = 0;
+  for (auto *h : hists){
+    if (getHistMaximumPlusError(h)>ymax) ymax = getHistMaximumPlusError(h);
+  }
+  bool isFirst = true;
+  for (auto *h : hists){
+    h->SetLineWidth(3);
+    h->GetXaxis()->SetTitleFont(42);
+    h->GetYaxis()->SetTitleFont(42);
+    h->GetXaxis()->SetLabelFont(42);
+    h->GetYaxis()->SetLabelFont(42);
+    if (isFirst){
+      isFirst = false;
+      h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
+      h->Draw("histe");
+    }
+    h->Draw("histesame");
+#ifdef DEBUG_
+    cout << "-->drawing drawComp: "<< h->GetName() << endl;
+#endif
+  }
+  if (leg) leg->Draw();
+#ifdef TDR_STYLE_
+  CMS_lumi(c, 4, 10);
+#endif
+  return c;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 {
