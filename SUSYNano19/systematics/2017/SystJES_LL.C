@@ -66,6 +66,7 @@ void SystJES_LL(std::string outfile_path = "values_unc_2017_ll_jes.conf"){
   {
     sys_name = "JES_Up";
     EstTools::jes_postfix = "_JESUp";
+    EstTools::restop_jes_postfix= "_JESUp";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -73,6 +74,7 @@ void SystJES_LL(std::string outfile_path = "values_unc_2017_ll_jes.conf"){
   {
     sys_name = "JES_Down";
     EstTools::jes_postfix = "_JESDown";
+    EstTools::restop_jes_postfix= "_JESDown";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
