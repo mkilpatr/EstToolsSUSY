@@ -4,6 +4,7 @@
 #include "../../utils/EstHelper.hh"
 //#include "../binDefinitions.hh"
 #include "../binDefinitions_CR_small.hh"
+//#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
@@ -81,6 +82,8 @@ TString phowgt() { return wgtvar(); }
 //TString phowgt = wgtvar + "*qcdRespTailWeight";
 
 bool doLepSyst = false;
+// for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
+TString region = "CR2016";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -145,7 +148,11 @@ TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi
 TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 TString datasel() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30"+jes_postfix+")) && Pass_LHETTbar"+jes_postfix; }
 TString dphi_invert() {return " && Pass_dPhiQCD"+jes_postfix;}
-TString dphi_cut() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; } // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
+//for search and control
+TString dphi_cut_srcr() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; } // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
+//for validation
+TString dphi_cut_val() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") || ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && (Pass_dPhiMETMedDM"+jes_postfix+")) )"; }
+TString dphi_cut() { return region.Contains("LowMET") ?  dphi_cut_val() : dphi_cut_srcr(); }
 
 // ------------------------------------------------------------------------
 // search regions and control regions
@@ -160,6 +167,8 @@ std::map<TString, TString> cutMap = []{
         {"hmNoDPhi",    "Stop0l_nJets"+jes_postfix+">=5 && Stop0l_nbtags"+jes_postfix+">=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM"+jes_postfix+""},
         {"invertDPhi",  "Pass_dPhiQCD"+jes_postfix+""},
+	{"dPhiMedLM",   "Pass_dPhiMETMedDM"+jes_postfix},
+	{"dPhiMedHM",   "Pass_dPhiMET"+jes_postfix+" && !Pass_dPhiMETHighDM"+jes_postfix+""},
  
         {"nb0",         "Stop0l_nbtags"+jes_postfix+"==0"},
         {"nb1",         "Stop0l_nbtags"+jes_postfix+"==1"},
@@ -173,7 +182,8 @@ std::map<TString, TString> cutMap = []{
         {"medptisr",    "Stop0l_ISRJetPt"+jes_postfix+">=300"},
         {"highptisr",   "Stop0l_ISRJetPt"+jes_postfix+">=500"},
         {"nj2to5",      "Stop0l_nJets"+jes_postfix+">=2 && Stop0l_nJets"+jes_postfix+"<=5"},
-        {"nj6",         "Stop0l_nJets"+jes_postfix+">=6"},
+        {"nj5",         "Stop0l_nJets"+jes_postfix+">=5"},
+	{"nj6",         "Stop0l_nJets"+jes_postfix+">=6"},
         {"nj7",         "Stop0l_nJets"+jes_postfix+">=7"},
         {"lowmtb",      "Stop0l_Mtb"+jes_postfix+"<175"},
         {"highmtb",     "Stop0l_Mtb"+jes_postfix+">=175"},
@@ -205,11 +215,14 @@ std::map<TString, TString> cutMap = []{
         {"htgt1500",    "Stop0l_HT"+jes_postfix+">=1500"},
         {"htlt1300",    "Stop0l_HT"+jes_postfix+"<1300"},
         {"htgt1300",    "Stop0l_HT"+jes_postfix+">=1300"},
-
+	{"met400",	"MET_pt"+jes_postfix+" < 400"},
+	{"met300",	"MET_pt"+jes_postfix+" < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
+    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -221,6 +234,8 @@ std::map<TString, TString> cutMap_JESUp = []{
         {"hmNoDPhi",    "Stop0l_nJets_JESUp>=5 && Stop0l_nbtags_JESUp>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM_JESUp"},
         {"invertDPhi",  "Pass_dPhiQCD_JESUp"},
+	{"dPhiMedLM",   "Pass_dPhiMETMedDM_JESUp"},
+	{"dPhiMedHM",   "Pass_dPhiMET_JESUp && !Pass_dPhiMETHighDM_JESUp"},
  
         {"nb0",         "Stop0l_nbtags_JESUp==0"},
         {"nb1",         "Stop0l_nbtags_JESUp==1"},
@@ -234,7 +249,8 @@ std::map<TString, TString> cutMap_JESUp = []{
         {"medptisr",    "Stop0l_ISRJetPt_JESUp>=300"},
         {"highptisr",   "Stop0l_ISRJetPt_JESUp>=500"},
         {"nj2to5",      "Stop0l_nJets_JESUp>=2 && Stop0l_nJets_JESUp<=5"},
-        {"nj6",         "Stop0l_nJets_JESUp>=6"},
+        {"nj5",         "Stop0l_nJets_JESUp>=5"},
+	{"nj6",         "Stop0l_nJets_JESUp>=6"},
         {"nj7",         "Stop0l_nJets_JESUp>=7"},
         {"lowmtb",      "Stop0l_Mtb_JESUp<175"},
         {"highmtb",     "Stop0l_Mtb_JESUp>=175"},
@@ -266,11 +282,14 @@ std::map<TString, TString> cutMap_JESUp = []{
         {"htgt1500",    "Stop0l_HT_JESUp>=1500"},
         {"htlt1300",    "Stop0l_HT_JESUp<1300"},
         {"htgt1300",    "Stop0l_HT_JESUp>=1300"},
-
+	{"met400",	"MET_pt < 400"},
+	{"met300",	"MET_pt < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
+    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -282,6 +301,8 @@ std::map<TString, TString> cutMap_JESDown = []{
         {"hmNoDPhi",    "Stop0l_nJets_JESDown>=5 && Stop0l_nbtags_JESDown>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM_JESDown"},
         {"invertDPhi",  "Pass_dPhiQCD_JESDown"},
+	{"dPhiMedLM",   "Pass_dPhiMETMedDM_JESDown"},
+	{"dPhiMedHM",   "Pass_dPhiMET_JESDown && !Pass_dPhiMETHighDM_JESDown"},
  
         {"nb0",         "Stop0l_nbtags_JESDown==0"},
         {"nb1",         "Stop0l_nbtags_JESDown==1"},
@@ -295,7 +316,8 @@ std::map<TString, TString> cutMap_JESDown = []{
         {"medptisr",    "Stop0l_ISRJetPt_JESDown>=300"},
         {"highptisr",   "Stop0l_ISRJetPt_JESDown>=500"},
         {"nj2to5",      "Stop0l_nJets_JESDown>=2 && Stop0l_nJets_JESDown<=5"},
-        {"nj6",         "Stop0l_nJets_JESDown>=6"},
+        {"nj5",         "Stop0l_nJets_JESDown>=5"},
+	{"nj6",         "Stop0l_nJets_JESDown>=6"},
         {"nj7",         "Stop0l_nJets_JESDown>=7"},
         {"lowmtb",      "Stop0l_Mtb_JESDown<175"},
         {"highmtb",     "Stop0l_Mtb_JESDown>=175"},
@@ -327,11 +349,14 @@ std::map<TString, TString> cutMap_JESDown = []{
         {"htgt1500",    "Stop0l_HT_JESDown>=1500"},
         {"htlt1300",    "Stop0l_HT_JESDown<1300"},
         {"htgt1300",    "Stop0l_HT_JESDown>=1300"},
-
+	{"met400",	"MET_pt < 400"},
+	{"met300",	"MET_pt < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
+    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -343,6 +368,8 @@ std::map<TString, TString> cutMap_METUnClustUp = []{
         {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM_METUnClustUp"},
         {"invertDPhi",  "Pass_dPhiQCD_METUnClustUp"},
+	{"dPhiMedLM",   "Pass_dPhiMETMedDM_METUnClustUp"},
+	{"dPhiMedHM",   "Pass_dPhiMET_METUnClustUp && !Pass_dPhiMETHighDM_METUnClustUp"},
  
         {"nb0",         "Stop0l_nbtags==0"},
         {"nb1",         "Stop0l_nbtags==1"},
@@ -356,7 +383,8 @@ std::map<TString, TString> cutMap_METUnClustUp = []{
         {"medptisr",    "Stop0l_ISRJetPt>=300"},
         {"highptisr",   "Stop0l_ISRJetPt>=500"},
         {"nj2to5",      "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
-        {"nj6",         "Stop0l_nJets>=6"},
+        {"nj5",         "Stop0l_nJets>=5"},
+	{"nj6",         "Stop0l_nJets>=6"},
         {"nj7",         "Stop0l_nJets>=7"},
         {"lowmtb",      "Stop0l_Mtb_METUnClustUp<175"},
         {"highmtb",     "Stop0l_Mtb_METUnClustUp>=175"},
@@ -388,11 +416,14 @@ std::map<TString, TString> cutMap_METUnClustUp = []{
         {"htgt1500",    "Stop0l_HT>=1500"},
         {"htlt1300",    "Stop0l_HT<1300"},
         {"htgt1300",    "Stop0l_HT>=1300"},
-
+	{"met400",	"MET_pt < 400"},
+	{"met300",	"MET_pt < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
+    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -404,6 +435,8 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
         {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
         {"dPhiHM",      "Pass_dPhiMETHighDM_METUnClustDown"},
         {"invertDPhi",  "Pass_dPhiQCD_METUnClustDown"},
+	{"dPhiMedLM",   "Pass_dPhiMETMedDM_METUnClustDown"},
+	{"dPhiMedHM",   "Pass_dPhiMET_METUnClustDown && !Pass_dPhiMETHighDM_METUnClustDown"},
  
         {"nb0",         "Stop0l_nbtags==0"},
         {"nb1",         "Stop0l_nbtags==1"},
@@ -417,7 +450,8 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
         {"medptisr",    "Stop0l_ISRJetPt>=300"},
         {"highptisr",   "Stop0l_ISRJetPt>=500"},
         {"nj2to5",      "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
-        {"nj6",         "Stop0l_nJets>=6"},
+        {"nj5",         "Stop0l_nJets>=5"},
+	{"nj6",         "Stop0l_nJets>=6"},
         {"nj7",         "Stop0l_nJets>=7"},
         {"lowmtb",      "Stop0l_Mtb_METUnClustDown<175"},
         {"highmtb",     "Stop0l_Mtb_METUnClustDown>=175"},
@@ -449,11 +483,14 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
         {"htgt1500",    "Stop0l_HT>=1500"},
         {"htlt1300",    "Stop0l_HT<1300"},
         {"htgt1300",    "Stop0l_HT>=1300"},
-
+	{"met400",	"MET_pt < 400"},
+	{"met300",	"MET_pt < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
     cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
+    cmap["lmVal"] = createCutString("lmNoDPhi_dPhiMedLM", cmap);
+    cmap["hmVal"] = createCutString("hmNoDPhi_dPhiMedHM", cmap);
     return cmap;
 }();
 
@@ -1178,7 +1215,7 @@ BaseConfig lepConfig2016(){
   config.categories = srbins;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
-  config.crMapping = lepcrMapping
+  config.crMapping = lepcrMapping;
 
   return config;
 }
@@ -1231,7 +1268,7 @@ BaseConfig lepConfig2017(){
   config.categories = srbins;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
-  config.crMapping = lepcrMapping
+  config.crMapping = lepcrMapping;
 
   return config;
 }
@@ -1284,7 +1321,7 @@ BaseConfig lepConfig2018(){
   config.categories = srbins;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
-  config.crMapping = lepcrMapping
+  config.crMapping = lepcrMapping;
 
   return config;
 }

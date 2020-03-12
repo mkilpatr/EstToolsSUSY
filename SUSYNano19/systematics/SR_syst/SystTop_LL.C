@@ -90,11 +90,11 @@ void SystTop_LL(std::string outfile_path = "values_unc_sb_ll_toptag.conf"){
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = EstTools::region == "CR" ? config.crCatMaps.at(cat_name) : config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = EstTools::region == "CR" ? "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh : "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {

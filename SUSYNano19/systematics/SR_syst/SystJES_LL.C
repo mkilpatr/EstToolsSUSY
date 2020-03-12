@@ -14,6 +14,10 @@ using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   auto llbcfg = lepConfig();
+       if(EstTools::region.Contains("2016")) llbcfg = lepConfig2016();
+  else if(EstTools::region.Contains("2017")) llbcfg = lepConfig2017();
+  else if(EstTools::region.Contains("2018")) llbcfg = lepConfig2018();
+
   if(sys_name == "JES_Up"){
     llbcfg.catMaps = srCatMap_JESUp();
     llbcfg.crCatMaps = lepCatMap_JESUp();
@@ -31,11 +35,17 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
     llbcfg.crCatMaps = lepCatMap();
   }
   LLBEstimator l(llbcfg);
-  l.pred();
+
+  if(EstTools::region.Contains("201")) l.predYear();
+  else				       l.pred();
+
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("ttbarplusw-sr");
+  vector<Quantity> yields;
+       if(EstTools::region.Contains("SR")) yields = l.yields.at("ttbarplusw-sr");
+  else if(EstTools::region.Contains("CR")) yields = l.yields.at("ttbarplusw");
+  else				           yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
@@ -45,7 +55,17 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   };
 }
 
-void SystJES_LL(std::string outfile_path = "values_unc_sb_ll_jes.conf"){
+void SystJES_LL(){
+
+  std::string bins = "sb";
+  std::string mc = "";
+       if(EstTools::region.Contains("CR"))     bins = "cb";
+  else if(EstTools::region.Contains("LowMET")) bins = "LowMET";
+       if(EstTools::region.Contains("2016"))   mc = "_2016";
+  else if(EstTools::region.Contains("2017"))   mc = "_2017";
+  else if(EstTools::region.Contains("2018"))   mc = "_2018";
+
+  std::string outfile_path = "values_unc_" + bins + mc + "_ll_jes.conf";
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -104,11 +124,11 @@ void SystJES_LL(std::string outfile_path = "values_unc_sb_ll_jes.conf"){
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = EstTools::region == "CR" ? config.crCatMaps.at(cat_name) : config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          auto binname = EstTools::region == "CR" ? "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh : "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
