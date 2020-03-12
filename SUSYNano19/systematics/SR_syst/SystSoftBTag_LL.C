@@ -19,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   else if(EstTools::region.Contains("2018")) llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
 
- f(EstTools::region.Contains("201")) l.predYear();
+  if(EstTools::region.Contains("201")) l.predYear();
   else				       l.pred(); l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
