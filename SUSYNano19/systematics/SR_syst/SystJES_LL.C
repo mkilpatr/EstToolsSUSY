@@ -102,6 +102,9 @@ void SystJES_LL(){
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
   auto config = lepConfig();
+       if(EstTools::region.Contains("2016")) config = lepConfig2016();
+  else if(EstTools::region.Contains("2017")) config = lepConfig2017();
+  else if(EstTools::region.Contains("2018")) config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
