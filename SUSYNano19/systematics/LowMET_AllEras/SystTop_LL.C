@@ -50,8 +50,8 @@ void SystTop_LL(std::string outfile_path = "values_unc_val_ll_toptag.conf"){
   // toptag up
   {
     sys_name = "eff_toptag_Up";
-    sdmvawgt = "(TopSF + TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_top_up)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -59,8 +59,8 @@ void SystTop_LL(std::string outfile_path = "values_unc_val_ll_toptag.conf"){
   // toptag down 
   {
     sys_name = "eff_toptag_Down";
-    sdmvawgt = "(TopSF - TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_top_dn)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

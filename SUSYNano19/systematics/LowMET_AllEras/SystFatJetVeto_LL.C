@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"){
+void SystFatJetVeto_LL(std::string outfile_path = "values_unc_val_ll_fatjet_veto.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -47,19 +47,19 @@ void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag up
+  // toptag up
   {
-    sys_name = "eff_restoptag_Up";
-    restopwgt = "(Stop0l_ResTopWeight_Up)";
+    sys_name = "eff_fatjet_veto_Up";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_veto_up)"; 
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag down
+  // toptag down 
   {
-    sys_name = "eff_restoptag_Down";
-    restopwgt = "(Stop0l_ResTopWeight_Dn)";
+    sys_name = "eff_fatjet_veto_Down";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_veto_dn)"; 
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;

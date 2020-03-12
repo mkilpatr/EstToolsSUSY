@@ -51,7 +51,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_2018_ll_restoptag.conf
   {
     sys_name = "eff_restoptag_Up";
     restopwgt = "(Stop0l_ResTopWeight_Up)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -60,7 +60,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_2018_ll_restoptag.conf
   {
     sys_name = "eff_restoptag_Down";
     restopwgt = "(Stop0l_ResTopWeight_Dn)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

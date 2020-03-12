@@ -24,8 +24,8 @@ const TString HEMVeto     = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30) + " + lu
 const TString HEMVetoElec = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistrPreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString wgtvar = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*Stop0l_ResTopWeight";// //2018
-const TString wgtvar_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*WtagSF*TopSF*SoftBSF*Stop0l_ResTopWeight";// //2018
+const TString wgtvar = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";// //2018
+const TString wgtvar_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";// //2018
 
 
 // photon trigger eff.

@@ -44,7 +44,7 @@ void SystResTop_QCD(std::string outfile_path = "values_unc_qcd_restoptag.conf"){
   {
     sys_name = "eff_restop_up";
     restopwgt = "(Stop0l_ResTopWeight_Up)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
@@ -52,7 +52,7 @@ void SystResTop_QCD(std::string outfile_path = "values_unc_qcd_restoptag.conf"){
   {
     sys_name = "eff_restop_down";
     restopwgt = "(Stop0l_ResTopWeight_Up)";
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 

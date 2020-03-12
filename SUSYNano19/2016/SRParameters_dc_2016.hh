@@ -22,7 +22,7 @@ const TString lumistr_2016 = "35.815165"; //Units are in pb
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*SoftBSF*Stop0l_ResTopWeight";// //2016
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";// //2016
 
 // photon trigger eff.
 const TString phowgt = wgtvar;

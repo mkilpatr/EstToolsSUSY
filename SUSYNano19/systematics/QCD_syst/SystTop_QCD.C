@@ -43,16 +43,16 @@ void SystTop_QCD(std::string outfile_path = "values_unc_qcd_toptag.conf"){
   // toptag up
   {
     sys_name = "eff_toptag_up";
-    sdmvawgt = "(TopSF + TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_top_up)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 
   // toptag down 
   {
     sys_name = "eff_toptag_down";
-    sdmvawgt = "(TopSF - TopSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_top_dn)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     proc_syst_pred["qcd"][sys_name]   = getQCDPred();
   }
 

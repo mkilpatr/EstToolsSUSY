@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-#include "../Syst_LowMET_Parameters.hh"
+#include "../Syst_CR_Parameters.hh"
 
 #include "../../../EstMethods/LLBEstimator.hh"
 
@@ -19,7 +19,7 @@ map<TString, vector<Quantity>> getLLBPred(){
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
+  vector<Quantity> yields = l.yields.at("ttbarplusw");
   llbcfg.reset();
   
   return {
@@ -30,7 +30,7 @@ map<TString, vector<Quantity>> getLLBPred(){
 }
 
 
-void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"){
+void SystFatJetVeto_LL(std::string outfile_path = "values_unc_cb_ll_fatjet_veto.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -47,19 +47,19 @@ void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag up
+  // toptag up
   {
-    sys_name = "eff_restoptag_Up";
-    restopwgt = "(Stop0l_ResTopWeight_Up)";
+    sys_name = "eff_fatjet_veto_Up";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_veto_up)"; 
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag down
+  // toptag down 
   {
-    sys_name = "eff_restoptag_Down";
-    restopwgt = "(Stop0l_ResTopWeight_Dn)";
+    sys_name = "eff_fatjet_veto_Down";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_veto_dn)"; 
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -90,11 +90,11 @@ void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"
 
       unsigned ibin = 0;
       for (auto &cat_name : config.categories){
-        auto &cat = config.catMaps.at(cat_name);
+        auto &cat = config.crCatMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
-          auto binname = "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+	  auto binname = "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {
@@ -105,7 +105,7 @@ void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"
             cout << "Invalid unc, set to 100%: " << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
             uncs_Down.at(ibin).value = 0.001;
           }
-          outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
+	  outfile << binname << "\t" << uncType_Up << "\t" << bkg << "\t" << uncs_Up.at(ibin).value << endl;
           outfile << binname << "\t" << uncType_Down << "\t" << bkg << "\t" << uncs_Down.at(ibin).value << endl;
           ++ibin;
         }

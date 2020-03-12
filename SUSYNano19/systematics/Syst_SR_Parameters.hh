@@ -23,8 +23,7 @@ const TString lumistr_2018PostHEM = "59.699489";
 
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights
-TString wtagwgt = "WtagSF";
-TString sdmvawgt = "TopSF"; // top/W
+TString sdmvawgt = "Stop0l_DeepAK8_SFWeight"; // top/W
 TString restopwgt = "Stop0l_ResTopWeight";
 TString softbwgt = "SoftBSF";
 
@@ -70,10 +69,10 @@ TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" 
 TString isrwgtvar()     { return isrwgt; }
 TString ttbarxsecvar()  { return ttbarxsec; }
 TString wjetsxsecvar()  { return wjetsxsec; }
-TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
-TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+wtagwgt+jes_postfix+"*"+sdmvawgt+jes_postfix+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
+TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+jes_postfix+"*"+softbwgt+"*"+pdfwgt; }
 
 // photon trigger eff.
 TString phowgt() { return wgtvar(); }

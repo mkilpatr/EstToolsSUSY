@@ -50,8 +50,8 @@ void SystWtag_LL(std::string outfile_path = "values_unc_cb_ll_wtag.conf"){
   // wtag up
   {
     sys_name = "eff_wtag_Up";
-    wtagwgt = "(WtagSF + WtagSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_w_up)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -59,8 +59,8 @@ void SystWtag_LL(std::string outfile_path = "values_unc_cb_ll_wtag.conf"){
   // wtag down
   {
     sys_name = "eff_wtag_Down";
-    wtagwgt = "(WtagSF - WtagSFErr)"; 
-    cout << "\n\n ====== Using weights " << wtagwgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sdmvawgt = "(Stop0l_DeepAK8_SFWeight_w_dn)"; 
+    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

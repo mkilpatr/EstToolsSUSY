@@ -2,7 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
-#include "../LowMET_binDefinitions.hh"
+#include "../LowMET_binDefinitions_noExtrap.hh"
 
 namespace EstTools{
 
@@ -17,7 +17,7 @@ const TString lumistr_2016 = "35.815165"; //Units are in pb
 TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*WtagSF*TopSF*Stop0l_ResTopWeight*SoftBSF*Stop0l_ResTopWeight"; //2016
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*Stop0l_trigger_eff_MET_loose_baseline*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*Stop0l_ResTopWeight*SoftBSF"; //2016
 
 // photon trigger eff.
 const TString phowgt = wgtvar;

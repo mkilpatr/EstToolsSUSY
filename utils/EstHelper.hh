@@ -277,9 +277,6 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0)
 #endif
   }
   if (leg) leg->Draw();
-#ifdef TDR_STYLE_
-  CMS_lumi(c, 4, 10);
-#endif
   return c;
 }
 

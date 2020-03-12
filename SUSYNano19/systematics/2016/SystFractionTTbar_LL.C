@@ -1,4 +1,5 @@
 /*
+ * Znunu.C
  *
  *  Created on: Oct 23, 2019
  *      Author: mkilpatr
@@ -13,32 +14,26 @@
 using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
-  auto llbcfg = lepConfig();
+  auto llbcfg = lepConfig2016();
   LLBEstimator l(llbcfg);
-  l.pred();
+  l.predYear();
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
+
   return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //    //{"diboson",    l.yields.at("diboson-sr")},
-    };
+    {"ttbarplusw", l.yields.at("_TF")},
+  };
 }
 
 
-void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"){
+void SystFractionTTbar_LL(std::string outfile_path = "values_unc_2016_ll_ttbarfrac.conf"){
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
   for (auto &bkg : bkgnames){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
-
-  //inputdir = "/data/hqu/trees/0221_wtopSyst";
 
   // nominal
   {
@@ -47,29 +42,28 @@ void SystResTop_LL(std::string outfile_path = "values_unc_val_ll_restoptag.conf"
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag up
+  // xsecNorm_ttbar +6%
   {
-    sys_name = "eff_restoptag_Up";
-    restopwgt = "(Stop0l_ResTopWeight_Up)";
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "xsecNorm_ttbar_Up";
+    ttbarxsec = "1.20";
+    wjetsxsec = "1.00";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
-  // restoptag down
   {
-    sys_name = "eff_restoptag_Down";
-    restopwgt = "(Stop0l_ResTopWeight_Dn)";
-    cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
+    sys_name = "xsecNorm_ttbar_Down";
+    ttbarxsec = "0.80";
+    wjetsxsec = "1.00";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
-  auto config = lepConfig();
+  auto config = lepConfig2016();
 
-  for (auto &bkg : bkgnames){
+    for (auto &bkg : bkgnames){
     auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
