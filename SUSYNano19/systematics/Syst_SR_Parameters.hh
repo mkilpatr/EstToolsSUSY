@@ -2,9 +2,9 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
-//#include "../binDefinitions.hh"
+#include "../binDefinitions.hh"
 //#include "../binDefinitions_CR.hh"
-#include "../LowMET_binDefinitions_small.hh"
+//#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
@@ -83,7 +83,7 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "LowMET2016";
+TString region = "SR";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
