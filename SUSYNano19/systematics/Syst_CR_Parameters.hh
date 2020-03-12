@@ -2,6 +2,7 @@
 #define ESTTOOLS_SRPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
+#include "../binDefinitions_CR.hh"
 
 namespace EstTools{
 
@@ -109,8 +110,6 @@ bool ICHEPCR = false;
 TString lepsel = "ElecVeto";
 TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))"; }
 TString revert_vetoes_sep() {return " && Pass_" + lepsel + " == 0"; }
-//TString revert_vetoes_() {return " && Pass_MuonVeto == 0"; }
-//TString revert_vetoes_()  {return " && Pass_IsoTrkVeto == 0 && Pass_TauVeto == 0"; }
 
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
@@ -458,61 +457,6 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
     return cmap;
 }();
 
-std::vector<TString> srbins{
-//---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  "lm_nb0_nivf0_highptisr_nj2to5",
-  "lm_nb0_nivf0_highptisr_nj6",
-  "lm_nb0_nivf1_highptisr_nj2to5",
-  "lm_nb0_nivf1_highptisr_nj6",
-
-  // 1b, 0 or >=1 ivf
-  "lm_nb1_nivf0_lowmtb_lowptisr_lowptb",
-  "lm_nb1_nivf0_lowmtb_lowptisr_medptb",
-  "lm_nb1_nivf0_lowmtb_highptisr_lowptb",
-  "lm_nb1_nivf0_lowmtb_highptisr_medptb",
-  // ---
-  "lm_nb1_nivf1_lowmtb_medptisr_lowptb",
-
-  // 2b
-  "lm_nb2_lowmtb_lowptisr_lowptb12",
-  "lm_nb2_lowmtb_lowptisr_medptb12",
-  "lm_nb2_lowmtb_lowptisr_highptb12_nj7",
-  "lm_nb2_lowmtb_highptisr_lowptb12",
-  "lm_nb2_lowmtb_highptisr_medptb12",
-  "lm_nb2_lowmtb_highptisr_highptb12_nj7",
-  //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  "hm_nb1_lowmtb_nj7_nrtgeq1",
-  "hm_nb2_lowmtb_nj7_nrtgeq1",
-
-  // high mtb
-  // nb1
-  // 1 tagged
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1300",
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1300to1500",
-  "hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",
-
-  // nb2
-  // 1 tagged
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1300",
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1300to1500",
-  "hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",
-
-  // nb3
-  //1 tagged
-  "hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",
-  "hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",
-  "hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",
-  //---------- high deltaM ----------
-
-};
-
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins)
@@ -553,60 +497,6 @@ std::map<TString, TString> srlabels = []{
     for (auto s: srbins) cmap[s] = s;
     return cmap;
 }();
-
-std::map<TString, std::vector<int>> srMETbins{
-//---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5",              {     450, 550, 650, 750, 1000}},
-  {"lm_nb0_nivf0_highptisr_nj6",                 {     450, 550, 650, 750, 1000}},
-  {"lm_nb0_nivf1_highptisr_nj2to5",              {     450, 550, 650, 750, 1000}},
-  {"lm_nb0_nivf1_highptisr_nj6",                 {     450, 550, 650, 750, 1000}},
-
-  // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",        {300, 400, 500, 600, 1000}},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        {300, 400, 500, 600, 1000}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",            {450, 550, 650, 750, 1000}},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb",            {450, 550, 650, 750, 1000}},
-
-  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 {300, 400, 500, 1000}},
-
-  // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12",            {300, 400, 500, 1000}},
-  {"lm_nb2_lowmtb_lowptisr_medptb12",            {300, 400, 500, 1000}},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7",       {300, 400, 500, 1000}},
-  {"lm_nb2_lowmtb_highptisr_lowptb12",                {450, 550, 650, 1000}},
-  {"lm_nb2_lowmtb_highptisr_medptb12",                {450, 550, 650, 1000}},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7",           {450, 550, 650, 1000}},
-  //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
-
-  // high mtb
-  // nb1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1300",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1300to1500",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
-
-  // nb2
-  //1
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1300",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1300to1500",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
-
-        // nb3
-  //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 450, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         {250, 350, 450, 550, 1000}},
-  //---------- high deltaM ----------
-
-};
 
 // normalization cuts for Rz
 std::map<TString, TString> normMap{
@@ -727,61 +617,6 @@ std::map<TString, TString> phoNormMap_METUnClustDown = []{
 
 //std::map<TString, TString> phoNormMap = normMap;
 
-std::map<TString, TString> phocrMapping{
-//---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5",              "lm_nb0_nivf0_highptisr_nj2to5"},
-  {"lm_nb0_nivf0_highptisr_nj6",                 "lm_nb0_nivf0_highptisr_nj6"},
-  {"lm_nb0_nivf1_highptisr_nj2to5",              "lm_nb0_nivf1_highptisr_nj2to5"},
-  {"lm_nb0_nivf1_highptisr_nj6",                 "lm_nb0_nivf1_highptisr_nj6"},
-
-  // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",        "lm_nb1_nivf0_lowmtb_lowptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb",       "lm_nb1_nivf0_lowmtb_highptisr_medptb"},
-  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 "lm_nb1_nivf1_lowmtb_medptisr_lowptb"},
-
-  // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12",            "lm_nb2_lowmtb_lowptisr_lowptb12"},
-  {"lm_nb2_lowmtb_lowptisr_medptb12",            "lm_nb2_lowmtb_lowptisr_medptb12"},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7"},
-  {"lm_nb2_lowmtb_highptisr_lowptb12",           "lm_nb2_lowmtb_highptisr_lowptb12"},
-  {"lm_nb2_lowmtb_highptisr_medptb12",           "lm_nb2_lowmtb_highptisr_medptb12"},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7",      "lm_nb2_lowmtb_highptisr_highptb12_nj7"},
-  //---------- low deltaM ----------
-
-  //---------- high deltaM ----------
-  // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7_nrtgeq1"},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7_nrtgeq1"},
-  
-  // high mtb                                          
-  // nb1                                               
-  // 1 tagged                                          
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",           "hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1300",       "hm_nb1_highmtb_ht1000to1300"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1300to1500",       "hm_nb1_highmtb_ht1300to1500"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",           "hm_nb1_highmtb_htgt1500"},
-
-  // nb2                                               
-  // 1 tagged                                          
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",            "hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1300",        "hm_nbeq2_highmtb_ht1000to1300"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1300to1500",        "hm_nbeq2_highmtb_ht1300to1500"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",            "hm_nbeq2_highmtb_htgt1500"},
-
-  // nb3                                               
-  //1 tagged                                           
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",              "hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",          "hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",              "hm_nb3_highmtb_htgt1500"},
-  
-  //---------- high deltaM ----------
-
-};
-
-
 std::map<TString, TString> phocrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : phocrMapping)
@@ -820,63 +655,6 @@ std::map<TString, TString> phocrCuts_METUnClustDown = []{
 std::map<TString, TString> phocrlabels = phocrMapping;
 
 std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
-
-
-std::map<TString, TString> lepcrMapping {
-//---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5",              "lm_nb0_nivf0_highptisr_nj2to5"},
-  {"lm_nb0_nivf0_highptisr_nj6",                 "lm_nb0_nivf0_highptisr_nj6"},
-  {"lm_nb0_nivf1_highptisr_nj2to5",              "lm_nb0_nivf1_highptisr_nj2to5"},
-  {"lm_nb0_nivf1_highptisr_nj6",                 "lm_nb0_nivf1_highptisr_nj6"},
-
-  // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",        "lm_nb1_nivf0_lowmtb_lowptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        "lm_nb1_nivf0_lowmtb_lowptisr_medptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",       "lm_nb1_nivf0_lowmtb_highptisr_lowptb"},
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb",       "lm_nb1_nivf0_lowmtb_highptisr_medptb"},
-  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 "lm_nb1_nivf1_lowmtb_medptisr_lowptb"},
-
-  // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12",            "lm_nb2_lowmtb_lowptisr_lowptb12"},
-  {"lm_nb2_lowmtb_lowptisr_medptb12",            "lm_nb2_lowmtb_lowptisr_medptb12"},
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7",       "lm_nb2_lowmtb_lowptisr_highptb12_nj7"},
-  {"lm_nb2_lowmtb_highptisr_lowptb12",           "lm_nb2_lowmtb_highptisr_lowptb12"},
-  {"lm_nb2_lowmtb_highptisr_medptb12",           "lm_nb2_lowmtb_highptisr_medptb12"},
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7",      "lm_nb2_lowmtb_highptisr_highptb12_nj7"},
-  //---------- low deltaM ----------
-
-
-  //---------- high deltaM ----------
-  // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                         "hm_nb1_lowmtb_nj7_nrtgeq1"},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                         "hm_nb2_lowmtb_nj7_nrtgeq1"},
-  
-  // high mtb                                          
-  // nb1                                               
-  // 1 tagged                                          
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",           "hm_nb1_highmtb_htlt1000"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1300",       "hm_nb1_highmtb_ht1000to1300"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1300to1500",       "hm_nb1_highmtb_ht1300to1500"},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",           "hm_nb1_highmtb_htgt1500"},
-
-  // nb2                                               
-  // 1 tagged                                          
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",            "hm_nbeq2_highmtb_htlt1000"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1300",        "hm_nbeq2_highmtb_ht1000to1300"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1300to1500",        "hm_nbeq2_highmtb_ht1300to1500"},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",            "hm_nbeq2_highmtb_htgt1500"},
-
-  // nb3                                               
-  //1 tagged                                           
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",              "hm_nb3_highmtb_htlt1000"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",          "hm_nb3_highmtb_ht1000to1500"},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",              "hm_nb3_highmtb_htgt1500"},
-  
-  //---------- high deltaM ----------
-
-};
-
 
 std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
@@ -1007,59 +785,6 @@ std::map<TString, TString> qcd1to1crCuts_METUnClustDown = []{
     return cuts;
 }();
 std::map<TString, TString> qcdcrlabels = lepcrlabels;
-std::map<TString, std::vector<int>> qcdcrMETbins {
-//---------- low deltaM ----------
-  // 0b, 0 or >=1 ivf
-  {"lm_nb0_nivf0_highptisr_nj2to5",              {     450, 550, 650, 750, 1000}},
-  {"lm_nb0_nivf0_highptisr_nj6",                 {     450, 550, 650, 750, 1000}},
-  {"lm_nb0_nivf1_highptisr_nj2to5",              {     450, 550, 650,      1000}}, // merge last 2 bins
-  {"lm_nb0_nivf1_highptisr_nj6",                 {     450,                1000}}, // merge last 3 bins
-  
-  // 1b, 0 or >=1 ivf
-  {"lm_nb1_nivf0_lowmtb_lowptisr_lowptb",        {300, 400,           1000}}, // merge last 3 bins
-  {"lm_nb1_nivf0_lowmtb_lowptisr_medptb",        {300, 400,           1000}}, // merge last 3 bins
-  {"lm_nb1_nivf0_lowmtb_highptisr_lowptb",            {450, 550, 650,      1000}}, // merge last 2 bins
-  {"lm_nb1_nivf0_lowmtb_highptisr_medptb",            {450, 550, 650,      1000}}, // merge last 2 bins
-  
-  {"lm_nb1_nivf1_lowmtb_medptisr_lowptb",                 {300, 400,      1000}}, // merge last 2 bins
-  
-  // 2b
-  {"lm_nb2_lowmtb_lowptisr_lowptb12",            {300,           1000}}, // merge all 3 bins
-  {"lm_nb2_lowmtb_lowptisr_medptb12",            {300, 400,      1000}}, // merge last 2 bins
-  {"lm_nb2_lowmtb_lowptisr_highptb12_nj7",       {300, 400,      1000}}, // merge last 2 bins
-  {"lm_nb2_lowmtb_highptisr_lowptb12",                {450,           1000}}, // merge all 3 bins
-  {"lm_nb2_lowmtb_highptisr_medptb12",                {450,           1000}}, // merge all 3 bins
-  {"lm_nb2_lowmtb_highptisr_highptb12_nj7",           {450, 550,      1000}}, // merge last 2 bins
-  //---------- low deltaM ----------
-  
-  //---------- high deltaM ----------
-  // low mtb
-  {"hm_nb1_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
-  {"hm_nb2_lowmtb_nj7_nrtgeq1",                    {250, 300, 400, 500, 1000}},
-
-  // high mtb
-  // nb1
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htlt1000",      {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1000to1300",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_ht1300to1500",  {250, 350, 450, 550, 650, 1000}},
-  {"hm_nb1_highmtb_ntgeq1_nrt0_nw0_htgt1500",      {250, 350, 450, 550, 650, 1000}},
-
-  // nb2
-  //1
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htlt1000",       {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1000to1300",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_ht1300to1500",   {250, 350, 450, 550, 650, 1000}},
-  {"hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1500",       {250, 350, 450, 550, 650, 1000}},
-
-        // nb3
-  //1 tagged
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htlt1000",         {250, 350, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_ht1000to1500",     {250, 350, 450, 550, 1000}},
-  {"hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500",         {250, 350, 450, 550, 1000}},
-  
-  //---------- high deltaM ----------
-
-};
 
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
