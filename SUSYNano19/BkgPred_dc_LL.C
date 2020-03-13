@@ -83,12 +83,9 @@ void runBkgPred(){
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open(outputdir+"/ll_BkgPred_021820.json");
+  jout.open(outputdir+"/ll_BkgPred_031320_Run2_unblind.json");
   jout << j.dump(2);
   jout.close();
-
-//  cout << "\n Summary Traditional \n";
-//  s.printSummary({z.yields.at("_pred"), l.yields.at("_pred"), q.yields.at("_pred"), l.yields.at("ttZ-sr"), l.yields.at("diboson-sr")}, s.yields.at("data-sr"));
 
   auto end = chrono::steady_clock::now();
   auto diff = end - start;
@@ -96,53 +93,6 @@ void runBkgPred(){
 
 }
 
-//void runSignalYields(){
-//  auto start = chrono::steady_clock::now();
-//
-//  map<std::string, map<std::string, vector<double>>> yieldsMap;
-//
-//  //for (const auto &signal : signals){
-//  for (const auto &signal : signals){
-//    BaseEstimator s(signalConfig(signal));
-//    s.calcYields();
-//    s.convertYields(signal, "");
-//    yieldsMap.insert(s.std_yields.begin(), s.std_yields.end());
-//
-//    LLBEstimator l(lepcrSignalConfig(signal));
-//    l.calcYields();
-//    l.convertYields("lepcr_"+signal, "lepcr");
-//    yieldsMap.insert(l.std_yields.begin(), l.std_yields.end());
-//  }
-//
-//  // manually fix any zero/negative yields
-//  for (auto &s : yieldsMap){
-//    if (s.first.find("data")!=std::string::npos) continue; // ignore data
-//    double default_value = 1e-6;
-//    for (auto &b : s.second){
-//      auto &v = b.second;
-//      if (v.size() && v.front()<=0){
-//        cout << "fixing " << s.first << "," << b.first << " from " << v.front() << " to " << default_value << endl;
-//        v.front() = default_value;
-//        v.back()  = default_value;
-//      }
-//    }
-//  }
-//
-//  json j;
-//  j["signals"] = signals;
-//  j["yieldsMap"] = yieldsMap;
-//  std::ofstream jout;
-//  jout.open(outputdir+"/dc_SigYields.json");
-//  jout << j.dump(2);
-//  jout.close();
-//
-//  auto end = chrono::steady_clock::now();
-//  auto diff = end - start;
-//  cout << chrono::duration <double> (diff).count() << " s" << endl;
-//}
-
-
 void BkgPred_dc_LL(){
   runBkgPred();
-  //runSignalYields();
 }

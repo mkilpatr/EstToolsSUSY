@@ -134,8 +134,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   bin >> j_bin;
 
   string binName = "";
-       if(TString(indir_).Contains("sb")) binName = "binNum_SUSYNano";
-  else if(TString(indir_).Contains("LowMET")) binName = "binNum_Validation";
+       if(TString(indir_).Contains("sb"))      binName = "binNum_SUSYNano";
+  else if(TString(indir_).Contains("cb"))      binName = "binNum_SUSYNano_lepcr";
+  else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
 
   for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {

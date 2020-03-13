@@ -316,7 +316,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -375,6 +375,18 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     cout << "-->drawing drawCompAndRatio: "<< h->GetName() << endl;
 #endif
   }
+
+  if(inUnc){
+    TGraphAsymmErrors *unc = inUnc;
+    unc->SetFillColor(kBlue);
+    unc->SetFillStyle(3013);
+    unc->SetLineStyle(0);
+    unc->SetLineWidth(0);
+    unc->SetMarkerSize(0);
+    unc->Draw("E2same");
+    if(leg) addLegendEntry(leg, unc,"Bkg. Uncertainty","F");
+  }
+
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_

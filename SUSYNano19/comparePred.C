@@ -34,17 +34,27 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
   TString predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
   TString predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
-//  TString output  = "";
+  TString systFile = "uncertainties_LowMET_2016_031220/Total.root";
 
   TFile *fpred = TFile::Open(predFile);
   TFile *fpred_noextrap = TFile::Open(predFile_noextrap);
-  assert(fpred); assert(fpred_noextrap);
+  TFile *fsystFile = TFile::Open(systFile);
+  assert(fpred); assert(fpred_noextrap); assert(fsystFile);
 
   TH1* pred_ = (TH1*)fpred->Get(bkg+"_pred");
   TH1* pred = (TH1*)pred_->Clone("hPrediction");
+  TGraphAsymmErrors* unc = (TGraphAsymmErrors*)pred->Clone("hPred_gr");
   TH1* pred_noextrap = (TH1*)fpred_noextrap->Get(bkg+"_pred");
+  TH1* syst_up = (TH1*)fsystFile->Get("Up");
+  TH1* syst_dn = (TH1*)fsystFile->Get("Down");
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
   pred_noextrap->SetLineColor(kRed); pred_noextrap->SetMarkerColor(kRed);
+
+  for (int i=0; i<unc->GetN(); ++i){
+    
+    unc->SetPointEYlow(i, syst_dn->GetBinContent(i+18)*pred->GetBinContent(i));
+    unc->SetPointEYhigh(i, syst_up->GetBinContent(i+18)*pred->GetBinContent(i));
+  }
 
   TH1* hratio_pred = (TH1*)pred->Clone("hratio_pred");
   hratio_pred->Divide(pred_noextrap);
@@ -54,7 +64,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   auto leg = prepLegends({pred, pred_noextrap}, {"Prediction", "Prediction w/o extrapolation"}, "L");
   leg->SetTextSize(0.03);
   leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-  TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg);
+  TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "Ratio", RATIO_YMIN, RATIO_YMAX, true, -1., -1., false, unc);
   TString outputBase = "ExtrapolationComparison";
   c->SetTitle(outputBase);
   c->SetCanvasSize(800, 600);
