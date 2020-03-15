@@ -83,7 +83,7 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "CR";
+TString region = "CR2016";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
