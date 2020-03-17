@@ -83,8 +83,8 @@ void BkgPred_LowMET_LL(){
     output->Close();
   };
 
-  plot(altpred_low, altgraphs_low, "std_pred_trad_LM_2017", "Low");
-  plot(altpred_high, altgraphs_high, "std_pred_trad_HM_2017", "High");
+  plot(altpred_low, altgraphs_low, "std_pred_trad_LM_2017_noextrap", "Low");
+  plot(altpred_high, altgraphs_high, "std_pred_trad_HM_2017_noextrap", "High");
 
 
   cout << "\n\n Traditional \n";

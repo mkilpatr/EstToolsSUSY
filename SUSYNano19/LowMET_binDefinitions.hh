@@ -260,7 +260,5 @@ std::map<TString, TString> lepcrMapping {
   //---------- high deltaM ----------
 };
 
-std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
-
 }
 #endif /* ESTTOOLS_LMBINDEFINITIONS_HH_ */

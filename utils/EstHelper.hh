@@ -347,7 +347,9 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     val = m > val ? m : val;
   }
 
+  int nbin = 0;
   for (auto *h : hists){
+    nbin = h->GetNbinsX();
     h->SetLineWidth(2);
     h->GetXaxis()->SetLabelOffset(0.20);
     if (isFirst){
@@ -441,6 +443,26 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     cout << "-->drawing RATIO drawCompAndRatio: "<< h->GetName() << endl;
 #endif
   }
+
+  if(inUnc){
+    TGraphAsymmErrors* hRelUnc = (TGraphAsymmErrors*)inUnc->Clone();
+    for (int i=0; i < hRelUnc->GetN(); ++i){
+      auto val = hRelUnc->GetY()[i];
+      auto errUp = hRelUnc->GetErrorYhigh(i);
+      auto errLow = hRelUnc->GetErrorYlow(i);
+      if (val==0) continue;
+      hRelUnc->SetPointEYhigh(i, errUp/val);
+      hRelUnc->SetPointEYlow(i, errLow/val);
+      hRelUnc->SetPoint(i, hRelUnc->GetX()[i], (1) );
+    }
+    hRelUnc->SetFillColor(kBlue);
+    hRelUnc->SetFillStyle(3013);
+    hRelUnc->SetLineStyle(0);
+    hRelUnc->SetLineWidth(0);
+    hRelUnc->SetMarkerSize(0);
+    hRelUnc->Draw("E2same");
+  }
+
   c->Update();
   c->cd();
   return c;

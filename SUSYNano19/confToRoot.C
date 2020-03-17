@@ -171,8 +171,13 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
       }
     }
 
-    prepHists(hUp, false, false, false);
-    prepHists(hDown, false, false, false);
+    if(hUp.size() == 1){
+      prepHists(hUp, false, false, false, {kRed});
+      prepHists(hDown, false, false, false, {kBlue});
+    } else {
+      prepHists(hUp, false, false, false);
+      prepHists(hDown, false, false, false);
+    }
 
     for(unsigned h = 0; h != hUp.size(); h++){
       TH1* hDiv = (TH1*)hUp[h]->Clone();
@@ -182,12 +187,13 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
       hTotal.push_back(hDown[h]);
       hdiv.push_back(hDiv);
     }
-    prepHists({hdiv}, false, false, false);
+    if(hUp.size() == 1) prepHists({hdiv}, false, false, false, {kRed});
+    else		prepHists({hdiv}, false, false, false);
 
     auto leg = prepLegends({}, {""}, "l");
     for(unsigned h = 0; h != hUp.size(); h++){
       appendLegends(leg, {hUp[h]}, {hUp[h]->GetName()}, "l");
-      //appendLegends(leg, {hDown[h]}, {hDown[h]->GetName()}, "l");
+      if(hUp.size() == 1) appendLegends(leg, {hDown[h]}, {hDown[h]->GetName()}, "l");
     }
     leg->SetTextSize(0.04);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);

@@ -3,10 +3,15 @@
 #include "TLatex.h"
 #include <functional>
 #include <regex>
+#include <TGraph.h>
 
 using namespace EstTools;
 
-void compPredMethods(TString bkg = "ttbarplusw"){
+void comparePred(TString bkg = "ttbarplusw"){
+
+  //lumistr = "35.815165";  //2016
+  lumistr = "41.486136";  //2017
+  //lumistr = "59.699489";  //2018
 
   SetStyle();
   PAD_SPLIT_Y = 0.35;
@@ -32,9 +37,9 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
-  TString predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
-  TString systFile = "uncertainties_LowMET_2016_031220/Total.root";
+  TString predFile = "2017/LowMET/sig/std_pred_trad_HM_2017.root";
+  TString predFile_noextrap = "2017/LowMET/sig/std_pred_trad_HM_2017_noextrap.root";
+  TString systFile = "uncertainties_LowMET_031320/Total.root";
 
   TFile *fpred = TFile::Open(predFile);
   TFile *fpred_noextrap = TFile::Open(predFile_noextrap);
@@ -43,32 +48,40 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
   TH1* pred_ = (TH1*)fpred->Get(bkg+"_pred");
   TH1* pred = (TH1*)pred_->Clone("hPrediction");
-  TGraphAsymmErrors* unc = (TGraphAsymmErrors*)pred->Clone("hPred_gr");
   TH1* pred_noextrap = (TH1*)fpred_noextrap->Get(bkg+"_pred");
   TH1* syst_up = (TH1*)fsystFile->Get("Up");
   TH1* syst_dn = (TH1*)fsystFile->Get("Down");
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
   pred_noextrap->SetLineColor(kRed); pred_noextrap->SetMarkerColor(kRed);
+  prepHists({pred, pred_noextrap}, false, false, false, {kBlue, kRed});
+  pred->SetFillStyle(0); pred_noextrap->SetFillStyle(0);
 
-  for (int i=0; i<unc->GetN(); ++i){
-    
-    unc->SetPointEYlow(i, syst_dn->GetBinContent(i+18)*pred->GetBinContent(i));
-    unc->SetPointEYhigh(i, syst_up->GetBinContent(i+18)*pred->GetBinContent(i));
+  double x[pred->GetNbinsX()], y[pred->GetNbinsX()], exl[pred->GetNbinsX()], eyl[pred->GetNbinsX()], exh[pred->GetNbinsX()], eyh[pred->GetNbinsX()];
+  for (int i=1; i< pred->GetNbinsX(); i++){
+    x[i-1] = i + 18.5;
+    y[i-1] = pred->GetBinContent(i);
+    exl[i-1] = 0.5;
+    exh[i-1] = 0.5;
+    eyl[i-1] = (1-syst_dn->GetBinContent(i+18))*pred->GetBinContent(i);
+    eyh[i-1] = (syst_up->GetBinContent(i+18)-1)*pred->GetBinContent(i);
   }
+  TGraphAsymmErrors* unc = new TGraphAsymmErrors(pred->GetNbinsX(), x, y, exl, exh, eyl, eyh);
 
   TH1* hratio_pred = (TH1*)pred->Clone("hratio_pred");
   hratio_pred->Divide(pred_noextrap);
   hratio_pred->SetLineWidth(2);
   prepHists({hratio_pred}, false, false, false, {kBlue});
 
+  cout << pred->GetBinContent(16) << endl;
+  cout << pred_noextrap->GetBinContent(16) << endl;
+  cout << hratio_pred->GetBinContent(16) << endl;
+
   auto leg = prepLegends({pred, pred_noextrap}, {"Prediction", "Prediction w/o extrapolation"}, "L");
   leg->SetTextSize(0.03);
   leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-  TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "Ratio", RATIO_YMIN, RATIO_YMAX, true, -1., -1., false, unc);
-  TString outputBase = "ExtrapolationComparison";
+  TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, -1., -1., false, unc);
+  TString outputBase = "ExtrapolationComparison_2017";
   c->SetTitle(outputBase);
   c->SetCanvasSize(800, 600);
   c->Print("LLB/" + outputBase +".pdf");
-  c->Print("LLB/" + outputBase +".C");
-  c->Print("LLB/" + outputBase +"_canvas.root");
 }
