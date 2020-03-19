@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binnum_"){
+void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString outputName="getFinalPlot_2016/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -17,7 +17,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   vector<TString> bkgs = {"httz_stack_2", "hdiboson_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
   vector<TString> sigs = {"T2tt_1000_0"};
-  TString data = "data";
+  TString data = "hdata";
 
   vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
   vector<TString> siglabels = {"T2tt(1000,0)"};
@@ -209,7 +209,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
     TH1D* hist = convertToHist({(TH1*)f->Get(b)}, b, ";Search Region;Events", nullptr);
     pred.push_back(hist);
   }
-  //TH1* hdata = (TH1*)f->Get(data);
+  TH1* hdata = (TH1*)f->Get(data);
   TGraphAsymmErrors* unc = (TGraphAsymmErrors*)f->Get("bkgtotal_unc_sr");
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search Region;Events", nullptr);
@@ -218,7 +218,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   }
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
-  //prepHists({hdata}, false, false, false, {kBlack});
+  prepHists({hdata}, false, false, false, {kBlack});
   prepHists(hsigs, false, false, false, {kRed});
   //setBinLabels(pred[0], xlabels);
   //setBinLabels(pred[1], xlabels);
@@ -280,15 +280,15 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
     if (region.Contains("nj5t")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1;}
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.01;}
 
-    //auto leg = prepLegends({hdata}, datalabel, "LP");
-    auto leg = prepLegends(pred, bkglabels, "F");
+    auto leg = prepLegends({hdata}, datalabel, "LP");
+    appendLegends(leg, pred, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
 //    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    //auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
-    auto c = drawStackAndRatio(pred, nullptr, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
+    auto c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
+    //auto c = drawStackAndRatio(pred, nullptr, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.76, 0.025);
@@ -303,7 +303,7 @@ void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString output
   TFile *output = new TFile(outputName + "getFinalPlot_Nano.root", "RECREATE");
   for (auto *h : pred) h->Write();
   for (auto *s : hsigs) s->Write();
-  //hdata->Write();
+  hdata->Write();
   output->Close();
 
 }

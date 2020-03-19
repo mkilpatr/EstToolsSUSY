@@ -2,7 +2,8 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "LowMET_binDefinitions_noExtrap.hh"
+//#include "LowMET_binDefinitions.hh"
+#include "LowMET_binDefinitions_noExtrap_small.hh"
 
 namespace EstTools{
 
@@ -222,6 +223,61 @@ std::map<TString, TString> labelMap{
   {"met300",	  R"(#slash{E}_{T} < 300)"},
 
 };
+
+std::map<TString, TString> plotLabelMap{
+  {"lowptisr", R"(300 #leq p_{T}(ISR) < 500)"},
+  {"ntgeq1", R"(N_{t} #geq 1)"},
+  {"nt2", R"(N_{t} = 2)"},
+  {"nivf0", R"(N_{SV} = 0)"},
+  {"nivf1", R"(N_{SV} #geq 1)"},
+  {"nw2", R"(N_{W} = 2)"},
+  {"nj2to5", R"(2 #leq N_{j} #leq 5)"},
+  {"nb2", R"(N_{b} #geq 2)"},
+  {"nbeq2", R"(N_{b} = 2)"},
+  {"nb3", R"(N_{b} #geq 3)"},
+  {"nb1", R"(N_{b} = 1)"},
+  {"nbgeq1", R"(N_{b} #geq 1)"},
+  {"nb0", R"(N_{b} = 0)"},
+  {"nrt2", R"(N_{res} = 2)"},
+  {"medptisr", R"(p_{T}(ISR) #geq 300)"},
+  {"highptisr", R"(p_{T}(ISR) #geq 500)"},
+  {"nj5", R"(N_{j} #geq 5)"},
+  {"nj7", R"(N_{j} #geq 7)"},
+  {"highptb", R"(p_{T}(b) #geq 70)"},
+  {"hm", R"(High #Deltam)"},
+  {"hmVal", R"(high \dm)"},
+  {"nw0", R"(N_{W} = 0)"},
+  {"nwgeq1", R"(N_{W} #geq 1)"},
+  {"nw1", R"(N_{W} = 1)"},
+  {"nrt0", R"(N_{res} = 0)"},
+  {"nrt1", R"(N_{res} = 1)"},
+  {"lowptb", R"(p_{T}(b) < 40)"},
+  {"medptb", R"(40 < p_{T}(b) < 70)"},
+  {"nt0", R"(N_{t} = 0)"},
+  {"lm", R"(Low #Deltam)"},
+  {"lmVal", R"(Low #Deltam)"},
+  {"lowptb12", R"(p_{T}(b_{12}) < 80)"},
+  {"highptb12", R"(p_{T}(b_{12}) #geq 140)"},
+  {"lowmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175)"},
+  {"highmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) #geq 175)"},
+  {"nt1", R"(N_{t} = 1)"},
+  {"medptb12", R"(80 < p_{T}(b_{12}) < 140)"},
+  {"nrtgeq1", R"(N_{res} #geq 1)"},
+  {"nj6", R"(N_{j} #geq 6)"},
+  {"nrtntnwgeq2", R"((N_{t}+N_{res}+N_{W}) #geq 2)"},
+  {"nrtntnwgeq3", R"((N_{t}+N_{res}+N_{W}) #geq 3)"},
+  {"htlt1000",    R"(H_{T}<1000)"},	
+  {"htgt1000",    R"(H_{T} #geq 1000)"},	
+  {"ht1000to1500",R"(1000#leqH_{T}<1500)"},	
+  {"htgt1500",    R"(H_{T}#geq1500)"},	
+  {"htlt1300",    R"(H_{T}<1300)"},	
+  {"htgt1300",    R"(H_{T}#geq1300)"},	
+  {"lmNoDPhi",    R"(Low #Delta m)"},
+  {"hmNoDPhi",    R"(High #Delta m)"},
+  {"met400",	  R"(#slash{E}_{T} < 400)"},
+  {"met300",	  R"(#slash{E}_{T} < 300)"},
+};
+
 
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;

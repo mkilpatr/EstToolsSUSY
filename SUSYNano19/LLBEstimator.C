@@ -1,6 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-#include "SRParameters.hh"
+//#include "SRParameters.hh"
+#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -357,8 +358,6 @@ void plotLepCRAllEras(){
   for (auto category : z.config.categories){
     const auto &cat = z.config.crCatMaps.at(category);
     auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
-    cout << cat.label << endl;
-    cout << cat_label << endl;
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
     z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
   }
@@ -646,6 +645,68 @@ void lepcrYields(){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void ExtrapStudies(){
+  auto config = lepConfig();
+  config.catMaps = lepCatMap();
+
+  config.samples.clear();
+  config.addSample("ttbar-2016",         "t#bar{t}",      inputdir_2016+"ttbar",           "1.0",      datasel + revert_vetoes);
+  config.addSample("wjets-2016",         "W+jets",        inputdir_2016+"wjets",           "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2016",            "tW",            inputdir_2016+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("ttW-2016",           "ttW",           inputdir_2016+"ttW",             "1.0",      datasel + revert_vetoes);
+  config.addSample("ttbar-2017",         "t#bar{t}",      inputdir_2017+"ttbar",           "1.0",      datasel + revert_vetoes);
+  config.addSample("wjets-2017",         "W+jets",        inputdir_2017+"wjets",           "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2017",            "tW",            inputdir_2017+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("ttW-2017",           "ttW",           inputdir_2017+"ttW",             "1.0",      datasel + revert_vetoes);
+  config.addSample("ttbar-2018",         "t#bar{t}",      inputdir_2018+"ttbar",           "1.0",      datasel + revert_vetoes);
+  config.addSample("wjets-2018",         "W+jets",        inputdir_2018+"wjets",           "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2018",            "tW",            inputdir_2018+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("ttW-2018",           "ttW",           inputdir_2018+"ttW",             "1.0",      datasel + revert_vetoes);
+
+  TString region = "ExtrapolationStudy_withoutExtrap";
+  BaseEstimator z(config.outputdir+"/"+region);
+  z.setConfig(config);
+
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
+  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
+  vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
+  vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018"};
+
+  map<TString, BinInfo> varDict {
+	{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
+	{"deepak8",     BinInfo("Stop0l_DeepAK8_SFWeight", "Stop0l_DeepAK8_SFWeight", 100, 0.5, 1.5)},
+  };
+
+  std::function<void(TCanvas*)> plotextra;
+  for (auto &var : varDict){
+    for (auto category : z.config.categories){
+      z.resetSelection();
+      const auto &cat = z.config.crCatMaps.at(category);
+      auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
+      //std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
+      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.75); };
+      cout << cat_label << endl;
+      z.setSelection(cat.cut, "_Run2", "_Run2");
+      z.plotDataMC(var.second, mc_samples, "", cat, false, "", true, &plotextra);
+
+      lumistr = lumistr_2016;
+      z.setSelection(cat.cut, "_2016", "_2016");
+      z.plotDataMC(var.second, mc_samples_2016, "", cat, false, "", true, &plotextra);
+
+      lumistr = lumistr_2017;
+      z.setSelection(cat.cut, "_2017", "_2017");
+      z.plotDataMC(var.second, mc_samples_2017, "", cat, false, "", true, &plotextra);
+
+      lumistr = lumistr_2018PostHEM;
+      z.setSelection(cat.cut, "_2018", "_2018");
+      z.plotDataMC(var.second, mc_samples_2018, "", cat, false, "", true, &plotextra);
+
+    }
+  }
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void plot1LepInclusive(){
   auto config = lepConfig();
@@ -673,9 +734,9 @@ void plot1LepInclusive(){
   TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
-	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
-	{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
+	//{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
   };
@@ -706,7 +767,7 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
-    lumistr = "59.699489";
+    lumistr = lumistr_2018PostHEM;
     z.setSelection(LLCR_LM, "llcr_lm_2018", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR LM", 0.2, 0.72); };
     z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
