@@ -34,24 +34,48 @@ void comparePred(TString bkg = "ttbarplusw"){
   };
 
   TString predFile = "", predFile_noextrap = "", systFile = "";
-  vector<TString> year = {"2016", "2017", "2018", "Run2"};
+  vector<TString> year = {"2016_noisr", "2017", "2018", "2018_toppt", "Run2", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
   for(auto &yr : year){
-    if(yr.Contains("2016")){
-      lumistr = "35.815165";  //2016
-      predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
-      predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
-    } else if(yr.Contains("2017")){
-      lumistr = "41.486136";  //2017
-      predFile = "2017/LowMET/sig/std_pred_trad_HM_2017.root";
-      predFile_noextrap = "2017/LowMET/sig/std_pred_trad_HM_2017_noextrap.root";
-    } else if(yr.Contains("2018")){
-      lumistr = "59.699489";  //2018
-      predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
-      predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
+    if(!yr.Contains("devv5")){
+      if(yr.Contains("2016")){
+        lumistr = "35.815165";  //2016
+        predFile = "2016/LowMET/sig/std_pred_trad_HM_2016_noisr.root";
+        predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap_noisr.root";
+      } else if(yr.Contains("2017")){
+        lumistr = "41.486136";  //2017
+        predFile = "2017/LowMET/sig/std_pred_trad_HM_2017.root";
+        predFile_noextrap = "2017/LowMET/sig/std_pred_trad_HM_2017_noextrap.root";
+      } else if(yr == "2018_toppt"){
+        lumistr = "59.699489";  //2018
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt.root";
+      } else if(yr.Contains("2018")){
+        lumistr = "59.699489";  //2018
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
+      } else{
+        lumistr = "137.00079";
+        predFile = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
+      }
     } else{
-      lumistr = "137.00079";
-      predFile = "LowMET/sig/std_pred_trad_HM_Run2.root";
-      predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
+      if(yr.Contains("2016")){
+        lumistr = "35.815165";  //2016
+        predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
+        predFile_noextrap = "LowMET_v5/fromEOS/std_pred_trad_HM_2016.root";
+      } else if(yr.Contains("2017")){
+        lumistr = "41.486136";  //2017
+        predFile = "2017/LowMET/sig/std_pred_trad_HM_2017.root";
+        predFile_noextrap = "LowMET_v5/fromEOS/std_pred_trad_HM_2017.root";
+      } else if(yr.Contains("2018")){
+        lumistr = "59.699489";  //2018
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
+        predFile_noextrap = "LowMET_v5/fromEOS/std_pred_trad_HM_2018.root";
+      } else{
+        lumistr = "137.00079";
+        predFile = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile_noextrap = "LowMET_v5/fromEOS/std_pred_trad_HM.root";
+      }
     }
 
     if(!yr.Contains("2016")) systFile = "uncertainties_LowMET_031320/Total.root";
@@ -73,13 +97,13 @@ void comparePred(TString bkg = "ttbarplusw"){
     pred->SetFillStyle(0); pred_noextrap->SetFillStyle(0);
 
     double x[pred->GetNbinsX()], y[pred->GetNbinsX()], exl[pred->GetNbinsX()], eyl[pred->GetNbinsX()], exh[pred->GetNbinsX()], eyh[pred->GetNbinsX()];
-    for (int i=1; i< pred->GetNbinsX(); i++){
-      x[i-1] = i + 18.5;
-      y[i-1] = pred->GetBinContent(i);
-      exl[i-1] = 0.5;
-      exh[i-1] = 0.5;
-      eyl[i-1] = (1-syst_dn->GetBinContent(i+18))*pred->GetBinContent(i);
-      eyh[i-1] = (syst_up->GetBinContent(i+18)-1)*pred->GetBinContent(i);
+    for (int i=0; i != pred->GetNbinsX(); i++){
+      x[i] = i + 19.5;
+      y[i] = pred->GetBinContent(i+1);
+      exl[i] = 0.5;
+      exh[i] = 0.5;
+      eyl[i] = (1-syst_dn->GetBinContent(i+19))*pred->GetBinContent(i+1);
+      eyh[i] = (syst_up->GetBinContent(i+19)-1)*pred->GetBinContent(i+1);
     }
     TGraphAsymmErrors* unc = new TGraphAsymmErrors(pred->GetNbinsX(), x, y, exl, exh, eyl, eyh);
 
@@ -88,10 +112,16 @@ void comparePred(TString bkg = "ttbarplusw"){
     hratio_pred->SetLineWidth(2);
     prepHists({hratio_pred}, false, false, false, {kBlue});
 
-    auto leg = prepLegends({pred, pred_noextrap}, {"Prediction", "Prediction w/o extrapolation"}, "L");
+    TString legName = yr;
+    legName.ReplaceAll("_devv5","");
+    TLegend *leg;
+    if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Prediction", legName + " Prediction w/o extrapolation"}, "L");
+    else                      leg = prepLegends({pred, pred_noextrap}, {legName + " V6 Prediction", legName + " V5 Prediction"}, "L");
     leg->SetTextSize(0.03);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, 3.999, true, 0.01, -1., false, unc);
+    TCanvas* c;
+    if(!yr.Contains("devv5")) c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+    else                      c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
     TString outputBase = "ExtrapolationComparison_" + yr;
     c->SetTitle(outputBase);
     c->SetCanvasSize(800, 600);

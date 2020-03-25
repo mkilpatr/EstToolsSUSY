@@ -316,7 +316,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -422,6 +422,12 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
       h->GetYaxis()->SetNdivisions(305);
       h->GetYaxis()->SetTitle(ratioYTitle);
       h->GetYaxis()->SetRangeUser(lowY, highY);
+      if(ratiolog) {
+        float gap = 0.10;
+        h->GetYaxis()->SetRangeUser(0., (lowY > 0 ? pow(highY,1./(1.-gap))*pow(lowY,-gap/(1.-gap)) : 1.5*highY));
+        h->SetMinimum(lowY);
+        gPad->SetLogy(1);
+      }
 
 #ifdef TDR_STYLE_
       h->GetXaxis()->SetTitleFont(42);

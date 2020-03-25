@@ -680,11 +680,11 @@ void ExtrapStudies(){
   map<TString, BinInfo> varDict {
 	//{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
 	//{"deepak8",     BinInfo("Stop0l_DeepAK8_SFWeight", "Stop0l_DeepAK8_SFWeight", 100, 0.5, 1.5)},
-	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
-	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{rest}", 4, -0.5, 3.5)},
-	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
-	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  12, 200, 800)},
-	{"ak4jet",      BinInfo("Jet_pt[0]", "p_{T}(ak4) [GeV]",  12, 200, 800)},
+	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	{"nrestop",     BinInfo("Stop0l_nResolved", "N_{rest}", 4, -0.5, 3.5)},
+	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
+	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  12, 200, 800)},
+	//{"ak4jet",      BinInfo("Jet_pt[0]", "p_{T}(ak4) [GeV]",  12, 200, 800)},
 	//{"ak8jet_isr",      BinInfo("Stop0l_ISRJetPt[0]", "p_{T}(ISR) [GeV]",  12, 200, 800)},
   };
 

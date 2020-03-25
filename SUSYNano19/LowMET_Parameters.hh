@@ -2,20 +2,19 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-//#include "LowMET_binDefinitions.hh"
-#include "LowMET_binDefinitions_noExtrap_small.hh"
+#include "LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_032020_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_032020_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_032420_toppt_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_032420_toppt_devv6_limits/";
 const TString inputdir_2018 = "nanoaod_all_skim_2018_032420_toppt_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_032020_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_032420_toppt_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -497,7 +496,7 @@ BaseConfig lepConfig(){
     //config.addSample("diboson-2017",       "Diboson",       inputdir_2017+"diboson",       lepselwgt_2017,      datasel + revert_vetoes);
     //config.addSample("qcd-2017",           "QCD",           inputdir_2017+"qcd_smear",     lepselwgt_2017,      datasel + revert_vetoes);
 
-    config.addSample("singlelep-2018",   "Data 2018",     inputdir_2018+"met",              "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep-2018",   "Data 2018",     datadir+"met_2018",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2018",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes);
     config.addSample("wjets-2018",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes);
     config.addSample("tW-2018",            "tW",            inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
