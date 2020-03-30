@@ -2,19 +2,20 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "LowMET_binDefinitions.hh"
+//#include "LowMET_binDefinitions.hh"
+#include "LowMET_binDefinitions_noExtrap_small.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_032420_toppt_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_032420_toppt_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_032420_toppt_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_032520_toppt_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_032520_toppt_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_032520_toppt_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_032420_toppt_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_032520_toppt_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -28,10 +29,10 @@ const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + "
 const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2016
-const TString wgtvar_2017 = lumistr_2017+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2017
-const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2018
-const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2018
+const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";//*topptWeight";// //2016
+const TString wgtvar_2017 = lumistr_2017+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";//*topptWeight";// //2017
+const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";//*topptWeight";// //2018
+const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";//*topptWeight";// //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -243,7 +244,7 @@ std::map<TString, TString> plotLabelMap{
   {"nj7", R"(N_{j} #geq 7)"},
   {"highptb", R"(p_{T}(b) #geq 70)"},
   {"hm", R"(High #Deltam)"},
-  {"hmVal", R"(high \dm)"},
+  {"hmVal", R"(High #Deltam)"},
   {"nw0", R"(N_{W} = 0)"},
   {"nwgeq1", R"(N_{W} #geq 1)"},
   {"nw1", R"(N_{W} = 1)"},

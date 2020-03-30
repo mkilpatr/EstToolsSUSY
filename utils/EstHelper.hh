@@ -246,7 +246,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0)
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1.)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
 
@@ -269,6 +269,12 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0)
     if (isFirst){
       isFirst = false;
       h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
+      if(logymin>0) {
+        float gap = 0.20;
+        h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
+        h->SetMinimum(logymin);
+        gPad->SetLogy(1);
+      }
       h->Draw("histe");
     }
     h->Draw("histesame");

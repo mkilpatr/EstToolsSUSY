@@ -29,7 +29,6 @@ json readFile(std::string FILENAME){
   if (file.is_open()) {
     std::string line;
     while (getline(file, line)) {
-      // using printf() in all tests for consistency
       //cout << line << endl;
       string arr[4];
       int i = 0;
@@ -135,6 +134,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
 
   string binName = "";
        if(TString(indir_).Contains("sb"))      binName = "binNum_SUSYNano";
+  else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
   else if(TString(indir_).Contains("cb"))      binName = "binNum_SUSYNano_lepcr";
   else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
@@ -149,6 +149,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
       for (json::iterator bin = j_bin[binName].begin(); bin != j_bin[binName].end(); ++bin) {
 	string binstr = j_bin[binName][bin.key()];
         int binnum = stoi(binstr, nullptr, 0);
+        if(TString(indir_).Contains("nb12")) binnum -= 53;
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
 	  if(up > 5.){ 
@@ -163,6 +164,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
         }
       }
       if(j_bin[binName].size() > 100){
+        hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Search Region; Systematics " + type, nullptr));
+        hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Search Region; Systematics " + type, nullptr));
+      } else if(TString(indir_).Contains("nb12")){
         hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Search Region; Systematics " + type, nullptr));
         hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Search Region; Systematics " + type, nullptr));
       } else{
@@ -192,7 +196,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
 
     auto leg = prepLegends({}, {""}, "l");
     for(unsigned h = 0; h != hUp.size(); h++){
-      appendLegends(leg, {hUp[h]}, {hUp[h]->GetName()}, "l");
+      TString legName = hUp[h]->GetName();
+      if(hUp.size() > 1) legName.ReplaceAll("_Up","");
+      appendLegends(leg, {hUp[h]}, {legName}, "l");
       if(hUp.size() == 1) appendLegends(leg, {hDown[h]}, {hDown[h]->GetName()}, "l");
     }
     leg->SetTextSize(0.04);

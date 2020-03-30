@@ -113,7 +113,7 @@ TString translateString(TString name, const std::map<TString, TString>& strMap, 
     //cout << "i: " << i << ", k: " << k << endl;
     try{
       if(splitline){
-	if(k.Contains("ptisr") || k.Contains("ht")){
+	if(k.Contains("ptisr") || k.Contains("ht") || k.Contains("nrtntnw")){
 	  substrs_3.push_back(strMap.at(k));
 	} else if(k.Contains("ptb")){
 	  substrs_4.push_back(strMap.at(k));
@@ -151,6 +151,13 @@ TString createCutString(TString name, std::map<TString, TString>& cutMap, TStrin
 TH1* normalize(TH1 *h, double norm = 1){
   h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
   return h;
+}
+
+vector<TH1*> normalize(vector<TH1*> hist, double norm = 1){
+  for(auto *h : hist){
+    h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
+  }
+  return hist;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

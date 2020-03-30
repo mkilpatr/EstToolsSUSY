@@ -663,7 +663,7 @@ void ExtrapStudies(){
   //config.addSample("tW-2018",            "tW",            inputdir_2018+"tW",              "1.0",      datasel + revert_vetoes);
   //config.addSample("ttW-2018",           "ttW",           inputdir_2018+"ttW",             "1.0",      datasel + revert_vetoes);
 
-  TString region = "ExtrapolationStudy_withoutExtrap_toppt";
+  TString region = "ExtrapolationStudy_withoutExtrap";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -680,9 +680,11 @@ void ExtrapStudies(){
   map<TString, BinInfo> varDict {
 	//{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
 	//{"deepak8",     BinInfo("Stop0l_DeepAK8_SFWeight", "Stop0l_DeepAK8_SFWeight", 100, 0.5, 1.5)},
-	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
-	{"nrestop",     BinInfo("Stop0l_nResolved", "N_{rest}", 4, -0.5, 3.5)},
-	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
+	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{rest}", 4, -0.5, 3.5)},
+	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
+	{"topjet",      BinInfo("Stop0l_MatchTopPt[0]", "top p_{T}(ak8) [GeV]",  12, 200, 800)},
+	{"wjet",        BinInfo("Stop0l_MatchWPt[0]", "W p_{T}(ak8) [GeV]",  12, 200, 800)},
 	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  12, 200, 800)},
 	//{"ak4jet",      BinInfo("Jet_pt[0]", "p_{T}(ak4) [GeV]",  12, 200, 800)},
 	//{"ak8jet_isr",      BinInfo("Stop0l_ISRJetPt[0]", "p_{T}(ISR) [GeV]",  12, 200, 800)},
@@ -694,8 +696,8 @@ void ExtrapStudies(){
       z.resetSelection();
       const auto &cat = z.config.crCatMaps.at(category);
       auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
-      //std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
-      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.75); };
+      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
+      //std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.75); };
       cout << cat_label << endl;
       //lumistr = "137.00079";
       //z.setSelection(cat.cut, "_Run2", "_Run2");

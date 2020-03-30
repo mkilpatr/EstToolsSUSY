@@ -34,13 +34,13 @@ void comparePred(TString bkg = "ttbarplusw"){
   };
 
   TString predFile = "", predFile_noextrap = "", systFile = "";
-  vector<TString> year = {"2016_noisr", "2017", "2018", "2018_toppt", "Run2", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
+  vector<TString> year = {"2016", "2017", "2018", "2018_toppt", "Run2", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
   for(auto &yr : year){
     if(!yr.Contains("devv5")){
       if(yr.Contains("2016")){
         lumistr = "35.815165";  //2016
-        predFile = "2016/LowMET/sig/std_pred_trad_HM_2016_noisr.root";
-        predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap_noisr.root";
+        predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
+        predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
       } else if(yr.Contains("2017")){
         lumistr = "41.486136";  //2017
         predFile = "2017/LowMET/sig/std_pred_trad_HM_2017.root";
