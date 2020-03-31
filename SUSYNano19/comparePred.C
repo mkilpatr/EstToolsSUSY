@@ -33,9 +33,9 @@ void comparePred(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "", predFile_noextrap = "", systFile = "";
-  vector<TString> year = {"2016", "2017", "2018", "2018_toppt", "Run2", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
+  vector<TString> year = {"2016", "2017", "2018", "2018_toppt", "2018_toppt_mgpow", "2018_all", "Run2", "Run2_toppt", "Run2_toppt_mgpow", "Run2_all", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
   for(auto &yr : year){
+    TString predFile = "", predFile_noextrap = "", predFile_nosf = "", predFile_nosf_noextrap = "", systFile = "";
     if(!yr.Contains("devv5")){
       if(yr.Contains("2016")){
         lumistr = "35.815165";  //2016
@@ -49,10 +49,34 @@ void comparePred(TString bkg = "ttbarplusw"){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt.root";
+      } else if(yr == "2018_toppt_mgpow"){
+        lumistr = "59.699489";  //2018
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
+      } else if(yr == "2018_all"){
+        lumistr = "59.699489";  //2018
+        predFile_nosf = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
+        predFile_nosf_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
       } else if(yr.Contains("2018")){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
+      } else if(yr.Contains("Run2_all")){
+        lumistr = "137.00079";  //2018
+        predFile_nosf = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile_nosf_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
+        predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_mgpow.root";
+      } else if(yr.Contains("Run2_toppt_mgpow")){
+        lumistr = "137.00079";  //2018
+        predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_mgpow.root";
+      } else if(yr.Contains("Run2_toppt")){
+        lumistr = "137.00079";  //2018
+        predFile = "LowMET/sig/std_pred_trad_HM_toppt.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt.root";
       } else{
         lumistr = "137.00079";
         predFile = "LowMET/sig/std_pred_trad_HM_Run2.root";
@@ -110,21 +134,55 @@ void comparePred(TString bkg = "ttbarplusw"){
     TH1* hratio_pred = (TH1*)pred->Clone("hratio_pred");
     hratio_pred->Divide(pred_noextrap);
     hratio_pred->SetLineWidth(2);
-    prepHists({hratio_pred}, false, false, false, {kBlue});
+    prepHists({hratio_pred}, false, false, false, {kRed});
 
     TString legName = yr;
     legName.ReplaceAll("_devv5","");
-    TLegend *leg;
-    if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Prediction", legName + " Prediction w/o extrapolation"}, "L");
-    else                      leg = prepLegends({pred, pred_noextrap}, {legName + " V6 Prediction", legName + " V5 Prediction"}, "L");
-    leg->SetTextSize(0.03);
-    leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-    TCanvas* c;
-    if(!yr.Contains("devv5")) c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
-    else                      c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
-    TString outputBase = "ExtrapolationComparison_" + yr;
-    c->SetTitle(outputBase);
-    c->SetCanvasSize(800, 600);
-    c->Print("LLB/" + outputBase +".pdf");
+    legName.ReplaceAll("_all","");
+    if(predFile_nosf != ""){
+      TFile *fpred_nosf = TFile::Open(predFile_nosf);
+      TFile *fpred_nosf_noextrap = TFile::Open(predFile_nosf_noextrap);
+      TH1* pred_nosf_ = (TH1*)fpred_nosf->Get(bkg+"_pred");
+      TH1* pred_nosf = (TH1*)pred_nosf_->Clone("hPrediction");
+      TH1* pred_nosf_noextrap = (TH1*)fpred_nosf_noextrap->Get(bkg+"_pred");
+      pred_nosf->SetLineColor(kMagenta); pred_nosf->SetMarkerColor(kMagenta);
+      pred_nosf_noextrap->SetLineColor(kAzure+6); pred_nosf_noextrap->SetMarkerColor(kAzure+6);
+      prepHists({pred_nosf, pred_nosf_noextrap}, false, false, false, {kMagenta, kAzure+6});
+      pred_nosf->SetFillStyle(0); pred_nosf_noextrap->SetFillStyle(0);
+
+      TH1* hratio_pred_nosf_noextrap = (TH1*)pred_nosf->Clone("hratio_pred_nosf_noextrap");
+      hratio_pred_nosf_noextrap->Divide(pred_nosf_noextrap);
+      hratio_pred_nosf_noextrap->SetLineWidth(2);
+      TH1* hratio_pred_nosf = (TH1*)pred_nosf->Clone("hratio_pred_nosf");
+      hratio_pred_nosf->Divide(pred);
+      hratio_pred_nosf->SetLineWidth(2);
+      TH1* hratio_pred_extrap = (TH1*)pred_nosf->Clone("hratio_pred_noextrap");
+      hratio_pred_extrap->Divide(pred_noextrap);
+      hratio_pred_extrap->SetLineWidth(2);
+      prepHists({hratio_pred_nosf, hratio_pred_nosf_noextrap, hratio_pred_extrap}, false, false, false, {kBlue, kAzure+6, kRed});
+
+      TLegend *leg = prepLegends({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {legName + " w/ topsf Pred", legName + " w/ topsf Pred w/o extrap", legName + " Pred", legName + " Pred w/o extrap"}, "L");
+      leg->SetTextSize(0.03);
+      leg->SetY1NDC(leg->GetY2NDC() - 0.2);
+      TCanvas* c = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leg, "N_{pred}/N_{other}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+      TString outputBase = "ExtrapolationComparison_" + yr;
+      c->SetTitle(outputBase);
+      c->SetCanvasSize(800, 600);
+      c->Print("LLB/" + outputBase +".pdf");
+    } else{
+      TLegend *leg;
+      if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Prediction", legName + " Prediction w/o extrapolation"}, "L");
+      else                      leg = prepLegends({pred, pred_noextrap}, {legName + " V6 Prediction", legName + " V5 Prediction"}, "L");
+      leg->SetTextSize(0.03);
+      leg->SetY1NDC(leg->GetY2NDC() - 0.2);
+      TCanvas* c;
+      if(!yr.Contains("devv5")) c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+      else                      c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
+      TString outputBase = "ExtrapolationComparison_" + yr;
+      c->SetTitle(outputBase);
+      c->SetCanvasSize(800, 600);
+      c->Print("LLB/" + outputBase +".pdf");
+
+    }
   }
 }
