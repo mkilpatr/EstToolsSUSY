@@ -433,6 +433,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
         h->GetYaxis()->SetRangeUser(0., (lowY > 0 ? pow(highY,1./(1.-gap))*pow(lowY,-gap/(1.-gap)) : 1.5*highY));
         h->SetMinimum(lowY);
         gPad->SetLogy(1);
+        h->GetYaxis()->SetMoreLogLabels();
       }
 
 #ifdef TDR_STYLE_

@@ -1,7 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "LowMET_Parameters.hh"
+#include "SRParameters.hh"
+//#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -37,7 +37,7 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
-  TString region = "TransferFactor_new";
+  TString region = "TransferFactor_devv6";
   llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
@@ -347,7 +347,7 @@ void plotLepCRAllEras(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_restop";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -663,7 +663,7 @@ void ExtrapStudies(){
   //config.addSample("tW-2018",            "tW",            inputdir_2018+"tW",              "1.0",      datasel + revert_vetoes);
   //config.addSample("ttW-2018",           "ttW",           inputdir_2018+"ttW",             "1.0",      datasel + revert_vetoes);
 
-  TString region = "ExtrapolationStudy_withoutExtrap";
+  TString region = "ExtrapolationStudy_withExtrap_orig";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -680,12 +680,12 @@ void ExtrapStudies(){
   map<TString, BinInfo> varDict {
 	//{"restopsf",    BinInfo("Stop0l_ResTopWeight", "Stop0l_ResTopWeight", 100, 0.5, 1.5)},
 	//{"deepak8",     BinInfo("Stop0l_DeepAK8_SFWeight", "Stop0l_DeepAK8_SFWeight", 100, 0.5, 1.5)},
-	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
 	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{rest}", 4, -0.5, 3.5)},
-	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
-	{"topjet",      BinInfo("Stop0l_MatchTopPt[0]", "top p_{T}(ak8) [GeV]",  12, 200, 800)},
-	{"wjet",        BinInfo("Stop0l_MatchWPt[0]", "W p_{T}(ak8) [GeV]",  12, 200, 800)},
-	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  12, 200, 800)},
+	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
+	//{"topjet",      BinInfo("Stop0l_MatchTopPt[0]", "top p_{T}(ak8) [GeV]",  12, 200, 800)},
+	//{"wjet",        BinInfo("Stop0l_MatchWPt[0]", "W p_{T}(ak8) [GeV]",  12, 200, 800)},
+	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  12, 200, 800)},
 	//{"ak4jet",      BinInfo("Jet_pt[0]", "p_{T}(ak4) [GeV]",  12, 200, 800)},
 	//{"ak8jet_isr",      BinInfo("Stop0l_ISRJetPt[0]", "p_{T}(ISR) [GeV]",  12, 200, 800)},
   };
@@ -697,19 +697,18 @@ void ExtrapStudies(){
       const auto &cat = z.config.crCatMaps.at(category);
       auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
       std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
-      //std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat.label, 0.2, 0.75); };
       cout << cat_label << endl;
-      //lumistr = "137.00079";
-      //z.setSelection(cat.cut, "_Run2", "_Run2");
-      //z.plotDataMC(var.second, mc_samples, "", cat, false, "", true, &plotextra);
+      lumistr = "137.00079";
+      z.setSelection(cat.cut, "_Run2", "_Run2");
+      z.plotDataMC(var.second, mc_samples, data_sample, cat, false, "", true, &plotextra);
 
-      //lumistr = lumistr_2016;
-      //z.setSelection(cat.cut, "_2016", "_2016");
-      //z.plotDataMC(var.second, mc_samples_2016, "", cat, false, "", true, &plotextra);
+      lumistr = lumistr_2016;
+      z.setSelection(cat.cut, "_2016", "_2016");
+      z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, cat, false, "", true, &plotextra);
 
-      //lumistr = lumistr_2017;
-      //z.setSelection(cat.cut, "_2017", "_2017");
-      //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, cat, false, "", true, &plotextra);
+      lumistr = lumistr_2017;
+      z.setSelection(cat.cut, "_2017", "_2017");
+      z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, cat, false, "", true, &plotextra);
 
       lumistr = lumistr_2018PostHEM;
       z.setSelection(cat.cut, "_2018", "_2018");
@@ -747,10 +746,10 @@ void plot1LepInclusive(){
   TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
-	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
-	{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
-	{"nw",          BinInfo("Stop0l_nW", "N_{t}", 4, -0.5, 3.5)},
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
+	//{"nw",          BinInfo("Stop0l_nW", "N_{t}", 4, -0.5, 3.5)},
 	//{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},

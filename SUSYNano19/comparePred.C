@@ -11,6 +11,8 @@ void comparePred(TString bkg = "ttbarplusw"){
 
   SetStyle();
   PAD_SPLIT_Y = 0.35;
+  RATIO_YMIN = 0.499;
+  RATIO_YMAX = 1.501;
 
   double xlow=0.1, xhigh = 44;
 
@@ -111,7 +113,7 @@ void comparePred(TString bkg = "ttbarplusw"){
     assert(fpred); assert(fpred_noextrap); assert(fsystFile);
 
     TH1* pred_ = (TH1*)fpred->Get(bkg+"_pred");
-    TH1* pred = (TH1*)pred_->Clone("hPrediction");
+    TH1* pred = (TH1*)pred_->Clone("hPred");
     TH1* pred_noextrap = (TH1*)fpred_noextrap->Get(bkg+"_pred");
     TH1* syst_up = (TH1*)fsystFile->Get("Up");
     TH1* syst_dn = (TH1*)fsystFile->Get("Down");
@@ -143,7 +145,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       TFile *fpred_nosf = TFile::Open(predFile_nosf);
       TFile *fpred_nosf_noextrap = TFile::Open(predFile_nosf_noextrap);
       TH1* pred_nosf_ = (TH1*)fpred_nosf->Get(bkg+"_pred");
-      TH1* pred_nosf = (TH1*)pred_nosf_->Clone("hPrediction");
+      TH1* pred_nosf = (TH1*)pred_nosf_->Clone("hPred");
       TH1* pred_nosf_noextrap = (TH1*)fpred_nosf_noextrap->Get(bkg+"_pred");
       pred_nosf->SetLineColor(kMagenta); pred_nosf->SetMarkerColor(kMagenta);
       pred_nosf_noextrap->SetLineColor(kAzure+6); pred_nosf_noextrap->SetMarkerColor(kAzure+6);
@@ -164,24 +166,42 @@ void comparePred(TString bkg = "ttbarplusw"){
       TLegend *leg = prepLegends({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {legName + " w/ topsf Pred", legName + " w/ topsf Pred w/o extrap", legName + " Pred", legName + " Pred w/o extrap"}, "L");
       leg->SetTextSize(0.03);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-      TCanvas* c = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leg, "N_{pred}/N_{other}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+      TCanvas* c = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leg, "N_{pred}/N_{other}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
       TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
-      c->Print("LLB/" + outputBase +".pdf");
+      c->Print("LLB/" + outputBase +".png");
+
+      TLegend *leglog = prepLegends({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {legName + " w/ topsf Pred", legName + " w/ topsf Pred w/o extrap", legName + " Pred", legName + " Pred w/o extrap"}, "L");
+      leglog->SetTextSize(0.03);
+      leglog->SetY1NDC(leglog->GetY2NDC() - 0.2);
+      TCanvas* clog = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leglog, "N_{pred}/N_{other}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+      outputBase = "ExtrapolationComparison_" + yr + "_log";
+      clog->SetTitle(outputBase);
+      clog->SetCanvasSize(800, 600);
+      clog->Print("LLB/" + outputBase +".png");
     } else{
       TLegend *leg;
-      if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Prediction", legName + " Prediction w/o extrapolation"}, "L");
-      else                      leg = prepLegends({pred, pred_noextrap}, {legName + " V6 Prediction", legName + " V5 Prediction"}, "L");
+      if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Pred", legName + " Pred w/o extrap"}, "L");
+      else                      leg = prepLegends({pred, pred_noextrap}, {legName + " V6 Pred", legName + " V5 Pred"}, "L");
       leg->SetTextSize(0.03);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
-      TCanvas* c;
-      if(!yr.Contains("devv5")) c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
-      else                      c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
+      TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
       TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
-      c->Print("LLB/" + outputBase +".pdf");
+      c->Print("LLB/" + outputBase +".png");
+
+      TLegend *leglog;
+      if(!yr.Contains("devv5")) leglog = prepLegends({pred, pred_noextrap}, {legName + " Pred", legName + " Pred w/o extrap"}, "L");
+      else                      leglog = prepLegends({pred, pred_noextrap}, {legName + " V6 Pred", legName + " V5 Pred"}, "L");
+      leglog->SetTextSize(0.03);
+      leglog->SetY1NDC(leglog->GetY2NDC() - 0.2);
+      TCanvas* clog = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leglog, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
+      outputBase = "ExtrapolationComparison_" + yr + "_log";
+      clog->SetTitle(outputBase);
+      clog->SetCanvasSize(800, 600);
+      clog->Print("LLB/" + outputBase +".png");
 
     }
   }
