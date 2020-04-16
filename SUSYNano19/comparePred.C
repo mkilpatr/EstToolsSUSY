@@ -35,7 +35,7 @@ void comparePred(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  vector<TString> year = {"2016", "2017", "2018", "2018_toppt", "2018_toppt_mgpow", "2018_all", "Run2", "Run2_toppt", "Run2_toppt_mgpow", "Run2_all", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
+  vector<TString> year = {"2016", "2017", "2018", "2018_toppt", "2018_toppt_mgpow", "2018_toppt_new", "2018_all", "2018_all_new", "Run2", "Run2_toppt", "Run2_toppt_mgpow", "Run2_toppt_new", "Run2_all", "Run2_all_new", "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
   for(auto &yr : year){
     TString predFile = "", predFile_noextrap = "", predFile_nosf = "", predFile_nosf_noextrap = "", systFile = "";
     if(!yr.Contains("devv5")){
@@ -55,12 +55,22 @@ void comparePred(TString bkg = "ttbarplusw"){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
+      } else if(yr == "2018_toppt_new"){
+        lumistr = "59.699489";  //2018
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_new.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_new.root";
       } else if(yr == "2018_all"){
         lumistr = "59.699489";  //2018
         predFile_nosf = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
         predFile_nosf_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
+      } else if(yr == "2018_all_new"){
+        lumistr = "59.699489";  //2018
+        predFile_nosf = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
+        predFile_nosf_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
+        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_new.root";
+        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_new.root";
       } else if(yr.Contains("2018")){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
@@ -71,6 +81,16 @@ void comparePred(TString bkg = "ttbarplusw"){
         predFile_nosf_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
         predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
         predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_mgpow.root";
+      } else if(yr.Contains("Run2_all_new")){
+        lumistr = "137.00079";  //2018
+        predFile_nosf = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile_nosf_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
+        predFile = "LowMET/sig/std_pred_trad_HM_toppt_new.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_new.root";
+      } else if(yr.Contains("Run2_toppt_new")){
+        lumistr = "137.00079";  //2018
+        predFile = "LowMET/sig/std_pred_trad_HM_toppt_new.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_new.root";
       } else if(yr.Contains("Run2_toppt_mgpow")){
         lumistr = "137.00079";  //2018
         predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
@@ -170,7 +190,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
-      c->Print("LLB/" + outputBase +".png");
+      c->Print("LLB/ANQuestion/" + outputBase +".png");
 
       TLegend *leglog = prepLegends({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {legName + " w/ topsf Pred", legName + " w/ topsf Pred w/o extrap", legName + " Pred", legName + " Pred w/o extrap"}, "L");
       leglog->SetTextSize(0.03);
@@ -179,7 +199,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       outputBase = "ExtrapolationComparison_" + yr + "_log";
       clog->SetTitle(outputBase);
       clog->SetCanvasSize(800, 600);
-      clog->Print("LLB/" + outputBase +".png");
+      clog->Print("LLB/ANQuestion/" + outputBase +".png");
     } else{
       TLegend *leg;
       if(!yr.Contains("devv5")) leg = prepLegends({pred, pred_noextrap}, {legName + " Pred", legName + " Pred w/o extrap"}, "L");
@@ -190,7 +210,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
-      c->Print("LLB/" + outputBase +".png");
+      c->Print("LLB/ANQuestion/" + outputBase +".png");
 
       TLegend *leglog;
       if(!yr.Contains("devv5")) leglog = prepLegends({pred, pred_noextrap}, {legName + " Pred", legName + " Pred w/o extrap"}, "L");
@@ -201,7 +221,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       outputBase = "ExtrapolationComparison_" + yr + "_log";
       clog->SetTitle(outputBase);
       clog->SetCanvasSize(800, 600);
-      clog->Print("LLB/" + outputBase +".png");
+      clog->Print("LLB/ANQuestion/" + outputBase +".png");
 
     }
   }

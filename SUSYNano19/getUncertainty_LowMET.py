@@ -26,8 +26,8 @@ uncdir + 'values_unc_LowMET_ll.conf',
 #all_bin_unc_file = 'values_0l_unc_all.conf'
 all_bin_unc_file = ''
 
-all_samples=('ttbarplusw')
-graph_names=('Graph_from_ttbarplusw_pred_gr')
+all_samples=('ttbarplusw',)
+graph_names=('Graph_from_ttbarplusw_pred_gr',)
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & ttZ & Diboson & QCD  &  total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'Graph_from_pred_total_gr'
@@ -174,7 +174,7 @@ def sumUncLogNorm(unc_list, p):
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
         log_final_up   = log_syst_up_total
         log_final_down = log_syst_down_total
-    print "pred={0}, log_final_up={1}, log_final_down={2}".format(p, log_final_up, log_final_down)
+    #print "pred={0}, log_final_up={1}, log_final_down={2}".format(p, log_final_up, log_final_down)
     return [p - log_final_down*p, log_final_up*p - p]
 
 def sumUnc(unc_list):
@@ -271,7 +271,6 @@ def readRelUnc(config_path):
                     if sample not in relUnc[type][bin]:
                         relUnc[type][bin][sample] = (1.0, 1.0)
 
-
 def readYields(pred_file):
     ''' Read in predicted bkg yields and the stat. unc. 
     
@@ -280,30 +279,29 @@ def readYields(pred_file):
     f = rt.TFile(pred_file)
     for hname, sample in zip(graph_names, all_samples):
         h = f.Get(hname)
-        for ibin in xrange(0, h.GetNbinsX()):
+        for ibin in xrange(0, h.GetN()):
             bin = binlist[ibin]
             if bin not in yields:
                 yields[bin] = {}
                 yields_total[bin] = 0.
                 statUnc_pieces[bin] = {}
-            y = h.GetBinContent(ibin+1)
-            e_up = h.GetBinError(ibin+1)
-            e_low = h.GetBinError(ibin+1)
+            y = h.GetY()[ibin]
+            e_up = h.GetErrorYhigh(ibin)
+            e_low = h.GetErrorYlow(ibin)
             yields[bin][sample] = y
             yields_total[bin]  += y
             if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
-    #h = f.Get('data')
-    #for ibin in xrange(0, h.GetNbinsX()):
-            bin = binlist[ibin]
-            #yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
-            yields_data[bin] = (1, 1)
-    # get total pred (w/ asymmetric errors)
-    h = f.Get(pred_total_name)
+    h = f.Get('data')
     for ibin in xrange(0, h.GetNbinsX()):
         bin = binlist[ibin]
-        e_up = h.GetBinError(ibin+1)
-        e_low = h.GetBinError(ibin+1)
+        yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
+    # get total pred (w/ asymmetric errors)
+    h = f.Get(pred_total_name)
+    for ibin in xrange(0, h.GetN()):
+        bin = binlist[ibin]
+        e_up = h.GetErrorYhigh(ibin)
+        e_low = h.GetErrorYlow(ibin)
         statUnc[bin] = (e_low, e_up)
     f.Close()
 
@@ -327,7 +325,6 @@ def calcAbsUnc():
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 		
     for bin in absUnc:
-        print(bin)
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
         systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin])

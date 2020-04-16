@@ -46,7 +46,7 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
   prepHists({total}, false, false, true, {kRed});
-  prepHists({hdata}, false, false, false, {kBlack});
+  if(hdata) prepHists({hdata}, false, false, false, {kBlack});
   prepHists(hsigs, false, false, false, {kRed});
   //hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
@@ -54,7 +54,7 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
   TFile *output = new TFile(outputName+"SumOfBkg.root", "RECREATE");
   for (auto *h : pred) h->Write();
   for (auto *s : hsigs) s->Write();
-  hdata->Write();
+  if(hdata) hdata->Write();
   total->Write();
   output->Close();
 

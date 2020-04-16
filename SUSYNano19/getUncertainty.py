@@ -312,7 +312,7 @@ def sumUncLogNorm(unc_list, p):
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
         log_final_up   = log_syst_up_total
         log_final_down = log_syst_down_total
-    print "pred={0}, log_final_up={1}, log_final_down={2}".format(p, log_final_up, log_final_down)
+    #print "pred={0}, log_final_up={1}, log_final_down={2}".format(p, log_final_up, log_final_down)
     return [p - log_final_down*p, log_final_up*p - p]
 
 def sumUnc(unc_list):
@@ -465,7 +465,6 @@ def calcAbsUnc():
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 		
     for bin in absUnc:
-        print(bin)
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
         systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin])

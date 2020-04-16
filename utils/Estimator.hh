@@ -806,7 +806,7 @@ public:
       addLegendEntry(leg, hdata, d_sample->label, "LP");
     }
 
-    vector<TString> mc = {"ttbar", "wjets", "tW", "ttW", "znunu", "qcd"};
+    vector<TString> mc = {"ttbar", "topmatch", "wmatch", "fake", "wjets", "tW", "ttW", "znunu", "qcd"};
     for (auto &scomb : mc){
       TH1 *hist = nullptr;
       for (auto &sname : mc_samples){
@@ -832,6 +832,13 @@ public:
         hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
         
         addLegendEntry(leg, hist, scomb, "F");
+      }
+
+      if((scomb.Contains("topmatch") || scomb.Contains("wmatch") || scomb.Contains("fake")) && hist != nullptr){
+        Quantity q_mc;
+        TH1* ttb = (TH1*)hist->Clone("hInt");
+        q_mc.value = ttb->IntegralAndError(1, ttb->GetNbinsX()+1, q_mc.error);
+        cout << scomb << ": " << q_mc.value << endl;
       }
     }
 

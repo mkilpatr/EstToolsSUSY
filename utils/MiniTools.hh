@@ -468,6 +468,31 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
+  auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
+  TH1D *ratio = (TH1D*)h_data->Clone("hratio");
+  cout << "pull = (a-b)/sqrt(b+db)" << endl;
+  for(int ibin = 0; ibin < hs->GetN(); ++ibin){
+    int ibin_data = ibin + 1;
+    ratio->SetBinError(ibin,0);
+    float a = h_data->GetBinContent(ibin_data);
+    float b = hs->GetY()[ibin];
+    //if data >= BG
+    float da = h_data->GetBinErrorLow(ibin_data) * h_data->GetBinErrorLow(ibin_data);
+    float db = hs->GetErrorYhigh(ibin) * hs->GetErrorYhigh(ibin);
+    if (a < b){//if data < BG
+      da = h_data->GetBinErrorUp(ibin_data) * h_data->GetBinErrorUp(ibin_data);
+      db = hs->GetErrorYlow(ibin) * hs->GetErrorYlow(ibin);
+    }
+    float pull = (a-b)/sqrt(da+db);	//pull = data-pred/sqrt(d_data^2 + d_pred^2)
+    pull = (a-b)/sqrt(b+db);	//ken's formular: pull = data-pred/sqrt(pred + d_pred^2)
+    ratio->SetBinContent(ibin,pull);
+    pull_h->Fill(pull);
+    cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + " << db << ")" << endl;  
+  }
+  return pull_h;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdded = true, bool isFilled = false, vector<Color_t> colors = {}){
   int count = 0;

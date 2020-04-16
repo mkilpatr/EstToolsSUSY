@@ -32,22 +32,51 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "2016/LowMET/sig/std_pred_trad_HM_2016.root";
-//  TString predFile_statOnly = "/tmp/validation/plots/fullPredOnly/sig/std_pred_trad_orig.root";
-  TString predFile_noextrap = "2016/LowMET/sig/std_pred_trad_HM_2016_noextrap.root";
+  TString predFile = "LowMET/sig/std_pred_trad_toppt_mgpow.root";
+  TString predFile_noextrap = "LowMET/sig/std_pred_trad_noextrap_toppt_mgpow.root";
 //  TString output  = "";
 
   TFile *fpred = TFile::Open(predFile);
-//  TFile *fpred_statOnly = TFile::Open(predFile_statOnly);
   TFile *fpred_noextrap = TFile::Open(predFile_noextrap);
   assert(fpred); assert(fpred_noextrap);
 
   TGraphAsymmErrors* pred = (TGraphAsymmErrors*)fpred->Get(bkg+"_unc_sr");
   TGraphAsymmErrors* pred_statOnly = (TGraphAsymmErrors*)fpred->Get(TString::Format("Graph_from_%s_pred_gr", bkg.Data()));
   TGraphAsymmErrors* pred_noextrap = (TGraphAsymmErrors*)fpred_noextrap->Get(TString::Format("Graph_from_%s_pred_gr", bkg.Data()));
+
+  //TH1* mc_ = (TH1*)fpred->Get(bkg+"_mc");
+  //double x[mc_->GetNbinsX()], y[mc_->GetNbinsX()], exl[mc_->GetNbinsX()], eyl[mc_->GetNbinsX()], exh[mc_->GetNbinsX()], eyh[mc_->GetNbinsX()];
+  //double x_noextrap[mc_->GetNbinsX()], y_noextrap[mc_->GetNbinsX()], exl_noextrap[mc_->GetNbinsX()], eyl_noextrap[mc_->GetNbinsX()], exh_noextrap[mc_->GetNbinsX()], eyh_noextrap[mc_->GetNbinsX()];
+  //double x_statOnly[mc_->GetNbinsX()], y_statOnly[mc_->GetNbinsX()], exl_statOnly[mc_->GetNbinsX()], eyl_statOnly[mc_->GetNbinsX()], exh_statOnly[mc_->GetNbinsX()], eyh_statOnly[mc_->GetNbinsX()];
+  //for (int i=0; i != mc_->GetNbinsX(); i++){
+  //  int j = i + 19;
+  //  x[i] = j;
+  //  exl[i] = 0;
+  //  exh[i] = 1;
+  //  y[i] = pred_->GetErrorY(j);
+  //  eyl[i] = pred_->GetErrorYlow(j);
+  //  eyh[i] = pred_->GetErrorYhigh(j);
+  //  x_noextrap[i] = j;
+  //  exl_noextrap[i] = 0;
+  //  exh_noextrap[i] = 1;
+  //  y_noextrap[i] = pred_noextrap_->GetErrorY(j);
+  //  eyl_noextrap[i] = pred_noextrap_->GetErrorYlow(j);
+  //  eyh_noextrap[i] = pred_noextrap_->GetErrorYhigh(j);
+  //  x_statOnly[i] = j;
+  //  exl_statOnly[i] = 0;
+  //  exh_statOnly[i] = 1;
+  //  y_statOnly[i] = pred_statOnly_->GetErrorY(j);
+  //  eyl_statOnly[i] = pred_statOnly_->GetErrorYlow(j);
+  //  eyh_statOnly[i] = pred_statOnly_->GetErrorYhigh(j);
+  //}
+  //TGraphAsymmErrors* pred = new TGraphAsymmErrors(mc_->GetNbinsX(), x, y, exl, exh, eyl, eyh);
+  //TGraphAsymmErrors* pred_noextrap = new TGraphAsymmErrors(mc_->GetNbinsX(), x_noextrap, y_noextrap, exl_noextrap, exh_noextrap, eyl_noextrap, eyh_noextrap);
+  //TGraphAsymmErrors* pred_statOnly = new TGraphAsymmErrors(mc_->GetNbinsX(), x_statOnly, y_statOnly, exl_statOnly, exh_statOnly, eyl_statOnly, eyh_statOnly);
+
+
   for (int i=0; i<pred_noextrap->GetN(); ++i){
     pred->GetX()[i] += 0.1;
-    pred_statOnly->GetX()[i] += 0.1;
+    pred_statOnly->GetX()[i] += 0.2;
     pred_noextrap->GetX()[i] += 0.3;
   }
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
@@ -66,7 +95,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   auto ratio_pred_noextrap = getRatioGraph(pred_noextrap, mc);
   for (int i=0; i<ratio_pred_noextrap->GetN(); ++i){
     ratio_pred->GetX()[i] += 0.1;
-    ratio_pred_statOnly->GetX()[i] += 0.1;
+    ratio_pred_statOnly->GetX()[i] += 0.2;
     ratio_pred_noextrap->GetX()[i] += 0.3;
   }
 

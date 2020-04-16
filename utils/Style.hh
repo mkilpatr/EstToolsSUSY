@@ -59,7 +59,9 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"diboson",   kGreen+3},
     {"ww",        kSpring-8},
     {"wz",        kGreen+3},
-    {"zz",        kYellow-9}
+    {"zz",        kYellow-9},
+    {"wmatch",    kGreen+3},
+    {"topmatch",  kViolet+2}
 };
 
 const vector<Color_t> comp_colors {kBlue, kRed, kBlack, kViolet-1, kGreen+3, kOrange+2, kBlue+3, kRed+2, kMagenta, kBlue, kCyan+2, kAzure+2};

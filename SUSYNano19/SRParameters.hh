@@ -7,14 +7,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_033120_toppt_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_033120_toppt_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_033120_toppt_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_041320_new_toppt_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_041320_new_toppt_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_041320_new_toppt_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_033120_toppt_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_041320_new_toppt_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -28,10 +28,11 @@ const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + "
 const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString wgtvar = lumistr_2016+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2016
-const TString wgtvar_2017 = lumistr_2017+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*PrefireWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2017
-const TString wgtvar_2018 = HEMVeto+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2018
-const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*topptWeight";// //2018
+const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topptWeight";
+const TString wgtvar = lumistr_2016+"*1000*PrefireWeight"+basic_wgt;// //2016
+const TString wgtvar_2017 = lumistr_2017+"*1000*PrefireWeight"+basic_wgt;// //2017
+const TString wgtvar_2018 = HEMVeto+"*1000"+basic_wgt;// //2018
+const TString wgtvar_2018_1LepCR = HEMVetoElec+"*1000"+basic_wgt;// //2018
 
 // photon trigger eff.
 const TString phowgt = wgtvar;

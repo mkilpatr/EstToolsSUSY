@@ -47,6 +47,7 @@ json readFile(std::string FILENAME){
         // if so then strip them off
         s = s.substr(0, s.size() - ext.size());
       }
+      if(TString(s).Contains("mcstats_signal")) s = "mcstats_signal";
       
       TString test = TString(arr[1]);
       if(test.Contains("Up")){
