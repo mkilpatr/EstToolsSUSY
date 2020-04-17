@@ -806,8 +806,18 @@ public:
       addLegendEntry(leg, hdata, d_sample->label, "LP");
     }
 
-    vector<TString> mc = {"ttbar", "topmatch", "wmatch", "fake", "wjets", "tW", "ttW", "znunu", "qcd"};
+    vector<TString> mc;
+    for(auto &scomb : mc_samples){
+      TString sMC = TString(scomb);
+      if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
+      else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
+      else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
+      if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
+    }
+
+    //vector<TString> mc = {"ttbar", "", "topmatch", "wmatch", "fake", "wjets", "tW", "ttW", "znunu", "qcd"};
     for (auto &scomb : mc){
+      cout << scomb << endl;
       TH1 *hist = nullptr;
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
@@ -817,6 +827,7 @@ public:
 	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
 	sMC = sMC.ReplaceAll("-cr","");
 	sMC = sMC.ReplaceAll("-withveto","");
+        cout << sMC << " == " << scomb << endl;
 	if(sMC == scomb){
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);

@@ -739,7 +739,7 @@ void plot1LepInclusive(){
 	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  20, 0, 1000)},
 	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
 	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
-	//{"nw",          BinInfo("Stop0l_nW", "N_{t}", 4, -0.5, 3.5)},
+	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
 	//{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
@@ -791,31 +791,59 @@ void plot1LepTTbarMatch(){
   auto config = lepConfig();
   TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
   TString LLCR_TopPT = "Stop0l_nJets>=4 && Stop0l_nbtags>=2 && Pass_dPhiMETHighDM";
+  // new weights
+  TString ttbartopPTwgt = "*(Stop0l_topAK8Weight*(FatJet_GenMatch[0] == 1) + 1*(FatJet_GenMatch[0] != 1))";
+  TString topAK8 = ttbartopPTwgt+"/Stop0l_topptWeight";
+  TString toppt = "*Stop0l_topptOnly/Stop0l_topptWeight";
+
   config.sel = baseline;
+  LOG_YMIN = 1.;
 
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  config.addSample("topmatch-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+ttbartopPTwgt+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
-  config.addSample("topmatch-2017",       "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+ttbartopPTwgt,      	     datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
-  config.addSample("topmatch-2018",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+ttbartopPTwgt,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
-  config.addSample("wmatch-2016",         "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+ttbartopPTwgt+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
-  config.addSample("wmatch-2017",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+ttbartopPTwgt,      	     datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
-  config.addSample("wmatch-2018",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+ttbartopPTwgt,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
-  config.addSample("fake-2016",           "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+ttbartopPTwgt+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
-  config.addSample("fake-2017",           "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+ttbartopPTwgt,      	     datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
-  config.addSample("fake-2018",           "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+ttbartopPTwgt,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
+  config.addSample("ttbar-toppt-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+toppt+"*ISRWeight",      datasel + revert_vetoes);
+  config.addSample("ttbar-toppt-2017",       "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+toppt,      	  datasel + revert_vetoes);
+  config.addSample("ttbar-toppt-2018",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+toppt,              datasel + revert_vetoes);
+  config.addSample("ttbar-topAK8-2016",      "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+topAK8+"*ISRWeight",      datasel + revert_vetoes);
+  config.addSample("ttbar-topAK8-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+topAK8,      	  datasel + revert_vetoes);
+  config.addSample("ttbar-topAK8-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+topAK8,              datasel + revert_vetoes);
+  // Adding samples with different gentop matched to FatJet
+  config.addSample("topmatch-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+topAK8+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
+  config.addSample("topmatch-2017",       "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+topAK8,      	datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
+  config.addSample("topmatch-2018",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+topAK8,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 1");
+  config.addSample("wmatch-2016",         "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+topAK8+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
+  config.addSample("wmatch-2017",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+topAK8,      	datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
+  config.addSample("wmatch-2018",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+topAK8,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 2");
+  config.addSample("fake-2016",           "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+topAK8+"*ISRWeight",      datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
+  config.addSample("fake-2017",           "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+topAK8,      	datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
+  config.addSample("fake-2018",           "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+topAK8,              datasel + revert_vetoes + " && FatJet_GenMatch[0] == 0");
+  // Look at signal contamination
+  //config.addSample("T1tttt",  "T1tttt",  inputdir_sig+"T1tttt_2200_100",  lepselwgt, datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_v6_toppt_matching_041420";
+
+  TString region = "lepcr_inclusive_v6_toppt_matching_041620";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "png";
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"topmatch-2016", "topmatch-2017", "topmatch-2018", 
-                                "wmatch-2016", "wmatch-2017", "wmatch-2018", 
-				"fake-2016", "fake-2017", "fake-2018", 
+  vector<TString> mc_toppt_mgpow_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", 
 				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
+				"tW-2016", "tW-2017", "tW-2018", 
+				"ttW-2016", "ttW-2017", "ttW-2018"};
+  vector<TString> mc_toppt_samples = {"ttbar-toppt-2016", "ttbar-toppt-2017", "ttbar-toppt-2018", 
+				"wjets-2016", "wjets-2017", "wjets-2018", 
+				"tW-2016", "tW-2017", "tW-2018", 
+				"ttW-2016", "ttW-2017", "ttW-2018"};
+  vector<TString> mc_topAK8_samples = {"ttbar-topAK8-2016", "ttbar-topAK8-2017", "ttbar-topAK8-2018", 
+				"wjets-2016", "wjets-2017", "wjets-2018", 
+				"tW-2016", "tW-2017", "tW-2018", 
+				"ttW-2016", "ttW-2017", "ttW-2018"};
+  vector<TString> mc_match_samples = {"topmatch-2016", "topmatch-2017", "topmatch-2018", 
+                                      "wmatch-2016", "wmatch-2017", "wmatch-2018", 
+				      "fake-2016", "fake-2017", "fake-2018", 
+				      "wjets-2016", "wjets-2017", "wjets-2018", 
+				      "tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_samples_2016 = {"topmatch-2016", "wmatch-2016", "fake-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_samples_2017 = {"topmatch-2017", "wmatch-2017", "fake-2017", "wjets-2017", "tW-2017", "ttW-2017"};
   vector<TString> mc_samples_2018 = {"topmatch-2018", "wmatch-2018", "fake-2018", "wjets-2018", "tW-2018", "ttW-2018"};
@@ -825,34 +853,31 @@ void plot1LepTTbarMatch(){
   TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
-	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  20, 0, 1000)},
-	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
-	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
-	//{"nw",          BinInfo("Stop0l_nW", "N_{t}", 4, -0.5, 3.5)},
+	{"met",         BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]",  20, 0, 1000)},
+	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
   };
 
   vector<TH1*> ratiohist;
   std::function<void(TCanvas*)> plotextra;
   for (auto &var : varDict){
     z.resetSelection();
-    z.setSelection(LLCR_HM, "llcr_hm", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR HM", 0.2, 0.72); };
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
-
-    //lumistr = lumistr_2016;
-    //z.setSelection(LLCR_HM, "llcr_hm_2016", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra));
-
-    //lumistr = lumistr_2017;
-    //z.setSelection(LLCR_HM, "llcr_hm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra));
-
-    //lumistr = lumistr_2018PostHEM;
-    //z.setSelection(LLCR_HM, "llcr_hm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR HM", 0.2, 0.72); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
+    //toppt and mgpow
+    z.setSelection(LLCR_HM, "llcr_hm_toppt_mgpow", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run2 LLCR HM}{Top p_{T} + MC/Powheg}", 0.2, 0.80); };
+    z.plotDataMC(var.second, mc_toppt_mgpow_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    //toppt
+    z.setSelection(LLCR_HM, "llcr_hm_toppt", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run2 LLCR HM}{Top p_{T}}", 0.2, 0.80); };
+    z.plotDataMC(var.second, mc_toppt_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    //topAK8
+    z.setSelection(LLCR_HM, "llcr_hm_topAK8", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run2 LLCR HM}{Top AK8 Matching}", 0.2, 0.80); };
+    z.plotDataMC(var.second, mc_topAK8_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    //top GenMatching
+    z.setSelection(LLCR_HM, "llcr_hm_top_matching", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run2 LLCR HM}{Top AK8 Gen Matching}", 0.2, 0.80); };
+    z.plotDataMC(var.second, mc_match_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
   }
 }

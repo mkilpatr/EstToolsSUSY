@@ -585,8 +585,8 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
-  //hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
+  //hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
   hbkgtotal->SetMinimum(plotlog? LOG_YMIN : 0);
   if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
   hbkgtotal->GetXaxis()->SetLabelOffset(0.20);
