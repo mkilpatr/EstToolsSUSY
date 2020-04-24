@@ -7,8 +7,8 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_041620_devv6_limits/";
-const TString datadir = "nanoaod_all_skim_2016_041620_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_042420_devv6_limits/";
+const TString datadir = "nanoaod_all_skim_2016_042420_devv6_limits/";
 const TString outputdir = "LowMET";
 
 const TString lumistr = "35.815165";
