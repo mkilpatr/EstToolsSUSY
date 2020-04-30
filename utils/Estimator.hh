@@ -780,11 +780,13 @@ public:
   }
 
 
-  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false){
     // make DataMC plots with the given cateogory selection
     // possible to normalize MC to Data with a different selection (set by *norm_cut*)
 
     vector<TH1*> mchists;
+    TH1* hnonttbar = nullptr;
+    TH1* httbar = nullptr;
     auto leg = initLegend();
 
     TString plotvar = var_info.var;
@@ -842,6 +844,13 @@ public:
         addLegendEntry(leg, hist, scomb, "F");
       }
 
+      if(ttbarRatio && TString(hist->GetName()).Contains("ttbar"))
+        httbar = (TH1*)hist->Clone("httbar");
+      else if (!hnonttbar)
+        hnonttbar = (TH1*)hist->Clone("hnonttbar");
+      else
+        hnonttbar->Add(hist);
+
       if((scomb.Contains("topmatch") || scomb.Contains("wmatch") || scomb.Contains("fake")) && hist != nullptr){
         Quantity q_mc;
         TH1* ttb = (TH1*)hist->Clone("hInt");
@@ -879,7 +888,10 @@ public:
 
     TCanvas *c = nullptr;
     if (hdata){
-      c = drawStackAndRatio(mchists, hdata, leg, plotlog);
+      if (ttbarRatio)
+        c = drawStackAndRatio(mchists, hdata, leg, plotlog, "(N_{obs} - N_{non-ttbar})/N_{ttbar}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, ttbarRatio);
+      else
+        c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{
       c = drawStack(mchists, {}, plotlog, leg);
     }
@@ -892,16 +904,19 @@ public:
     savePlot(c, plotname);
 
     if (hdata)
-      return makeRatioHists(hdata, sumHists(mchists, "bkgtotal"));
+      if (ttbarRatio)
+        return makeRatioHists(hnonttbar, httbar, hdata);
+      else
+        return makeRatioHists(hdata, sumHists(mchists, "bkgtotal"));
     else
       return nullptr;
   }
 
-  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);
-      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra);
+      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra, ttbarRatio);
     }
   }
 

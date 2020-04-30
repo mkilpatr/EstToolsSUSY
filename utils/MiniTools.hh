@@ -752,6 +752,27 @@ TGraphAsymmErrors* getRatioAsymmErrors(TH1* hD, TH1* hM) {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* getRatioAsymmErrors(TH1* hD, TH1* hnonttbar, TH1* httbar) {
+  //(Data - nonttbar)/ttbar
+  cout << "____Ratio: (Data - nonttbar)/ttbar" << endl;
+  TGraphAsymmErrors* gr = new TGraphAsymmErrors(hD);
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    int dN = gr->GetY()[ibin];
+    double mN = httbar->GetBinContent(ibin+1);
+    double mE = httbar->GetBinError(ibin+1);
+    double nonmN = hnonttbar->GetBinContent(ibin+1);
+    double nonmE = hnonttbar->GetBinError(ibin+1);
+    double eL = 0, eH = 0;
+    gr->SetPoint(ibin, gr->GetX()[ibin], (double(dN)-nonmN)/mN);
+    getRatioUpDownErrors(dN, mN, mE, eL, eH);
+    gr->SetPointEYhigh(ibin, eH);
+    gr->SetPointEYlow(ibin, eL);
+  }
+  return gr;
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity dileptonZtoLLScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Quantity tt_peak, Quantity data_off, Quantity dy_off, Quantity tt_off){
   double num = (data_off*tt_peak - data_peak*tt_off).value;
   double den = (  dy_off*tt_peak -   dy_peak*tt_off).value;

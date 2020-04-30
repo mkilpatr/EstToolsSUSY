@@ -2,17 +2,17 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
-#include "../LowMET_binDefinitions.hh"
+#include "../LowMET_binDefinitions_noExtrap.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_042420_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_042720_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_042420_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_042720_devv6_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistrPreHEM  = "21.068576";
@@ -41,8 +41,6 @@ const TString phowgt = wgtvar;
 const TString lepvetowgt =         wgtvar	+ "*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseSRSF*ElectronVetoSRSF*TauSRSF";
 const TString lepselwgt  =         wgtvar_1LepCR+"*Stop0l_trigger_eff_MET_loose_baseline*MuonLooseCRSF*ElectronVetoCRSF";
 const TString vetoes = " && Pass_LeptonVeto";
-
-const TString ttbartopPTwgt = "*(topptWeight*(FatJet_GenMatch[0] == 1) + 1*(FatJet_GenMatch[0] != 1))";
 
 // 1LCR Lepton SF
 //const TString lepvetowgt = wgtvar + "*lepvetoweight";
@@ -408,7 +406,7 @@ BaseConfig lepConfig(){
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
     config.addSample("singlelep",        "Data",          inputdir_2018+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
-    config.addSample("ttbar",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt+ttbartopPTwgt,      datasel + revert_vetoes);
+    config.addSample("ttbar",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("wjets",         "W+jets",        inputdir_2018+"wjets",           lepselwgt,      datasel + revert_vetoes);
     config.addSample("tW",            "tW",            inputdir_2018+"tW",              lepselwgt,      datasel + revert_vetoes);
     config.addSample("ttW",           "ttW",           inputdir_2018+"ttW",             lepselwgt,      datasel + revert_vetoes);
@@ -418,7 +416,7 @@ BaseConfig lepConfig(){
   }
 
   // samples for sr categories
-  config.addSample("ttbar-sr",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt+ttbartopPTwgt, datasel + vetoes);
+  config.addSample("ttbar-sr",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt, datasel + vetoes);
   config.addSample("wjets-sr",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt, datasel + vetoes);
   config.addSample("tW-sr",       "tW",            inputdir_2018+"tW",               lepvetowgt, datasel + vetoes);
   config.addSample("ttW-sr",      "ttW",           inputdir_2018+"ttW",              lepvetowgt, datasel + vetoes);
@@ -427,7 +425,7 @@ BaseConfig lepConfig(){
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
-    config.addSample("ttbar-sr-int",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt+ttbartopPTwgt, datasel + vetoes);
+    config.addSample("ttbar-sr-int",    "t#bar{t}",      inputdir_2018+"ttbar",            lepvetowgt, datasel + vetoes);
     config.addSample("wjets-sr-int",    "W+jets",        inputdir_2018+"wjets",            lepvetowgt, datasel + vetoes);
     config.addSample("tW-sr-int",       "tW",            inputdir_2018+"tW",               lepvetowgt, datasel + vetoes);
     config.addSample("ttW-sr-int",      "ttW",           inputdir_2018+"ttW",              lepvetowgt, datasel + vetoes);

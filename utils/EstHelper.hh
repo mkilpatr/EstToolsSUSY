@@ -209,6 +209,17 @@ TH1* makeRatioHists(TH1* num, TH1* denom, TString option = ""){
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* makeRatioHists(TH1* nonTTbar, TH1* TTbar, TH1* data, TString option = ""){
+  //(data - non-ttbar MC)/ttbar
+  cout << "____Ratio: (data - non-ttbar MC)/ttbar " << endl;
+  assert(nonTTbar && data && TTbar);
+  auto hnum = (TH1*)data->Clone(data->GetName() + TString("__num__"));
+  hnum->Add(nonTTbar, -1);
+  hnum->Divide(hnum, TTbar, 1, 1, option);
+  return hnum;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -550,11 +561,13 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
   TH1* hbkgtotal = nullptr;
+  TH1* hnonttbar = nullptr;
+  TH1* httbar = nullptr;
   THStack* hstack = new THStack(inhists.front()->GetName()+TString("_stack"), inhists.front()->GetTitle());
   for (auto *h : inhists){
     auto *hmc = (TH1*)h->Clone();
@@ -562,6 +575,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       hbkgtotal = (TH1*)hmc->Clone("hbkgtotal");
     else
       hbkgtotal->Add(hmc);
+
+    if(ttbarRatio && TString(hmc->GetName()).Contains("ttbar"))
+      httbar = (TH1*)hmc->Clone("httbar");
+    else if (!hnonttbar)
+      hnonttbar = (TH1*)hmc->Clone("hnonttbar");
+    else
+      hnonttbar->Add(hmc);
     if (hmc->GetLineColor()!=kBlack){
       hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack);
     }
@@ -646,8 +666,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
 #ifdef TDR_STYLE_
   TH1 *haxis = (TH1*)hbkgtotal->Clone("htmpaxis");
-  haxis->SetTitleSize  (0.14,"Y");
-  haxis->SetTitleOffset(0.41,"Y");
+  if (ttbarRatio){
+    haxis->SetTitleSize  (0.08,"Y");
+    haxis->SetTitleOffset(0.60,"Y");
+  } else{ 
+    haxis->SetTitleSize  (0.14,"Y");
+    haxis->SetTitleOffset(0.41,"Y");
+  }
   haxis->SetTitleSize  (0.14,"X");
   haxis->SetTitleOffset(RATIOPLOT_XTITLE_OFFSET,"X");
   haxis->SetLabelSize  (RATIOPLOT_XLABEL_FONTSIZE,"X");
@@ -668,9 +693,17 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     TH1 *h3 = (TH1*)inData->Clone("data3");
 
     TGraphAsymmErrors* ratio;
-    TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
-    for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
-    ratio = getRatioAsymmErrors(h3, hMCNoError);
+    if (ttbarRatio){
+      TH1* hnonttbarNoError = (TH1*)hnonttbar->Clone("hnonttbarNoError");
+      TH1* httbarNoError = (TH1*)httbar->Clone("httbarNoError");
+      for (int i=1; i < hnonttbarNoError->GetNbinsX()+1; ++i) hnonttbarNoError->SetBinError(i, 0);
+      for (int i=1; i < httbarNoError->GetNbinsX()+1; ++i) httbarNoError->SetBinError(i, 0);
+      ratio = getRatioAsymmErrors(h3, hnonttbarNoError, httbarNoError);
+    } else {   
+      TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
+      for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
+      ratio = getRatioAsymmErrors(h3, hMCNoError);
+    }
     ratio->SetLineWidth(h3->GetLineWidth());
     if(!inRelUnc) ratio->Draw("PZ0same");
   }
@@ -698,9 +731,11 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 #else
   if (inData){
     TH1F* hRatio = nullptr;
-    if (diffRatio) hRatio = new TRatioPlot(inData, hbkgtotal);
-    else 	   hRatio = makeRatioHists(inData, hbkgtotal);
-    hRatio->SetTitleSize  (0.14,"Y");
+    if (diffRatio)       hRatio = new TRatioPlot(inData, hbkgtotal);
+    else if (ttbarRatio) hRatio = makeRatioHists(hnonttbar, httbar, inData);
+    else 	         hRatio = makeRatioHists(inData, hbkgtotal);
+    if (ttbarRatio) hRatio->SetTitleSize  (0.08,"Y");
+    else hRatio->SetTitleSize  (0.14,"Y");
     hRatio->SetTitleOffset(0.41,"Y");
     hRatio->SetTitleSize  (0.14,"X");
     hRatio->SetTitleOffset(0.85,"X");

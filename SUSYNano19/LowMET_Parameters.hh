@@ -2,19 +2,20 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "LowMET_binDefinitions.hh"
+//#include "LowMET_binDefinitions.hh"
+#include "LowMET_binDefinitions_small.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_042420_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_042420_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_042420_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_042720_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_042720_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_042720_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_042420_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_042720_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -159,6 +160,7 @@ std::map<TString, TString> cutMap = []{
 	{"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
 	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
 	{"met400",	"MET_pt < 400"},
+	{"metgeq400",	"MET_pt >= 400"},
 	{"met300",	"MET_pt < 300"},
     };
 
@@ -220,6 +222,7 @@ std::map<TString, TString> labelMap{
   {"lmNoDPhi",    R"(low $\Delta m$)"},
   {"hmNoDPhi",    R"(high $\Delta m$)"},
   {"met400",	  R"(#slash{E}_{T} < 400)"},
+  {"metgeq400",	  R"(#slash{E}_{T} #geq 400)"},
   {"met300",	  R"(#slash{E}_{T} < 300)"},
 
 };
@@ -275,6 +278,7 @@ std::map<TString, TString> plotLabelMap{
   {"lmNoDPhi",    R"(Low #Delta m)"},
   {"hmNoDPhi",    R"(High #Delta m)"},
   {"met400",	  R"(#slash{E}_{T} < 400)"},
+  {"metgeq400",	  R"(#slash{E}_{T}#geq400)"},
   {"met300",	  R"(#slash{E}_{T} < 300)"},
 };
 
