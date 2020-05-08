@@ -2,17 +2,17 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
-#include "../LowMET_binDefinitions_noExtrap.hh"
+#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_042720_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_042720_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_050120_devv6_limits/";
 
 const TString lumistr = "136.722688";
 const TString lumistrPreHEM  = "21.068576";
@@ -24,7 +24,7 @@ const TString HEMVeto     = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30) + " + lu
 const TString HEMVetoElec = "(" + lumistrPostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistrPreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topptWeight";
+const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topAK8Weight";
 const TString wgtvar = HEMVeto+"*1000"+basic_wgt;// //2018
 const TString wgtvar_1LepCR = HEMVetoElec+"*1000"+basic_wgt;// //2018
 

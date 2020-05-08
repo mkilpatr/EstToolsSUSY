@@ -3,19 +3,19 @@
 
 #include "../utils/EstHelper.hh"
 //#include "LowMET_binDefinitions.hh"
-#include "LowMET_binDefinitions_small.hh"
+#include "LowMET_binDefinitions_HM_ExtrapStudies.hh"
 
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_042720_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_042720_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_042720_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_050120_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_T2tt_corridor_2017_100119/";
 
 const TString outputdir = "LowMET";
 
-const TString datadir = "nanoaod_data_all_skim_042720_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_050120_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -162,6 +162,7 @@ std::map<TString, TString> cutMap = []{
 	{"met400",	"MET_pt < 400"},
 	{"metgeq400",	"MET_pt >= 400"},
 	{"met300",	"MET_pt < 300"},
+        {"NoExtrap",    "1 == 1"}
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -224,7 +225,7 @@ std::map<TString, TString> labelMap{
   {"met400",	  R"(#slash{E}_{T} < 400)"},
   {"metgeq400",	  R"(#slash{E}_{T} #geq 400)"},
   {"met300",	  R"(#slash{E}_{T} < 300)"},
-
+  {"NoExtrap",    R"()"},
 };
 
 std::map<TString, TString> plotLabelMap{
@@ -280,6 +281,7 @@ std::map<TString, TString> plotLabelMap{
   {"met400",	  R"(#slash{E}_{T} < 400)"},
   {"metgeq400",	  R"(#slash{E}_{T}#geq400)"},
   {"met300",	  R"(#slash{E}_{T} < 300)"},
+  {"NoExtrap",    R"()"},
 };
 
 
@@ -373,7 +375,7 @@ std::map<TString, TString> qcd1to1crCuts = []{
     return cuts;
 }();
 std::map<TString, TString> qcdcrlabels = lepcrlabels;
-std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
+//std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
 
 
 map<TString, Category> srCatMap(){

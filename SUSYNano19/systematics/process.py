@@ -39,6 +39,9 @@ else:
 
 os.system("mkdir -p %s" % args.jobdir)
 
+if "LowMET" in args.outdir: memory = 2000
+else:                       memory = 8000
+
 if args.config == "":
     print "Creating submission file: ",args.submit+".sh"
     script = open(args.submit+".sh","w")
@@ -96,7 +99,7 @@ if args.config == "":
     Error                   = logs/{sysname}.err
     Log                     = logs/{sysname}.log
     x509userproxy           = 
-    request_memory 	    = 8000
+    request_memory 	    = {memory}
     initialdir              = {outdir}
     Should_Transfer_Files   = YES
     transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
@@ -107,7 +110,7 @@ if args.config == "":
     
       condor_submit submit.cmd;
       rm submit.cmd""".format(
-    runscript=args.script, stype=args.submittype, macro=args.macro, sysname=args.sysname, workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location
+    runscript=args.script, stype=args.submittype, macro=args.macro, sysname=args.sysname, workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location, memory=memory
     ))
     jobscript.close()
     script.write("./{jobdir}/submit_{name}.sh\n".format(jobdir=args.jobdir, name=args.sysname))
@@ -172,7 +175,7 @@ Output                  = logs/{sysname}.out
 Error                   = logs/{sysname}.err
 Log                     = logs/{sysname}.log
 x509userproxy           = 
-request_memory 		= 8000
+request_memory 		= {memory}
 initialdir              = {outdir}
 Should_Transfer_Files   = YES
 transfer_input_files    = {workdir}/{macro},{workdir}/rootlogon.C
@@ -183,7 +186,7 @@ EOF
 
   condor_submit submit.cmd;
   rm submit.cmd""".format(
-        runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location
+        runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location, memory=memory
         ))
         jobscript.close()
         scriptSep.write("./{jobdir}/submit_{name}.sh\n".format(jobdir=args.jobdir, name=sysname[i]))

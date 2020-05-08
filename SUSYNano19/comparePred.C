@@ -36,9 +36,12 @@ void comparePred(TString bkg = "ttbarplusw"){
   };
 
   vector<TString> year = {"2016", "2017", 
-                          "2018", "2018_toppt", "2018_toppt_mgpow", "2018_toppt_new", "2018_topAK8Full", "2018_all", "2018_all_new", 
-                          "Run2", "Run2_toppt", "Run2_toppt_mgpow", "Run2_toppt_new", "Run2_topAK8Full", "Run2_all", "Run2_all_new", 
+                          "2018", "2018_toppt", "2018_toppt_mgpow", "2018_topAK8Full", "2018_all",
+                          "Run2", "Run2_toppt", "Run2_toppt_mgpow", "Run2_topAK8Full", "Run2_all",
                           "2016_devv5", "2017_devv5", "2018_devv5", "Run2_devv5"};
+  //vector<TString> year = {"2018", "2018_toppt_mgpow", "2018_topAK8Full", "2018_all",
+  //                        "Run2", "Run2_toppt_mgpow", "Run2_topAK8Full", "Run2_all"};
+                          
   for(auto &yr : year){
     TString predFile = "", predFile_noextrap = "", predFile_nosf = "", predFile_nosf_noextrap = "", systFile = "";
     if(!yr.Contains("devv5")){
@@ -58,10 +61,6 @@ void comparePred(TString bkg = "ttbarplusw"){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
-      } else if(yr == "2018_toppt_new"){
-        lumistr = "59.699489";  //2018
-        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_new.root";
-        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_new.root";
       } else if(yr == "2018_topAK8Full"){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_topAK8Full.root";
@@ -72,47 +71,31 @@ void comparePred(TString bkg = "ttbarplusw"){
         predFile_nosf_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_mgpow.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_mgpow.root";
-      } else if(yr == "2018_all_new"){
-        lumistr = "59.699489";  //2018
-        predFile_nosf = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
-        predFile_nosf_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
-        predFile = "2018/LowMET/sig/std_pred_trad_HM_2018_toppt_new.root";
-        predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap_toppt_new.root";
       } else if(yr.Contains("2018")){
         lumistr = "59.699489";  //2018
         predFile = "2018/LowMET/sig/std_pred_trad_HM_2018.root";
         predFile_noextrap = "2018/LowMET/sig/std_pred_trad_HM_2018_noextrap.root";
       } else if(yr.Contains("Run2_all")){
         lumistr = "137.00079";  //2018
-        predFile_nosf = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile_nosf = "LowMET/sig/std_pred_trad_HM.root";
         predFile_nosf_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
         predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
-        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_mgpow.root";
-      } else if(yr.Contains("Run2_all_new")){
-        lumistr = "137.00079";  //2018
-        predFile_nosf = "LowMET/sig/std_pred_trad_HM_Run2.root";
-        predFile_nosf_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
-        predFile = "LowMET/sig/std_pred_trad_HM_toppt_new.root";
-        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_new.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_toppt_mgpow_noextrap.root";
       } else if(yr.Contains("Run2_topAK8Full")){
         lumistr = "137.00079";  //2018
         predFile = "LowMET/sig/std_pred_trad_HM_topAK8Full.root";
-        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_topAK8Full.root";
-      } else if(yr.Contains("Run2_toppt_new")){
-        lumistr = "137.00079";  //2018
-        predFile = "LowMET/sig/std_pred_trad_HM_toppt_new.root";
-        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_new.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_topAK8Full_noextrap.root";
       } else if(yr.Contains("Run2_toppt_mgpow")){
         lumistr = "137.00079";  //2018
         predFile = "LowMET/sig/std_pred_trad_HM_toppt_mgpow.root";
-        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt_mgpow.root";
+        predFile_noextrap = "LowMET/sig/std_pred_trad_HM_toppt_mgpow_noextrap.root";
       } else if(yr.Contains("Run2_toppt")){
         lumistr = "137.00079";  //2018
         predFile = "LowMET/sig/std_pred_trad_HM_toppt.root";
         predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap_toppt.root";
       } else{
         lumistr = "137.00079";
-        predFile = "LowMET/sig/std_pred_trad_HM_Run2.root";
+        predFile = "LowMET/sig/std_pred_trad_HM.root";
         predFile_noextrap = "LowMET/sig/std_pred_trad_HM_noextrap.root";
       }
     } else{
@@ -135,7 +118,9 @@ void comparePred(TString bkg = "ttbarplusw"){
       }
     }
 
-    if(!yr.Contains("2016")) systFile = "uncertainties_LowMET_031320/Total.root";
+    if(yr.Contains("toppt_mgpow")) systFile = "uncertainties_LowMET_050220_retry/Total_toppt_mgpow.root";
+    else if(yr.Contains("topAK8Full")) systFile = "uncertainties_LowMET_050220_retry/Total_TopAK8Full.root";
+    else if(!yr.Contains("2016")) systFile = "uncertainties_LowMET_050220_retry/Total.root";
     else                     systFile = "uncertainties_LowMET_2016_031220/Total.root";
 
     TFile *fpred = TFile::Open(predFile);
@@ -159,8 +144,8 @@ void comparePred(TString bkg = "ttbarplusw"){
       y[i] = pred->GetBinContent(i+1);
       exl[i] = 0.5;
       exh[i] = 0.5;
-      eyl[i] = (1-syst_dn->GetBinContent(i+19))*pred->GetBinContent(i+1);
-      eyh[i] = (syst_up->GetBinContent(i+19)-1)*pred->GetBinContent(i+1);
+      eyl[i] = (1-syst_dn->GetBinContent(i+20))*pred->GetBinContent(i+1);
+      eyh[i] = (syst_up->GetBinContent(i+20)-1)*pred->GetBinContent(i+1);
     }
     TGraphAsymmErrors* unc = new TGraphAsymmErrors(pred->GetNbinsX(), x, y, exl, exh, eyl, eyh);
 
@@ -172,6 +157,11 @@ void comparePred(TString bkg = "ttbarplusw"){
     TString legName = yr;
     legName.ReplaceAll("_devv5","");
     legName.ReplaceAll("_all","");
+    legName.ReplaceAll("_topAK8Full", " Top AK8 Full");
+    legName.ReplaceAll("_toppt", " Top p_{T}");
+    legName.ReplaceAll("_mgpow", " + Pow/MG");
+
+    TString outputBase = "ExtrapolationComparison_" + yr;
     if(predFile_nosf != ""){
       TFile *fpred_nosf = TFile::Open(predFile_nosf);
       TFile *fpred_nosf_noextrap = TFile::Open(predFile_nosf_noextrap);
@@ -198,7 +188,6 @@ void comparePred(TString bkg = "ttbarplusw"){
       leg->SetTextSize(0.03);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
       TCanvas* c = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leg, "N_{pred}/N_{other}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
-      TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
       c->Print("LLB/ANQuestion/" + outputBase +".png");
@@ -207,7 +196,7 @@ void comparePred(TString bkg = "ttbarplusw"){
       leglog->SetTextSize(0.03);
       leglog->SetY1NDC(leglog->GetY2NDC() - 0.2);
       TCanvas* clog = drawCompAndRatio({pred, pred_noextrap, pred_nosf, pred_nosf_noextrap}, {hratio_pred_extrap, hratio_pred_nosf_noextrap, hratio_pred_nosf}, leglog, "N_{pred}/N_{other}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
-      outputBase = "ExtrapolationComparison_" + yr + "_log";
+      outputBase += "_log";
       clog->SetTitle(outputBase);
       clog->SetCanvasSize(800, 600);
       clog->Print("LLB/ANQuestion/" + outputBase +".png");
@@ -218,7 +207,6 @@ void comparePred(TString bkg = "ttbarplusw"){
       leg->SetTextSize(0.03);
       leg->SetY1NDC(leg->GetY2NDC() - 0.2);
       TCanvas* c = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leg, "N_{pred}/N_{pred}^{noextrap}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc);
-      TString outputBase = "ExtrapolationComparison_" + yr;
       c->SetTitle(outputBase);
       c->SetCanvasSize(800, 600);
       c->Print("LLB/ANQuestion/" + outputBase +".png");
@@ -229,11 +217,37 @@ void comparePred(TString bkg = "ttbarplusw"){
       leglog->SetTextSize(0.03);
       leglog->SetY1NDC(leglog->GetY2NDC() - 0.2);
       TCanvas* clog = drawCompAndRatio({pred, pred_noextrap}, {hratio_pred}, leglog, "N_{pred}/N_{pred}^{noextrap}", 0.7, 4.001, true, 0.01, -1., false, unc, true);
-      outputBase = "ExtrapolationComparison_" + yr + "_log";
+      outputBase += "_log";
       clog->SetTitle(outputBase);
       clog->SetCanvasSize(800, 600);
       clog->Print("LLB/ANQuestion/" + outputBase +".png");
 
+      TH1* pull;
+      TF1* pull_gaus_fit;
+      TF1* pull_rms_fit;
+      pull = getPullHist(pred_noextrap, unc);
+      pull->Fit("gaus");
+      pull_gaus_fit = (TF1*)pull->GetFunction("gaus");
+      
+
+      //pull_rms_fit->SetParameters(500, pull->GetMean(), pull->GetRMS());
+      //pull_rms_fit->SetParNames("Constant", "Mean_value", "RMS");
+      //pull_rms_fit = (TF1*)pull->GetFunction("gaus");
+
+      prepHists({pull}, false, false, false, {kRed});
+
+      double mean  = pull->GetMean();
+      double StdDev = pull->GetStdDev();
+      //cout << "Made it here" << endl;
+      TString fitString = "#splitline{" + legName + "}{#splitline{Mean = " + to_string(mean) + "}{StdDev = " + to_string(StdDev) + "}}";
+      std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC(fitString, 0.2, 0.72); };
+      //cout << "Made it here" << endl;
+      auto c_pull = drawCompMatt({pull}, 0, -1., &plotextra);
+      cout << "Made it here" << endl;
+      c_pull->SetCanvasSize(800, 600);
+      gStyle->SetOptStat(0);
+      TString basename = "LLB/ANQuestion/ExtrapolationComparison_" + yr + "_pull";
+      c_pull->Print(basename+".png");
     }
   }
 }

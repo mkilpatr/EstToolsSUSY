@@ -127,9 +127,9 @@ void BkgPred_LowMET_LL(){
     output->Close();
   };
 
-  plot(altpred, altgraphs, mc, lepcr, "std_pred_trad_topAK8Full");
-  plot(altpred_low, altgraphs_low, mc_low, lepcr_low, "std_pred_trad_LM_topAK8Full", "Low");
-  plot(altpred_high, altgraphs_high, mc_high, lepcr_high, "std_pred_trad_HM_topAK8Full", "High");
+  plot(altpred, altgraphs, mc, lepcr, "std_pred_trad");
+  plot(altpred_low, altgraphs_low, mc_low, lepcr_low, "std_pred_trad_LM", "Low");
+  plot(altpred_high, altgraphs_high, mc_high, lepcr_high, "std_pred_trad_HM", "High");
 
 
   cout << "\n\n Traditional \n";

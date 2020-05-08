@@ -140,14 +140,16 @@ public:
     return unc;
   }
 
-  static std::pair<std::vector<Quantity>, std::vector<Quantity>> combineUpDownSepUncs(const std::vector<Quantity> &up, const std::vector<Quantity> &down){
+  static std::pair<std::vector<Quantity>, std::vector<Quantity>> combineUpDownSepUncs(const std::vector<Quantity> &up, const std::vector<Quantity> &down = std::vector<Quantity>()){
     // input need to be relative unc: "up/nominal", "down/nominal"
     assert(up.size() == down.size());
     std::vector<Quantity> unc_up;
     std::vector<Quantity> unc_down;
     for (unsigned i=0; i<up.size(); ++i){
+      double sign = up[i].value - 1;
       double val_up = up[i].value;
-      double val_down = down[i].value;
+      if(up[i].value < 1) sign = -1*(1 - up[i].value);
+      double val_down = down.size() == 0 ? (1 - sign) :  down[i].value;
       unc_up.emplace_back(val_up, 0); 
       unc_down.emplace_back(val_down, 0); 
     }

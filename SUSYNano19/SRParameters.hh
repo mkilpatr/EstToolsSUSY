@@ -7,14 +7,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_042720_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_042720_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_042720_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_050120_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 const TString inputdir_sig  = inputdir_2017;
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_042720_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_050120_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -28,7 +28,7 @@ const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + "
 const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topptWeight";
+const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";
 const TString wgtvar = lumistr_2016+"*1000*PrefireWeight"+basic_wgt;// //2016
 const TString wgtvar_2017 = lumistr_2017+"*1000*PrefireWeight"+basic_wgt;// //2017
 const TString wgtvar_2018 = HEMVeto+"*1000"+basic_wgt;// //2018
@@ -157,6 +157,8 @@ std::map<TString, TString> cutMap = []{
 	{"htlt1000",    "Stop0l_HT<1000"},	
 	{"htgt1000",    "Stop0l_HT>=1000"},	
 	{"ht1000to1500","Stop0l_HT>=1000 && Stop0l_HT<1500"},	
+        {"ht1000to1300","Stop0l_HT>=1000 && Stop0l_HT<1300"},
+        {"ht1300to1500","Stop0l_HT>=1300 && Stop0l_HT<1500"},
 	{"htgt1500",    "Stop0l_HT>=1500"},	
 	{"htlt1300",    "Stop0l_HT<1300"},	
 	{"htgt1300",    "Stop0l_HT>=1300"},	
@@ -210,6 +212,8 @@ std::map<TString, TString> labelMap{
   {"htlt1000",    R"($\Ht<1000$)"},	
   {"htgt1000",    R"($\Ht\geq1000$)"},	
   {"ht1000to1500",R"($1000\leq\Ht<1500$)"},	
+  {"ht1000to1300",R"($1000\leq\Ht<1300$)"},	
+  {"ht1300to1500",R"($1300\leq\Ht<1500$)"},	
   {"htgt1500",    R"($\Ht\geq1500$)"},	
   {"htlt1300",    R"($\Ht<1300$)"},	
   {"htgt1300",    R"($\Ht\geq1300$)"},	
@@ -260,6 +264,8 @@ std::map<TString, TString> plotLabelMap{
   {"htlt1000",    R"(H_{T}<1000)"},	
   {"htgt1000",    R"(H_{T} #geq 1000)"},	
   {"ht1000to1500",R"(1000#leqH_{T}<1500)"},	
+  {"ht1000to1300",R"(1000#leqH_{T}<1300)"},	
+  {"ht1300to1500",R"(1300#leqH_{T}<1500)"},	
   {"htgt1500",    R"(H_{T}#geq1500)"},	
   {"htlt1300",    R"(H_{T}<1300)"},	
   {"htgt1300",    R"(H_{T}#geq1300)"},	
