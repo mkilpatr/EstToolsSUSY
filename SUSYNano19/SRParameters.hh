@@ -7,7 +7,7 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_050120_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
 const TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
 const TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 const TString inputdir_sig  = inputdir_2017;
@@ -28,7 +28,7 @@ const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + "
 const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
 // lumi and base weight
-const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight";
+const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topptWeight";
 const TString wgtvar = lumistr_2016+"*1000*PrefireWeight"+basic_wgt;// //2016
 const TString wgtvar_2017 = lumistr_2017+"*1000*PrefireWeight"+basic_wgt;// //2017
 const TString wgtvar_2018 = HEMVeto+"*1000"+basic_wgt;// //2018

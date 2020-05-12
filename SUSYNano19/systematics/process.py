@@ -39,8 +39,9 @@ else:
 
 os.system("mkdir -p %s" % args.jobdir)
 
-if "LowMET" in args.outdir: memory = 2000
-else:                       memory = 8000
+#if "LowMET" in args.outdir: memory = 2000
+#else:                       memory = 8000
+memory = 8000
 
 if args.config == "":
     print "Creating submission file: ",args.submit+".sh"

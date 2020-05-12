@@ -258,7 +258,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr)
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist")
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
 
@@ -287,9 +287,9 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
         h->SetMinimum(logymin);
         gPad->SetLogy(1);
       }
-      h->Draw("hist");
+      h->Draw(drawType);
     }
-    h->Draw("histsame");
+    h->Draw(drawType + "same");
 #ifdef DEBUG_
     cout << "-->drawing drawComp: "<< h->GetName() << endl;
 #endif

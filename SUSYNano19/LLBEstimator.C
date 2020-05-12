@@ -1,7 +1,7 @@
 #include "../EstMethods/LLBEstimator.hh"
 
-//#include "SRParameters.hh"
-#include "LowMET_Parameters.hh"
+#include "SRParameters.hh"
+//#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -780,12 +780,10 @@ void plot1LepInclusive(){
   TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
   config.sel = baseline;
 
-  //config.categories.clear();
-  //config.catMaps.clear();
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "lepcr_inclusive_v6_ptbWeight_041420";
+  TString region = "lepcr_inclusive_v6_051120";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "png";
   z.setConfig(config);
@@ -803,9 +801,10 @@ void plot1LepInclusive(){
   map<TString, BinInfo> varDict {
 	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]", 16, 0, 800)},
+	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]", 16, 0, 800)},
         //{"ptb12",       BinInfo("Stop0l_Ptb", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
         //{"ptlepbmet",     BinInfo("Stop0l_PtLepMetB", "p_{T}(l,b,#slash{E}_{T}) [GeV]", 32, 0, 800)},
+	{"nivf",         BinInfo("Stop0l_nSoftb", "N_{SV}", 5, -0.5, 4.5)},
 	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
 	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
 	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
@@ -818,41 +817,41 @@ void plot1LepInclusive(){
   std::function<void(TCanvas*)> plotextra;
   for (auto &var : varDict){
     z.resetSelection();
-    //z.setSelection(LLCR_LM, "llcr_lm", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR LM", 0.2, 0.72); };
-    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR HM", 0.2, 0.72); };
-    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("Run2 LLCR HM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
 
     lumistr = lumistr_2016;
-    //z.setSelection(LLCR_LM, "llcr_lm_2016", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
-    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm_2016", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
     z.setSelection(LLCR_HM, "llcr_hm_2016", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2016 LLCR HM", 0.2, 0.72); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra, true));
+    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra));
 
     lumistr = lumistr_2017;
-    //z.setSelection(LLCR_LM, "llcr_lm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
-    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
     z.setSelection(LLCR_HM, "llcr_hm_2017", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2017 LLCR HM", 0.2, 0.72); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra, true));
+    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra));
 
     lumistr = lumistr_2018PostHEM;
-    //z.setSelection(LLCR_LM, "llcr_lm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR LM", 0.2, 0.72); };
-    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_LM, "llcr_lm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR LM", 0.2, 0.72); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
     z.setSelection(LLCR_HM, "llcr_hm_2018", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("2018 LLCR HM", 0.2, 0.72); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra, true));
+    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
   }
   
-  TFile *output = new TFile(z.config.outputdir+"/LostLepton_HM_topAK8_weight.root", "RECREATE");
-  for (auto *h : ratiohist) h->Write();
-  output->Close();
+  //TFile *output = new TFile(z.config.outputdir+"/LostLepton_HM_topAK8_weight.root", "RECREATE");
+  //for (auto *h : ratiohist) h->Write();
+  //output->Close();
   
 }
 

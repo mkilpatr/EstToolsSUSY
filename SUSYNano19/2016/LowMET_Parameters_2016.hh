@@ -7,8 +7,8 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_050120_devv6_limits/";
-const TString datadir = "nanoaod_all_skim_2016_050120_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
+const TString datadir = "nanoaod_all_skim_2016_051120_devv6_limits/";
 const TString outputdir = "LowMET";
 
 const TString lumistr = "35.815165";
@@ -236,7 +236,7 @@ std::map<TString, TString> qcd1to1crCuts = []{
     return cuts;
 }();
 std::map<TString, TString> qcdcrlabels = lepcrlabels;
-std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
+//std::map<TString, std::vector<int>> qcdcrMETbins = srMETbins;
 
 
 map<TString, Category> srCatMap(){

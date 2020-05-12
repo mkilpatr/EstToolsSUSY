@@ -10,7 +10,7 @@ namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_050120_devv6_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
 TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
 TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 TString outputdir() {return "syst/"+sys_name;}
@@ -27,7 +27,8 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 // systematics weights
 TString sdmvawgt = "Stop0l_DeepAK8_SFWeight"; // top/W
 TString restopwgt = "Stop0l_ResTopWeight";
-TString topptwgt = "1";
+TString topptwgt = "Stop0l_topptWeight";
+TString lhewgt = "1";
 TString softbwgt = "SoftBSF";
 
 TString puwgt = "puWeight"; // PU
@@ -73,10 +74,10 @@ TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" 
 TString isrwgtvar()     { return isrwgt; }
 TString ttbarxsecvar()  { return ttbarxsec; }
 TString wjetsxsecvar()  { return wjetsxsec; }
-TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
-TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
-TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
+TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+lhewgt; }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+lhewgt; }
+TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+lhewgt; }
+TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+lhewgt; }
 
 // photon trigger eff.
 TString phowgt() { return wgtvar(); }
