@@ -4,14 +4,14 @@
 #include "../../utils/EstHelper.hh"
 //#include "../binDefinitions.hh"
 //#include "../binDefinitions_CR.hh"
-#include "../LowMET_binDefinitions.hh"
+#include "../LowMET_binDefinitions_syst_small.hh"
 
 namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-//TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_051220_devv6_limits_AK8SF/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
+//TString inputdir_2016 = "nanoaod_all_skim_2016_051220_devv6_limits_AK8SF/";
 TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
 TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 TString outputdir() {return "syst/"+sys_name;}
@@ -86,7 +86,7 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "LowMET2016";
+TString region = "LowMET2016and2017";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -1186,7 +1186,7 @@ BaseConfig lepConfig2016and2017(){
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
     config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
+    config.addSample("singlelep",        "Data",          datadir+"met_2016to2017",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
     config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*"+isrwgtvar()+"*"+ttbarxsecvar(),      datasel() + revert_vetoes());
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt()+"*"+wjetsxsecvar(),      datasel() + revert_vetoes());
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
