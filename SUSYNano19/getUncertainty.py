@@ -542,28 +542,22 @@ def calcAbsUnc():
                 absUnc[bin][type][1]                += tempUnc_up
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 
-                if "hm" in bin: 
-                    print("{0} {1} {2}".format(sample, bin, type))
-
                 if bin in mergedbins and sample in processMap:
                     srunits, crunits  = parseBinMap(sample, binMaps[processMap[sample]][bin], yields)
+                elif sample not in ['ttZ', 'diboson']:
+                    srunits, crunits = bin, binMaps[processMap[sample]][bin]
 
-                    for bkg in CRprocMap[processMap[sample]]:
+                if sample not in ['ttZ', 'diboson']:
+                    for bkg in CRyieldMap[processMap[sample]]:
                         for sr, cr in zip(srunits, crunits):
-                            print(cr)
-                            print(bkg)
-                            print(sample)
-                            print(type)
-                            print(processMap[sample])
-                            print(CRyieldMap[processMap[sample]][processMap[sample]])
                             if cr not in relUnc[type]: continue
                             if bkg not in relUnc[type][cr]: continue
-                            print(yields_dc[CRyieldMap[processMap[sample]][sample]][cr][0])
-                            tempUnc_down, tempUnc_up = relUnc[type][cr][bkg][0] * yields_dc[CRyieldMap[processMap[sample]][sample]][cr][0], relUnc[type][cr][bkg][1] * yields_dc[bkg][cr]
+                            tempUnc_down, tempUnc_up = relUnc[type][cr][bkg][0] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0], relUnc[type][cr][bkg][1] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0]
                             absUnc[bin][type][0]                += tempUnc_down
                             absUnc_pieces[sample][bin][type][0] += tempUnc_down
                             absUnc[bin][type][1]                += tempUnc_up
                             absUnc_pieces[sample][bin][type][1] += tempUnc_up
+
 
     for bin in absUnc:
         # Add different types of unc. in quadrature
@@ -594,7 +588,7 @@ def writeFullUnc(pred_file):
         for sample in all_samples:
             val = yields[bin][sample]
             e_low, e_up = fullUnc_pieces[sample][bin]
-            print "%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low)
+            #print "%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low)
             h_pieces[sample].SetPointEYlow(ibin, e_low)
             h_pieces[sample].SetPointEYhigh(ibin, e_up)
             allVals[bin][sample] = (val,e_low,e_up)  
