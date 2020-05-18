@@ -1780,5 +1780,6 @@
     "bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt300to400": "38",
     "bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt400to500": "39",
     "bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt500toinf": "40"
-  }
+  },
+  "yieldsMap": {}
 }

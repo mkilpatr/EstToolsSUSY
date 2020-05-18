@@ -14,6 +14,7 @@ void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString o
   RATIOPLOT_XLABEL_OFFSET = 0.00;
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
+  if(inputFile.Contains("2016")) lumistr = "35.815165";
 
   vector<TString> bkgs = {"httz_stack_2", "hdiboson_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
@@ -74,11 +75,8 @@ void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString o
     hsigs.push_back(h);
   }
   TH1* pull;
-  TF1* pull_fit;
   if(hdata){
     pull = getPullHist(hdata, unc);
-    pull->Fit("gaus");
-    pull_fit = (TF1*)pull->GetFunction("gaus");
   }
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
@@ -149,15 +147,15 @@ void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString o
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "_" + region;
     basename.ReplaceAll("nb[0-9]", "");
-    c->Print(basename+".pdf");
+    c->Print(basename+".png");
     c->Print(basename +".C");
   }
 
   if(hdata){
-    double mean  = pull_fit->GetParameter(1);
-    double sigma = pull_fit->GetParameter(2);
+    double mean  = pull->GetMean();
+    double StdDev = pull->GetStdDev();
     //cout << "Made it here" << endl;
-    TString fitString = "#splitline{Mean = " + to_string(mean) + "}{Sigma = " + to_string(sigma) + "}";
+    TString fitString = "#splitline{Mean = " + to_string(mean) + "}{StdDev = " + to_string(StdDev) + "}";
     std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC(fitString, 0.2, 0.72); };
     //cout << "Made it here" << endl;
     auto c_pull = drawCompMatt({pull}, 0, -1., &plotextra);
@@ -165,7 +163,7 @@ void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString o
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     TString basename = outputName + "_pull";
-    c_pull->Print(basename+".pdf");
+    c_pull->Print(basename+".png");
     c_pull->Print(basename +".C");
   }
 

@@ -164,6 +164,12 @@ public:
         ++nRunning;
         const auto & cat = catMaps.at(cat_name);
         auto cut = config.sel + " && " + cat.cut;
+        if(sname.Contains("singlelep")){
+          cut.ReplaceAll("_JESUp", "");
+          cut.ReplaceAll("_JESDown", "");
+          cut.ReplaceAll("_METUnClustUp", "");
+          cut.ReplaceAll("_METUnClustDown", "");
+        }
         auto v = getYieldVectorWrapper(sample, cut + sample.sel, cat.bin, nBootstrapping);
         if (v.size()<srCatMaps.at(cat_name).bin.nbins){
           // !! FIXME : if cr bin numbers < sr: repeat the last bin

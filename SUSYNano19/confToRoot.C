@@ -134,9 +134,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   bin >> j_bin;
 
   string binName = "";
-       if(TString(indir_).Contains("sb"))      binName = "binNum_SUSYNano";
+       if(TString(indir_).Contains("SR"))      binName = "binNum_SUSYNano";
   else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
-  else if(TString(indir_).Contains("cb"))      binName = "binNum_SUSYNano_lepcr";
+  else if(TString(indir_).Contains("CR"))      binName = "binNum_SUSYNano_lepcr";
   else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
 
@@ -164,9 +164,12 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
           hist_down.at(binnum) = 1.;
         }
       }
-      if(j_bin[binName].size() > 100){
+      if(j_bin[binName].size() > 120){
         hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Search Region; Systematics " + type, nullptr));
         hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Search Region; Systematics " + type, nullptr));
+      } else if(j_bin[binName].size() > 100){
+        hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Control Region; Systematics " + type, nullptr));
+        hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Control Region; Systematics " + type, nullptr));
       } else if(TString(indir_).Contains("nb12")){
         hUp.push_back(convertToHist(hist_up, bkg + "_Up", ";Search Region; Systematics " + type, nullptr));
         hDown.push_back(convertToHist(hist_down, bkg + "_Down", ";Search Region; Systematics " + type, nullptr));
@@ -244,9 +247,12 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   TString totalName = "Total";
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
-  if(j_bin[binName].size() > 100){
+  if(j_bin[binName].size() > 120){
     hUp = convertToHist(hist_up_total, "Up", ";Search Region; Systematics", nullptr);
     hDown = convertToHist(hist_down_total, "Down", ";Search Region; Systematics", nullptr);
+  } else if(j_bin[binName].size() > 100){
+    hUp = convertToHist(hist_up_total, "Up", ";Control Region; Systematics", nullptr);
+    hDown = convertToHist(hist_down_total, "Down", ";Control Region; Systematics", nullptr);
   } else{
     hUp = convertToHist(hist_up_total, "Up", ";Validation Region; Systematics", nullptr);
     hDown = convertToHist(hist_down_total, "Down", ";Validation Region; Systematics", nullptr);

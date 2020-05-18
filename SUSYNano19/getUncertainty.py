@@ -36,6 +36,31 @@ graph_names=('httbar_stack_5', 'hznunu_stack_4', 'httz_stack_2', 'hdiboson_stack
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'hpred'
+json_bkgPred = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/combine_bkgPred.json'
+
+processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
+
+CRprocMap  = {
+    "qcdcr" : { 'qcd', 'ttbarplusw', 'znunu', 'Rare' },
+    "phocr" : { 'gjets', 'otherbkgs' },
+    "lepcr" : { 'ttbarplusw' }
+}
+
+CRyieldMap  = {
+    "qcdcr" : {
+        'qcd'        : 'qcdcr_qcd',
+        'ttbarplusw' : 'qcdcr_ttbarplusw',
+        'znunu'      : 'qcdcr_znunu',
+        'Rare'       : 'qcdcr_Rare',
+    },
+    "lepcr": {
+        'ttbarplusw' : 'lepcr_ttbarplusw',
+    },
+    "phocr" :{
+        'gjets'      : 'phocr_gjets',
+        'otherbkgs'  : 'phocr_back',
+    }
+}
 
 # ordered bin list
 binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550', 
@@ -273,6 +298,43 @@ labelMap = {
     'MET': r'',
     }
 
+# ------ process json file ------
+def json_load_byteified(file_handle):
+#     https://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-ones-from-json-in-python/13105359#13105359
+    import json
+    return _byteify(
+        json.load(file_handle, object_hook=_byteify),
+        ignore_dicts=True
+    )
+def _byteify(data, ignore_dicts = False):
+    # if this is a unicode string, return its string representation
+    if isinstance(data, unicode):
+        return data.encode('utf-8')
+    # if this is a list of values, return list of byteified values
+    if isinstance(data, list):
+        return [ _byteify(item, ignore_dicts=True) for item in data ]
+    # if this is a dictionary, return dictionary of byteified keys and values
+    # but only if we haven't already byteified it
+    if isinstance(data, dict) and not ignore_dicts:
+        return {
+            _byteify(key, ignore_dicts=True): _byteify(value, ignore_dicts=True)
+            for key, value in data.iteritems()
+        }
+    # if it's anything else, return it in its original form
+    return data
+
+with open(json_bkgPred) as jf:
+    j_bkg = json_load_byteified(jf)
+    binMaps = j_bkg['binMaps']
+    yields_dc  = j_bkg['yieldsMap']
+    binlist = j_bkg['binlist']
+    binnum  = j_bkg['binNum']
+    crbinlist = {
+        'lepcr': yields_dc['lepcr_data'].keys(),
+        'phocr': yields_dc['phocr_data'].keys(),
+        'qcdcr': yields_dc['qcdcr_data'].keys(),
+    }
+
 def addAsymm(e, asymm):
     print e, asymm
     e_low = math.sqrt(e[0]*e[0] + asymm[0]*asymm[0])
@@ -319,6 +381,21 @@ def sumUnc(unc_list):
     '''Add uncertainties in quadrature.'''
     return math.sqrt(sum(err*err for err in unc_list))
 
+def parseBinMap(process, cr_description, yields_dict):
+    values = []
+    params = []
+    sumE2 = 0
+    crunits = []
+    srunits = []
+    for entry in cr_description.replace(' ','').split('+'):
+        sr, cr = entry.split('*')
+        if '<' in cr: sr, cr = cr, sr
+        sr = sr.strip('<>')
+        cr = cr.strip('()')
+        crunits.append(cr)
+        srunits.append(sr)
+        
+    return srunits, crunits
 
 # relUnc[type][bin][sample] : percentage syst. uncertainty of each 'type' per 'bin' per 'sample'
 # absUnc[bin][type] : absolute uncertainty per 'bin' of each 'type'
@@ -351,9 +428,9 @@ def readRelUnc(config_path):
                     bin, type_, sample, value = line.split()
                 except ValueError:
                     continue
-                if bin not in binlist or sample not in all_samples:
-                    # ignore CR syst., e.g., "bin_onelepcr_250_5_1_0_0"
-                    continue
+                #if bin not in binlist or sample not in all_samples:
+                #    # ignore CR syst., e.g., "bin_onelepcr_250_5_1_0_0"
+                #    continue
 		if "Up" in type_:
                     isUp = True
                     isDown = False
@@ -431,11 +508,11 @@ def readYields(pred_file):
             yields_total[bin]  += y
             if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
-    #h = f.Get('data')
-    #for ibin in xrange(0, h.GetNbinsX()):
+    h = f.Get('hdata')
+    for ibin in xrange(0, h.GetNbinsX()):
             bin = binlist[ibin]
-            #yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
-            yields_data[bin] = (1, 1)
+            yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
+            #yields_data[bin] = (1, 1)
     # get total pred (w/ asymmetric errors)
     h = f.Get(pred_total_name)
     for ibin in xrange(0, h.GetNbinsX()):
@@ -450,6 +527,7 @@ def calcAbsUnc():
     For uncertainties of the same type, add linearly for each bin.
     For uncertainties of different types, add in quadrature for each bin.
     '''
+    mergedbins = [bin for bin in binlist if '*' in binMaps['lepcr'][bin]]
     absUnc = {bin:{} for bin in binlist}
     for sample in all_samples: absUnc_pieces[sample] = {bin:{} for bin in binlist}
     for bin in binlist:
@@ -463,7 +541,30 @@ def calcAbsUnc():
                 absUnc_pieces[sample][bin][type][0] += tempUnc_down
                 absUnc[bin][type][1]                += tempUnc_up
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
-		
+
+                if "hm" in bin: 
+                    print("{0} {1} {2}".format(sample, bin, type))
+
+                if bin in mergedbins and sample in processMap:
+                    srunits, crunits  = parseBinMap(sample, binMaps[processMap[sample]][bin], yields)
+
+                    for bkg in CRprocMap[processMap[sample]]:
+                        for sr, cr in zip(srunits, crunits):
+                            print(cr)
+                            print(bkg)
+                            print(sample)
+                            print(type)
+                            print(processMap[sample])
+                            print(CRyieldMap[processMap[sample]][processMap[sample]])
+                            if cr not in relUnc[type]: continue
+                            if bkg not in relUnc[type][cr]: continue
+                            print(yields_dc[CRyieldMap[processMap[sample]][sample]][cr][0])
+                            tempUnc_down, tempUnc_up = relUnc[type][cr][bkg][0] * yields_dc[CRyieldMap[processMap[sample]][sample]][cr][0], relUnc[type][cr][bkg][1] * yields_dc[bkg][cr]
+                            absUnc[bin][type][0]                += tempUnc_down
+                            absUnc_pieces[sample][bin][type][0] += tempUnc_down
+                            absUnc[bin][type][1]                += tempUnc_up
+                            absUnc_pieces[sample][bin][type][1] += tempUnc_up
+
     for bin in absUnc:
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
@@ -488,11 +589,12 @@ def writeFullUnc(pred_file):
         e_low, e_up = fullUnc[bin]
         h.SetPointEYlow(ibin, e_low)
         h.SetPointEYhigh(ibin, e_up)
-        print "%30s %10.2f +%8.2f -%8.2f" % (bin, val, e_up, e_low)
+        print "%30s %10.4f +%8.4f -%8.4f" % (bin, val, e_up, e_low)
         allVals[bin] = {'bkg':(val,e_low,e_up)}
         for sample in all_samples:
             val = yields[bin][sample]
             e_low, e_up = fullUnc_pieces[sample][bin]
+            print "%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low)
             h_pieces[sample].SetPointEYlow(ibin, e_low)
             h_pieces[sample].SetPointEYhigh(ibin, e_up)
             allVals[bin][sample] = (val,e_low,e_up)  

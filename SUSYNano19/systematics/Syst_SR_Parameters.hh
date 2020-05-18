@@ -2,15 +2,16 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../../utils/EstHelper.hh"
-#include "../binDefinitions.hh"
+//#include "../binDefinitions.hh"
 //#include "../binDefinitions_CR.hh"
-//#include "../LowMET_binDefinitions.hh"
+#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
+//TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_051220_devv6_limits_AK8SF/";
 TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
 TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
 TString outputdir() {return "syst/"+sys_name;}
@@ -85,7 +86,7 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "SR2016";
+TString region = "LowMET2016";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -145,10 +146,12 @@ TString sigwgt() {return lepvetowgt();}
 
 // triggers
 TString trigSR() { return " && Pass_trigger_MET"+jes_postfix;}
+TString trigSRData() { return " && Pass_trigger_MET";}
 TString trigPhoCR = " && passtrigphoOR && origmet<200";
 TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 TString datasel() { return " && Pass_EventFilter"+jes_postfix+" && Pass_HT"+jes_postfix+" && Pass_JetID"+jes_postfix+" && Pass_CaloMETRatio"+jes_postfix+" && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30"+jes_postfix+")) && Pass_LHETTbar"+jes_postfix; }
+TString dataselData() { return " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30)) && Pass_LHETTbar"; }
 TString dphi_invert() {return " && Pass_dPhiQCD"+jes_postfix;}
 //for search and control
 TString dphi_cut_srcr() { return  " && ( ((Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETLowDM"+jes_postfix+") || (!(Stop0l_Mtb"+jes_postfix+"<175 && Stop0l_nTop"+jes_postfix+"==0 && Stop0l_nW"+jes_postfix+"==0 && Stop0l_nResolved"+jes_postfix+"==0) && Pass_dPhiMETHighDM"+jes_postfix+") )"; } // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -1087,7 +1090,7 @@ BaseConfig lepConfig(){
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
     config.addSample("ttW-2016",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("singlelep",        "Data",          datadir+"met",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
     config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*"+isrwgtvar()+"*"+ttbarxsecvar(),      datasel() + revert_vetoes());
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt()+"*"+wjetsxsecvar(),      datasel() + revert_vetoes());
     config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
@@ -1184,7 +1187,7 @@ BaseConfig lepConfig2016(){
     config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Data",          inputdir_2016+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("singlelep",        "Data",          inputdir_2016+"met",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
     config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt()+"*"+ttbarxsecvar()+"*"+isrwgtvar(),      datasel() + revert_vetoes());
     config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",           lepselwgt()+"*"+wjetsxsecvar(),      datasel() + revert_vetoes());
     config.addSample("tW",          "tW",            inputdir_2016+"tW",              lepselwgt(),      datasel() + revert_vetoes());
@@ -1237,7 +1240,7 @@ BaseConfig lepConfig2017(){
     config.addSample("ttW",         "ttW",           inputdir_2017+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",     "Data",          inputdir_2017+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("singlelep",     "Data",          inputdir_2017+"met",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
     config.addSample("ttbar",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017()+"*"+ttbarxsecvar(),      datasel() + revert_vetoes());
     config.addSample("wjets",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017()+"*"+wjetsxsecvar(),      datasel() + revert_vetoes());
     config.addSample("tW",            "tW",            inputdir_2017+"tW",              lepselwgt_2017(),      datasel() + revert_vetoes());
@@ -1290,7 +1293,7 @@ BaseConfig lepConfig2018(){
     config.addSample("ttW",         "ttW",           inputdir_2018+"ttW",             onelepcrwgt(), datasel() + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel() + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",     "Data",          inputdir_2018+"met",                   "1.0",          datasel() + trigSR() + revert_vetoes());
+    config.addSample("singlelep",     "Data",          inputdir_2018+"met",                   "1.0",          dataselData() + trigSRData() + revert_vetoes());
     config.addSample("ttbar",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018()+"*"+ttbarxsecvar(),      datasel() + revert_vetoes());
     config.addSample("wjets",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018()+"*"+wjetsxsecvar(),      datasel() + revert_vetoes());
     config.addSample("tW",            "tW",            inputdir_2018+"tW",              lepselwgt_2018(),      datasel() + revert_vetoes());

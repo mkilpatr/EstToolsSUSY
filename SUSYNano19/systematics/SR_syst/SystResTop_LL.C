@@ -66,7 +66,7 @@ void SystResTop_LL(){
 
   // restop up
   {
-    sys_name = "eff_restop_Up";
+    sys_name = "eff_restoptag_Up";
     restopwgt = "(Stop0l_ResTopWeight_Up)";
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
@@ -75,7 +75,7 @@ void SystResTop_LL(){
 
   // restop down
   {
-    sys_name = "eff_restop_Down";
+    sys_name = "eff_restoptag_Down";
     restopwgt = "(Stop0l_ResTopWeight_Dn)";
     cout << "\n\n ====== Using weights " << sdmvawgt << " and " << sdmvawgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
