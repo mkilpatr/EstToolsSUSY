@@ -29,6 +29,7 @@ uncfiles=[
  uncdir + 'values_unc_diboson.conf'
  ]
 
+pred_file_lep = "ttbarplus_pred.root"
 all_bin_unc_file = uncdir + 'values_unc_all.conf'
 
 all_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd')
@@ -336,7 +337,7 @@ with open(json_bkgPred) as jf:
     }
 
 def addAsymm(e, asymm):
-    print e, asymm
+    #print e, asymm
     e_low = math.sqrt(e[0]*e[0] + asymm[0]*asymm[0])
     e_up  = math.sqrt(e[1]*e[1] + asymm[1]*asymm[1])
     return (e_low, e_up)
@@ -535,28 +536,28 @@ def calcAbsUnc():
         for sample in all_samples: absUnc_pieces[sample][bin] = {type:[0, 0] for type in relUnc.keys()}
         for type in relUnc:
             for sample in all_samples:
-                # Add the same type of unc. linearly
-                tempUnc_down, tempUnc_up = relUnc[type][bin][sample][0] * yields[bin][sample], relUnc[type][bin][sample][1] * yields[bin][sample]
-                absUnc[bin][type][0]                += tempUnc_down
-                absUnc_pieces[sample][bin][type][0] += tempUnc_down
-                absUnc[bin][type][1]                += tempUnc_up
-                absUnc_pieces[sample][bin][type][1] += tempUnc_up
-
-                if bin in mergedbins and sample in processMap:
-                    srunits, crunits  = parseBinMap(sample, binMaps[processMap[sample]][bin], yields)
-                elif sample not in ['ttZ', 'diboson']:
-                    srunits, crunits = bin, binMaps[processMap[sample]][bin]
-
+                tempUnc_down = 0.
+                tempUnc_up = 0.
                 if sample not in ['ttZ', 'diboson']:
-                    for bkg in CRyieldMap[processMap[sample]]:
-                        for sr, cr in zip(srunits, crunits):
-                            if cr not in relUnc[type]: continue
-                            if bkg not in relUnc[type][cr]: continue
-                            tempUnc_down, tempUnc_up = relUnc[type][cr][bkg][0] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0], relUnc[type][cr][bkg][1] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0]
-                            absUnc[bin][type][0]                += tempUnc_down
-                            absUnc_pieces[sample][bin][type][0] += tempUnc_down
-                            absUnc[bin][type][1]                += tempUnc_up
-                            absUnc_pieces[sample][bin][type][1] += tempUnc_up
+                    if bin in mergedbins and sample in processMap:
+                        srunits, crunits  = parseBinMap(sample, binMaps[processMap[sample]][bin], yields)
+                    elif sample not in ['ttZ', 'diboson']:
+                        srunits, crunits = bin, binMaps[processMap[sample]][bin]
+
+                        for bkg in CRyieldMap[processMap[sample]]:
+                            for sr, cr in zip(srunits, crunits):
+                                if cr not in relUnc[type]: continue
+                                if bkg not in relUnc[type][cr]: continue
+                                tempUnc_down += (relUnc[type][cr][bkg][0] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0])**2
+                                tempUnc_up   += (relUnc[type][cr][bkg][1] * yields_dc[CRyieldMap[processMap[sample]][bkg]][cr][0])**2
+
+                # Add the same type of unc. linearly
+                tempUnc_down += (relUnc[type][bin][sample][0] * yields[bin][sample])**2
+                tempUnc_up   += (relUnc[type][bin][sample][1] * yields[bin][sample])**2
+                absUnc[bin][type][0]                += np.sqrt(tempUnc_down)
+                absUnc_pieces[sample][bin][type][0] += np.sqrt(tempUnc_down)
+                absUnc[bin][type][1]                += np.sqrt(tempUnc_up)
+                absUnc_pieces[sample][bin][type][1] += np.sqrt(tempUnc_up)
 
 
     for bin in absUnc:

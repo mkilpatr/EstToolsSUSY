@@ -14,16 +14,19 @@ using namespace EstTools;
 
 map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
-       if(EstTools::region.Contains("2016")) llbcfg = lepConfig2016();
+       if(EstTools::region.Contains("2016and2017")) llbcfg = lepConfig2016and2017();
+  else if(EstTools::region.Contains("2016")) llbcfg = lepConfig2016();
   else if(EstTools::region.Contains("2017")) llbcfg = lepConfig2017();
   else if(EstTools::region.Contains("2018")) llbcfg = lepConfig2018();
   LLBEstimator l(llbcfg);
   if (EstTools::doLepSyst == true){
-    if(EstTools::region.Contains("201")) l.predYearlep();
-    else				 l.predlep();
+         if(EstTools::region.Contains("2016and2017")) l.pred2016and2017lep();
+    else if(EstTools::region.Contains("201"))         l.predYearlep();
+    else				              l.predlep();
   } else{
-    if(EstTools::region.Contains("201")) l.predYear();
-    else				 l.pred();
+         if(EstTools::region.Contains("2016and2017")) l.pred2016and2017();
+    else if(EstTools::region.Contains("201"))         l.predYear();
+    else				              l.pred();
   }
   l.printYields();
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
@@ -98,7 +101,8 @@ void SystElectron_LL(){
   cout << "\n\n Write unc to " << outfile_path << endl;
   ofstream outfile(outfile_path);
   auto config = lepConfig();
-       if(EstTools::region.Contains("2016")) config = lepConfig2016();
+       if(EstTools::region.Contains("2016and2017")) config = lepConfig2016and2017();
+  else if(EstTools::region.Contains("2016")) config = lepConfig2016();
   else if(EstTools::region.Contains("2017")) config = lepConfig2017();
   else if(EstTools::region.Contains("2018")) config = lepConfig2018();
 
