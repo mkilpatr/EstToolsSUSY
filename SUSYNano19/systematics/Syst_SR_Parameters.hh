@@ -4,19 +4,18 @@
 #include "../../utils/EstHelper.hh"
 //#include "../binDefinitions.hh"
 //#include "../binDefinitions_CR.hh"
-#include "../LowMET_binDefinitions_syst_small.hh"
+#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
 TString sys_name = "nominal";
 TString inputdir = "root://cmsxrootd.fnal.gov//store/user/mkilpatr/13TeV/";
-TString inputdir_2016 = "nanoaod_all_skim_2016_051120_devv6_limits/";
-//TString inputdir_2016 = "nanoaod_all_skim_2016_051220_devv6_limits_AK8SF/";
-TString inputdir_2017 = "nanoaod_all_skim_2017_050120_devv6_limits/";
-TString inputdir_2018 = "nanoaod_all_skim_2018_050120_devv6_limits/";
+TString inputdir_2016 = "nanoaod_all_skim_2016_051820_devv6_limits/";
+TString inputdir_2017 = "nanoaod_all_skim_2017_051820_devv6_limits/";
+TString inputdir_2018 = "nanoaod_all_skim_2018_051820_devv6_limits/";
 TString outputdir() {return "syst/"+sys_name;}
 
-const TString datadir = "nanoaod_data_all_skim_050120_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_051820_devv6_limits/";
 
 const TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -86,7 +85,7 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "LowMET2016and2017";
+TString region = "LowMET";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
