@@ -86,6 +86,7 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   TH1D* httbar = convertToHist({(TH1*)f->Get("httbar_stack_5")}, "httbar_stack_5", ";Search Region;Events", nullptr);
   pred.push_back(httbar);
 
+  TH1D* hznunu_matt = convertToHist({(TH1*)f->Get("hznunu_stack_4")}, "hznunu_matt", ";Search Region;Events", nullptr);
   TH1* hdata = (TH1*)f->Get(data);
 
   //get all of the uncertainties
@@ -120,13 +121,8 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
     unc_dn += httbar->GetBinError(ibin_hist)*httbar->GetBinError(ibin_hist);
     unc_up += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
     unc_dn += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
-    if(hznunu->GetBinContent(ibin_hist) != 0){
-      unc_up += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
-      unc_dn += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
-    } else{
-      unc_up += 1.83*1.83;
-      unc_dn += 1.83*1.83;
-    }
+    unc_up += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
+    unc_dn += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
     unc_up += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
     unc_dn += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
     unc_up += hRare->GetBinError(ibin_hist)*hRare->GetBinError(ibin_hist);
