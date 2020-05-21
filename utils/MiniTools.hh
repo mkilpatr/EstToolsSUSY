@@ -264,7 +264,7 @@ TH1D* convertToHist(const vector<double> &vec, TString hname, TString title, con
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr){
+TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, bool noError = false){
   auto nbins = (unsigned)vec[0]->GetNbinsX();
   TH1D *hist;
 
@@ -278,7 +278,7 @@ TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const
   for (unsigned j=0; j!=vec.size();j++){
     for (unsigned i=1; i<nbins+1; ++i){
       hist->SetBinContent(i, vec[j]->GetBinContent(i));
-      hist->SetBinError(i, vec[j]->GetBinError(i));
+      if (!noError) hist->SetBinError(i, vec[j]->GetBinError(i));
     }
   }
   return hist;
