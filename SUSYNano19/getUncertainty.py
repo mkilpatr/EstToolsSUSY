@@ -593,7 +593,8 @@ def bkgTFPrediction(cr_description, bin, type, sample):
             crother_dn+=yields_dc[crproc+'_back'][cr][0] * relUnc[type][cr][crproc+'_back'][0]
 
         if sample in test_samp and bin in test_bin and type in test_type and debug:
-            print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crothe_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
+            print "crother_up: {0}, crttbar up: {1}, crznunu up: {2}, crRare up: {3}".format(crother_up, yields_dc[crproc+'_ttbarplusw'][cr][0] * relUnc[type][cr]['ttbarplusw'][1], yields_dc[crproc+'_znunu'][cr][0] * relUnc[type][cr]['znunu'][1], yields_dc[crproc+'_Rare'][cr][0] * relUnc[type][cr]['Rare'][1])
+            print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crother_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
 
     if 'znunu' in sample: 
         total_up = (crdata/(crunit_up + crother_up))*srunit_up
@@ -614,7 +615,7 @@ def bkgTFPrediction(cr_description, bin, type, sample):
     if total_dn < 0:
         total_dn = 0.001
    
-    if sample in ['qcd'] and total_up < total_dn:
+    if total_up < total_dn:
         total_up, total_dn = total_dn, total_up
 
     if sample in ['qcd'] and statUnc_pieces[bin][sample][1] > yields[bin][sample]:
