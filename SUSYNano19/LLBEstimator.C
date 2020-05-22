@@ -347,7 +347,7 @@ void plotLepCRAllEras(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6_052120";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -688,7 +688,7 @@ void plotAK8SFSyst(){
     z.setSelection(LLCR_LM, "llcr_lm_2016_veto", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 Low #Deltam LLCR}{veto Up/Down}", 0.2, 0.75); };
     cout << "Made it here 1" << endl;
-    z.plotComp(var.second, mc_samples_veto, Category::dummy_category(), true, false, 0.001, plotextra)
+    //z.plotComp(var.second, mc_samples_veto, Category::dummy_category(), true, false, 0.001, plotextra)
     z.plotDataMC(var.second, mc_samples_veto, "", Category::dummy_category(), false, "", true, &plotextra);
     cout << "Made it here 2" << endl;
     z.setSelection(LLCR_HM, "llcr_hm_2016_veto", "");

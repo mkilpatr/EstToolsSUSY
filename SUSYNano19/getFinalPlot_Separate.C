@@ -16,7 +16,7 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   PAD_BOTTOM_MARGIN = 0.4;
   if(inputFile.Contains("2016")) lumistr = "35.815165";
 
-  vector<TString> bkgs = {"httz_stack_2", "hdiboson_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
+  vector<TString> bkgs = {"httz_stack_2", "hRare_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
   vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
   vector<TString> sigs = {"T2tt_1000_0"};
   TString data = "hdata";
@@ -68,7 +68,7 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
 
   TFile *r = TFile::Open(inputFile + "Rare_final_sb_2016.root");
   assert(r);
-  TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "diboson_pred", ";Search Region;Events", nullptr);
+  TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search Region;Events", nullptr);
   pred.push_back(hRare);
 
   TFile *q = TFile::Open(inputFile + "SearchBins_QCDResidMET.root");

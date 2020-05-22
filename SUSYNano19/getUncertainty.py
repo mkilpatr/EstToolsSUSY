@@ -19,31 +19,31 @@ rt.gROOT.SetBatch(True)
 
 from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend, TFile, TColor
 
-uncdir = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
+uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
+uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
 uncfiles=[
- uncdir + 'values_unc_sb_ll.conf',
- uncdir + 'values_unc_cb_ll.conf',
- uncdir + 'values_unc_zinv.conf',
- uncdir + 'values_unc_qcd_sb.conf',
- uncdir + 'values_unc_qcd_cr.conf',
- uncdir + 'values_unc_ttZ.conf',
- uncdir + 'values_unc_diboson.conf'
+ uncdir + 'LostLepton/values_unc_sb_ll_2016.conf',
+ uncdir + 'LostLepton/values_unc_cb_ll_2016.conf',
+ uncdir + 'Zinvisible/zinv_syst_2016.conf',
+ uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf',
+ uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf',
+ uncdir + 'TTZRare/TTZ_syst.conf',
+ uncdir + 'TTZRare/Rare_syst.conf'
  ]
 
-pred_file_lep = "ttbarplus_pred.root"
-all_bin_unc_file = uncdir + 'values_unc_all.conf'
+all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 
-all_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd')
-unc_samples=('ttbarplusw', 'znunu', 'ttZ', 'diboson', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare')
-graph_names=('httbar_stack_5', 'hznunu_stack_4', 'httz_stack_2', 'hdiboson_stack_1', 'hqcd_stack_3')
+all_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd')
+unc_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare')
+graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'hpred'
 json_bkgPred = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/combine_bkgPred.json'
 
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
-systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
+systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
 CRprocMap  = {
     "qcdcr" : { 'qcd', 'ttbarplusw', 'znunu', 'Rare' },
@@ -66,6 +66,11 @@ CRyieldMap  = {
         'otherbkgs'  : 'phocr_back',
     }
 }
+
+debug = True
+test_samp = ['qcd']
+test_bin  = ['bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500_MET_pt550to650']
+test_type = ['QCD_trigger_err']
 
 # ordered bin list
 binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550', 
@@ -363,14 +368,16 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = ""):
         if p_up == 0 or p_down == 0: continue
         log_syst_up     = p_up / p
         log_syst_down   = p_down / p
+        if sample in test_samp and bin in test_bin and debug:
+            print "log_syst_up: {0}, log_syst_down: {1}".format(log_syst_up, log_syst_down)
         # If both systematics go the same direction, need to symmetrize
         # Because all the nuisance parameters are log-normal, symmetrize by dividing by the geometric mean
         if ((log_syst_up > 1) and (log_syst_down > 1)) or ((log_syst_up < 1) and (log_syst_down < 1)):
             geometric_mean = np.sqrt(log_syst_up * log_syst_down)
             log_syst_up   /= geometric_mean
             log_syst_down /= geometric_mean
-            #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
-            #    print "log_syst_up: {0}, log_syst_down: (1), geometric_mean: {2}".format(log_syst_up, log_syst_down, geometric_mean)
+            if sample in test_samp and bin in test_bin and debug:
+                print "log_syst_up: {0}, log_syst_down: {1}, geometric_mean: {2}".format(log_syst_up, log_syst_down, geometric_mean)
         # Because all the nuisance parameters are log-normal, sum the log of the ratios in quadrature
         # Sum (the square of the log of) all the ratios that are greater than 1
         # Sum (the square of the log of) all the ratios that are less than 1
@@ -383,8 +390,10 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = ""):
             log_syst_down_sum   += np.log(log_syst_up)**2
         log_syst_up_total   = np.exp( np.sqrt(log_syst_up_sum))
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
-    #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
-    #    print "pred={0}, log_syst_up_total={1}, log_syst_down_total={2}".format(p, log_syst_up_total, log_syst_down_total)
+    if sample in test_samp and bin in test_bin and debug:
+        print bin
+        print sample
+        print "pred={0}, log_syst_up_total={1}, log_syst_down_total={2}".format(p, log_syst_up_total, log_syst_down_total)
     if bin != "" and sample != "": 
         systUnc_rel_pieces[sample][bin] = [log_syst_down_total, log_syst_up_total]
     return [p - log_syst_down_total*p, log_syst_up_total*p - p]
@@ -402,7 +411,7 @@ def sumUnc(unc_list):
 
 relUnc={}
 absUnc={}
-absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
+absUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 yields={}
 yields_total={}
 yields_cr={}
@@ -410,18 +419,17 @@ yields_data={}
 statUnc={} #asymm
 statUnc_pieces={} #asymm 
 systUnc={}
-systUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
-#systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}}
+systUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 fullUnc={} #asymm
-fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'ttZ':{}, 'diboson':{}} #asymm
+fullUnc_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}} #asymm
 allVals = {}
 
 def readRelUnc(config_path):
     '''Read in percentage syst. uncertainty from the config files.'''
     for unc_fn in uncfiles:
         with open(os.path.join(config_path, unc_fn), 'r') as f:
-	    isUp, isDown = False, False
             for line in f.readlines():
+                if line[0]=='#' or line[0]=='%': continue
                 try:
                     bin, type_, sample, value = line.split()
                 except ValueError:
@@ -429,29 +437,24 @@ def readRelUnc(config_path):
                 #if bin not in binlist or sample not in all_samples:
                 #    # ignore CR syst., e.g., "bin_onelepcr_250_5_1_0_0"
                 #    continue
-		if "Up" in type_:
-                    isUp = True
-                    isDown = False
-		if "Down" in type_:
-                    isUp = False
-                    isDown = True
-                type = type_.strip("_Up")
-                type = type_.strip("_Down")
+                if "_Up" in type_:
+                    up = float(value)
+                    continue
+                type = type_.replace("_Down", "")
                 if type not in relUnc:
                     relUnc[type] = {}
                 if bin not in relUnc[type]:
                     relUnc[type][bin] = {}
                 if sample in unc_samples:
-                    if isUp:
-                        up = float(value)
-                    elif isDown:
+                    if "_Down" in type_:
                         down = float(value)
-                        relUnc[type][bin][sample] = (down, up) if up >= down else (up, down)
-                        isUp, isDown = False, False
+                        relUnc[type][bin][sample] = (down, up)
                     else:
                         up = float(value)-1 if float(value) > 1 else 1 - float(value)
                         down = float(value)-1 if float(value) > 1 else 1 - float(value)
                         relUnc[type][bin][sample] = (1-down, 1+up)
+                    #if 'QCD_trigger_err' in type:
+                    #    print('type: {0}, relUnc: {1}'.format(type, relUnc[type][bin]))
 
     # for all bin uncs
     if all_bin_unc_file != '':
@@ -589,8 +592,8 @@ def bkgTFPrediction(cr_description, bin, type, sample):
             crunit_dn += yields_dc[crproc+'_gjets'][cr][0] * relUnc[type][cr][crproc+'_gjets'][0] if yields_dc[crproc+'_gjets'][cr][0] * relUnc[type][cr][crproc+'_gjets'][0] > 0 else 0.000001
             crother_dn+=yields_dc[crproc+'_back'][cr][0] * relUnc[type][cr][crproc+'_back'][0]
 
-        #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin and 'znunu' in sample:
-        #    print "srunit: {0}, crdata: {1}, crunit: {2}, crother: {3}".format(srunit_up, crdata, crunit_up, crother_up)
+        if sample in test_samp and bin in test_bin and type in test_type and debug:
+            print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crothe_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
 
     if 'znunu' in sample: 
         total_up = (crdata/(crunit_up + crother_up))*srunit_up
@@ -608,11 +611,17 @@ def bkgTFPrediction(cr_description, bin, type, sample):
         if 'ttbarplusw' in sample:
             total_up = yields[bin][sample]
 
+    if total_dn < 0:
+        total_dn = 0.001
+   
+    if sample in ['qcd'] and total_up < total_dn:
+        total_up, total_dn = total_dn, total_up
+
     if sample in ['qcd'] and statUnc_pieces[bin][sample][1] > yields[bin][sample]:
         total_dn, total_up = yields[bin][sample], yields[bin][sample]
 
-    #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin and 'znunu' in sample:
-    #    print("type, {0}. sample: {1}, bin: {2}, Up: {3}, Down: {4}, Nominal: {5}".format(type, sample, bin, total_up, total_dn, yields[bin][sample]))    
+    if sample in test_samp and bin in test_bin and type in test_type and debug:
+        print("type, {0}. sample: {1}, bin: {2}, Pred Up: {3}, Pred Down: {4}, Pred Nominal: {5}".format(type, sample, bin, total_up, total_dn, yields[bin][sample]))    
 
     return (total_dn, total_up)
 
@@ -634,11 +643,11 @@ def calcAbsUnc():
                 tempUnc_up = 0.
                 tempUnc_CR_down = 0.
                 tempUnc_CR_up = 0.
-                if sample not in ['ttZ', 'diboson']:
+                if sample not in ['TTZ', 'Rare']:
                     tempUnc_down, tempUnc_up = bkgTFPrediction(binMaps[processMap[sample]][bin], bin, type, sample)
                 else:
                     tempUnc_down += relUnc[type][bin][sample][0] * yields[bin][sample]
-                    tempUnc_up   += relUnc[type][bin][sample][1] * yields[bin][sample]
+                    tempUnc_up   += relUnc[type][bin][sample][1] * yields[bin][sample] if relUnc[type][bin][sample][1] < 2.0 else 2.0 * yields[bin][sample]
 
                 # Add the same type of unc. linearly
                 absUnc[bin][type][0]                += tempUnc_down
@@ -646,11 +655,10 @@ def calcAbsUnc():
                 absUnc[bin][type][1]                += tempUnc_up
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 
-                #if sample in ['ttbarplusw', 'znunu'] and ("bin_hm_nb1_highmtb_nt0_nrt0_nw0_htgt1000_MET_pt250to350" in bin or "bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550" in bin):
-                #    up = float(absUnc_pieces[sample][bin][type][1]/yields[bin][sample])
-                #    down = float(absUnc_pieces[sample][bin][type][0]/yields[bin][sample])
-                #    if up > 1. and down < 1.0: 
-                #        print "%11s %30s %20s Up: %8.4f Down: %8.4f" % (sample, bin, type, up, down)
+                if sample in test_samp and bin in test_bin and debug:
+                    up = float(absUnc_pieces[sample][bin][type][1]/yields[bin][sample])
+                    down = float(absUnc_pieces[sample][bin][type][0]/yields[bin][sample])
+                    print "%3s %30s %20s Up: %8.6f Down: %8.6f" % (sample, bin, type, up, down)
     for bin in absUnc:
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
@@ -698,16 +706,18 @@ def writeFullUnc(pred_file):
             allVals[bin][sample] = (val,e_low,e_up)  
             # Test for only syst histograms
             e_low, e_up = systUnc_rel_pieces[sample][bin]
-            #print("%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low))
+            if sample in test_samp and bin in test_bin and type in test_type and debug:
+                print("%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low))
             h_syst_pieces[sample + "_up"].SetBinContent(ibin + 1, e_up)
             h_syst_pieces[sample + "_dn"].SetBinContent(ibin + 1, e_low)
             h_syst_pieces[sample + "_up"].SetBinError(ibin + 1, 0)
             h_syst_pieces[sample + "_dn"].SetBinError(ibin + 1, 0)
     h.Write('bkgtotal_unc_sr', rt.TObject.kOverwrite)
     h.Write('bkgtotal_syst_unc_sr', rt.TObject.kOverwrite)
-    for sample in all_samples : h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
-    for sample in all_samples : h_syst_pieces[sample + "_up"].Write(sample+'_syst_up', rt.TObject.kOverwrite)
-    for sample in all_samples : h_syst_pieces[sample + "_dn"].Write(sample+'_syst_dn', rt.TObject.kOverwrite)
+    for sample in all_samples : 
+        h_pieces[sample].Write(sample+'_unc_sr', rt.TObject.kOverwrite)
+        h_syst_pieces[sample + "_up"].Write(sample+'_syst_up', rt.TObject.kOverwrite)
+        h_syst_pieces[sample + "_dn"].Write(sample+'_syst_dn', rt.TObject.kOverwrite)
     f.Close()
 
 def makeYieldTable(output='pred_sr.tex'):
@@ -742,7 +752,7 @@ def endTable(ibini, ibinf):
         label='tab:pred-hm-3'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[' + label + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of ttZ and diboson MC.}\n'
+    s += '\\caption[' + label + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -765,10 +775,10 @@ def makeTable():
         ibin = ibin+1
         s += metlabel
         for bkg in list(all_samples)+['bkg']:
-            if bkg == 'diboson': continue
+            if bkg == 'Rare': continue
             n, e_low, e_up = allVals[bin][bkg]
-            if bkg == 'ttZ':
-                n1, e1_low, e1_up = allVals[bin]["diboson"]
+            if bkg == 'TTZ':
+                n1, e1_low, e1_up = allVals[bin]["Rare"]
                 n += n1
                 e_low = sumUnc([e_low, e1_low])
                 e_up  = sumUnc([e_up, e1_up])

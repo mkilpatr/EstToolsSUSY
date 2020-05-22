@@ -15,8 +15,8 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
   PAD_BOTTOM_MARGIN = 0.4;
 
 
-  vector<TString> bkgs = {"httz_stack_2", "hdiboson_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
-  vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
+  vector<TString> bkgs = {"httz_stack_2", "hRare_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
+  vector<TString> bkgs_name = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> sigs = {"T2tt_1000_0"};
   //vector<TString> sigs = {"T1tttt_2000_0"};
   TString data = "hdata";
@@ -33,8 +33,8 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
 
   TFile *f = TFile::Open(inputFile);
   assert(f);
-  for (auto &b : bkgs){
-    TH1D* hist = convertToHist({(TH1*)f->Get(b)}, b, ";Search Region;Events", nullptr);
+  for (unsigned b = 0; b != bkgs.size(); b++){
+    TH1D* hist = convertToHist({(TH1*)f->Get(bkgs[b])}, bkgs_name[b], ";Search Region;Events", nullptr);
     pred.push_back(hist);
   }
   TH1D* total = convertToHist({(TH1*)f->Get("hpred")}, "hpred", ";Search Region;Events", nullptr);
