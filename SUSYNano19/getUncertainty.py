@@ -45,32 +45,10 @@ json_bkgPred = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
 systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
-CRprocMap  = {
-    "qcdcr" : { 'qcd', 'ttbarplusw', 'znunu', 'Rare' },
-    "phocr" : { 'gjets', 'otherbkgs' },
-    "lepcr" : { 'ttbarplusw' }
-}
-
-CRyieldMap  = {
-    "qcdcr" : {
-        'qcd'        : 'qcdcr_qcd',
-        'ttbarplusw' : 'qcdcr_ttbarplusw',
-        'znunu'      : 'qcdcr_znunu',
-        'Rare'       : 'qcdcr_Rare',
-    },
-    "lepcr": {
-        'ttbarplusw' : 'lepcr_ttbarplusw',
-    },
-    "phocr" :{
-        'gjets'      : 'phocr_gjets',
-        'otherbkgs'  : 'phocr_back',
-    }
-}
-
 debug = True
-test_samp = ['qcd']
-test_bin  = ['bin_hm_nb1_highmtb_nt0_nrtgeq1_nw0_ht1000to1500_MET_pt550to650']
-test_type = ['QCD_trigger_err']
+test_samp = ['TTZ']
+test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt250to350']
+test_type = ['JES']
 
 # ordered bin list
 binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550', 
@@ -350,7 +328,7 @@ def addAsymm(e, asymm):
     e_up  = math.sqrt(e[1]*e[1] + asymm[1]*asymm[1])
     return (e_low, e_up)
 
-def sumUncLogNorm(unc_list, p, bin = "", sample = ""):
+def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
 # syst_histo[systematic][bintype][region][direction]
     log_syst_up_sum = 0.
     log_syst_down_sum = 0.
@@ -362,22 +340,24 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = ""):
     if p == 0: 
         systUnc_rel_pieces[sample][bin] = [1.0, 1.0]
         return [0,1.83]
-    for err in unc_list:
+    for err, type in zip(unc_list, type_):
         p_up    = err[1]
         p_down  = err[0]
         if p_up == 0 or p_down == 0: continue
         log_syst_up     = p_up / p
         log_syst_down   = p_down / p
         if sample in test_samp and bin in test_bin and debug:
-            print "log_syst_up: {0}, log_syst_down: {1}".format(log_syst_up, log_syst_down)
+            print "%20s Up: %8.6f Down: %8.6f" % (type, log_syst_up, log_syst_down)
         # If both systematics go the same direction, need to symmetrize
         # Because all the nuisance parameters are log-normal, symmetrize by dividing by the geometric mean
         if ((log_syst_up > 1) and (log_syst_down > 1)) or ((log_syst_up < 1) and (log_syst_down < 1)):
             geometric_mean = np.sqrt(log_syst_up * log_syst_down)
             log_syst_up   /= geometric_mean
             log_syst_down /= geometric_mean
-            if sample in test_samp and bin in test_bin and debug:
-                print "log_syst_up: {0}, log_syst_down: {1}, geometric_mean: {2}".format(log_syst_up, log_syst_down, geometric_mean)
+            if sample in test_samp and bin in test_bin and debug and ((log_syst_up > 1 and log_syst_down < 1) or (log_syst_down > 1 and log_syst_up < 1)):
+                print "%20s Up: %8.6f Down: %8.6f geometric_mean: %8.6f" % (type, log_syst_up, log_syst_down, geometric_mean)
+        if sample in ['TTZ', 'Rare'] and log_syst_up > 2.:
+            log_syst_up = 2.0
         # Because all the nuisance parameters are log-normal, sum the log of the ratios in quadrature
         # Sum (the square of the log of) all the ratios that are greater than 1
         # Sum (the square of the log of) all the ratios that are less than 1
@@ -450,11 +430,10 @@ def readRelUnc(config_path):
                         down = float(value)
                         relUnc[type][bin][sample] = (down, up)
                     else:
-                        up = float(value)-1 if float(value) > 1 else 1 - float(value)
-                        down = float(value)-1 if float(value) > 1 else 1 - float(value)
-                        relUnc[type][bin][sample] = (1-down, 1+up)
-                    #if 'QCD_trigger_err' in type:
-                    #    print('type: {0}, relUnc: {1}'.format(type, relUnc[type][bin]))
+                        sign = 1 if float(value) > 1 else -1
+                        up = float(value)
+                        down = np.exp(-1 * np.log(up))
+                        relUnc[type][bin][sample] = (down, up)
 
     # for all bin uncs
     if all_bin_unc_file != '':
@@ -593,7 +572,10 @@ def bkgTFPrediction(cr_description, bin, type, sample):
             crother_dn+=yields_dc[crproc+'_back'][cr][0] * relUnc[type][cr][crproc+'_back'][0]
 
         if sample in test_samp and bin in test_bin and type in test_type and debug:
+            print "crother_up: {0}, crttbar up: {1} * {2}, crznunu up: {3} * {4}, crRare up: {4} * {5}".format(crother_up, yields_dc[crproc+'_ttbarplusw'][cr][0], relUnc[type][cr]['ttbarplusw'][1], yields_dc[crproc+'_znunu'][cr][0] , relUnc[type][cr]['znunu'][1], yields_dc[crproc+'_Rare'][cr][0] , relUnc[type][cr]['Rare'][1])
             print "crother_up: {0}, crttbar up: {1}, crznunu up: {2}, crRare up: {3}".format(crother_up, yields_dc[crproc+'_ttbarplusw'][cr][0] * relUnc[type][cr]['ttbarplusw'][1], yields_dc[crproc+'_znunu'][cr][0] * relUnc[type][cr]['znunu'][1], yields_dc[crproc+'_Rare'][cr][0] * relUnc[type][cr]['Rare'][1])
+            print "crother_dn: {0}, crttbar dn: {1} * {2}, crznunu dn: {3} * {4}, crRare dn: {4} * {5}".format(crother_dn, yields_dc[crproc+'_ttbarplusw'][cr][0], relUnc[type][cr]['ttbarplusw'][0], yields_dc[crproc+'_znunu'][cr][0] , relUnc[type][cr]['znunu'][0], yields_dc[crproc+'_Rare'][cr][0] , relUnc[type][cr]['Rare'][0])
+            print "crother_dn: {0}, crttbar dn: {1}, crznunu dn: {2}, crRare dn: {3}".format(crother_dn, yields_dc[crproc+'_ttbarplusw'][cr][0] * relUnc[type][cr]['ttbarplusw'][0], yields_dc[crproc+'_znunu'][cr][0] * relUnc[type][cr]['znunu'][0], yields_dc[crproc+'_Rare'][cr][0] * relUnc[type][cr]['Rare'][0])
             print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crother_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
 
     if 'znunu' in sample: 
@@ -648,7 +630,7 @@ def calcAbsUnc():
                     tempUnc_down, tempUnc_up = bkgTFPrediction(binMaps[processMap[sample]][bin], bin, type, sample)
                 else:
                     tempUnc_down += relUnc[type][bin][sample][0] * yields[bin][sample]
-                    tempUnc_up   += relUnc[type][bin][sample][1] * yields[bin][sample] if relUnc[type][bin][sample][1] < 2.0 else 2.0 * yields[bin][sample]
+                    tempUnc_up   += relUnc[type][bin][sample][1] * yields[bin][sample]
 
                 # Add the same type of unc. linearly
                 absUnc[bin][type][0]                += tempUnc_down
@@ -663,12 +645,12 @@ def calcAbsUnc():
     for bin in absUnc:
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
-        systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin], bin)
+        systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin], bin, "", absUnc[bin].keys())
         fullUnc[bin] = addAsymm(systUnc[bin], statUnc[bin])
         #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
         #    print("bin: {0}, syst: {1}, full: {2}".format(bin, systUnc[bin], fullUnc[bin]))    
         for sample in all_samples:
-            systUnc_pieces[sample][bin] = sumUncLogNorm(absUnc_pieces[sample][bin].values(), yields[bin][sample], bin, sample)
+            systUnc_pieces[sample][bin] = sumUncLogNorm(absUnc_pieces[sample][bin].values(), yields[bin][sample], bin, sample, absUnc_pieces[sample][bin].keys())
             fullUnc_pieces[sample][bin] = addAsymm(systUnc_pieces[sample][bin], statUnc_pieces[bin][sample])
             #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
             #    print("sample: {0}, bin: {1}, syst: {2}".format(sample, bin, systUnc_rel_pieces[sample][bin]))    
@@ -707,7 +689,8 @@ def writeFullUnc(pred_file):
             allVals[bin][sample] = (val,e_low,e_up)  
             # Test for only syst histograms
             e_low, e_up = systUnc_rel_pieces[sample][bin]
-            if sample in test_samp and bin in test_bin and type in test_type and debug:
+            #if sample in test_samp and bin in test_bin and type in test_type and debug:
+            if 'TTZ' in sample and e_up > 8:
                 print("%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low))
             h_syst_pieces[sample + "_up"].SetBinContent(ibin + 1, e_up)
             h_syst_pieces[sample + "_dn"].SetBinContent(ibin + 1, e_low)
