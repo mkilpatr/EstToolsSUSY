@@ -19,18 +19,24 @@ rt.gROOT.SetBatch(True)
 
 from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend, TFile, TColor
 
-uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
+isRun2 = True
+
+uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
-uncfiles=[
- uncdir + 'LostLepton/values_unc_sb_ll_2016.conf',
- uncdir + 'LostLepton/values_unc_cb_ll_2016.conf',
- uncdir + 'Zinvisible/zinv_syst_2016.conf',
- uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf',
- uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf',
- uncdir + 'TTZRare/TTZ_syst.conf',
- uncdir + 'TTZRare/Rare_syst.conf'
- ]
+uncfiles=[]
+if isRun2:
+    uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll.conf')
+    uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll.conf')
+    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_Run2.conf')
+else:
+    uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll_2016.conf')
+    uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll_2016.conf')
+    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_2016.conf')
+uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
+uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
+uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
+uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
 
 all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 
@@ -356,8 +362,8 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
             log_syst_down /= geometric_mean
             if sample in test_samp and bin in test_bin and debug and ((log_syst_up > 1 and log_syst_down < 1) or (log_syst_down > 1 and log_syst_up < 1)):
                 print "%20s Up: %8.6f Down: %8.6f geometric_mean: %8.6f" % (type, log_syst_up, log_syst_down, geometric_mean)
-        if sample in ['TTZ', 'Rare'] and log_syst_up > 2.:
-            log_syst_up = 2.0
+        #if sample in ['TTZ', 'Rare'] and log_syst_up > 2.:
+        #    log_syst_up = 2.0
         # Because all the nuisance parameters are log-normal, sum the log of the ratios in quadrature
         # Sum (the square of the log of) all the ratios that are greater than 1
         # Sum (the square of the log of) all the ratios that are less than 1
@@ -690,8 +696,8 @@ def writeFullUnc(pred_file):
             # Test for only syst histograms
             e_low, e_up = systUnc_rel_pieces[sample][bin]
             #if sample in test_samp and bin in test_bin and type in test_type and debug:
-            if 'TTZ' in sample and e_up > 8:
-                print("%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low))
+            #if 'TTZ' in sample and e_up > 8:
+            #    print("%11s %30s %10.4f +%8.4f -%8.4f" % (sample, bin, val, e_up, e_low))
             h_syst_pieces[sample + "_up"].SetBinContent(ibin + 1, e_up)
             h_syst_pieces[sample + "_dn"].SetBinContent(ibin + 1, e_low)
             h_syst_pieces[sample + "_up"].SetBinError(ibin + 1, 0)

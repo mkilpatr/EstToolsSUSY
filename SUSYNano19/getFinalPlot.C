@@ -7,7 +7,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot(TString inputFile="getFinalPlot_2016/SumOfBkg.root", TString outputName="getFinalPlot_2016/pred_binnum_"){
+void getFinalPlot(TString inputFile="getFinalPlot/SumOfBkg.root", TString outputName="getFinalPlot/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;

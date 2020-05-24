@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot_2016/"){
+void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot/"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;

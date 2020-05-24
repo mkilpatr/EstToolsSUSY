@@ -7,7 +7,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/SearchBinsPlot/", TString outputName="getFinalPlot_2016_Separate/pred_binnum_"){
+void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/SearchBinsPlot/", TString outputName="getFinalPlot_Separate/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -16,8 +16,7 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   PAD_BOTTOM_MARGIN = 0.4;
   if(inputFile.Contains("2016")) lumistr = "35.815165";
 
-  vector<TString> bkgs = {"httz_stack_2", "hRare_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
-  vector<TString> mcs =  {"rare_mc",   "qcd_mc",   "znunu_mc",   "ttbarplusw_mc"};
+  vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> sigs = {"T2tt_1000_0"};
   TString data = "hdata";
 
@@ -61,12 +60,12 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   vector<TH1*> pred;
   vector<TH1*> hsigs;
 
-  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb_2016.root");
+  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb.root");
   assert(ttz);
   TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search Region;Events", nullptr);
   pred.push_back(httZ);
 
-  TFile *r = TFile::Open(inputFile + "Rare_final_sb_2016.root");
+  TFile *r = TFile::Open(inputFile + "Rare_final_sb.root");
   assert(r);
   TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search Region;Events", nullptr);
   pred.push_back(hRare);
@@ -76,38 +75,40 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   TH1D* hqcd = convertToHist({(TH1*)q->Get("QCD")}, "qcd_pred", ";Search Region;Events", nullptr);
   pred.push_back(hqcd);
 
-  TFile *z = TFile::Open(inputFile + "searchBinsZinv_combined_2016.root");
+  TFile *z = TFile::Open(inputFile + "searchBinsZinv_combined_Run2.root");
   assert(z);
   TH1D* hznunu = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_pred", ";Search Region;Events", nullptr);
   pred.push_back(hznunu);
 
-  TFile *f = TFile::Open("getFinalPlot_2016/SumOfBkg.root");
+  TFile *f = TFile::Open("getFinalPlot/SumOfBkg.root");
   assert(f);
-  TH1D* httbar = convertToHist({(TH1*)f->Get("httbar_stack_5")}, "httbar_stack_5", ";Search Region;Events", nullptr);
+  TH1D* httbar = convertToHist({(TH1*)f->Get("httbar")}, "httbar_pred", ";Search Region;Events", nullptr);
   pred.push_back(httbar);
-  TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu_stack_4")}, "hznunu_stack_4", ";Search Region;Events", nullptr); // KH hack: this is a hack which we should be careful with
+  TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search Region;Events", nullptr); // KH hack: this is a hack which we should be careful with
 
-  TH1D* hznunu_matt = convertToHist({(TH1*)f->Get("hznunu_stack_4")}, "hznunu_matt", ";Search Region;Events", nullptr);
   TH1* hdata = (TH1*)f->Get(data);
 
   //get all of the uncertainties
-  TGraphAsymmErrors* ttbar_unc = (TGraphAsymmErrors*)f->Get("ttbarplusw_unc_sr");
+  TH1D* ttbar_up_unc = (TH1D*)f->Get("ttbarplusw_syst_up");
+  TH1D* ttbar_dn_unc = (TH1D*)f->Get("ttbarplusw_syst_dn");
+  TH1D* znunu_up_unc = (TH1D*)f->Get("znunu_syst_up");
+  TH1D* znunu_dn_unc = (TH1D*)f->Get("znunu_syst_dn");
   TH1D* ttZ_up_unc = (TH1D*)ttz->Get("Total_Up");
   TH1D* ttZ_dn_unc = (TH1D*)ttz->Get("Total_Down");
   TH1D* Rare_up_unc = (TH1D*)r->Get("Total_Up");
   TH1D* Rare_dn_unc = (TH1D*)r->Get("Total_Down");
   TH1D* qcd_up_unc = (TH1D*)q->Get("Tot_Up");
   TH1D* qcd_dn_unc = (TH1D*)q->Get("Tot_Down");
-  TH1D* znunu_up_unc = (TH1D*)z->Get("Total_Up");
-  TH1D* znunu_dn_unc = (TH1D*)z->Get("Total_Down");
+  //TH1D* znunu_up_unc = (TH1D*)z->Get("Total_Up");
+  //TH1D* znunu_dn_unc = (TH1D*)z->Get("Total_Down");
 
-  TGraphAsymmErrors* unc = (TGraphAsymmErrors*)ttbar_unc->Clone("bkgtotal_unc_sr");
+  TGraphAsymmErrors* unc = (TGraphAsymmErrors*)f->Get("ttbarplusw_unc_sr")->Clone("bkgtotal_unc_sr");
   TH1D* nominal = (TH1D*)httbar->Clone("Total_Prediction");
   for (int ibin = 0; ibin < unc->GetN(); ++ibin){
     int ibin_hist = ibin+1;
     //Systematics
-    double unc_up = (ttbar_unc->GetErrorYhigh(ibin) - ttbar_unc->GetY()[ibin])*(ttbar_unc->GetErrorYhigh(ibin) - ttbar_unc->GetY()[ibin]);
-    double unc_dn = (ttbar_unc->GetY()[ibin] - ttbar_unc->GetErrorYlow(ibin))*(ttbar_unc->GetY()[ibin] - ttbar_unc->GetErrorYlow(ibin));
+    double unc_up = ((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist))*((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist));
+    double unc_dn = ((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist))*((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist));
     unc_up += ((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist))*((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist));
     unc_dn += ((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist))*((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist));
     unc_up += ((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist))*((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist));
@@ -128,8 +129,8 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
     unc_dn += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
     // znunu:
     if(hznunu->GetBinContent(ibin_hist) != 0){
-      unc_up += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
-      unc_dn += hznunu->GetBinError(ibin_hist)*hznunu->GetBinError(ibin_hist);
+      unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist);
+      unc_dn += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist);
     } else{
       unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist); //KH hack: when histograms from Caleb get this error correctly, use it.
       unc_dn += 0.;
@@ -148,11 +149,10 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
 
     cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
 
-    unc->SetPoint(ibin, ttbar_unc->GetX()[ibin], pred);
+    unc->SetPoint(ibin, unc->GetX()[ibin], pred);
     unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
     unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
   }
-
 
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search Region;Events", nullptr);
@@ -168,18 +168,6 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   if(hdata) prepHists({hdata}, false, false, false, {kBlack});
   if(hdata) prepHists({pull}, false, false, false, {kRed});
   prepHists(hsigs, false, false, false, {kRed});
-
-  // plot raw MC
-//  TH1 *hmctotal = nullptr;
-//  for(auto &mc : mcs){
-//    if (!hmctotal) hmctotal = (TH1*)f->Get(mc)->Clone();
-//    else hmctotal->Add((TH1*)f->Get(mc));
-//  }
-
-//  TH1* hDataRawMC = (TH1*)hdata->Clone("hDataRawMC");
-//  hDataRawMC->Divide(hmctotal);
-//  hDataRawMC->SetLineWidth(2);
-//  prepHists({hDataRawMC}, false, false, false, {kOrange});
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -239,12 +227,9 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   if(hdata){
     double mean  = pull->GetMean();
     double StdDev = pull->GetStdDev();
-    //cout << "Made it here" << endl;
     TString fitString = "#splitline{Mean = " + to_string(mean) + "}{StdDev = " + to_string(StdDev) + "}";
     std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC(fitString, 0.2, 0.72); };
-    //cout << "Made it here" << endl;
     auto c_pull = drawCompMatt({pull}, 0, -1., &plotextra);
-    cout << "Made it here" << endl;
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     TString basename = outputName + "_pull";
