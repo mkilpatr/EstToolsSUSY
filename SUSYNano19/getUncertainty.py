@@ -19,7 +19,7 @@ rt.gROOT.SetBatch(True)
 
 from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend, TFile, TColor
 
-isRun2 = True
+isRun2 = False
 
 uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
@@ -46,15 +46,15 @@ graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 pred_total_name = 'hpred'
-json_bkgPred = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/combine_bkgPred.json'
+json_bkgPred = uncdir + '/combine_bkgPred.json'
 
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
 systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
 debug = True
-test_samp = ['TTZ']
-test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt250to350']
-test_type = ['JES']
+test_samp = ['znunu']
+test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550']
+test_type = ['PDF_Weight']
 
 # ordered bin list
 binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550', 
@@ -578,10 +578,6 @@ def bkgTFPrediction(cr_description, bin, type, sample):
             crother_dn+=yields_dc[crproc+'_back'][cr][0] * relUnc[type][cr][crproc+'_back'][0]
 
         if sample in test_samp and bin in test_bin and type in test_type and debug:
-            print "crother_up: {0}, crttbar up: {1} * {2}, crznunu up: {3} * {4}, crRare up: {4} * {5}".format(crother_up, yields_dc[crproc+'_ttbarplusw'][cr][0], relUnc[type][cr]['ttbarplusw'][1], yields_dc[crproc+'_znunu'][cr][0] , relUnc[type][cr]['znunu'][1], yields_dc[crproc+'_Rare'][cr][0] , relUnc[type][cr]['Rare'][1])
-            print "crother_up: {0}, crttbar up: {1}, crznunu up: {2}, crRare up: {3}".format(crother_up, yields_dc[crproc+'_ttbarplusw'][cr][0] * relUnc[type][cr]['ttbarplusw'][1], yields_dc[crproc+'_znunu'][cr][0] * relUnc[type][cr]['znunu'][1], yields_dc[crproc+'_Rare'][cr][0] * relUnc[type][cr]['Rare'][1])
-            print "crother_dn: {0}, crttbar dn: {1} * {2}, crznunu dn: {3} * {4}, crRare dn: {4} * {5}".format(crother_dn, yields_dc[crproc+'_ttbarplusw'][cr][0], relUnc[type][cr]['ttbarplusw'][0], yields_dc[crproc+'_znunu'][cr][0] , relUnc[type][cr]['znunu'][0], yields_dc[crproc+'_Rare'][cr][0] , relUnc[type][cr]['Rare'][0])
-            print "crother_dn: {0}, crttbar dn: {1}, crznunu dn: {2}, crRare dn: {3}".format(crother_dn, yields_dc[crproc+'_ttbarplusw'][cr][0] * relUnc[type][cr]['ttbarplusw'][0], yields_dc[crproc+'_znunu'][cr][0] * relUnc[type][cr]['znunu'][0], yields_dc[crproc+'_Rare'][cr][0] * relUnc[type][cr]['Rare'][0])
             print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crother_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
 
     if 'znunu' in sample: 

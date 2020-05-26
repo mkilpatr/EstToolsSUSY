@@ -471,7 +471,7 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
 TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
   auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
-  cout << "pull = (a-b)/sqrt(b+db)" << endl;
+  cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
   for(int ibin = 0; ibin < hs->GetN(); ++ibin){
     int ibin_data = ibin + 1;
     ratio->SetBinError(ibin,0);
@@ -488,7 +488,7 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
     pull = (a-b)/sqrt(b+db);	//ken's formular: pull = data-pred/sqrt(pred + d_pred^2)
     ratio->SetBinContent(ibin,pull);
     pull_h->Fill(pull);
-    cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + " << db << ")" << endl;  
+    if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
   }
   return pull_h;
 }

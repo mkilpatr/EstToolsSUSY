@@ -7,14 +7,16 @@
 
 using namespace EstTools;
 
-void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/SearchBinsPlot/", TString outputName="getFinalPlot_Separate/pred_binnum_"){
+void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_Separate/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
   RATIOPLOT_XLABEL_OFFSET = 0.00;
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
-  if(inputFile.Contains("2016")) lumistr = "35.815165";
+  if(inputDir.Contains("2016")) lumistr = "35.815165";
+
+  TString inputFile = "/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/" + inputDir + "/SearchBinsPlot/";
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> sigs = {"T2tt_1000_0"};
@@ -31,28 +33,112 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
 			   };
   vector<TString> splitlabels = {
       "#splitline{Low #Deltam}{}",
-      "#splitline{High #Deltam, N_{b}=1, #geq 2}{}",
-      "#splitline{High #Deltam, N_{b}=2}{}",
-      "#splitline{High #Deltam, N_{b} #geq 3}{}"
+      "#splitline{High #Deltam, N_{b}=1 #geq 2, (N_{T}, N_{res}, N_{W})}{}",
+      "#splitline{High #Deltam, N_{b}=2, (N_{T}, N_{res}, N_{W})}{}",
+      "#splitline{High #Deltam, N_{b} #geq 3, (N_{T}, N_{res}, N_{W})}{}"
   };
 
   vector<double> ratioYmax = {2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999};
 
-  TLatex tl;
-  tl.SetTextSize(0.025);
+  TLatex tl, tv;
+  tl.SetTextSize(0.02);
   tl.SetTextAlign(31);
+  tv.SetTextSize(0.025);
+  tv.SetTextAlign(31);
+  tv.SetTextAngle(90);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){},
-    [&tl](){},
-    [&tl](){},
-    [&tl](){},
+//    [&tl](){},
+//    [&tl](){},
+//    [&tl](){},
+//    [&tl](){},
+
+    [&tl](){ tl.DrawLatexNDC(0.345, 0.76, "N_{b}=0,p_{T}(ISR)#geq500"); 
+	     tl.DrawLatexNDC(0.25, 0.73, "N_{SV}=0"); 
+	     tl.DrawLatexNDC(0.35, 0.73, "N_{SV}#geq1"); 
+	     tl.DrawLatexNDC(0.57, 0.76, "N_{b}=1"); 
+	     tl.DrawLatexNDC(0.63, 0.725, "#splitline{N_{SV}=0}{p_{T}(ISR)[300,500)       p_{T}(ISR)#geq500}"); 
+	     tl.DrawLatexNDC(0.68, 0.725, "N_{SV}#geq1"); 
+	     tl.DrawLatexNDC(0.85, 0.76, "N_{b}=2"); 
+	     tl.DrawLatexNDC(0.92, 0.73, "p_{T}(ISR)[300,500)       p_{T}(ISR)#geq500");},
+    [&tl](){ tl.DrawLatexNDC(0.3, 0.73, "M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175"); 
+	     tl.DrawLatexNDC(0.27, 0.70, "N_{b}=1      N_{b}#geq2"); 
+	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 0)"); 
+	     tl.DrawLatexNDC(0.375, 0.70, "N_{b}=1    N_{b}#geq2"); 
+	     tl.DrawLatexNDC(0.5, 0.73, "(#geq1, 0, 0)"); 
+	     tl.DrawLatexNDC(0.62, 0.73, "(0, 0, #geq1)"); 
+	     tl.DrawLatexNDC(0.78, 0.73, "(0, #geq1, 0)");},
+    [&tl](){ tl.DrawLatexNDC(0.25, 0.73, "(1, 0, 0)"); 
+	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 1)"); 
+	     tl.DrawLatexNDC(0.55, 0.73, "(0, 1, 0)");},
+    [&tl](){ tl.DrawLatexNDC(0.3, 0.73, "(1, 0, 0)");
+	     tl.DrawLatexNDC(0.46, 0.73, "(0, 0, 1)");
+	     tl.DrawLatexNDC(0.65, 0.73, "(0, 1, 0)");},
+  };
+
+  vector<std::function<void()>> drawRegionLabelsVertical {
+    [&tv](){},
+//    [&tv](){},
+//    [&tv](){},
+//    [&tv](){},
+
+    [&tv](){ tv.DrawLatexNDC(0.89, 0.76, "(#geq1, #geq1, 0)"); 
+	     tv.DrawLatexNDC(0.92, 0.76, "(#geq1, 0, #geq1)"); 
+	     tv.DrawLatexNDC(0.95, 0.76, "(0, #geq1, #geq1)");},
+    [&tv](){ tv.DrawLatexNDC(0.68, 0.73, "(1, 0, 1)"); 
+	     tv.DrawLatexNDC(0.75, 0.73, "(1, 1, 0)"); 
+	     tv.DrawLatexNDC(0.815, 0.73, "(0, 1, 1)"); 
+	     tv.DrawLatexNDC(0.845, 0.73, "(2, 0, 0)"); 
+	     tv.DrawLatexNDC(0.873, 0.73, "(0, 0, 2)"); 
+	     tv.DrawLatexNDC(0.92, 0.73, "(0, 2, 0)"); 
+	     tv.DrawLatexNDC(0.95, 0.73, "(N_{t} + N_{res} + N_{W})#geq3");},
+    [&tv](){ tv.DrawLatexNDC(0.74, 0.73, "(1, 0, 1)"); 
+	     tv.DrawLatexNDC(0.78, 0.73, "(1, 1, 0)"); 
+	     tv.DrawLatexNDC(0.82, 0.73, "(0, 1, 1)"); 
+	     tv.DrawLatexNDC(0.845, 0.73, "(2, 0, 0)"); 
+	     tv.DrawLatexNDC(0.875, 0.73, "(0, 0, 2)"); 
+	     tv.DrawLatexNDC(0.91, 0.73, "(0, 2, 0)"); 
+	     tv.DrawLatexNDC(0.95, 0.73, "(N_{t} + N_{res} + N_{W})#geq3");},
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+//    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); },
+
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8,   LOG_YMIN, 8,   2000); 
+								    drawLine(16,  LOG_YMIN, 16,  20000); 
+								    drawLine(24,  LOG_YMIN, 24,  2000); 
+								    drawLine(32,  LOG_YMIN, 32,  2000); 
+								    drawLine(35,  LOG_YMIN, 35,  20000); 
+								    drawLine(44,  LOG_YMIN, 44,  2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57, LOG_YMIN, 57, 2000); 
+								    drawLine(61, LOG_YMIN, 61, 20000); 
+								    drawLine(65, LOG_YMIN, 65, 2000); 
+								    drawLine(69, LOG_YMIN, 69, 20000); 
+								    drawLine(78, LOG_YMIN, 78, 20000); 
+								    drawLine(84, LOG_YMIN, 84, 20000); 
+								    drawLine(99, LOG_YMIN, 99, 20000); 
+								    drawLine(101, LOG_YMIN, 101, 2000); 
+								    drawLine(103, LOG_YMIN, 103, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114, LOG_YMIN, 114, 2000); 
+								    drawLine(120, LOG_YMIN, 120, 2000); 
+								    drawLine(135, LOG_YMIN, 135, 2000); 
+								    drawLine(137, LOG_YMIN, 137, 2000); 
+								    drawLine(143, LOG_YMIN, 143, 2000); 
+								    drawLine(145, LOG_YMIN, 145, 2000); 
+								    drawLine(147, LOG_YMIN, 147, 2000); 
+								    drawLine(148, LOG_YMIN, 148, 2000); 
+								    drawLine(152, LOG_YMIN, 152, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162, LOG_YMIN, 162, 2000); 
+								    drawLine(165, LOG_YMIN, 165, 2000); 
+								    drawLine(174, LOG_YMIN, 174, 2000); 
+								    drawLine(175, LOG_YMIN, 175, 2000); 
+								    drawLine(177, LOG_YMIN, 177, 2000); 
+								    drawLine(178, LOG_YMIN, 178, 2000); 
+								    drawLine(179, LOG_YMIN, 179, 2000); 
+								    drawLine(180, LOG_YMIN, 180, 2000); 
+								    drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -60,12 +146,14 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   vector<TH1*> pred;
   vector<TH1*> hsigs;
 
-  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb.root");
+  TString suffix = "";
+  if(inputDir.Contains("2016")) suffix = "_2016";
+  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb" + suffix + ".root");
   assert(ttz);
   TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search Region;Events", nullptr);
   pred.push_back(httZ);
 
-  TFile *r = TFile::Open(inputFile + "Rare_final_sb.root");
+  TFile *r = TFile::Open(inputFile + "Rare_final_sb" + suffix + ".root");
   assert(r);
   TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search Region;Events", nullptr);
   pred.push_back(hRare);
@@ -75,12 +163,16 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
   TH1D* hqcd = convertToHist({(TH1*)q->Get("QCD")}, "qcd_pred", ";Search Region;Events", nullptr);
   pred.push_back(hqcd);
 
-  TFile *z = TFile::Open(inputFile + "searchBinsZinv_combined_Run2.root");
+  if(!inputDir.Contains("2016")) suffix = "_Run2";
+
+  TFile *z = TFile::Open(inputFile + "searchBinsZinv_combined" + suffix + ".root");
   assert(z);
   TH1D* hznunu = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_pred", ";Search Region;Events", nullptr);
   pred.push_back(hznunu);
 
-  TFile *f = TFile::Open("getFinalPlot/SumOfBkg.root");
+  if(inputDir.Contains("2016")) suffix = "_2016";
+  else suffix = "";
+  TFile *f = TFile::Open("getFinalPlot" + suffix + "/SumOfBkg.root");
   assert(f);
   TH1D* httbar = convertToHist({(TH1*)f->Get("httbar")}, "httbar_pred", ";Search Region;Events", nullptr);
   pred.push_back(httbar);
@@ -178,16 +270,8 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
     for (auto &cat_name : srbins){
       auto nbins = catMap.at(cat_name).bin.nbins;
       if (cat_name.Contains(TRegexp(region)) || 
-	 (TString(region).Contains("hm_nb1_bins") && (cat_name.Contains("hm_nb1") || cat_name.Contains("highmtb_nt0_nrt0_nw0") || cat_name.Contains("lowmtb_nj7_nrtgeq1"))) || //hm_nb1_bins
-	 (TString(region).Contains("otherptisr") && (cat_name.Contains("nb1_nivf0_lowmtb_highptisr_lowptb") || cat_name.Contains("nb1_nivf0_lowmtb_highptisr_medptb") || cat_name.Contains("medptisr"))) || //lm_nb1_otherptisr
-	 (TString(region).Contains("nb1_highmtb_1tag") && (cat_name.Contains("ntgeq1_nrt0_nw0") || cat_name.Contains("nt0_nrt0_nwgeq1"))) || //hm_nb1_highmtb_1tag  
-	 (TString(region).Contains("hm_nb1_highmtb_nrt_2tags") && (cat_name.Contains("hm_nb1_highmtb_nt0_nrtgeq1_nw0") || cat_name.Contains("ntgeq1_nrt0_nwgeq1") || cat_name.Contains("nt0_nrtgeq1_nwgeq1") || cat_name.Contains("ntgeq1_nrtgeq1_nw0"))) || //hm_nb1_highmtb_nrt_2tags
-	 (TString(region).Contains("nbeq2_highmtb_1tag") && (cat_name.Contains("nbeq2_highmtb_nt1_nrt0_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt0_nw1"))) || //hm_nb2_highmtb_1tag  
-	 (TString(region).Contains("nbeq2_highmtb_2tag") && (cat_name.Contains("nbeq2_highmtb_nt1_nrt0_nw1") || cat_name.Contains("nbeq2_highmtb_nt1_nrt1_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt1_nw1"))) || //hm_nb2_highmtb_2tag
-	 (TString(region).Contains("nbeq2_highmtb_taggt2") && (cat_name.Contains("nbeq2_highmtb_nt2_nrt0_nw0") || cat_name.Contains("nbeq2_highmtb_nt0_nrt0_nw2") || cat_name.Contains("nbeq2_highmtb_nt0_nrt2_nw0") || cat_name.Contains("nbeq2_highmtb_nrtntnwgeq3"))) || //hm_nb2_highmtb_taggt2
-	 (TString(region).Contains("nb3_highmtb_1tag") && (cat_name.Contains("nb3_highmtb_nt1_nrt0_nw0") || cat_name.Contains("nb3_highmtb_nt0_nrt0_nw1") || cat_name.Contains("nb3_highmtb_nt0_nrt1_nw0"))) || //hm_nb3_highmtb_1tag
-	 (TString(region).Contains("nb3_highmtb_taggeq2") && (cat_name.Contains("nb3_highmtb_nt1_nrt0_nw1") || cat_name.Contains("nb3_highmtb_nt1_nrt1_nw0") || cat_name.Contains("nb3_highmtb_nt0_nrt1_nw1") || cat_name.Contains("nb3_highmtb_nt2_nrt0_nw0") || cat_name.Contains("nb3_highmtb_nt0_nrt0_nw2") || cat_name.Contains("nb3_highmtb_nt0_nrt2_nw0") || cat_name.Contains("nb3_highmtb_nrtntnwgeq3"))) //hm_nb3_highmtb_taggeq2
-	 ){
+	 (TString(region).Contains("hm_nb1_bins") && (cat_name.Contains("hm_nb1") || cat_name.Contains("highmtb_nt0_nrt0_nw0") || cat_name.Contains("lowmtb_nj7_nrtgeq1"))) //hm_nb1_bins
+         ){
         if (isfirst){
           isfirst = false;
           xlow = ibin;
@@ -200,7 +284,7 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
     }
 
 
-    if (region.Contains("nj5t")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1;}
+    if (region.Contains("lm") || region.Contains("hm_nb1_bins")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.1;}
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.01;}
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
@@ -215,8 +299,9 @@ void getFinalPlot_Separate(TString inputFile="/eos/uscms/store/user/lpcsusyhad/S
     else      c = drawStackAndRatio(pred, nullptr, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.76, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.78, 0.025);
     drawRegionLabels.at(ireg)();
+    drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "_" + region;
     basename.ReplaceAll("nb[0-9]", "");

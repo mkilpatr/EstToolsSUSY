@@ -71,7 +71,7 @@ void SystDenseTop_LL(){
   // toptag up
   {
     sys_name = "eff_densetoptag_Up";
-    densetopwgt = "(Stop0l_DeepAK8_SFWeight_densetop_up)"; 
+    densetopwgt = "(Stop0l_DeepAK8_SFWeight_densetop_up/Stop0l_DeepAK8_SFWeight)"; 
     cout << "\n\n ====== Using weights " << densetopwgt << " and " << densetopwgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
@@ -80,7 +80,7 @@ void SystDenseTop_LL(){
   // toptag down 
   {
     sys_name = "eff_densetoptag_Down";
-    densetopwgt = "(Stop0l_DeepAK8_SFWeight_densetop_dn)"; 
+    densetopwgt = "(Stop0l_DeepAK8_SFWeight_densetop_dn/Stop0l_DeepAK8_SFWeight)"; 
     cout << "\n\n ====== Using weights " << densetopwgt << " and " << densetopwgt << " and " << restopwgt << "======\n\n";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
