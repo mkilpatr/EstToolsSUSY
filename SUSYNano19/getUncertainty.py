@@ -19,7 +19,7 @@ rt.gROOT.SetBatch(True)
 
 from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend, TFile, TColor
 
-isRun2 = False
+isRun2 = True
 
 uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
@@ -45,13 +45,35 @@ unc_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_
 graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
+uncMap = {
+    "eff_restoptag"	: "\Nres",
+    "ivfunc"		: "\Nsv",
+    "LHEScale"		: "LHE Scale",
+    "ISR_Weight_background"	: "ISR",
+    "metres"		: "\met res.",
+    "PDF_Weight"	: "PDF",
+    "PU_Weight"		: "Pile-Up",
+    "eff_e"		: "$e$ veto",
+    "eff_toptag"	: "\Nt",
+    "Prefire_Weight"	: "Prefire",
+    "JES"		: "JES",
+    "err_mu"		: "$\mu$ veto",
+    "eff_wtag"		: "\Nw",
+    "eff_fatjet_veto"	: "AK8 Veto",
+    "lumi"		: "Lumi",
+    "b"			: "b-tag",
+    "photon_trig"	: "$\gamma$ Trig.",
+    "eff_tau"		: "$\\tau$ veto",
+    "photon_sf"		: "$\gamma$ SF"
+}
+
 pred_total_name = 'hpred'
 json_bkgPred = uncdir + '/combine_bkgPred.json'
 
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
 systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
-debug = True
+debug = False
 test_samp = ['znunu']
 test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550']
 test_type = ['PDF_Weight']
@@ -616,6 +638,7 @@ def calcAbsUnc():
     For uncertainties of different types, add in quadrature for each bin.
     '''
     mergedbins = [bin for bin in binlist if '*' in binMaps['lepcr'][bin]]
+    global absUnc
     absUnc = {bin:{} for bin in binlist}
     yields_cr = {bin:{} for bin in binlist}
     for sample in all_samples: absUnc_pieces[sample] = {bin:{} for bin in binlist}
@@ -644,18 +667,15 @@ def calcAbsUnc():
                     up = float(absUnc_pieces[sample][bin][type][1]/yields[bin][sample])
                     down = float(absUnc_pieces[sample][bin][type][0]/yields[bin][sample])
                     print "%3s %30s %20s Up: %8.6f Down: %8.6f" % (sample, bin, type, up, down)
+
     for bin in absUnc:
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
         systUnc[bin] = sumUncLogNorm(absUnc[bin].values(), yields_total[bin], bin, "", absUnc[bin].keys())
         fullUnc[bin] = addAsymm(systUnc[bin], statUnc[bin])
-        #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
-        #    print("bin: {0}, syst: {1}, full: {2}".format(bin, systUnc[bin], fullUnc[bin]))    
         for sample in all_samples:
             systUnc_pieces[sample][bin] = sumUncLogNorm(absUnc_pieces[sample][bin].values(), yields[bin][sample], bin, sample, absUnc_pieces[sample][bin].keys())
             fullUnc_pieces[sample][bin] = addAsymm(systUnc_pieces[sample][bin], statUnc_pieces[bin][sample])
-            #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
-            #    print("sample: {0}, bin: {1}, syst: {2}".format(sample, bin, systUnc_rel_pieces[sample][bin]))    
 
 def writeFullUnc(pred_file):
     ''' Update the input root file, add a hist with total prediction and full uncertainty. '''
@@ -718,12 +738,40 @@ def makeYieldTable(output='pred_sr.tex'):
     with open(output, 'w') as f:
         print >> f, s
    
+def makeUncertaintyTable(output='pred_unc.tex'):
+    ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
+    print '\nprinting yield table...\n'
+    s  = beginUncTable()
+    header='Search region & \\met [GeV]  '
+    for type in uncMap.keys():
+        header += ' & ' + str(uncMap[type])
+    unc_header = header + '  \\\\ \n'
+    s += unc_header
+    s += '\\hline\n'
+    s += makeUncTable(unc_header)
+    s += endUncTable(135,182)
+    print s
+    with open(output, 'w') as f:
+        print >> f, s
+   
 def beginTable():
     '''Add a break between the bins to fit on each page'''
     s  = '\\begin{table}[!h]\n'
     s += '\\begin{center}\n'
     s += '\\resizebox*{0.6\\textwidth}{!}{\n'
     s += '\\begin{tabular}{|c||c||c|c|c|c|c|c|}'
+    s += '\\hline\n'
+    return s
+
+def beginUncTable():
+    col = ''
+    '''Add a break between the bins to fit on each page'''
+    s  = '\\begin{table}[!h]\n'
+    s += '\\begin{center}\n'
+    s += '\\resizebox*{0.6\\textwidth}{!}{\n'
+    for type in uncMap.keys():
+        col += '|c'
+    s += '\\begin{tabular}{|c||c|' + col + '|}'
     s += '\\hline\n'
     return s
 
@@ -739,6 +787,22 @@ def endTable(ibini, ibinf):
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
     s += '\\caption[' + label + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
+    s += '\\end{center}\n'
+    s += '\\end{table}\n'
+    return s
+
+def endUncTable(ibini, ibinf):
+    '''Add a break between the bins to fit on each page'''
+    label='tab:uncert-lm'
+    if ibini == 53:
+        label='tab:uncert-hm-1'
+    elif ibini == 94:
+        label='tab:uncert-hm-2'
+    elif ibini == 135:
+        label='tab:uncert-hm-3'
+    s  = '\\hline\n'
+    s += '\\end{tabular}}\n'
+    s += '\\caption[' + label + ']{The SM uncertainties for Run 2 with \datalumi for each search region in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '.}\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -779,6 +843,35 @@ def makeTable():
 	    ibini=ibin
     return s
 
+def makeUncTable(unc_header):
+    ''' Put together the table chunk for the given nj,nb,mtb,nt mega-bin. '''
+    sections=[]
+    s=''
+    ibin=0
+    ibini=0
+    for bin in binlist: 
+        sec, met= bin.lstrip('bin_').rsplit('_', 1)
+        if sec not in sections:
+            sections.append(sec)
+            s += chunkHeader(sec)
+        xlow, xhigh = met.lstrip('met_pt').split('to')
+        metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
+        s += '%d & '%ibin
+        ibin = ibin+1
+        s += metlabel
+        for type in uncMap.keys():
+            e_low, e_up = absUnc[bin][type]
+            n = yields_total[bin]
+            print("type: {0}, n: {1}, up: {2}, dn: {3}".format(type, n, e_up, e_low))
+            s += formatUncertainty(n,e_low,e_up)
+        s += ' \\\\ \n'
+        if ibin == 53 or ibin == 94 or ibin == 135:
+	    s += endUncTable(ibini, ibin-1)
+            s += beginUncTable()
+            s += unc_header
+	    ibini=ibin
+    return s
+
 # formats the prediction nEvents +/- error
 def formatPrediction(n,e_low,e_up):
     if n>=10:
@@ -801,6 +894,22 @@ def formatPrediction(n,e_low,e_up):
         return ' & $ %s\\pm%s $ ' %(n, e_up)
     else:
         return ' & $ %s\,^{+%s}_{-%s} $ ' %(n, e_up, e_low)
+
+# formats the prediction nEvents +/- error
+def formatUncertainty(n,e_low,e_up):
+    unc = (((e_up/n) - 1) + (1 - (e_low/n)))/2*100
+    out = ''
+    if unc>=10:
+        unc  = str(int(round(unc,0)))
+    elif unc>=1:
+        unc  = str(round(unc,1))
+    else:
+        unc  = str(round(unc,2))
+    if unc=='0.0':
+        return ' & $<$0.01'
+    out = ' & $ %s' %(unc)
+    out += ' \% $ '
+    return out
 
 
 # puts together the bin header for bins of nJets, mtb, nTop (no selection on nB)
@@ -839,8 +948,9 @@ def main():
     readYields(args.predfile)
     calcAbsUnc()
     writeFullUnc(args.predfile)
-    if args.printTable : makeYieldTable()
-
+    if args.printTable : 
+        makeYieldTable()
+        makeUncertaintyTable()
 
 if __name__=='__main__':
     main()

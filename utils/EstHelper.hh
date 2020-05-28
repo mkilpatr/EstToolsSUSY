@@ -610,6 +610,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hbkgtotal->SetMinimum(plotlog? LOG_YMIN : 0);
   if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
   hbkgtotal->GetXaxis()->SetLabelOffset(0.20);
+  hbkgtotal->GetYaxis()->SetTitleSize(0.08);
+  hbkgtotal->GetYaxis()->SetTitleOffset(0.75);
+  hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
   hbkgtotal->Draw("hist");
 
   hstack->Draw("histsame");

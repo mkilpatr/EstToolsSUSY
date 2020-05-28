@@ -32,16 +32,16 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 			   "hm_nb3"
 			   };
   vector<TString> splitlabels = {
-      "#splitline{Low #Deltam}{}",
-      "#splitline{High #Deltam, N_{b}=1 #geq 2, (N_{T}, N_{res}, N_{W})}{}",
-      "#splitline{High #Deltam, N_{b}=2, (N_{T}, N_{res}, N_{W})}{}",
-      "#splitline{High #Deltam, N_{b} #geq 3, (N_{T}, N_{res}, N_{W})}{}"
+      "Low #Deltam",
+      "High #Deltam, N_{b}=1 #geq 2, (N_{t}, N_{res}, N_{W})",
+      "High #Deltam, N_{b}=2, (N_{t}, N_{res}, N_{W})",
+      "High #Deltam, N_{b} #geq 3, (N_{t}, N_{res}, N_{W})"
   };
 
   vector<double> ratioYmax = {2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999};
 
   TLatex tl, tv;
-  tl.SetTextSize(0.02);
+  tl.SetTextSize(0.025);
   tl.SetTextAlign(31);
   tv.SetTextSize(0.025);
   tv.SetTextAlign(31);
@@ -52,27 +52,28 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 //    [&tl](){},
 //    [&tl](){},
 
-    [&tl](){ tl.DrawLatexNDC(0.345, 0.76, "N_{b}=0,p_{T}(ISR)#geq500"); 
-	     tl.DrawLatexNDC(0.25, 0.73, "N_{SV}=0"); 
-	     tl.DrawLatexNDC(0.35, 0.73, "N_{SV}#geq1"); 
-	     tl.DrawLatexNDC(0.57, 0.76, "N_{b}=1"); 
-	     tl.DrawLatexNDC(0.63, 0.725, "#splitline{N_{SV}=0}{p_{T}(ISR)[300,500)       p_{T}(ISR)#geq500}"); 
-	     tl.DrawLatexNDC(0.68, 0.725, "N_{SV}#geq1"); 
-	     tl.DrawLatexNDC(0.85, 0.76, "N_{b}=2"); 
-	     tl.DrawLatexNDC(0.92, 0.73, "p_{T}(ISR)[300,500)       p_{T}(ISR)#geq500");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.73, "M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175"); 
-	     tl.DrawLatexNDC(0.27, 0.70, "N_{b}=1      N_{b}#geq2"); 
+    [&tl](){ tl.DrawLatexNDC(0.345, 0.73, "N_{b}=0,p_{T}^{ISR}#geq500"); 
+	     tl.DrawLatexNDC(0.2425, 0.70, "N_{SV}=0"); 
+	     tl.DrawLatexNDC(0.35, 0.70, "N_{SV}#geq1"); 
+	     tl.DrawLatexNDC(0.57, 0.73, "N_{b}=1"); 
+	     tl.DrawLatexNDC(0.54, 0.70, "N_{SV}=0");
+	     tl.DrawLatexNDC(0.62, 0.67, "p_{T}^{ISR}[300,500)     p_{T}^{ISR}#geq500"); 
+	     tl.DrawLatexNDC(0.68, 0.70, "N_{SV}#geq1"); 
+	     tl.DrawLatexNDC(0.85, 0.73, "N_{b}=2"); 
+	     tl.DrawLatexNDC(0.92, 0.70, "p_{T}^{ISR}[300,500)       p_{T}^{ISR}#geq500");},
+    [&tl](){ tl.DrawLatexNDC(0.26, 0.73, "M_{T}^{b} < 175"); 
+	     tl.DrawLatexNDC(0.277, 0.70, "N_{b}=1    N_{b}#geq2"); 
 	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 0)"); 
-	     tl.DrawLatexNDC(0.375, 0.70, "N_{b}=1    N_{b}#geq2"); 
-	     tl.DrawLatexNDC(0.5, 0.73, "(#geq1, 0, 0)"); 
-	     tl.DrawLatexNDC(0.62, 0.73, "(0, 0, #geq1)"); 
-	     tl.DrawLatexNDC(0.78, 0.73, "(0, #geq1, 0)");},
-    [&tl](){ tl.DrawLatexNDC(0.25, 0.73, "(1, 0, 0)"); 
-	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 1)"); 
-	     tl.DrawLatexNDC(0.55, 0.73, "(0, 1, 0)");},
-    [&tl](){ tl.DrawLatexNDC(0.3, 0.73, "(1, 0, 0)");
-	     tl.DrawLatexNDC(0.46, 0.73, "(0, 0, 1)");
-	     tl.DrawLatexNDC(0.65, 0.73, "(0, 1, 0)");},
+	     tl.DrawLatexNDC(0.39, 0.70, "N_{b}=1    N_{b}#geq2"); 
+	     tl.DrawLatexNDC(0.5, 0.70, "(#geq1, 0, 0)"); 
+	     tl.DrawLatexNDC(0.63, 0.70, "(0, 0, #geq1)"); 
+	     tl.DrawLatexNDC(0.78, 0.70, "(0, #geq1, 0)");},
+    [&tl](){ tl.DrawLatexNDC(0.27, 0.70, "(1, 0, 0)"); 
+	     tl.DrawLatexNDC(0.39, 0.70, "(0, 0, 1)"); 
+	     tl.DrawLatexNDC(0.55, 0.70, "(0, 1, 0)");},
+    [&tl](){ tl.DrawLatexNDC(0.32, 0.70, "(1, 0, 0)");
+	     tl.DrawLatexNDC(0.47, 0.70, "(0, 0, 1)");
+	     tl.DrawLatexNDC(0.63, 0.70, "(0, 1, 0)");},
   };
 
   vector<std::function<void()>> drawRegionLabelsVertical {
@@ -81,23 +82,23 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 //    [&tv](){},
 //    [&tv](){},
 
-    [&tv](){ tv.DrawLatexNDC(0.89, 0.76, "(#geq1, #geq1, 0)"); 
-	     tv.DrawLatexNDC(0.92, 0.76, "(#geq1, 0, #geq1)"); 
-	     tv.DrawLatexNDC(0.95, 0.76, "(0, #geq1, #geq1)");},
-    [&tv](){ tv.DrawLatexNDC(0.68, 0.73, "(1, 0, 1)"); 
-	     tv.DrawLatexNDC(0.75, 0.73, "(1, 1, 0)"); 
-	     tv.DrawLatexNDC(0.815, 0.73, "(0, 1, 1)"); 
-	     tv.DrawLatexNDC(0.845, 0.73, "(2, 0, 0)"); 
-	     tv.DrawLatexNDC(0.873, 0.73, "(0, 0, 2)"); 
-	     tv.DrawLatexNDC(0.92, 0.73, "(0, 2, 0)"); 
-	     tv.DrawLatexNDC(0.95, 0.73, "(N_{t} + N_{res} + N_{W})#geq3");},
-    [&tv](){ tv.DrawLatexNDC(0.74, 0.73, "(1, 0, 1)"); 
-	     tv.DrawLatexNDC(0.78, 0.73, "(1, 1, 0)"); 
-	     tv.DrawLatexNDC(0.82, 0.73, "(0, 1, 1)"); 
-	     tv.DrawLatexNDC(0.845, 0.73, "(2, 0, 0)"); 
-	     tv.DrawLatexNDC(0.875, 0.73, "(0, 0, 2)"); 
-	     tv.DrawLatexNDC(0.91, 0.73, "(0, 2, 0)"); 
-	     tv.DrawLatexNDC(0.95, 0.73, "(N_{t} + N_{res} + N_{W})#geq3");},
+    [&tv](){ tv.DrawLatexNDC(0.89, 0.73, "(#geq1, #geq1, 0)"); 
+	     tv.DrawLatexNDC(0.92, 0.73, "(#geq1, 0, #geq1)"); 
+	     tv.DrawLatexNDC(0.95, 0.73, "(0, #geq1, #geq1)");},
+    [&tv](){ tv.DrawLatexNDC(0.68, 0.70, "(1, 0, 1)"); 
+	     tv.DrawLatexNDC(0.75, 0.70, "(1, 1, 0)"); 
+	     tv.DrawLatexNDC(0.815, 0.70, "(0, 1, 1)"); 
+	     tv.DrawLatexNDC(0.845, 0.70, "(2, 0, 0)"); 
+	     tv.DrawLatexNDC(0.875, 0.70, "(0, 0, 2)"); 
+	     tv.DrawLatexNDC(0.92, 0.70, "(0, 2, 0)"); 
+	     tv.DrawLatexNDC(0.985, 0.70, "(N_{t} + N_{res} + N_{W})#geq3");},
+    [&tv](){ tv.DrawLatexNDC(0.74, 0.70, "(1, 0, 1)"); 
+	     tv.DrawLatexNDC(0.78, 0.70, "(1, 1, 0)"); 
+	     tv.DrawLatexNDC(0.82, 0.70, "(0, 1, 1)"); 
+	     tv.DrawLatexNDC(0.845, 0.70, "(2, 0, 0)"); 
+	     tv.DrawLatexNDC(0.875, 0.70, "(0, 0, 2)"); 
+	     tv.DrawLatexNDC(0.91, 0.70, "(0, 2, 0)"); 
+	     tv.DrawLatexNDC(0.985, 0.70, "(N_{t} + N_{res} + N_{W})#geq3");},
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
@@ -121,24 +122,24 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 								    drawLine(99, LOG_YMIN, 99, 20000); 
 								    drawLine(101, LOG_YMIN, 101, 2000); 
 								    drawLine(103, LOG_YMIN, 103, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114, LOG_YMIN, 114, 2000); 
-								    drawLine(120, LOG_YMIN, 120, 2000); 
-								    drawLine(135, LOG_YMIN, 135, 2000); 
-								    drawLine(137, LOG_YMIN, 137, 2000); 
-								    drawLine(143, LOG_YMIN, 143, 2000); 
-								    drawLine(145, LOG_YMIN, 145, 2000); 
-								    drawLine(147, LOG_YMIN, 147, 2000); 
-								    drawLine(148, LOG_YMIN, 148, 2000); 
-								    drawLine(152, LOG_YMIN, 152, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162, LOG_YMIN, 162, 2000); 
-								    drawLine(165, LOG_YMIN, 165, 2000); 
-								    drawLine(174, LOG_YMIN, 174, 2000); 
-								    drawLine(175, LOG_YMIN, 175, 2000); 
-								    drawLine(177, LOG_YMIN, 177, 2000); 
-								    drawLine(178, LOG_YMIN, 178, 2000); 
-								    drawLine(179, LOG_YMIN, 179, 2000); 
-								    drawLine(180, LOG_YMIN, 180, 2000); 
-								    drawLine(182, LOG_YMIN, 182, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114, LOG_YMIN, 114, 20000); 
+								    drawLine(120, LOG_YMIN, 120, 20000); 
+								    drawLine(135, LOG_YMIN, 135, 20000); 
+								    drawLine(137, LOG_YMIN, 137, 20000); 
+								    drawLine(143, LOG_YMIN, 143, 20000); 
+								    drawLine(145, LOG_YMIN, 145, 20000); 
+								    drawLine(147, LOG_YMIN, 147, 20000); 
+								    drawLine(148, LOG_YMIN, 148, 20000); 
+								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162, LOG_YMIN, 162, 20000); 
+								    drawLine(165, LOG_YMIN, 165, 20000); 
+								    drawLine(174, LOG_YMIN, 174, 20000); 
+								    drawLine(175, LOG_YMIN, 175, 20000); 
+								    drawLine(177, LOG_YMIN, 177, 20000); 
+								    drawLine(178, LOG_YMIN, 178, 20000); 
+								    drawLine(179, LOG_YMIN, 179, 20000); 
+								    drawLine(180, LOG_YMIN, 180, 20000); 
+								    drawLine(182, LOG_YMIN, 182, 20000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -284,8 +285,8 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
     }
 
 
-    if (region.Contains("lm") || region.Contains("hm_nb1_bins")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.1;}
-    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.01;}
+    if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0;}
+    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred, bkglabels, "F");
@@ -294,18 +295,16 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
 
-    TCanvas* c;
-    if(hdata) c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
-    else      c = drawStackAndRatio(pred, nullptr, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.2, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
     drawRegionLabels.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "_" + region;
     basename.ReplaceAll("nb[0-9]", "");
-    c->Print(basename+".png");
+    c->Print(basename+".pdf");
     c->Print(basename +".C");
   }
 
@@ -318,7 +317,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     TString basename = outputName + "_pull";
-    c_pull->Print(basename+".png");
+    c_pull->Print(basename+".pdf");
     c_pull->Print(basename +".C");
   }
 
