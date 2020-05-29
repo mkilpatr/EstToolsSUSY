@@ -340,13 +340,13 @@ void SetStyle()
 }
 #endif
 
-void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LABEL_)
+void LDMX_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LABEL_)
 {
 
   // Global variables
 
-  TString cmsText     = "CMS";
-  float cmsTextFont   = 62;  // default is helvetic-bold
+  TString ldmxText     = "LDMX";
+  float ldmxTextFont   = 62;  // default is helvetic-bold
 
   bool writeExtraText = true;
   float extraTextFont = 52;  // default is helvetica-italics
@@ -355,15 +355,15 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   // in unit of the top margin size
   float lumiTextSize     = 0.6;
   float lumiTextOffset   = 0.2;
-  float cmsTextSize      = 0.75;
-  float cmsTextOffset    = 0.11; //0.1;  // only used in outOfFrame version
+  float ldmxTextSize      = 0.75;
+  float ldmxTextOffset    = 0.11; //0.1;  // only used in outOfFrame version
 
   float relPosX    = 0.045;
   float relPosY    = 0.035;
   float relExtraDY = 1.2;
 
-  // ratio of "CMS" and extra text size
-  float extraOverCmsTextSize  = 0.76;
+  // ratio of "LDMX" and extra text size
+  float extraOverldmxTextSize  = 0.76;
 
   TString lumi_13TeV = getLumi()+" fb^{-1}";
   TString lumi_8TeV  = "19.7 fb^{-1}";
@@ -385,7 +385,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   if( iPosX/10==1 ) alignX_=1;
   if( iPosX/10==2 ) alignX_=2;
   if( iPosX/10==3 ) alignX_=3;
-  if( iPosX == 0  ) relPosX = cmsTextOffset;
+  if( iPosX == 0  ) relPosX = ldmxTextOffset;
   int align_ = 10*alignX_ + alignY_;
 
   float H = pad->GetWh();
@@ -444,7 +444,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   latex.SetTextAngle(0);
   latex.SetTextColor(kBlack);
 
-  float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+  float extraTextSize = extraOverldmxTextSize*ldmxTextSize;
 
   latex.SetTextFont(42);
   latex.SetTextAlign(31);
@@ -452,10 +452,10 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
 
   if( outOfFrame ) {
-    latex.SetTextFont(cmsTextFont);
+    latex.SetTextFont(ldmxTextFont);
     latex.SetTextAlign(11);
-    latex.SetTextSize(cmsTextSize*t);
-    latex.DrawLatex(l,1-t+lumiTextOffset*t,cmsText);
+    latex.SetTextSize(ldmxTextSize*t);
+    latex.DrawLatex(l,1-t+lumiTextOffset*t,ldmxText);
   }
 
   pad->cd();
@@ -480,23 +480,23 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
       float yl_0 = posY_ - 0.15;
       float xl_1 = posX_ + 0.15*H/W;
       float yl_1 = posY_;
-      TASImage* CMS_logo = new TASImage("CMS-BW-label.png");
+      TASImage* LDMX_logo = new TASImage("LDMX-BW-label.png");
       TPad* pad_logo = new TPad("logo","logo", xl_0, yl_0, xl_1, yl_1 );
       pad_logo->Draw();
       pad_logo->cd();
-      CMS_logo->Draw("X");
+      LDMX_logo->Draw("X");
       pad_logo->Modified();
       pad->cd();
     } else {
-      latex.SetTextFont(cmsTextFont);
-      latex.SetTextSize(cmsTextSize*t);
+      latex.SetTextFont(ldmxTextFont);
+      latex.SetTextSize(ldmxTextSize*t);
       latex.SetTextAlign(align_);
-      latex.DrawLatex(posX_, posY_, cmsText);
+      latex.DrawLatex(posX_, posY_, ldmxText);
       if( writeExtraText ) {
         latex.SetTextFont(extraTextFont);
         latex.SetTextAlign(align_);
         latex.SetTextSize(extraTextSize*t);
-        latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
+        latex.DrawLatex(posX_, posY_- relExtraDY*ldmxTextSize*t, extraText);
       }
     }
   }

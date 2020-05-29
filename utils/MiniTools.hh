@@ -601,7 +601,7 @@ void drawHeader(TString text, TPad *p=0, double lowX = 0.7, double lowY = 0.93)
 {
 #ifdef TDR_STYLE_
   if (text.Contains("TeV")) {
-    if (p) CMS_lumi(p, 4, 10);
+    if (p) LDMX_lumi(p, 4, 10);
     return;
   }
 #endif

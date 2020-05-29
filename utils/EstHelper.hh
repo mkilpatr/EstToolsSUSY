@@ -253,7 +253,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   }
   if (leg) leg->Draw();
 #ifdef TDR_STYLE_
-  CMS_lumi(c, 4, 10);
+  LDMX_lumi(c, 4, 10);
 #endif
   return c;
 }
@@ -330,7 +330,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
   }
   if (leg) leg->Draw();
 #ifdef TDR_STYLE_
-  CMS_lumi(c, 4, 10);
+  LDMX_lumi(c, 4, 10);
 #endif
 
   return c;
@@ -413,7 +413,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  if(!isVal) CMS_lumi(p1, 4, 10);
+  if(!isVal) LDMX_lumi(p1, 4, 10);
 #endif
 
   c->cd();
@@ -549,7 +549,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->Draw("E2same");
   if(leg) addLegendEntry(leg, hbkgtotal,"Bkg. Uncertainty","F");
 
-  CMS_lumi(c, 4, 10);
+  LDMX_lumi(c, 4, 10);
 #endif
   if (leg) leg->Draw();
 
@@ -644,7 +644,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     gr->SetFillStyle(0);
     gr->Draw("PZ0same");
   }
-  CMS_lumi(p1, 4, 10);
+  LDMX_lumi(p1, 4, 10);
 #else
   if(hData) hData->Draw("Esame");
 #endif
