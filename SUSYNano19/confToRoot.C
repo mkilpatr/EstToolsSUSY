@@ -76,7 +76,6 @@ std::vector<std::string> readFileTotal(std::string FILENAME){
     std::string line;
     while (getline(file, line)) {
         // using printf() in all tests for consistency
-	cout << line << endl;
 	filenames.push_back(line);
     }
     file.close();

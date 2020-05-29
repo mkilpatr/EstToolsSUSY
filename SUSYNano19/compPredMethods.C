@@ -11,7 +11,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   SetStyle();
   PAD_SPLIT_Y = 0.35;
 
-  double xlow=54, xhigh = 103.9;
+  double xlow=54, xhigh = 183.9;
 
   auto toQuantities = [](const TGraphAsymmErrors *gr){
     vector<Quantity> vec;
@@ -32,8 +32,8 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "LowMET/sig/std_pred_trad_toppt_mgpow.root";
-  TString predFile_noextrap = "LowMET/sig/std_pred_trad_noextrap_toppt_mgpow.root";
+  TString predFile = "sig/std_pred_trad_withExtrap_052820.root";
+  TString predFile_noextrap = "sig/std_pred_trad_withoutExtrap_052820.root";
 //  TString output  = "";
 
   TFile *fpred = TFile::Open(predFile);
@@ -112,7 +112,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
 
   pred->GetXaxis()->SetRangeUser(xlow, xhigh);
-  pred->GetYaxis()->SetRangeUser(0.1, 1e6);
+  pred->GetYaxis()->SetRangeUser(0.01, 1e6);
   p1->SetLogy();
 
   pred->GetYaxis()->SetTitle("Prediction");
@@ -159,5 +159,5 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   ratio_pred_noextrap->Draw("P0same");
 
   c->cd();
-  c->SaveAs("/tmp/bkgpred_comp_"+bkg+".pdf");
+  c->SaveAs("bkgpred_comp_"+bkg+".pdf");
 }

@@ -24,26 +24,19 @@ isRun2 = True
 uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
-uncfiles=[]
-if isRun2:
-    uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll.conf')
-    uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll.conf')
-    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_Run2.conf')
-else:
-    uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll_2016.conf')
-    uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll_2016.conf')
-    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_2016.conf')
-uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
-uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
+uncfiles=[
+    uncdir + 'LostLepton/values_unc_sb_ll.conf',
+    uncdir + 'LostLepton/values_unc_cb_ll.conf'
+]
 
-all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
+all_bin_unc_file = ''
 
-all_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd')
-unc_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare')
-graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
+all_samples=('ttbarplusw',)
+unc_samples=('ttbarplusw',)
+graph_names=('Graph_from_ttbarplusw_pred_gr',)
 table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
+
+pred_total_name = 'Graph_from_pred_total_gr'
 
 uncMap = {
     "b"			: "b-tag",
@@ -67,7 +60,6 @@ uncMap = {
     "photon_sf"		: "$\gamma$ SF"
 }
 
-pred_total_name = 'hpred'
 json_bkgPred = uncdir + '/combine_bkgPred.json'
 
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
@@ -79,59 +71,59 @@ test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550']
 test_type = ['PDF_Weight']
 
 # ordered bin list
-binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550', 
-    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt550to650', 
-    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt650to750', 
-    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt750toinf', 
-    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt450to550', 
-    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt550to650', 
-    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt650to750', 
-    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt750toinf', 
-    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt450to550', 
-    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt550to650', 
-    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt650to750', 
-    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt750toinf', 
-    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt450to550', 
-    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650', 
-    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt650to750', 
-    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt750toinf', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt300to400', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt400to500', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt500to600', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt600toinf', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt300to400', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt400to500', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt500to600', 
-    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt600toinf', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt450to550', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to650', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt650to750', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt750toinf', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt450to550', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt550to650', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt650to750', 
-    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf', 
-    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt300to400', 
-    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt400to500', 
-    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt500toinf', 
-    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt300to400', 
-    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt400to500', 
-    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt500toinf', 
-    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt300to400', 
-    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt400to500', 
-    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt500toinf', 
-    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt300to400', 
-    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt400to500', 
-    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf', 
-    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt450to550', 
-    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt550to650', 
-    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt650toinf', 
-    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt450to550', 
-    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt550to650', 
-    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt650toinf', 
-    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt450to550', 
-    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt550to650', 
-    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt650toinf', 
+binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550',
+    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt550to650',
+    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt650to750',
+    'bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt750toinf',
+    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt450to550',
+    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt550to650',
+    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt650to750',
+    'bin_lm_nb0_nivf0_highptisr_nj6_MET_pt750toinf',
+    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt450to550',
+    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt550to650',
+    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt650to750',
+    'bin_lm_nb0_nivf1_highptisr_nj2to5_MET_pt750toinf',
+    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt450to550',
+    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650',
+    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt650to750',
+    'bin_lm_nb0_nivf1_highptisr_nj6_MET_pt750toinf',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt300to400',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt400to500',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt500to600',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_lowptb_MET_pt600toinf',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt300to400',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt400to500',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt500to600',
+    'bin_lm_nb1_nivf0_lowmtb_lowptisr_medptb_MET_pt600toinf',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt450to550',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to650',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt650to750',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt750toinf',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt450to550',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt550to650',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt650to750',
+    'bin_lm_nb1_nivf0_lowmtb_highptisr_medptb_MET_pt750toinf',
+    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt300to400',
+    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt400to500',
+    'bin_lm_nb1_nivf1_lowmtb_medptisr_lowptb_MET_pt500toinf',
+    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt300to400',
+    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt400to500',
+    'bin_lm_nb2_lowmtb_lowptisr_lowptb12_MET_pt500toinf',
+    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt300to400',
+    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt400to500',
+    'bin_lm_nb2_lowmtb_lowptisr_medptb12_MET_pt500toinf',
+    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt300to400',
+    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt400to500',
+    'bin_lm_nb2_lowmtb_lowptisr_highptb12_nj7_MET_pt500toinf',
+    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt450to550',
+    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt550to650',
+    'bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt650toinf',
+    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt450to550',
+    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt550to650',
+    'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt650toinf',
+    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt450to550',
+    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt550to650',
+    'bin_lm_nb2_lowmtb_highptisr_highptb12_nj7_MET_pt650toinf',
     'bin_hm_nb1_lowmtb_nj7_nrtgeq1_MET_pt250to300', 
     'bin_hm_nb1_lowmtb_nj7_nrtgeq1_MET_pt300to400', 
     'bin_hm_nb1_lowmtb_nj7_nrtgeq1_MET_pt400to500', 
@@ -342,7 +334,7 @@ with open(json_bkgPred) as jf:
     j_bkg = json_load_byteified(jf)
     binMaps = j_bkg['binMaps']
     yields_dc  = j_bkg['yieldsMap']
-    binlist = j_bkg['binlist']
+    #binlist = j_bkg['binlist']
     binnum  = j_bkg['binNum']
     crbinlist = {
         'lepcr': yields_dc['lepcr_data'].keys(),
@@ -362,6 +354,9 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
     log_syst_down_sum = 0.
     log_syst_up_total = 0.
     log_syst_down_total = 0.
+    #if "bin_lm_nb0_nivf1_highptisr_nj6_MET_pt550to650" in bin:
+    #    print(unc_list)
+    #    print(p)
     if p == 0: 
         systUnc_rel_pieces[sample][bin] = [1.0, 1.0]
         return [0,1.83]
@@ -523,30 +518,34 @@ def readYields(pred_file):
     f = rt.TFile(pred_file)
     for hname, sample in zip(graph_names, all_samples):
         h = f.Get(hname)
-        for ibin in xrange(0, h.GetNbinsX()):
+        for ibin in xrange(0, h.GetN()):
             bin = binlist[ibin]
             if bin not in yields:
                 yields[bin] = {}
                 yields_total[bin] = 0.
                 statUnc_pieces[bin] = {}
-            y = h.GetBinContent(ibin+1)
-            e_up = h.GetBinError(ibin+1)
-            e_low = h.GetBinError(ibin+1)
+            print(bin)
+            if "bin_hm_nbeq2_highmtb_nt1_nrt0_nw1_MET_pt250to550" in bin:
+                print(bin)
+                print(yields_total[bin])
+            y = h.GetY()[ibin]
+            e_up = h.GetErrorYhigh(ibin)
+            e_low = h.GetErrorYlow(ibin)
             yields[bin][sample] = y
             yields_total[bin]  += y
             if sample == 'rare': statUnc_pieces[bin][sample] = (min(e_up,y), min(e_up,y))  # don't want MC stat unc > 100%
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
-    h = f.Get('hdata')
+    h = f.Get('data')
     for ibin in xrange(0, h.GetNbinsX()):
             bin = binlist[ibin]
             yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
             #yields_data[bin] = (1, 1)
     # get total pred (w/ asymmetric errors)
     h = f.Get(pred_total_name)
-    for ibin in xrange(0, h.GetNbinsX()):
+    for ibin in xrange(0, h.GetN()):
         bin = binlist[ibin]
-        e_up = h.GetBinError(ibin+1)
-        e_low = h.GetBinError(ibin+1)
+        e_up = h.GetErrorYhigh(ibin)
+        e_low = h.GetErrorYlow(ibin)
         statUnc[bin] = (e_low, e_up)
     f.Close()
 
@@ -665,6 +664,8 @@ def calcAbsUnc():
                     down = float(absUnc_pieces[sample][bin][type][0]/yields[bin][sample])
                     print "%3s %30s %20s Up: %8.6f Down: %8.6f" % (sample, bin, type, up, down)
 
+    print(absUnc["bin_hm_nbeq2_highmtb_nt1_nrt0_nw1_MET_pt250to550"])
+    print(yields_total["bin_hm_nbeq2_highmtb_nt1_nrt0_nw1_MET_pt250to550"])
     for bin in absUnc:
         # Add different types of unc. in quadrature
         #systUnc[bin] = sumUnc(absUnc[bin].values())
@@ -783,7 +784,7 @@ def endTable(ibini, ibinf):
         label='tab:pred-hm-3'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[\label{' + label + '}]{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
+    s += '\\caption[' + label + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -799,7 +800,7 @@ def endUncTable(ibini, ibinf):
         label='tab:uncert-hm-3'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[\label{' + label + '}]{The SM uncertainties for Run 2 with \datalumi for each search region in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '.}\n'
+    s += '\\caption[' + label + ']{The SM uncertainties for Run 2 with \datalumi for each search region in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '.}\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s

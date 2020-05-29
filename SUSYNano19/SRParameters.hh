@@ -2,7 +2,8 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "binDefinitions.hh"
+//#include "binDefinitions.hh"
+#include "binDefinitions_withoutExtrap.hh"
 
 namespace EstTools{
 
@@ -66,7 +67,7 @@ const TString lepvetowgt_no_wtopsf_2018 = HEMVeto+"*1000*Stop0l_evtWeight*Stop0l
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 
-bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
+bool SPLITTF = false; // split TF to CR-SR and SR-extrapolation
 const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))";
 
 // MET+LEP LL method
@@ -568,42 +569,13 @@ BaseConfig srConfig(){
   config.outputdir = outputdir+"/testSR";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
-  config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
-  //config.addSample("znunu",       "Z#rightarrow#nu#nu", inputdir_2016+"znunu",   "1.0", datasel + vetoes);
-  //config.addSample("qcd",         "QCD",           inputdir_2016+"qcd_smear",          "1.0", datasel + vetoes + qcdSpikeRemovals);
-  config.addSample("tW",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes);
-  config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes);
-  //config.addSample("ttZ",         "ttZ",           inputdir_2016+"ttZ",          "1.0", datasel + vetoes);
-  //config.addSample("diboson",     "Diboson",       inputdir_2016+"diboson",      "1.0", datasel + vetoes);
 
-//  config.addSample("T2fbd_500_420", "T2fbd(500,420)", "signals/T2fbd_500_420",  sigwgt, datasel + vetoes);
-//  config.addSample("T2fbd_500_450", "T2fbd(500,450)", "signals/T2fbd_500_450",  sigwgt, datasel + vetoes);
-//  config.addSample("T2fbd_500_480", "T2fbd(500,480)", "signals/T2fbd_500_480",  sigwgt, datasel + vetoes);
-//  config.addSample("T2cc_500_490",  "T2cc(500,490)",  "signals/T2cc_500_490",   sigwgt, datasel + vetoes);
+  config.addSample("data",                   "Data",          datadir+"met",                     "1.0",      datasel + trigSR + vetoes);
+  //config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
+  //config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
+  //config.addSample("tW",          "tW",            inputdir_2016+"tW",           "1.0", datasel + vetoes);
+  //config.addSample("ttW",         "ttW",           inputdir_2016+"ttW",          "1.0", datasel + vetoes);
 
-  //config.addSample("T2tt_175_1_full",   "T2tt(175,1)",   inputdir_sig+"T2tt_175_1",   sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_250_50_full",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_75_full",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_100_full", "T2tt(250,100)", inputdir_sig+"T2tt_250_100", sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_175_0_fast",   "T2tt(175,0)",   inputdir_sig+"T2tt_175_0_fastsim",   sigwgt, datasel + revert_vetoes);
-  //config.addSample("T2tt_250_50_fast",  "T2tt(250,50)",  inputdir_sig+"T2tt_250_50_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_75_fast",  "T2tt(250,75)",  inputdir_sig+"T2tt_250_75_fastsim",  sigwgt, datasel + revert_vetoes); //FIXME
-  //config.addSample("T2tt_250_100_fast", "T2tt(250,100)", inputdir_sig+"T2tt_250_100_fastsim", sigwgt, datasel + revert_vetoes);
-//  config.addSample("T2tt_1100_1",   "T2tt(1100,1)",   "signals/T2tt_1100_1",    sigwgt, datasel + vetoes);
-//  config.addSample("T2bW_850_1",    "T2bW(850,1)",    "signals/T2bW_850_1",     sigwgt, datasel + vetoes);
-//  config.addSample("T2bW_550_350",  "T2bW(550,350)",  "signals/T2bW_550_350",   sigwgt, datasel + vetoes);
-
-  COLOR_MAP["T2fbd_500_420"] = kRed;
-  COLOR_MAP["T2fbd_500_450"] = kBlue;
-  COLOR_MAP["T2fbd_500_480"] = kBlack;
-  COLOR_MAP["T2cc_500_490"]  = kMagenta;
-
-  COLOR_MAP["T2tt_450_250"]  = kOrange;
-  COLOR_MAP["T2tt_700_400"]  = kCyan+2;
-  COLOR_MAP["T2tt_1000_1"]   = kViolet+2;
-  COLOR_MAP["T2bW_550_350"]  = kSpring-9;
-  COLOR_MAP["T2bW_850_1"]    = kPink+2;
 
   config.sel = baseline;
   config.categories = srbins;
@@ -704,10 +676,10 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  //config.addSample("data-sr",          "Data",             datadir+"met",                  "1.0",  datasel + trigSR + vetoes);
+  config.addSample("data-sr",        "Data",      datadir+"met",                    "1.0",  datasel + trigSR + vetoes);
 
-  config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
-  config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
+  //config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
+  //config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
 //  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + vetoes);
 //  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel + vetoes);
 //
