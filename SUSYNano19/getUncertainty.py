@@ -47,14 +47,14 @@ table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & 
 
 uncMap = {
     "b"			: "b-tag",
-    "ivfunc"		: "\Nsv",
+    "ivfunc"		: "Soft b-tag",
     #"LHEScale"		: "LHE Scale",
     "ISR_Weight_background"	: "ISR",
     "JES"		: "JES",
     "metres"		: "\met res.",
     "Prefire_Weight"	: "Prefire",
     "PDF_Weight"	: "PDF",
-    "PU_Weight"		: "Pile-Up",
+    "PU_Weight"		: "Pileup",
     "eff_e"		: "$e$ veto",
     "err_mu"		: "$\mu$ veto",
     "eff_tau"		: "$\\tau$ veto",
@@ -63,8 +63,6 @@ uncMap = {
     "eff_wtag"		: "\Nw",
     "eff_fatjet_veto"	: "AK8 Veto",
     "lumi"		: "Lumi",
-    "photon_trig"	: "$\gamma$ Trig.",
-    "photon_sf"		: "$\gamma$ SF"
 }
 
 pred_total_name = 'hpred'
@@ -765,7 +763,7 @@ def beginUncTable():
     '''Add a break between the bins to fit on each page'''
     s  = '\\begin{table}[!h]\n'
     s += '\\begin{center}\n'
-    s += '\\resizebox*{0.6\\textwidth}{!}{\n'
+    s += '\\resizebox*{1.0\\textwidth}{!}{\n'
     for type in uncMap.keys():
         col += '|c'
     s += '\\begin{tabular}{|c||c|' + col + '|}'
@@ -775,15 +773,20 @@ def beginUncTable():
 def endTable(ibini, ibinf):
     '''Add a break between the bins to fit on each page'''
     label='tab:pred-lm'
+    desc='Low \\dm prediction bins 0--52'
     if ibini == 53:
         label='tab:pred-hm-1'
+        desc='High \\dm prediction bins 53--93'
     elif ibini == 94:
         label='tab:pred-hm-2'
+        desc='High \\dm prediction bins 94--134'
     elif ibini == 135:
         label='tab:pred-hm-3'
+        desc='High \\dm prediction bins 135--183'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[\label{' + label + '}]{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
+    s += '\\caption[' + desc + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
+    s += '\\label{' + label + '}'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -791,15 +794,20 @@ def endTable(ibini, ibinf):
 def endUncTable(ibini, ibinf):
     '''Add a break between the bins to fit on each page'''
     label='tab:uncert-lm'
+    desc='Low \\dm uncertainties bins 0--52'
     if ibini == 53:
         label='tab:uncert-hm-1'
+        desc='High \\dm uncertainties bins 53--93'
     elif ibini == 94:
         label='tab:uncert-hm-2'
+        desc='High \\dm uncertainties bins 94--134'
     elif ibini == 135:
         label='tab:uncert-hm-3'
+        desc='High \\dm uncertainties bins 135--183'
     s  = '\\hline\n'
     s += '\\end{tabular}}\n'
-    s += '\\caption[\label{' + label + '}]{The SM uncertainties for Run 2 with \datalumi for each search region in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '.}\n'
+    s += '\\caption[' + desc + ']{The SM uncertainties for Run 2 with \datalumi for each search region in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '.}\n'
+    s += '\\label{' + label + '}'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -850,7 +858,7 @@ def makeUncTable(unc_header):
         sec, met= bin.lstrip('bin_').rsplit('_', 1)
         if sec not in sections:
             sections.append(sec)
-            s += chunkHeader(sec)
+            s += chunkUncHeader(sec)
         xlow, xhigh = met.lstrip('met_pt').split('to')
         metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
         s += '%d & '%ibin
@@ -915,6 +923,18 @@ def chunkHeader(sec):
     cats = sec.split('_')
     labs = [labelMap[c] for c in cats]
     ncolumn = len(all_samples)+3
+    s  = '\\hline\n'
+    s += '\\multicolumn{'+str(ncolumn)+'}{c}{'
+    s += ', '.join(labs)
+    s += '} \\\\ \n'
+    s += '\\hline\n' 
+    return s
+
+def chunkUncHeader(sec):
+    ''' Put together the mega-bin chunk header. '''
+    cats = sec.split('_')
+    labs = [labelMap[c] for c in cats]
+    ncolumn = len(uncMap.keys())+2
     s  = '\\hline\n'
     s += '\\multicolumn{'+str(ncolumn)+'}{c}{'
     s += ', '.join(labs)

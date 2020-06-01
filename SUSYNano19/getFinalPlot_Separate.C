@@ -22,7 +22,8 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   vector<TString> sigs = {"T2tt_1000_0"};
   TString data = "hdata";
 
-  vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
+  //vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
+  vector<TString> bkglabels = {"t#bar{t}/W", "Z#rightarrow#nu#nu", "QCD", "Rare", "ttZ"};
   vector<TString> siglabels = {"T2tt(1000,0)"};
   vector<TString> datalabel = {"Observed"};
 
@@ -144,7 +145,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
 
-  vector<TH1*> pred;
+  vector<TH1*> pred, pred_leg;
   vector<TH1*> hsigs;
 
   TString suffix = "";
@@ -178,6 +179,13 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   TH1D* httbar = convertToHist({(TH1*)f->Get("httbar")}, "httbar_pred", ";Search Region;Events", nullptr);
   pred.push_back(httbar);
   TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search Region;Events", nullptr); // KH hack: this is a hack which we should be careful with
+
+  pred_leg.push_back(httbar);
+  pred_leg.push_back(hznunu);
+  pred_leg.push_back(hqcd);
+  pred_leg.push_back(hRare);
+  pred_leg.push_back(httZ);
+  
 
   TH1* hdata = (TH1*)f->Get(data);
 
@@ -258,6 +266,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   }
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
+  prepHists(pred_leg, false, false, true, {866, 623, 811, 391, 797});
   if(hdata) prepHists({hdata}, false, false, false, {kBlack});
   if(hdata) prepHists({pull}, false, false, false, {kRed});
   prepHists(hsigs, false, false, false, {kRed});
@@ -289,7 +298,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
-    appendLegends(leg, pred, bkglabels, "F");
+    appendLegends(leg, pred_leg, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
 //    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
