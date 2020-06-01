@@ -22,8 +22,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   vector<TString> sigs = {"T2tt_1000_0"};
   TString data = "hdata";
 
-  //vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
-  vector<TString> bkglabels = {"t#bar{t}/W", "Z#rightarrow#nu#nu", "QCD", "Rare", "ttZ"};
+  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#nu", "QCD multijet", "Rare", "ttZ"};
   vector<TString> siglabels = {"T2tt(1000,0)"};
   vector<TString> datalabel = {"Observed"};
 
@@ -296,6 +295,8 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 
     if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0;}
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
+
+    hdata->SetMarkerStyle(7);
 
     auto leg = prepLegends({hdata}, datalabel, "LP");
     appendLegends(leg, pred_leg, bkglabels, "F");

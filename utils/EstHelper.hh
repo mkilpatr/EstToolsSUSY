@@ -407,7 +407,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     unc->SetLineWidth(0);
     unc->SetMarkerSize(0);
     unc->Draw("E2same");
-    if(leg) addLegendEntry(leg, unc,"Bkg. Uncertainty","F");
+    if(leg) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
   }
 
   if (leg) leg->Draw();
@@ -639,7 +639,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   if (hData){
     TH1F *h00 = (TH1F*)hData->Clone("data0");
     TGraphAsymmErrors* gr = getAsymmErrors(h00);
-    gr->SetMarkerStyle(20);
+    gr->SetMarkerStyle(7);
     gr->SetLineWidth(hData->GetLineWidth());
     gr->SetFillStyle(0);
     gr->Draw("PZ0same");
@@ -708,6 +708,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       ratio = getRatioAsymmErrors(h3, hMCNoError);
     }
     ratio->SetLineWidth(h3->GetLineWidth());
+    ratio->SetMarkerStyle(7);
     if(!inRelUnc) ratio->Draw("PZ0same");
   }
 
