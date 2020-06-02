@@ -7,7 +7,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_Separate/pred_binnum_"){
+void getFinalPlot_Separate(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_Separate/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -17,6 +17,7 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
   if(inputDir.Contains("2016")) lumistr = "35.815165";
 
   TString inputFile = "/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/" + inputDir + "/SearchBinsPlot/";
+  TString inputFile_rare = "/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/SearchBinsPlot/";
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> sigs = {"T2tt_1000_0"};
@@ -149,12 +150,12 @@ void getFinalPlot_Separate(TString inputDir="19May2020_Run2Unblind_dev_v6", TStr
 
   TString suffix = "";
   if(inputDir.Contains("2016")) suffix = "_2016";
-  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb" + suffix + ".root");
+  TFile *ttz = TFile::Open(inputFile_rare + "TTZ_final_sb" + suffix + ".root");
   assert(ttz);
   TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search Region;Events", nullptr);
   pred.push_back(httZ);
 
-  TFile *r = TFile::Open(inputFile + "Rare_final_sb" + suffix + ".root");
+  TFile *r = TFile::Open(inputFile_rare + "Rare_final_sb" + suffix + ".root");
   assert(r);
   TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search Region;Events", nullptr);
   pred.push_back(hRare);
