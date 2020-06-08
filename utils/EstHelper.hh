@@ -547,7 +547,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->SetLineWidth(0);
   hbkgtotal->SetMarkerSize(0);
   hbkgtotal->Draw("E2same");
-  if(leg) addLegendEntry(leg, hbkgtotal,"Bkg. Uncertainty","F");
+  if(leg) addLegendEntry(leg, hbkgtotal,"Bkg. uncertainty","F");
 
   CMS_lumi(c, 4, 10);
 #endif
@@ -561,7 +561,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
@@ -634,12 +634,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   unc->SetLineWidth(0);
   unc->SetMarkerSize(0);
   unc->Draw("E2same");
-  if(leg) addLegendEntry(leg, unc,"Bkg. Uncertainty","F");
+  if(leg) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
 
   if (hData){
     TH1F *h00 = (TH1F*)hData->Clone("data0");
     TGraphAsymmErrors* gr = getAsymmErrors(h00);
-    gr->SetMarkerStyle(7);
+    gr->SetMarkerStyle(20);
+    if(finalPlot) gr->SetMarkerStyle(7);
     gr->SetLineWidth(hData->GetLineWidth());
     gr->SetFillStyle(0);
     gr->Draw("PZ0same");
@@ -708,7 +709,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       ratio = getRatioAsymmErrors(h3, hMCNoError);
     }
     ratio->SetLineWidth(h3->GetLineWidth());
-    ratio->SetMarkerStyle(7);
+    if(finalPlot) ratio->SetMarkerStyle(7);
     if(!inRelUnc) ratio->Draw("PZ0same");
   }
 

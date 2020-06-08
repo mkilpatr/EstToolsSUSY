@@ -362,7 +362,7 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
     log_syst_down_total = 0.
     if p == 0: 
         systUnc_rel_pieces[sample][bin] = [1.0, 1.0]
-        return [0,1.83]
+        return [0,0]
     for err, type in zip(unc_list, type_):
         p_up    = err[1]
         p_down  = err[0]
@@ -838,6 +838,7 @@ def makeTable():
                 e_low = sumUnc([e_low, e1_low])
                 e_up  = sumUnc([e_up, e1_up])
             s += formatPrediction(n,e_low,e_up)
+        print("bin: {0}, allVals: {1}".format(bin, allVals[bin]))
         n, e = yields_data[bin]
         s += ' & ' + str(int(n))
         s += ' \\\\ \n'
@@ -867,7 +868,6 @@ def makeUncTable(unc_header):
         for type in uncMap.keys():
             e_low, e_up = absUnc[bin][type]
             n = yields_total[bin]
-            print("type: {0}, n: {1}, up: {2}, dn: {3}".format(type, n, e_up, e_low))
             s += formatUncertainty(n,e_low,e_up)
         s += ' \\\\ \n'
         if ibin == 53 or ibin == 94 or ibin == 135:

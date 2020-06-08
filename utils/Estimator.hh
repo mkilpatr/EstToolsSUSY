@@ -786,11 +786,11 @@ public:
   }
 
 
-  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false){
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, bool doSyst = false){
     // make DataMC plots with the given cateogory selection
     // possible to normalize MC to Data with a different selection (set by *norm_cut*)
 
-    vector<TH1*> mchists;
+    vector<TH1*> mchists, mchists_up, mchists_down;
     TH1* hnonttbar = nullptr;
     TH1* httbar = nullptr;
     auto leg = initLegend();
@@ -814,17 +814,21 @@ public:
       addLegendEntry(leg, hdata, d_sample->label, "LP");
     }
 
-    vector<TString> mc;
+    vector<TString> mc, mc_syst_up, mc_syst_dn;
     for(auto &scomb : mc_samples){
       TString sMC = TString(scomb);
       if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
       else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
       else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
-      if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
+           if(!std::count(mc_syst_up.begin(), mc_syst_up.end(), sMC) && sMC.Contains("up") && doSyst) mc_syst_up.push_back(sMC);
+      else if(!std::count(mc_syst_dn.begin(), mc_syst_dn.end(), sMC) && sMC.Contains("dn") && doSyst) mc_syst_dn.push_back(sMC);
+      else if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
     for (auto &scomb : mc){
       TH1 *hist = nullptr;
+      TH1* hist_up = nullptr;
+      TH1* hist_dn = nullptr;
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
 	TString sMC = TString(sname);
@@ -838,6 +842,12 @@ public:
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
 	  if(!hist) hist = (TH1*) hmc_buff->Clone();
 	  else      hist->Add(hmc_buff);
+          if(!sMC.Contains("ttbar")){
+	    if(!hist_up) hist_up = (TH1*) hmc_buff->Clone();
+	    else         hist_up->Add(hmc_buff);
+	    if(!hist_dn) hist_dn = (TH1*) hmc_buff->Clone();
+	    else         hist_dn->Add(hmc_buff);
+          }
 	}
       }
 
@@ -848,6 +858,12 @@ public:
         hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
         
         addLegendEntry(leg, hist, scomb, "F");
+      }
+
+      if(hist_up != nullptr){
+        prepHists({hist});
+        mchists.push_back(hist);
+        hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
       }
 
       if(ttbarRatio && TString(hist->GetName()).Contains("ttbar"))
@@ -918,11 +934,11 @@ public:
       return nullptr;
   }
 
-  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false){
+  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, bool doSyst = false){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);
-      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra, ttbarRatio);
+      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra, ttbarRatio, doSyst);
     }
   }
 

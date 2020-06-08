@@ -484,8 +484,7 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
       da = h_data->GetBinErrorUp(ibin_data) * h_data->GetBinErrorUp(ibin_data);
       db = hs->GetErrorYlow(ibin) * hs->GetErrorYlow(ibin);
     }
-    float pull = (a-b)/sqrt(da+db);	//pull = data-pred/sqrt(d_data^2 + d_pred^2)
-    pull = (a-b)/sqrt(b+db);	//ken's formular: pull = data-pred/sqrt(pred + d_pred^2)
+    float pull = (a-b)/sqrt(b+db);	//ken's formular: pull = data-pred/sqrt(pred + d_pred^2)
     ratio->SetBinContent(ibin,pull);
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  

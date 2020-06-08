@@ -159,5 +159,5 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   ratio_pred_noextrap->Draw("P0same");
 
   c->cd();
-  c->SaveAs("bkgpred_comp_"+bkg+".pdf");
+  c->SaveAs("bkgpred_comp_"+bkg+".png");
 }

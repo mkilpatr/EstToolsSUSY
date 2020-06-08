@@ -208,7 +208,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio(hTotal, hdiv, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
     c->SetTitle(type);
-    c->Print(indir+type+".pdf");
+    c->Print(indir+type+".png");
     c->Print(indir+type+".C");
 
     TFile *outFile = new TFile(indir+type+".root", "RECREATE");
@@ -271,7 +271,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   leg->SetY1NDC(leg->GetY2NDC() - 0.2);
   TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
   c->SetTitle(totalName);
-  c->Print(indir+totalName+".pdf");
+  c->Print(indir+totalName+".png");
   c->Print(indir+totalName+".C");
 
   TFile *outFile = new TFile(indir+totalName+".root", "RECREATE");
