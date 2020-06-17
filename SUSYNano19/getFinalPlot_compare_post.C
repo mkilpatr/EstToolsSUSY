@@ -9,7 +9,7 @@ using namespace EstTools;
 
 void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_allMethods/pred_binnum_"){
 
-  RATIOPLOT_XTITLE_OFFSET = 1.35;
+  RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
   RATIOPLOT_XLABEL_OFFSET = 0.00;
   PAD_SPLIT_Y = 0.34;
@@ -21,12 +21,12 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_post = {"TTZ", "Rare", "qcd", "znunu", "ttbarplusw"};
-  vector<TString> sigs = {"T2tt_1000_0"};
+  vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
   TString data = "hdata";
   TString data_post = "Graph";
 
-  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#nu", "QCD multijet", "Rare", "ttZ"};
-  vector<TString> siglabels = {"T2tt(1000,0)"};
+  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare", "t#bar{t}Z"};
+  vector<TString> siglabels = {"T2tt(1000, 0)", "T1tttt(2200, 400)"};
   vector<TString> datalabel = {"Observed"};
 
   vector<TString> split = {"lm",
@@ -36,36 +36,36 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 			   };
   vector<TString> splitlabels = {
       "Low #Deltam",
-      "High #Deltam, N_{b}=1 #geq 2, (N_{t}, N_{W}, N_{res})",
+      "High #Deltam, N_{b}#geq1, (N_{t}, N_{W}, N_{res})",
       "High #Deltam, N_{b}=2, (N_{t}, N_{W}, N_{res})",
-      "High #Deltam, N_{b} #geq 3, (N_{t}, N_{W}, N_{res})"
+      "High #Deltam, N_{b}#geq3, (N_{t}, N_{W}, N_{res})"
   };
-
-  vector<double> ratioYmax = {2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999, 2.999};
 
   TLatex tl, tv;
   tl.SetTextSize(0.025);
   tl.SetTextAlign(31);
+  tl.SetTextFont(42);
   tv.SetTextSize(0.025);
   tv.SetTextAlign(31);
   tv.SetTextAngle(90);
+  tv.SetTextFont(42);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){ tl.DrawLatexNDC(0.345, 0.73, "N_{b}=0,p_{T}^{ISR}#geq500"); 
-	     tl.DrawLatexNDC(0.2425, 0.70, "N_{SV}=0"); 
-	     tl.DrawLatexNDC(0.35, 0.70, "N_{SV}#geq1"); 
+    [&tl](){ tl.DrawLatexNDC(0.345, 0.73, "N_{b}=0, p_{T}^{ISR}#geq500"); 
+	     tl.DrawLatexNDC(0.2425, 0.69, "N_{SV}=0"); 
+	     tl.DrawLatexNDC(0.35, 0.69, "N_{SV}#geq1"); 
 	     tl.DrawLatexNDC(0.57, 0.73, "N_{b}=1"); 
-	     tl.DrawLatexNDC(0.54, 0.70, "N_{SV}=0");
-	     tl.DrawLatexNDC(0.62, 0.67, "p_{T}^{ISR}[300,500)     p_{T}^{ISR}#geq500"); 
-	     tl.DrawLatexNDC(0.68, 0.70, "N_{SV}#geq1"); 
+	     tl.DrawLatexNDC(0.54, 0.69, "N_{SV}=0");
+	     tl.DrawLatexNDC(0.61, 0.66, "p_{T}^{ISR}[300, 500)      p_{T}^{ISR}#geq500"); 
+	     tl.DrawLatexNDC(0.68, 0.69, "N_{SV}#geq1"); 
 	     tl.DrawLatexNDC(0.85, 0.73, "N_{b}=2"); 
-	     tl.DrawLatexNDC(0.92, 0.70, "p_{T}^{ISR}[300,500)       p_{T}^{ISR}#geq500");},
+	     tl.DrawLatexNDC(0.92, 0.69, "p_{T}^{ISR}[300, 500)       p_{T}^{ISR}#geq500");},
     [&tl](){ tl.DrawLatexNDC(0.26, 0.73, "M_{T}^{b} < 175"); 
-	     tl.DrawLatexNDC(0.277, 0.70, "N_{b}=1    N_{b}#geq2"); 
+	     tl.DrawLatexNDC(0.277, 0.68, "N_{b}=1    N_{b}#geq2"); 
 	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 0)"); 
-	     tl.DrawLatexNDC(0.39, 0.70, "N_{b}=1    N_{b}#geq2"); 
-	     tl.DrawLatexNDC(0.5, 0.70, "(#geq1, 0, 0)"); 
-	     tl.DrawLatexNDC(0.63, 0.70, "(0, #geq1, 0)"); 
-	     tl.DrawLatexNDC(0.78, 0.70, "(0, 0, #geq1)");},
+	     tl.DrawLatexNDC(0.395, 0.68, "N_{b}=1    N_{b}#geq2"); 
+	     tl.DrawLatexNDC(0.5, 0.68, "(#geq1, 0, 0)"); 
+	     tl.DrawLatexNDC(0.63, 0.68, "(0, #geq1, 0)"); 
+	     tl.DrawLatexNDC(0.78, 0.68, "(0, 0, #geq1)");},
     [&tl](){ tl.DrawLatexNDC(0.27, 0.70, "(1, 0, 0)"); 
 	     tl.DrawLatexNDC(0.39, 0.70, "(0, 1, 0)"); 
 	     tl.DrawLatexNDC(0.55, 0.70, "(0, 0, 1)");},
@@ -97,10 +97,10 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8,   LOG_YMIN, 8,   2000); 
-								    drawLine(16,  LOG_YMIN, 16,  20000); 
+								    drawLine(16,  LOG_YMIN, 16,  200000); 
 								    drawLine(24,  LOG_YMIN, 24,  2000); 
 								    drawLine(32,  LOG_YMIN, 32,  2000); 
-								    drawLine(35,  LOG_YMIN, 35,  20000); 
+								    drawLine(35,  LOG_YMIN, 35,  200000); 
 								    drawLine(44,  LOG_YMIN, 44,  2000); c->cd(); },
     [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57, LOG_YMIN, 57, 2000); 
 								    drawLine(61, LOG_YMIN, 61, 20000); 
@@ -141,22 +141,22 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   if(inputDir.Contains("2016")) suffix = "_2016";
   TFile *ttz = TFile::Open(inputFile_rare + "TTZ_final_sb" + suffix + ".root");
   assert(ttz);
-  TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search Region;Events", nullptr);
-  TH1D* httZ_comp = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_comp", ";Search Region;Events", nullptr);
+  TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search bin number;Events", nullptr);
+  TH1D* httZ_comp = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_comp", ";Search bin number;Events", nullptr);
   pred.push_back(httZ);
   pred_comp.push_back(httZ_comp);
 
   TFile *r = TFile::Open(inputFile_rare + "Rare_final_sb" + suffix + ".root");
   assert(r);
-  TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search Region;Events", nullptr);
-  TH1D* hRare_comp = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_comp", ";Search Region;Events", nullptr);
+  TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search bin number;Events", nullptr);
+  TH1D* hRare_comp = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_comp", ";Search bin number;Events", nullptr);
   pred.push_back(hRare);
   pred_comp.push_back(hRare_comp);
 
   TFile *q = TFile::Open(inputFile + "SearchBins_QCDResidMET.root");
   assert(q);
-  TH1D* hqcd = convertToHist({(TH1*)q->Get("QCD")}, "qcd_pred", ";Search Region;Events", nullptr);
-  TH1D* hqcd_comp = convertToHist({(TH1*)q->Get("QCD")}, "qcd_comp", ";Search Region;Events", nullptr);
+  TH1D* hqcd = convertToHist({(TH1*)q->Get("QCD")}, "qcd_pred", ";Search bin number;Events", nullptr);
+  TH1D* hqcd_comp = convertToHist({(TH1*)q->Get("QCD")}, "qcd_comp", ";Search bin number;Events", nullptr);
   pred.push_back(hqcd);
   pred_comp.push_back(hqcd_comp);
 
@@ -164,8 +164,8 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   TFile *z = TFile::Open(inputFile + "searchBinsZinv_combined" + suffix + ".root");
   assert(z);
-  TH1D* hznunu = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_pred", ";Search Region;Events", nullptr);
-  TH1D* hznunu_comp = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_comp", ";Search Region;Events", nullptr);
+  TH1D* hznunu = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_pred", ";Search bin number;Events", nullptr);
+  TH1D* hznunu_comp = convertToHist({(TH1*)z->Get("Prediction")}, "znunu_comp", ";Search bin number;Events", nullptr);
   pred.push_back(hznunu);
   pred_comp.push_back(hznunu_comp);
 
@@ -173,17 +173,17 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   else suffix = "";
   TFile *f = TFile::Open("getFinalPlot" + suffix + "/SumOfBkg.root");
   assert(f);
-  TH1D* httbar = convertToHist({(TH1*)f->Get("httbar")}, "httbar_pred", ";Search Region;Events", nullptr);
-  TH1D* httbar_comp = convertToHist({(TH1*)f->Get("httbar")}, "httbar_comp", ";Search Region;Events", nullptr);
+  TH1D* httbar = convertToHist({(TH1*)f->Get("httbar")}, "httbar_pred", ";Search bin number;Events", nullptr);
+  TH1D* httbar_comp = convertToHist({(TH1*)f->Get("httbar")}, "httbar_comp", ";Search bin number;Events", nullptr);
   pred.push_back(httbar);
   pred_comp.push_back(httbar_comp);
-  TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search Region;Events", nullptr); // KH hack: this is a hack which we should be careful with
+  TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search bin number;Events", nullptr); // KH hack: this is a hack which we should be careful with
 
   TFile *p = TFile::Open("PostFit.root");
   assert(p);
   for (auto &b : bkgs_post){
-    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b, ";Search Region;Events", nullptr);
-    TH1D* hist_comp = convertToHist({(TH1*)p->Get(b)}, b + "_comp", ";Search Region;Events", nullptr);
+    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b, ";Search bin number;Events", nullptr);
+    TH1D* hist_comp = convertToHist({(TH1*)p->Get(b)}, b + "_comp", ";Search bin number;Events", nullptr);
     pred_post.push_back(hist);
     pred_comp_post.push_back(hist_comp);
   }
@@ -204,7 +204,6 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     hdata_post->SetBinError(i, gdata->GetErrorY(i));
   }
 
-  cout << "made it here" << endl;
   //get all of the uncertainties
   TH1D* ttbar_up_unc = (TH1D*)f->Get("ttbarplusw_syst_up");
   TH1D* ttbar_dn_unc = (TH1D*)f->Get("ttbarplusw_syst_dn");
@@ -265,7 +264,7 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     pred += hRare->GetBinContent(ibin_hist);
     pred += httZ->GetBinContent(ibin_hist);
 
-    cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
+    //cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
 
     unc->SetPoint(ibin, unc->GetX()[ibin], pred);
     unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
@@ -274,30 +273,9 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   //Make unc for postfit
   TGraphAsymmErrors* unc_post = (TGraphAsymmErrors*)p->Get("Sumb");
-  //TGraphAsymmErrors* unc_post = (TGraphAsymmErrors*)f->Get("ttbarplusw_unc_sr")->Clone("bkgtotal_unc_sr");
-  //TH1D* nominal_post = convertToHist({(TH1*)p->Get("Sumb")}, "Total_Prediction_postfit", ";Search Region;Events", nullptr);
-  //for (int ibin = 0; ibin < unc->GetN(); ++ibin){
-  //  int ibin_hist = ibin+1;
-  //  //Post Fit Uncertainties
-  //  double unc_up = 0.;
-  //  double unc_dn = 0.;
-  //  for (auto *h : pred_post){
-  //    unc_up += h->GetBinError(ibin_hist)*h->GetBinError(ibin_hist);
-  //    unc_dn += h->GetBinError(ibin_hist)*h->GetBinError(ibin_hist);
-  //  }
-
-  //  //Nominal
-  //  double pred = nominal_post->GetBinContent(ibin_hist);
-
-  //  cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
-
-  //  unc_post->SetPoint(ibin, unc->GetX()[ibin], pred);
-  //  unc_post->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
-  //  unc_post->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
-  //}
 
   for (auto &s : sigs){
-    TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search Region;Events", nullptr);
+    TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search bin number;Events", nullptr);
     h->SetLineStyle(kDashed);
     hsigs.push_back(h);
   }
@@ -315,7 +293,7 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});
-  prepHists(hsigs, false, false, false, {kRed});
+  prepHists(hsigs, false, false, false, {kRed, kBlue});
 
   vector<TH1*> ratio;
   for (unsigned bkg = 0; bkg != pred_comp.size(); bkg++){
@@ -348,18 +326,17 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
       ibin += nbins;
     }
 
-
     if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0;}
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
 
     hdata->SetMarkerStyle(7);
     hdata_post->SetMarkerStyle(7);
 
-    auto leg = prepLegends({hdata}, datalabel, "LP");
+    auto leg = prepLegends({hdata}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true);
+    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
@@ -368,13 +345,13 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "_" + region;
     basename.ReplaceAll("nb[0-9]", "");
-    c->Print(basename+".png");
+    c->Print(basename+".pdf");
 
-    leg = prepLegends({hdata_post}, datalabel, "LP");
+    leg = prepLegends({hdata_post}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
-    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true);
+    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
@@ -383,20 +360,20 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     drawVerticalLines.at(ireg)(c);
     basename = outputName + "_postfit_" + region;
     basename.ReplaceAll("nb[0-9]", "");
-    c->Print(basename+".png");
+    c->Print(basename+".pdf");
   }
 
   for (unsigned bkg = 0; bkg != pred_comp.size(); bkg++){
     auto leg = prepLegends({}, {""}, "L");
     appendLegends(leg, {pred_comp[bkg]}, {bkgs[bkg]}, "L");
     appendLegends(leg, {pred_comp_post[bkg]}, {bkgs[bkg] + " Postfit"}, "L");
-    setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
  
     TCanvas* c = drawCompAndRatio({pred_comp[bkg], pred_comp_post[bkg]}, {ratio[bkg]}, leg, "N_{post}/N_{pre}", 0.749, 1.249, false, 0.001, -1., false);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     TString basename = outputName + "_" + bkgs_post[bkg];
-    c->Print(basename+".png");
+    c->Print(basename+".pdf");
   }
 
   if(hdata){
@@ -408,7 +385,7 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     TString basename = outputName + "_pull";
-    c_pull->Print(basename+".png");
+    c_pull->Print(basename+".pdf");
 
     mean  = pull_post->GetMean();
     StdDev = pull_post->GetStdDev();
@@ -418,7 +395,7 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     basename = outputName + "_postfit_pull";
-    c_pull->Print(basename+".png");
+    c_pull->Print(basename+".pdf");
   }
 
   TFile *output = new TFile(outputName + "getFinalPlot_Nano.root", "RECREATE");

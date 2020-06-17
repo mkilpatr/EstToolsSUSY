@@ -437,9 +437,9 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
       h->SetTitleOffset(0.85,"X");
       h->SetLabelSize  (0.10,"X");
       h->SetLabelSize  (0.12,"Y");
-      h->GetYaxis()->SetTitleFont(62);
+      h->GetYaxis()->SetTitleFont(42);
       h->GetYaxis()->CenterTitle(kTRUE);
-      h->GetXaxis()->SetTitleFont(62);
+      h->GetXaxis()->SetTitleFont(42);
       h->GetYaxis()->SetNdivisions(305);
       h->GetYaxis()->SetTitle(ratioYTitle);
       h->GetYaxis()->SetRangeUser(lowY, highY);
@@ -561,16 +561,18 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false, bool manualLabelChange = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
   TH1* hbkgtotal = nullptr;
   TH1* hnonttbar = nullptr;
   TH1* httbar = nullptr;
+  TString name = "";
   THStack* hstack = new THStack(inhists.front()->GetName()+TString("_stack"), inhists.front()->GetTitle());
   for (auto *h : inhists){
     auto *hmc = (TH1*)h->Clone();
+    name = hmc->GetName();
     if (!hbkgtotal)
       hbkgtotal = (TH1*)hmc->Clone("hbkgtotal");
     else
@@ -611,7 +613,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
   hbkgtotal->GetXaxis()->SetLabelOffset(0.20);
   hbkgtotal->GetYaxis()->SetTitleSize(0.08);
-  hbkgtotal->GetYaxis()->SetTitleOffset(0.75);
+  hbkgtotal->GetYaxis()->SetTitleOffset(0.85);
   hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
   hbkgtotal->Draw("hist");
 
@@ -643,6 +645,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     if(finalPlot) gr->SetMarkerStyle(7);
     gr->SetLineWidth(hData->GetLineWidth());
     gr->SetFillStyle(0);
+    SetEx(gr, 0.);
     gr->Draw("PZ0same");
   }
   CMS_lumi(p1, 4, 10);
@@ -652,7 +655,12 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   if (leg) leg->Draw();
 
   p1->SetTicks(1, 1);
+  if(finalPlot){ 
+    p1->SetTicks(1, 0);
+    hbkgtotal->Draw("AXISsame");
+  }
   p1->RedrawAxis();
+  p1->RedrawAxis("G");
 
 #ifdef DEBUG_
   cout << "-->drawing drawStackAndRatio stack: "<< hstack->GetName() << endl;
@@ -683,7 +691,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   haxis->SetLabelOffset(RATIOPLOT_XLABEL_OFFSET, "X");
   haxis->SetLabelSize  (0.12,"Y");
   haxis->GetYaxis()->CenterTitle(kTRUE);
-  haxis->GetYaxis()->SetNdivisions(305);
+  haxis->GetYaxis()->SetNdivisions(304);
   haxis->GetYaxis()->SetTitle(ratioYTitle);
   haxis->GetXaxis()->SetTitleFont(42);
   haxis->GetYaxis()->SetTitleFont(42);
@@ -691,6 +699,21 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   haxis->GetYaxis()->SetLabelFont(42);
   haxis->GetYaxis()->SetRangeUser(lowY,highY);
   if(lowX<highX) haxis->GetXaxis()->SetRangeUser(lowX, highX);
+  if(manualLabelChange){
+    if(name.Contains("nTop") || name.Contains("nW") || name.Contains("nResolved")){
+      haxis->GetXaxis()->ChangeLabel(1, -1, 0.);
+      haxis->GetXaxis()->ChangeLabel(3, -1, 0.);
+      haxis->GetXaxis()->ChangeLabel(5, -1, 0.);
+      haxis->GetXaxis()->ChangeLabel(7, -1, 0.);
+      haxis->GetXaxis()->ChangeLabel(6, -1, -1, -1, 1, -1, "2+");
+    } else if(name.Contains("MET")){
+      haxis->GetXaxis()->ChangeLabel(8, -1, -1, -1, 1, -1, "#infty");
+    }
+    if((lowX == 0 && highX == 53) || (lowX == 105 && highX == 153)){
+      haxis->GetXaxis()->ChangeLabel(1, -1, 0.);  
+    }
+
+  }
   haxis->Draw("AXIS");
 
   if (inData){
@@ -709,6 +732,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       ratio = getRatioAsymmErrors(h3, hMCNoError);
     }
     ratio->SetLineWidth(h3->GetLineWidth());
+    SetEx(ratio, 0.);
     if(finalPlot) ratio->SetMarkerStyle(7);
     if(!inRelUnc) ratio->Draw("PZ0same");
   }
@@ -746,13 +770,14 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     hRatio->SetTitleOffset(0.85,"X");
     hRatio->SetLabelSize  (0.10,"X");
     hRatio->SetLabelSize  (0.12,"Y");
-    hRatio->GetYaxis()->SetTitleFont(62);
+    hRatio->GetYaxis()->SetTitleFont(42);
     hRatio->GetYaxis()->CenterTitle(kTRUE);
-    hRatio->GetXaxis()->SetTitleFont(62);
-    hRatio->GetYaxis()->SetNdivisions(305);
+    hRatio->GetXaxis()->SetTitleFont(42);
+    hRatio->GetYaxis()->SetNdivisions(304);
     hRatio->GetYaxis()->SetTitle(ratioYTitle);
     hRatio->GetYaxis()->SetRangeUser(lowY, highY);
     if(lowX<highX) hRatio->GetXaxis()->SetRangeUser(lowX, highX);
+    removeBinLabels(hRatio, ".5");
     hRatio->Draw("E");
 
 #ifdef DEBUG_
@@ -780,13 +805,14 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     auto sf = q_data/q_mc;
     cout << " :: Data/MC = " << sf << endl;
 #ifdef SHOW_DATA_MC_RATIO
-    drawTLatexNDC(TString::Format("Data/MC=%.2f#pm%.2f", sf.value, sf.error), 0.75, 0.88, 0.08, 11, 0, 62, kRed);
+    drawTLatexNDC(TString::Format("Data/MC=%.2f#pm%.2f", sf.value, sf.error), 0.75, 0.88, 0.08, 11, 0, 42, kRed);
 #endif
   }
 
   c->cd();
   c->Update();
   c->RedrawAxis();
+  c->RedrawAxis("G");
   return c;
 }
 
@@ -802,7 +828,7 @@ TCanvas* drawStackAndRatio(map<TString, vector<Quantity>> invec, vector<TString>
   prepHists({hData}, false, false);
 
   for_each(inhists.begin(), inhists.end(), [](TH1 *h){ h->SetFillColor(h->GetLineColor()); h->SetFillStyle(1001); h->SetLineColor(kBlack);});
-  auto leg = prepLegends({hData}, {"Data"}, "PL");
+  auto leg = prepLegends({hData}, {"Data"}, "EP");
   appendLegends(leg, inhists, labels, "F");
   return drawStackAndRatio(inhists, hData, leg, ratioYTitle);
 

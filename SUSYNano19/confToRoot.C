@@ -111,7 +111,7 @@ std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
   return make_pair(log_final_down, log_final_up);
 }
 
-void confToRoot(std::string indir_ = "values_unc_val_2016"){
+void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = false){
 
   std::string indir = indir_ + "/";
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
@@ -135,9 +135,17 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   string binName = "";
        if(TString(indir_).Contains("SR"))      binName = "binNum_SUSYNano";
   else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("MET"))      binName = "MET_pt_Systematics";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("toppt"))    binName = "FatJet_TopPt_Systematics";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("top"))      binName = "Stop0l_nTop_Systematics";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("w"))        binName = "Stop0l_nW_Systematics";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("res"))      binName = "Stop0l_nResolved_Systematics";
   else if(TString(indir_).Contains("CR"))      binName = "binNum_SUSYNano_lepcr";
   else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
+
+  double sf = 1.0;
+  if(ScaleJES) sf = 0.900931;
 
   for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {
     vector<TH1*> hUp, hDown, hdiv, hTotal;
@@ -152,11 +160,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
         if(TString(indir_).Contains("nb12")) binnum -= 53;
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
-	  if(up > 5.){ 
-            cout << "LARGE ERROR: " << type << " " << bkg << " " << bin.key() << endl;
-          }
-          hist_up.at(binnum) = jtot[unc.key()][back.key()][bin.key()][1];
-          hist_down.at(binnum) = jtot[unc.key()][back.key()][bin.key()][0];
+          double dn = jtot[unc.key()][back.key()][bin.key()][0];
+          hist_up.at(binnum) = (ScaleJES && TString(unc.key()).Contains("JES")) ? up*sf : up;
+          hist_down.at(binnum) = (ScaleJES && TString(unc.key()).Contains("JES")) ? dn*sf : dn;
         } else {
 	  //cout << unc.key() << ": " << back.key() << ": " << bin.key() << endl;
           hist_up.at(binnum) = 1.;
@@ -243,7 +249,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     hist_up_total.at(binnum) = comb.second;
   }
 
-  TString totalName = "Total";
+  TString totalName = ScaleJES ? "Total_normJES" : "Total";
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
   if(j_bin[binName].size() > 120){

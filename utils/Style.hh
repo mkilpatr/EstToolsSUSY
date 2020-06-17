@@ -61,7 +61,11 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"wz",        kGreen+3},
     {"zz",        kYellow-9},
     {"wmatch",    kGreen+3},
-    {"topmatch",  kViolet+2}
+    {"topmatch",  kViolet+2},
+    {"T2tt-500-325", kOrange},
+    {"T2tt-850-100", kCyan+2},
+    {"T1tttt-1200-800", kViolet+2},
+    {"T1tttt-2000-100", kSpring-9}
 };
 
 const vector<Color_t> comp_colors {kBlue, kRed, kBlack, kViolet-1, kGreen+3, kOrange+2, kBlue+3, kRed+2, kMagenta, kBlue, kCyan+2, kAzure+2};
@@ -315,7 +319,7 @@ void SetStyle()
   MyStyle->SetTitleOffset(1.200,"X");
   MyStyle->SetLabelOffset(0.014,"X");
   MyStyle->SetLabelSize  (0.040,"X");
-  MyStyle->SetLabelFont  (62   ,"X");
+  MyStyle->SetLabelFont  (42   ,"X");
 
   MyStyle->SetStripDecimals(kFALSE);
   MyStyle->SetLineStyleString(11,"20 10");
@@ -324,15 +328,15 @@ void SetStyle()
   MyStyle->SetTitleOffset(1.600,"Y");
   MyStyle->SetLabelOffset(0.014,"Y");
   MyStyle->SetLabelSize  (0.040,"Y");
-  MyStyle->SetLabelFont  (62   ,"Y");
+  MyStyle->SetLabelFont  (42   ,"Y");
 
   MyStyle->SetTextSize   (0.055);
-  MyStyle->SetTextFont   (62);
+  MyStyle->SetTextFont   (42);
 
-  MyStyle->SetStatFont   (62);
-  MyStyle->SetTitleFont  (62);
-  MyStyle->SetTitleFont  (62,"X");
-  MyStyle->SetTitleFont  (62,"Y");
+  MyStyle->SetStatFont   (42);
+  MyStyle->SetTitleFont  (42);
+  MyStyle->SetTitleFont  (42,"X");
+  MyStyle->SetTitleFont  (42,"Y");
 
   MyStyle->SetOptStat    (0);
 
