@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python
 
 '''
 Calculate the full (stat.+syst.) uncertainty of the background prediction.
@@ -43,7 +43,7 @@ all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 all_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd')
 unc_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare')
 graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
-table_header='Search region & \\met [GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD  &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
+table_header='Search bin & \\met [\GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD multijet &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 uncMap = {
     "b"			: "b-tag",
@@ -262,7 +262,7 @@ binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550',
     'bin_hm_nb3_highmtb_nrtntnwgeq3_MET_pt250toinf')
 
 labelMap = {
-    'lowptisr': r'$300\leq\ptISR<500$\,GeV',
+    'lowptisr': r'$300\leq\ptISR<500\GeV$',
     'ntgeq1': r'$\Nt\geq1$',
     'nt2': r'$\Nt=2$',
     'nivf0': r'$\Nsv=0$',
@@ -276,36 +276,36 @@ labelMap = {
     'nbgeq1': r'$\Nb\geq1$',
     'nb0': r'$\Nb=0$',
     'nrt2': r'$\Nres=2$',
-    'medptisr': r'$\ptISR\geq300$\,GeV',
-    'highptisr': r'$\ptISR\geq500$\,GeV',
+    'medptisr': r'$\ptISR\geq300\GeV$',
+    'highptisr': r'$\ptISR\geq500\GeV$',
     'nj7': r'$\Nj\geq7$',
-    'highptb': r'$\ptb\geq70$\,GeV',
+    'highptb': r'$\ptb\geq70\GeV$',
     'hm': r'high \dm',
     'nw0': r'$\Nw=0$',
     'nwgeq1': r'$\Nw\geq1$',
     'nw1': r'$\Nw=1$',
     'nrt0': r'$\Nres=0$',
     'nrt1': r'$\Nres=1$',
-    'lowptb': r'$\ptb<40$\,GeV',
-    'medptb': r'$40<\ptb<70$\,GeV',
+    'lowptb': r'$\ptb<40\GeV$',
+    'medptb': r'$40<\ptb<70\GeV$',
     'nt0': r'$\Nt=0$',
     'lm': r'low \dm',
-    'lowptb12': r'$\ptbonetwo<80$\,GeV',
-    'highptb12': r'$\ptbonetwo\geq140$\,GeV',
-    'lowmtb': r'$\mtb<175$~\GeV',
-    'highmtb': r'$\mtb\geq175$~\GeV',
+    'lowptb12': r'$\ptbonetwo<80\GeV$',
+    'highptb12': r'$\ptbonetwo\geq140\GeV$',
+    'lowmtb': r'$\mtb<175\GeV$',
+    'highmtb': r'$\mtb\geq175\GeV$',
     'nt1': r'$\Nt=1$',
-    'medptb12': r'$80<\ptbonetwo<140$\,GeV',
+    'medptb12': r'$80<\ptbonetwo<140\GeV$',
     'nrtgeq1': r'$\Nres\geq1$',
     'nj6': r'$\Nj\geq6$',
     'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw)\geq2$',
     'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw)\geq3$',
-    'htlt1000': r'$\Ht<1000$',
-    'htgt1000': r'$\Ht\geq1000$',
-    'ht1000to1500': r'$1000\leq\Ht<1500$',
-    'htgt1500': r'$\Ht\geq1500$',
-    'htlt1300': r'$\Ht<1300$',
-    'htgt1300': r'$\Ht\geq1300$',
+    'htlt1000': r'$\Ht<1000\GeV$',
+    'htgt1000': r'$\Ht\geq1000\GeV$',
+    'ht1000to1500': r'$1000\leq\Ht<1500\GeV$',
+    'htgt1500': r'$\Ht\geq1500\GeV$',
+    'htlt1300': r'$\Ht<1300\GeV$',
+    'htgt1300': r'$\Ht\geq1300\GeV$',
     'lmNoDPhi': r'low $\Delta m$',
     'hmNoDPhi': r'high $\Delta m$',
     'MET': r'',
@@ -724,11 +724,7 @@ def writeFullUnc(pred_file):
 def makeYieldTable(output='pred_sr.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
-    s  = beginTable()
-    s += table_header
-    s += '\\hline\n'
-    s += makeTable()
-    s += endTable(135,182)
+    s = makeTable()
     print s
     with open(output, 'w') as f:
         print >> f, s
@@ -737,7 +733,7 @@ def makeUncertaintyTable(output='pred_unc.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s  = beginUncTable()
-    header='Search region & \\met [GeV]  '
+    header='Search region & \\met [\GeV]  '
     for type in uncMap.keys():
         header += ' & ' + str(uncMap[type])
     unc_header = header + '  \\\\ \n'
@@ -749,12 +745,16 @@ def makeUncertaintyTable(output='pred_unc.tex'):
     with open(output, 'w') as f:
         print >> f, s
    
-def beginTable():
+def beginTable(table_index, ibini, ibinf):
     '''Add a break between the bins to fit on each page'''
     s  = '\\begin{table}[!h]\n'
+    label='tab:pred-%d'%table_index
+    desc='Prediction for bins %d--%d'%(ibini, ibinf)
+    s += '\\topcaption[' + desc + ']{Observed number of events and SM background predictions in search bins %d--%d.}\n'%(ibini, ibinf)
+    s += '\\label{' + label + '}\n'
     s += '\\begin{center}\n'
-    s += '\\resizebox*{0.6\\textwidth}{!}{\n'
-    s += '\\begin{tabular}{|c||c||c|c|c|c|c|c|}'
+    s += '\\resizebox*{1.0\\textwidth}{!}{\n'
+    s += '\\begin{tabular}{cccccccc}\n'
     s += '\\hline\n'
     return s
 
@@ -770,23 +770,11 @@ def beginUncTable():
     s += '\\hline\n'
     return s
 
-def endTable(ibini, ibinf):
+def endTable():
     '''Add a break between the bins to fit on each page'''
-    label='tab:pred-lm'
-    desc='Low \\dm prediction bins 0--52'
-    if ibini == 53:
-        label='tab:pred-hm-1'
-        desc='High \\dm prediction bins 53--93'
-    elif ibini == 94:
-        label='tab:pred-hm-2'
-        desc='High \\dm prediction bins 94--134'
-    elif ibini == 135:
-        label='tab:pred-hm-3'
-        desc='High \\dm prediction bins 135--183'
     s  = '\\hline\n'
-    s += '\\end{tabular}}\n'
-    s += '\\caption[' + desc + ']{The SM prediction for Run 2 with \datalumi for each background in the analysis for bins ' + str(ibini) + '--' + str(ibinf) + '. The Rare prediction is a combination of TTZ and Rare MC.}\n'
-    s += '\\label{' + label + '}'
+    s += '\\end{tabular}\n'
+    s += '} % End \\resizebox\n'
     s += '\\end{center}\n'
     s += '\\end{table}\n'
     return s
@@ -819,7 +807,13 @@ def makeTable():
     s=''
     ibin=0
     ibini=0
+    table_splits = [0, 35, 69, 103, 137, 159, 183]
+    table_split_index = 0
     for bin in binlist: 
+        if ibin == table_splits[table_split_index]:
+            s += beginTable(table_split_index, table_splits[table_split_index], table_splits[table_split_index+1]-1)
+            s += table_header
+
         sec, met= bin.lstrip('bin_').rsplit('_', 1)
         if sec not in sections:
             sections.append(sec)
@@ -838,15 +832,14 @@ def makeTable():
                 e_low = sumUnc([e_low, e1_low])
                 e_up  = sumUnc([e_up, e1_up])
             s += formatPrediction(n,e_low,e_up)
-        print("bin: {0}, allVals: {1}".format(bin, allVals[bin]))
+        #print("bin: {0}, allVals: {1}".format(bin, allVals[bin]))
         n, e = yields_data[bin]
         s += ' & ' + str(int(n))
         s += ' \\\\ \n'
-        if ibin == 53 or ibin == 94 or ibin == 135:
-	    s += endTable(ibini, ibin-1)
-            s += beginTable()
-            s += table_header
-	    ibini=ibin
+        if ibin in table_splits:
+            s += endTable()
+            s += '\n'*8
+            table_split_index += 1
     return s
 
 def makeUncTable(unc_header):
@@ -871,10 +864,10 @@ def makeUncTable(unc_header):
             s += formatUncertainty(n,e_low,e_up)
         s += ' \\\\ \n'
         if ibin == 53 or ibin == 94 or ibin == 135:
-	    s += endUncTable(ibini, ibin-1)
+            s += endUncTable(ibini, ibin-1)
             s += beginUncTable()
             s += unc_header
-	    ibini=ibin
+            ibini=ibin
     return s
 
 # formats the prediction nEvents +/- error
@@ -902,7 +895,7 @@ def formatPrediction(n,e_low,e_up):
 
 # formats the prediction nEvents +/- error
 def formatUncertainty(n,e_low,e_up):
-    unc = (((e_up/n) - 1) + (1 - (e_low/n)))/2*100
+    unc = (((e_up/n) - 1) + (1 - (e_low/n)))/2.*100
     out = ''
     if unc>=10:
         unc  = str(int(round(unc,0)))
@@ -921,7 +914,7 @@ def formatUncertainty(n,e_low,e_up):
 def chunkHeader(sec):
     ''' Put together the mega-bin chunk header. '''
     cats = sec.split('_')
-    labs = [labelMap[c] for c in cats]
+    labs = [labelMap[c] for c in cats if labelMap[c] != '']
     ncolumn = len(all_samples)+3
     s  = '\\hline\n'
     s += '\\multicolumn{'+str(ncolumn)+'}{c}{'
