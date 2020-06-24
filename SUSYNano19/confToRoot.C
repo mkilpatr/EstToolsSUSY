@@ -111,7 +111,21 @@ std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
   return make_pair(log_final_down, log_final_up);
 }
 
-void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = false){
+double getDataMCRatio(TString var, int bin){
+  TFile *f = TFile::Open("LLB/lepcr_inclusive_withSyst_v6_060920/DataOverMC_inclusive.root");
+  assert(f);
+  TH1* hist = nullptr;
+       if(var.Contains("MET"))   hist = (TH1*)f->Get("MET_pt_singlelep__llcr_hm_syst__over__bkgtotal");
+  else if(var.Contains("toppt")) hist = (TH1*)f->Get("FatJet_TopPt_singlelep__llcr_hm_syst__over__bkgtotal");
+  else if(var.Contains("top"))   hist = (TH1*)f->Get("Stop0l_nTop_singlelep__llcr_hm_syst__over__bkgtotal");
+  else if(var.Contains("w"))     hist = (TH1*)f->Get("Stop0l_nW_singlelep__llcr_hm_syst__over__bkgtotal");
+  else if(var.Contains("res"))   hist = (TH1*)f->Get("Stop0l_nResolved_singlelep__llcr_hm_syst__over__bkgtotal");
+
+  return hist->GetBinContent(bin + 1);
+
+}
+
+void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = ""){
 
   std::string indir = indir_ + "/";
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
@@ -132,20 +146,17 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = fals
   std::ifstream bin("binlist.json");
   bin >> j_bin;
 
-  string binName = "";
+  string binName = ""; TString binvar = "";
        if(TString(indir_).Contains("SR"))      binName = "binNum_SUSYNano";
   else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
-  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("MET"))      binName = "MET_pt_Systematics";
-  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("toppt"))    binName = "FatJet_TopPt_Systematics";
-  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("top"))      binName = "Stop0l_nTop_Systematics";
-  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("w"))        binName = "Stop0l_nW_Systematics";
-  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("res"))      binName = "Stop0l_nResolved_Systematics";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("MET")){      binName = "MET_pt_Systematics";           binvar = "MET";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("toppt")){    binName = "FatJet_TopPt_Systematics";     binvar = "toppt";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("top")){      binName = "Stop0l_nTop_Systematics";      binvar = "top";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("w")){        binName = "Stop0l_nW_Systematics";        binvar = "w";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("res")){      binName = "Stop0l_nResolved_Systematics"; binvar = "res";}
   else if(TString(indir_).Contains("CR"))      binName = "binNum_SUSYNano_lepcr";
   else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
-
-  double sf = 1.0;
-  if(ScaleJES) sf = 0.900931;
 
   for (json::iterator unc = jtot.begin(); unc != jtot.end(); ++unc) {
     vector<TH1*> hUp, hDown, hdiv, hTotal;
@@ -159,10 +170,11 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = fals
         int binnum = stoi(binstr, nullptr, 0);
         if(TString(indir_).Contains("nb12")) binnum -= 53;
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
+          //double sf = getDataMCRatio(binvar, binnum);
           double up = jtot[unc.key()][back.key()][bin.key()][1];
           double dn = jtot[unc.key()][back.key()][bin.key()][0];
-          hist_up.at(binnum) = (ScaleJES && TString(unc.key()).Contains("JES")) ? up*sf : up;
-          hist_down.at(binnum) = (ScaleJES && TString(unc.key()).Contains("JES")) ? dn*sf : dn;
+          hist_up.at(binnum) = up;
+          hist_down.at(binnum) = dn;
         } else {
 	  //cout << unc.key() << ": " << back.key() << ": " << bin.key() << endl;
           hist_up.at(binnum) = 1.;
@@ -213,11 +225,12 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = fals
     leg->SetTextSize(0.04);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio(hTotal, hdiv, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
-    c->SetTitle(type);
-    c->Print(indir+type+".png");
-    c->Print(indir+type+".C");
+    TString typeName = type+"_"+suffix;
+    c->SetTitle(typeName);
+    c->Print(indir+typeName+".png");
+    c->Print(indir+typeName+".C");
 
-    TFile *outFile = new TFile(indir+type+".root", "RECREATE");
+    TFile *outFile = new TFile(indir+typeName+".root", "RECREATE");
     for(unsigned h = 0; h != hUp.size(); h++){
       hUp[h]->Write();
       hDown[h]->Write();
@@ -237,10 +250,11 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = fals
       for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
         TString bkg = TString(back.key());
         if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
+          //double sf = getDataMCRatio(binvar, binnum);
           double up = jtot[unc.key()][back.key()][bin.key()][1];
-          if(up > 5.) continue;
-          hUp.push_back(jtot[unc.key()][back.key()][bin.key()][1]);
-          hDown.push_back(jtot[unc.key()][back.key()][bin.key()][0]);
+          double dn = jtot[unc.key()][back.key()][bin.key()][0];
+          hUp.push_back(up);
+          hDown.push_back(dn);
         } 
       }
     }
@@ -249,7 +263,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", bool ScaleJES = fals
     hist_up_total.at(binnum) = comb.second;
   }
 
-  TString totalName = ScaleJES ? "Total_normJES" : "Total";
+  TString totalName = "Total_" + suffix;
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
   if(j_bin[binName].size() > 120){

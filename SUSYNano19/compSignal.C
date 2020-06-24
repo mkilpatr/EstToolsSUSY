@@ -7,8 +7,7 @@
 
 using namespace EstTools;
 
-//void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_allMethods/pred_binnum_"){
-void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_signal/signal_binnum_"){
+void compSignal(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_signal/signal_bkgComp_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -23,14 +22,14 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_post = {"TTZ", "Rare", "qcd", "znunu", "ttbarplusw"};
   vector<TString> sigs = {"T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
-  //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
   TString data = "hdata";
   TString data_post = "Graph";
 
   vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare", "t#bar{t}Z"};
   vector<TString> siglabels = {"T2bW(750, 500)", "T2bW(750, 526)", "T2bW(750, 550)"};
-  //vector<TString> siglabels = {"T2tt(1000, 0)", "T1tttt(2200, 400)"};
   vector<TString> datalabel = {"Observed"};
+
+  vector<double> ratioYmax = {0.751, 1.001, 1.501, 1.001, 0.501, 0.501, 0.751, 0.751};
 
   vector<TString> split = {"lm",
 			   "hm_nb1_bins",
@@ -138,7 +137,8 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   vector<TH1*> pred, pred_leg, pred_post;
   vector<TH1*> pred_comp, pred_comp_post;
-  vector<TH1*> hsigs;
+  vector<TH1*> hsigs, sigmahists, sigplusbkg;
+  TH1* bkgtotal = nullptr;
 
   TString suffix = "";
   if(inputDir.Contains("2016")) suffix = "_2016";
@@ -277,11 +277,36 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   //Make unc for postfit
   TGraphAsymmErrors* unc_post = (TGraphAsymmErrors*)p->Get("Sumb");
 
+  for (auto *hist : pred){
+    if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
+    else{ bkgtotal->Add(hist); }
+  }
+
+  TH1* bkgplussig = (TH1*)bkgtotal->Clone("bkgplussig");
+
+  for (int i=0; i<=bkgtotal->GetNbinsX(); ++i){
+    auto q =getHistBin(bkgtotal, i).power(0.5);
+    if (q.value == 0) q=Quantity(0.0001, 0.0001);
+    setHistBin(bkgtotal, i, q);
+  } 
+
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search bin number;Events", nullptr);
     h->SetLineStyle(kDashed);
     hsigs.push_back(h);
+
+    auto hs = (TH1*)h->Clone(s+"_signalOvSqrtBkg");
+    hs->Divide(bkgtotal);
+    sigmahists.push_back(hs);
+
+    auto hd = (TH1*)h->Clone(s+"_DataOversignalplusBkg");
+    auto hsb = (TH1*)h->Clone(s+"_signalplusBkg");
+    hsb->Add(bkgplussig);
+    hd->Divide(hsb);
+    sigplusbkg.push_back(hd);
+
   }
+
   TH1* pull;
   TH1* pull_post;
   if(hdata) pull = getPullHist(hdata, unc);
@@ -297,6 +322,8 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});
   prepHists(hsigs, false, false, false, {kRed, kBlue, kMagenta});
+  prepHists(sigmahists, false, false, false, {kRed, kBlue, kMagenta});
+  prepHists(sigplusbkg, false, false, false, {kRed, kBlue, kMagenta});
 
   vector<TH1*> ratio;
   for (unsigned bkg = 0; bkg != pred_comp.size(); bkg++){
@@ -335,11 +362,10 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     hdata->SetMarkerStyle(7);
     hdata_post->SetMarkerStyle(7);
 
-    auto leg = prepLegends({hdata}, datalabel, "EP");
-    appendLegends(leg, pred_leg, bkglabels, "F");
+    auto leg = prepLegends({pred_leg}, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
     setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
+    TCanvas* c = drawStackAndRatio(pred, nullptr, leg, true, "S/#sqrt{B}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, nullptr, sigmahists, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
@@ -350,11 +376,10 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
 
-    leg = prepLegends({hdata_post}, datalabel, "EP");
-    appendLegends(leg, pred_leg, bkglabels, "F");
+    leg = prepLegends({pred_leg}, bkglabels, "F");
     appendLegends(leg, hsigs, siglabels, "L");
     setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
-    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
+    c = drawStackAndRatio(pred_post, nullptr, leg, true, "S/#sqrt{B}", 0, ratioYmax[ireg], xlow, xhigh, hsigs, nullptr, sigmahists, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
@@ -362,6 +387,34 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     basename = outputName + "_postfit_" + region;
+    basename.ReplaceAll("nb[0-9]", "");
+    c->Print(basename+".pdf");
+
+    leg = prepLegends({pred_leg}, bkglabels, "F");
+    appendLegends(leg, hsigs, siglabels, "L");
+    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    c = drawStackAndRatio(pred, nullptr, leg, true, "S/S+B", 0, ratioYmax[ireg+4], xlow, xhigh, hsigs, nullptr, sigplusbkg, nullptr, false, false, true, true);
+    c->SetCanvasSize(800, 600);
+    gStyle->SetOptStat(0);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawRegionLabels.at(ireg)();
+    drawRegionLabelsVertical.at(ireg)();
+    drawVerticalLines.at(ireg)(c);
+    basename = outputName + "_" + region + "signalplusbkg";
+    basename.ReplaceAll("nb[0-9]", "");
+    c->Print(basename+".pdf");
+
+    leg = prepLegends({pred_leg}, bkglabels, "F");
+    appendLegends(leg, hsigs, siglabels, "L");
+    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    c = drawStackAndRatio(pred_post, nullptr, leg, true, "S/S+B", 0, ratioYmax[ireg+4], xlow, xhigh, hsigs, nullptr, sigplusbkg, nullptr, false, false, true, true);
+    c->SetCanvasSize(800, 600);
+    gStyle->SetOptStat(0);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawRegionLabels.at(ireg)();
+    drawRegionLabelsVertical.at(ireg)();
+    drawVerticalLines.at(ireg)(c);
+    basename = outputName + "_postfit_" + region + "signalplusbkg";
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
   }

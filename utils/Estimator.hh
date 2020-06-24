@@ -839,21 +839,22 @@ public:
   }
 
 
-  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, TH1* inUnc_up=nullptr, TH1* inUnc_dn = nullptr){
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, vector<TH1*> inUnc_up={}, vector<TH1*> inUnc_dn = {}){
     // make DataMC plots with the given cateogory selection
     // possible to normalize MC to Data with a different selection (set by *norm_cut*)
 
-    vector<TH1*> mchists, mchists_up, mchists_down;
+    vector<TH1*> mchists, mchists_up, mchists_dn;
     TH1* hnonttbar = nullptr;
     TH1* bkgtotal = nullptr;
     TH1* bkgtotal_norm = nullptr;
+    vector<TH1*> bkgtotal_up, bkgtotal_dn;
     TH1* httbar = nullptr;
     auto leg = initLegend();
 
     TString plotvar = var_info.var;
     TString title = ";"
         + var_info.label + (var_info.unit=="" ? "" : " ["+var_info.unit + "]") +";"
-        + "Events/bin";
+        + (plotvar.Contains("MET") ? "Events/bin" : "Events");
     TString RYTitle = "N_{obs}/N_{exp}";
 
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
@@ -902,6 +903,8 @@ public:
         prepHists({hist});
         if(saveHists_) saveHist(hist);
         mchists.push_back(hist);
+        mchists_up.push_back(hist);
+        mchists_dn.push_back(hist);
         hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
         
         addLegendEntry(leg, hist, label, "F");
@@ -924,10 +927,9 @@ public:
       }
     }
 
-    double sf_unc = 1;
     if (hdata){
       if (norm_to_data){
-        double sf = 1;
+        double sf = 1, sf_up = 1, sf_dn = 1;
         // calc sf
         if (norm_cut==""){
           auto hsum = (TH1*)mchists.front()->Clone("hsum");
@@ -947,7 +949,26 @@ public:
           sf = (data_inc/mc_inc).value;
           cout << "... normScaleFactor = " << sf << endl;
         }
-        sf_unc = sf;
+        for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
+          auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
+          auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
+          for (int ibin=0; ibin<=hsum_up->GetNbinsX(); ++ibin){
+            auto q_nom = getHistBin(bkgtotal, ibin);
+            auto q_up  = getHistBin(inUnc_up[iunc], ibin);
+            auto q_dn  = getHistBin(inUnc_dn[iunc], ibin);
+            
+            setHistBin(hsum_up, ibin, q_nom*q_up);
+            setHistBin(hsum_dn, ibin, q_nom*q_dn);
+          }
+          sf_up = hdata->Integral(1, hsum_up->GetNbinsX()+1) / hsum_up->Integral(1, hsum_up->GetNbinsX()+1);
+          sf_dn = hdata->Integral(1, hsum_dn->GetNbinsX()+1) / hsum_dn->Integral(1, hsum_dn->GetNbinsX()+1);
+          hsum_up->Scale(sf_up);
+          hsum_dn->Scale(sf_dn);
+          hsum_up->Divide(bkgtotal_norm);
+          hsum_dn->Divide(bkgtotal_norm);
+          bkgtotal_up.push_back(hsum_up);
+          bkgtotal_dn.push_back(hsum_dn);
+        }
         // scale the mc hists
         for (auto *hist : mchists){ 
           hist->Scale(sf);
@@ -955,21 +976,42 @@ public:
           else{ bkgtotal_norm->Add(hist); }
         }
         cout << "The SF Normalization is " << sf << endl;
+        cout << "The SF Up Normalization is " << sf_up << endl;
+        cout << "The SF Down Normalization is " << sf_dn << endl;
       }
     }
 
     TGraphAsymmErrors *unc = nullptr;
-    if (inUnc_up && inUnc_dn){
+    if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
       unc = !bkgtotal_norm ? new TGraphAsymmErrors(bkgtotal) : new TGraphAsymmErrors(bkgtotal_norm);
       for (int ibin = 0; ibin < unc->GetN(); ++ibin){
         int ibin_hist = ibin+1;
-        auto q_up  = getHistBin(inUnc_up, ibin_hist);
-        auto q_dn  = getHistBin(inUnc_dn, ibin_hist);
-        auto q_bkg = !bkgtotal_norm ? getHistBin(bkgtotal, ibin_hist) : getHistBin(bkgtotal_norm, ibin_hist);
-        //Systematics
-        double unc_up = ((q_up.value - 1)*q_bkg.value)*((q_up.value - 1)*q_bkg.value);
-        double unc_dn = ((1 - q_dn.value)*q_bkg.value)*((1 - q_dn.value)*q_bkg.value);
-         cout << "Up/Down: " << unc_up << "/" << unc_dn << endl;
+        Quantity q_up(0,0), q_dn(0,0), q_bkg(0,0);
+        double unc_up = 0., unc_dn = 0.;
+        for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
+          q_up  = getHistBin(bkgtotal_up[iunc], ibin_hist);
+          q_dn  = getHistBin(bkgtotal_dn[iunc], ibin_hist);
+          q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
+          unc_up += ((q_up.value - 1)*q_bkg.value)*((q_up.value - 1)*q_bkg.value);
+          unc_dn += ((1 - q_dn.value)*q_bkg.value)*((1 - q_dn.value)*q_bkg.value);
+
+          if(plotvar.Contains("nTop") && iunc == 1){
+            cout << inUnc_up[iunc]->GetName() << " Down/Up = " << q_dn.value << "/" << q_up.value << endl;
+          }
+        }
+        if(bkgtotal_up.size() == 0){ 
+          for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
+            q_up  = getHistBin(inUnc_up[iunc], ibin_hist);
+            q_dn  = getHistBin(inUnc_dn[iunc], ibin_hist);
+            q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
+            unc_up += ((q_up.value - 1)*q_bkg.value)*((q_up.value - 1)*q_bkg.value);
+            unc_dn += ((1 - q_dn.value)*q_bkg.value)*((1 - q_dn.value)*q_bkg.value);
+            if(plotvar.Contains("nTop") && iunc == 1){
+              cout << inUnc_up[iunc]->GetName() << " Down/Up = " << q_dn.value << "/" << q_up.value << endl;
+            }
+          } 
+        }
+        cout << "Up/Down: " << unc_up << "/" << unc_dn << endl;
         //Statistical
         // ttbar:
         unc_up += q_bkg.error*q_bkg.error;
@@ -977,7 +1019,7 @@ public:
         
         //Nominal
         double pred = q_bkg.value;
-         cout << "pred: " << pred << " Up/Down: " << unc_up << "/" << unc_dn << endl;
+        cout << "pred: " << pred << " Up/Down: " << unc_up << "/" << unc_dn << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
         unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
@@ -989,7 +1031,7 @@ public:
     if (hdata){
       if (ttbarRatio)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, "(N_{obs} - N_{non-ttbar})/N_{ttbar}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, ttbarRatio);
-      else if (inUnc_up && inUnc_dn)
+      else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc, {}, nullptr, false, false, false, true);
       else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
@@ -1013,7 +1055,7 @@ public:
       return nullptr;
   }
 
-  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, TH1* inUnc_up=nullptr, TH1* inUnc_dn = nullptr){
+  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, vector<TH1*> inUnc_up={}, vector<TH1*> inUnc_dn = {}){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);

@@ -295,6 +295,9 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
 #endif
   }
   if (leg) leg->Draw();
+#ifdef TDR_STYLE_
+  CMS_lumi(c, 4, 10);
+#endif
   if (plotextra) (*plotextra)(c);
   c->Update();
 
@@ -376,7 +379,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     if (isFirst){
       isFirst = false;
       if(isVal){
-	double m = h->GetMaximum();
+	double m = 1 + std::max(h->GetMaximum() - 1, 1 - h->GetMinimum());
         val = m > val ? m : val;
 	double max = val > 1 ? val : 1 + (1 - val);
 	double min = val > 1 ? 1 - (val - 1) : 1 - (1 - val);
@@ -600,14 +603,11 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   p1->Draw();
   p1->SetLogy(plotlog);
   p1->cd();
-  //  c->SetLogx(fLogx);
-  //  c->SetLogy(fLogy);
   double ymax = hData ? getHistMaximumPlusError(hData) : 0;
   if(hbkgtotal->GetMaximum()>ymax) ymax=hbkgtotal->GetMaximum();
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  //hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000 : plotMax));
   hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
   hbkgtotal->SetMinimum(plotlog? LOG_YMIN : 0);
   if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
@@ -615,6 +615,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hbkgtotal->GetYaxis()->SetTitleSize(0.08);
   hbkgtotal->GetYaxis()->SetTitleOffset(0.85);
   hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
+  TGaxis::SetMaxDigits(4);
   hbkgtotal->Draw("hist");
 
   hstack->Draw("histsame");

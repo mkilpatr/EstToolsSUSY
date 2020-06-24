@@ -19,6 +19,7 @@
 #include "TLegend.h"
 #include "TPaveText.h"
 #include "TLatex.h"
+#include "TGaxis.h"
 #include "TASImage.h"
 #include <TGraph.h>
 #include <TGraphErrors.h>

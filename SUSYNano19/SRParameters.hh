@@ -66,7 +66,7 @@ const TString lepvetowgt_no_wtopsf_2018 = HEMVeto+"*1000*Stop0l_evtWeight*Stop0l
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 
-bool SPLITTF = false; // split TF to CR-SR and SR-extrapolation
+bool SPLITTF = true; // split TF to CR-SR and SR-extrapolation
 const TString revert_vetoes = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))";
 
 // MET+LEP LL method
