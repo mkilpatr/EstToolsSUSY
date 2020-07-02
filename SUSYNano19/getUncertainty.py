@@ -46,23 +46,23 @@ graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
 table_header='Search bin & \\met [\GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD multijet &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 uncMap = {
-    "b"			: "b-tag",
-    "ivfunc"		: "Soft b-tag",
-    #"LHEScale"		: "LHE Scale",
-    "ISR_Weight_background"	: "ISR",
-    "JES"		: "JES",
-    "metres"		: "\met res.",
-    "Prefire_Weight"	: "Prefire",
-    "PDF_Weight"	: "PDF",
-    "PU_Weight"		: "Pileup",
-    "eff_e"		: "$e$ veto",
-    "err_mu"		: "$\mu$ veto",
-    "eff_tau"		: "$\\tau$ veto",
-    "eff_toptag"	: "\Nt",
-    "eff_restoptag"	: "\Nres",
-    "eff_wtag"		: "\Nw",
-    "eff_fatjet_veto"	: "AK8 Veto",
-    "lumi"		: "Lumi",
+    "b"         : "b-tag",
+    "ivfunc"        : "Soft b-tag",
+    #"LHEScale"     : "LHE Scale",
+    "ISR_Weight_background" : "ISR",
+    "JES"       : "JES",
+    "metres"        : "\met res.",
+    "Prefire_Weight"    : "Prefire",
+    "PDF_Weight"    : "PDF",
+    "PU_Weight"     : "Pileup",
+    "eff_e"     : "$e$ veto",
+    "err_mu"        : "$\mu$ veto",
+    "eff_tau"       : "$\\tau$ veto",
+    "eff_toptag"    : "\Nt",
+    "eff_restoptag" : "\Nres",
+    "eff_wtag"      : "\Nw",
+    "eff_fatjet_veto"   : "AK8 Veto",
+    "lumi"      : "Lumi",
 }
 
 pred_total_name = 'hpred'
@@ -262,50 +262,50 @@ binlist=('bin_lm_nb0_nivf0_highptisr_nj2to5_MET_pt450to550',
     'bin_hm_nb3_highmtb_nrtntnwgeq3_MET_pt250toinf')
 
 labelMap = {
-    'lowptisr': r'$300\leq\ptISR<500\GeV$',
-    'ntgeq1': r'$\Nt\geq1$',
-    'nt2': r'$\Nt=2$',
-    'nivf0': r'$\Nsv=0$',
-    'nivf1': r'$\Nsv\geq1$',
-    'nw2': r'$\Nw=2$',
-    'nj2to5': r'$2\leq\Nj\leq5$',
-    'nb2': r'$\Nb\geq2$',
-    'nbeq2': r'$\Nb=2$',
-    'nb3': r'$\Nb\geq3$',
-    'nb1': r'$\Nb=1$',
-    'nbgeq1': r'$\Nb\geq1$',
-    'nb0': r'$\Nb=0$',
-    'nrt2': r'$\Nres=2$',
-    'medptisr': r'$\ptISR\geq300\GeV$',
-    'highptisr': r'$\ptISR\geq500\GeV$',
-    'nj7': r'$\Nj\geq7$',
-    'highptb': r'$\ptb\geq70\GeV$',
-    'hm': r'high \dm',
-    'nw0': r'$\Nw=0$',
-    'nwgeq1': r'$\Nw\geq1$',
-    'nw1': r'$\Nw=1$',
-    'nrt0': r'$\Nres=0$',
-    'nrt1': r'$\Nres=1$',
-    'lowptb': r'$\ptb<40\GeV$',
-    'medptb': r'$40<\ptb<70\GeV$',
-    'nt0': r'$\Nt=0$',
-    'lm': r'low \dm',
-    'lowptb12': r'$\ptbonetwo<80\GeV$',
-    'highptb12': r'$\ptbonetwo\geq140\GeV$',
-    'lowmtb': r'$\mtb<175\GeV$',
-    'highmtb': r'$\mtb\geq175\GeV$',
-    'nt1': r'$\Nt=1$',
-    'medptb12': r'$80<\ptbonetwo<140\GeV$',
-    'nrtgeq1': r'$\Nres\geq1$',
-    'nj6': r'$\Nj\geq6$',
-    'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw)\geq2$',
-    'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw)\geq3$',
-    'htlt1000': r'$\Ht<1000\GeV$',
-    'htgt1000': r'$\Ht\geq1000\GeV$',
-    'ht1000to1500': r'$1000\leq\Ht<1500\GeV$',
-    'htgt1500': r'$\Ht\geq1500\GeV$',
-    'htlt1300': r'$\Ht<1300\GeV$',
-    'htgt1300': r'$\Ht\geq1300\GeV$',
+    'lowptisr': r'$300 < \ptISR < 500\GeV$',
+    'ntgeq1': r'$\Nt \geq 1$',
+    'nt2': r'$\Nt = 2$',
+    'nivf0': r'$\Nsv = 0$',
+    'nivf1': r'$\Nsv \geq 1$',
+    'nw2': r'$\Nw = 2$',
+    'nj2to5': r'$2 \leq \Nj \leq 5$',
+    'nb2': r'$\Nb \geq 2$',
+    'nbeq2': r'$\Nb = 2$',
+    'nb3': r'$\Nb \geq 3$',
+    'nb1': r'$\Nb = 1$',
+    'nbgeq1': r'$\Nb \geq 1$',
+    'nb0': r'$\Nb = 0$',
+    'nrt2': r'$\Nres = 2$',
+    'medptisr': r'$\ptISR > 300\GeV$',
+    'highptisr': r'$\ptISR > 500\GeV$',
+    'nj7': r'$\Nj \geq 7$',
+    'highptb': r'$\ptb > 70\GeV$',
+    'hm': r'High \dm',
+    'nw0': r'$\Nw = 0$',
+    'nwgeq1': r'$\Nw \geq 1$',
+    'nw1': r'$\Nw = 1$',
+    'nrt0': r'$\Nres = 0$',
+    'nrt1': r'$\Nres = 1$',
+    'lowptb': r'$\ptb < 40\GeV$',
+    'medptb': r'$40 < \ptb < 70\GeV$',
+    'nt0': r'$\Nt = 0$',
+    'lm': r'Low \dm',
+    'lowptb12': r'$\ptbonetwo < 80\GeV$',
+    'highptb12': r'$\ptbonetwo > 140\GeV$',
+    'lowmtb': r'$\mtb < 175\GeV$',
+    'highmtb': r'$\mtb > 175\GeV$',
+    'nt1': r'$\Nt = 1$',
+    'medptb12': r'$80 < \ptbonetwo < 140\GeV$',
+    'nrtgeq1': r'$\Nres \geq 1$',
+    'nj6': r'$\Nj \geq 6$',
+    'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw) \geq 2$',
+    'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw) \geq 3$',
+    'htlt1000': r'$\Ht < 1000\GeV$',
+    'htgt1000': r'$\Ht > 1000\GeV$',
+    'ht1000to1500': r'$1000 < \Ht < 1500\GeV$',
+    'htgt1500': r'$\Ht > 1500\GeV$',
+    'htlt1300': r'$\Ht < 1300\GeV$',
+    'htgt1300': r'$\Ht > 1300\GeV$',
     'lmNoDPhi': r'low $\Delta m$',
     'hmNoDPhi': r'high $\Delta m$',
     'MET': r'',
@@ -750,12 +750,15 @@ def beginTable(table_index, ibini, ibinf):
     s  = '\\begin{table}[!h]\n'
     label='tab:pred-%d'%table_index
     desc='Prediction for bins %d--%d'%(ibini, ibinf)
+    s += '\\begin{center}\n'
+    s += '\\internallinenumbers\n'
     s += '\\topcaption[' + desc + ']{Observed number of events and SM background predictions in search bins %d--%d.}\n'%(ibini, ibinf)
     s += '\\label{' + label + '}\n'
-    s += '\\begin{center}\n'
+    s += '\\vspace*{-2ex}\n'
     s += '\\resizebox*{1.0\\textwidth}{!}{\n'
-    s += '\\begin{tabular}{cccccccc}\n'
-    s += '\\hline\n'
+    s += '\\renewcommand*{\\arraystretch}{1.25}\n'
+    s += '\\begin{tabular}{cccccccr}\n'
+    #s += '\\hline\n'
     return s
 
 def beginUncTable():
@@ -772,7 +775,8 @@ def beginUncTable():
 
 def endTable():
     '''Add a break between the bins to fit on each page'''
-    s  = '\\hline\n'
+    s  = '\n'
+    #s += '\\hline\n'
     s += '\\end{tabular}\n'
     s += '} % End \\resizebox\n'
     s += '\\end{center}\n'
@@ -807,17 +811,24 @@ def makeTable():
     s=''
     ibin=0
     ibini=0
-    table_splits = [0, 35, 69, 103, 137, 159, 183]
+    table_splits = [0, 28, 53, 81, 108, 137, 162, 183]
     table_split_index = 0
     for bin in binlist: 
         if ibin == table_splits[table_split_index]:
             s += beginTable(table_split_index, table_splits[table_split_index], table_splits[table_split_index+1]-1)
             s += table_header
+            s += '\\hline\n'
 
         sec, met= bin.lstrip('bin_').rsplit('_', 1)
         if sec not in sections:
+            if ibin == table_splits[table_split_index]:
+                s += '\n'
+            else:
+                s += '[\\cmsTabSkip]\n\n'
             sections.append(sec)
             s += chunkHeader(sec)
+        else:
+            s += '\n'
         xlow, xhigh = met.lstrip('met_pt').split('to')
         metlabel = r'$>%s$'%xlow if xhigh=='inf' else '$-$'.join([xlow, xhigh])
         s += '%d & '%ibin
@@ -835,7 +846,7 @@ def makeTable():
         #print("bin: {0}, allVals: {1}".format(bin, allVals[bin]))
         n, e = yields_data[bin]
         s += ' & ' + str(int(n))
-        s += ' \\\\ \n'
+        s += ' \\\\'
         if ibin in table_splits:
             s += endTable()
             s += '\n'*8
@@ -872,26 +883,44 @@ def makeUncTable(unc_header):
 
 # formats the prediction nEvents +/- error
 def formatPrediction(n,e_low,e_up):
-    if n>=10:
-        n = str(int(round(n,0)))
-        e_low = str(int(round(e_low,0)))
-        e_up  = str(int(round(e_up,0)))
-    elif n>=1:
-        n = str(round(n,1))
-        e_low = str(round(e_low,1))
-        e_up  = str(round(e_up,1))
+    assert e_low >= 0 and e_up >= 0 and n >= 0
+
+    if e_up > 0: log10_e_up = np.log10(e_up)
+    else:        log10_e_up = -2
+
+    if e_low > 0: log10_e_low = np.log10(e_low)
+    else:         log10_e_low = -2
+
+    place = int(np.ceil(max(log10_e_up, log10_e_low, 0) - 2))
+
+    n_round = round(n, -place)
+    e_low_round = round(e_low, -place)
+    e_up_round = round(e_up, -place)
+
+    unc_ave = (e_up_round + e_low_round)/2.
+    if unc_ave > 0:
+        unc_frac_diff = abs(e_up_round - e_low_round) / unc_ave
+        if unc_frac_diff < 0.05:
+            e_up_round = round(unc_ave, -place)
+            e_low_round = round(unc_ave, -place)
+
+    n_format_str = '%%.%df'%(max(0, -place))
+    e_format_str = '%%+.%df'%(max(0, -place))
+
+    n_str = n_format_str%n_round
+    e_low_str = e_format_str%(-e_low_round)
+    e_up_str = e_format_str%e_up_round
+
+    if n_round == 0:
+        if e_up_round == 0:
+            return ' & $< 0.01$ '
+        else:
+            return ' & $< %s$'%e_up_str[1:]
     else:
-        n = str(round(n,2))
-        e_low = str(round(e_low,2))
-        e_up  = str(round(e_up,2))
-    if n=='0.0':
-        if e_up=='0.0':
-            return ' & $<$0.01'
-        return ' & $<$' + e_up
-    if e_low==e_up:
-        return ' & $ %s\\pm%s $ ' %(n, e_up)
-    else:
-        return ' & $ %s\,^{+%s}_{-%s} $ ' %(n, e_up, e_low)
+        if e_low_round == e_up_round:
+            return ' & $%s \\pm %s$ '%(n_str, e_up_str[1:])
+        else:
+            return ' & $%s\,^{%s}_{%s}$ '%(n_str, e_up_str, e_low_str)
 
 # formats the prediction nEvents +/- error
 def formatUncertainty(n,e_low,e_up):
@@ -916,11 +945,12 @@ def chunkHeader(sec):
     cats = sec.split('_')
     labs = [labelMap[c] for c in cats if labelMap[c] != '']
     ncolumn = len(all_samples)+3
-    s  = '\\hline\n'
+    s  = ''
+    #s += '\\hline\n'
     s += '\\multicolumn{'+str(ncolumn)+'}{c}{'
     s += ', '.join(labs)
-    s += '} \\\\ \n'
-    s += '\\hline\n' 
+    s += '} \\\\[\\cmsTabSkip] \n'
+    #s += '\\hline\n' 
     return s
 
 def chunkUncHeader(sec):
