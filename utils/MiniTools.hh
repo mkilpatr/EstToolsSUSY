@@ -468,7 +468,7 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
-TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false){
   auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
@@ -489,6 +489,7 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
   }
+  if (Ratio) return ratio;
   return pull_h;
 }
 
@@ -849,6 +850,34 @@ void SetEx(TGraphAsymmErrors* gae, Double_t Ex)
     gae->SetPointEXhigh(i,Ex);
     gae->SetPointEXlow(i,Ex);
   }
+}
+
+std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
+  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
+  double log_syst_up_total = 0., log_syst_down_total = 0.;
+  double log_final_up = 0., log_final_down = 0.;
+  for(unsigned p = 0; p != p_down.size(); p++){
+    double log_syst_up     = p_up[p];
+    double log_syst_down   = p_down[p];
+    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
+      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
+      log_syst_up   /= geometric_mean;
+      log_syst_down /= geometric_mean;
+    }
+    if (log_syst_up > 1 || log_syst_down < 1){
+        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
+    } else{
+        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
+    }
+    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
+    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
+    log_final_up   = log_syst_up_total;
+    log_final_down = log_syst_down_total;
+  }
+
+  return make_pair(log_final_down, log_final_up);
 }
 
 }

@@ -767,6 +767,26 @@
 		"bin_lepcr_hm_MET_pt650to750": "4",
 		"bin_lepcr_hm_MET_pt750toinf": "5"
 	},
+	"Stop0l_HT_Systematics": {
+		"bin_lepcr_hm_Stop0l_HT250to350": "0",
+		"bin_lepcr_hm_Stop0l_HT350to450": "1",
+		"bin_lepcr_hm_Stop0l_HT450to550": "2",
+		"bin_lepcr_hm_Stop0l_HT550to650": "3",
+		"bin_lepcr_hm_Stop0l_HT650to750": "4",
+		"bin_lepcr_hm_Stop0l_HT750toinf": "5"
+	},
+	"Stop0l_nbtags_Systematics": {
+		"bin_lepcr_hm_Stop0l_nbtags1to2": "0",
+		"bin_lepcr_hm_Stop0l_nbtags2to3": "1",
+		"bin_lepcr_hm_Stop0l_nbtags3to4": "2",
+		"bin_lepcr_hm_Stop0l_nbtags4toinf": "3"
+	},
+	"Stop0l_nISRJets_Systematics": {
+		"bin_lepcr_hm_nISRJets1to2": "0",
+		"bin_lepcr_hm_nISRJets2to3": "1",
+		"bin_lepcr_hm_nISRJets3to4": "2",
+		"bin_lepcr_hm_nISRJets4toinf": "3"
+	},
 	"Stop0l_nTop_Systematics": {
 		"bin_lepcr_hm_Stop0l_nTop0to1": "0",
 		"bin_lepcr_hm_Stop0l_nTop1to2": "1",

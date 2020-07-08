@@ -15,9 +15,10 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
   PAD_BOTTOM_MARGIN = 0.4;
 
 
-  vector<TString> bkgs = {"httz_stack_2", "hRare_stack_1", "hqcd_stack_3", "hznunu_stack_4", "httbar_stack_5"};
+  vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_name = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
-  vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400", "T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
+  vector<TString> sigs = {"T2tt_150_25"};
+  //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400", "T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
   //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
   TString data = "hdata";
 

@@ -8,7 +8,7 @@
 using namespace EstTools;
 
 //void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_allMethods/pred_binnum_"){
-void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_signal/signal_binnum_"){
+void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_lowT2tt/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -22,13 +22,15 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_post = {"TTZ", "Rare", "qcd", "znunu", "ttbarplusw"};
-  vector<TString> sigs = {"T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
+  vector<TString> sigs = {"T2tt_150_25"};
+  //vector<TString> sigs = {"T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
   //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
   TString data = "hdata";
   TString data_post = "Graph";
 
   vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare", "t#bar{t}Z"};
-  vector<TString> siglabels = {"T2bW(750, 500)", "T2bW(750, 526)", "T2bW(750, 550)"};
+  vector<TString> siglabels = {"T2tt(150, 25)"};
+  //vector<TString> siglabels = {"T2bW(750, 500)", "T2bW(750, 526)", "T2bW(750, 550)"};
   //vector<TString> siglabels = {"T2tt(1000, 0)", "T1tttt(2200, 400)"};
   vector<TString> datalabel = {"Observed"};
 

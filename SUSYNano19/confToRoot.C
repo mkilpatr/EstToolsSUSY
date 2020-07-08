@@ -83,47 +83,33 @@ std::vector<std::string> readFileTotal(std::string FILENAME){
   return filenames;
 }
 
-std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
-  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
-  double log_syst_up_total = 0., log_syst_down_total = 0.;
-  double log_final_up = 0., log_final_down = 0.;
-  for(unsigned p = 0; p != p_down.size(); p++){
-    double log_syst_up     = p_up[p];
-    double log_syst_down   = p_down[p];
-    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
-      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
-      log_syst_up   /= geometric_mean;
-      log_syst_down /= geometric_mean;
-    }
-    if (log_syst_up > 1 || log_syst_down < 1){
-        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
-        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
-    } else{
-        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
-        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
-    }
-    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
-    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
-    log_final_up   = log_syst_up_total;
-    log_final_down = log_syst_down_total;
-  }
-
-  return make_pair(log_final_down, log_final_up);
-}
-
-double getDataMCRatio(TString var, int bin){
-  TFile *f = TFile::Open("LLB/lepcr_inclusive_withSyst_v6_060920/DataOverMC_inclusive.root");
-  assert(f);
-  TH1* hist = nullptr;
-       if(var.Contains("MET"))   hist = (TH1*)f->Get("MET_pt_singlelep__llcr_hm_syst__over__bkgtotal");
-  else if(var.Contains("toppt")) hist = (TH1*)f->Get("FatJet_TopPt_singlelep__llcr_hm_syst__over__bkgtotal");
-  else if(var.Contains("top"))   hist = (TH1*)f->Get("Stop0l_nTop_singlelep__llcr_hm_syst__over__bkgtotal");
-  else if(var.Contains("w"))     hist = (TH1*)f->Get("Stop0l_nW_singlelep__llcr_hm_syst__over__bkgtotal");
-  else if(var.Contains("res"))   hist = (TH1*)f->Get("Stop0l_nResolved_singlelep__llcr_hm_syst__over__bkgtotal");
-
-  return hist->GetBinContent(bin + 1);
-
-}
+//std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
+//  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
+//  double log_syst_up_total = 0., log_syst_down_total = 0.;
+//  double log_final_up = 0., log_final_down = 0.;
+//  for(unsigned p = 0; p != p_down.size(); p++){
+//    double log_syst_up     = p_up[p];
+//    double log_syst_down   = p_down[p];
+//    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
+//      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
+//      log_syst_up   /= geometric_mean;
+//      log_syst_down /= geometric_mean;
+//    }
+//    if (log_syst_up > 1 || log_syst_down < 1){
+//        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
+//        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
+//    } else{
+//        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
+//        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
+//    }
+//    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
+//    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
+//    log_final_up   = log_syst_up_total;
+//    log_final_down = log_syst_down_total;
+//  }
+//
+//  return make_pair(log_final_down, log_final_up);
+//}
 
 void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = ""){
 
@@ -150,8 +136,11 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
        if(TString(indir_).Contains("SR"))      binName = "binNum_SUSYNano";
   else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
   else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("MET")){      binName = "MET_pt_Systematics";           binvar = "MET";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("ht")){       binName = "Stop0l_HT_Systematics";        binvar = "ht";}
   else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("toppt")){    binName = "FatJet_TopPt_Systematics";     binvar = "toppt";}
   else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("top")){      binName = "Stop0l_nTop_Systematics";      binvar = "top";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("btag")){     binName = "Stop0l_nbtags_Systematics";    binvar = "btag";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("ISR")){      binName = "Stop0l_nISRJets_Systematics";  binvar = "nISR";}
   else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("w")){        binName = "Stop0l_nW_Systematics";        binvar = "w";}
   else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("res")){      binName = "Stop0l_nResolved_Systematics"; binvar = "res";}
   else if(TString(indir_).Contains("CR"))      binName = "binNum_SUSYNano_lepcr";
@@ -170,9 +159,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
         int binnum = stoi(binstr, nullptr, 0);
         if(TString(indir_).Contains("nb12")) binnum -= 53;
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
-          //double sf = getDataMCRatio(binvar, binnum);
           double up = jtot[unc.key()][back.key()][bin.key()][1];
           double dn = jtot[unc.key()][back.key()][bin.key()][0];
+          if(binnum == 0) cout << unc.key() << "UP/Down: " << up << "/" << dn << endl;
           hist_up.at(binnum) = up;
           hist_down.at(binnum) = dn;
         } else {
@@ -225,7 +214,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
     leg->SetTextSize(0.04);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio(hTotal, hdiv, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
-    TString typeName = type+"_"+suffix;
+    TString typeName = type+suffix;
     c->SetTitle(typeName);
     c->Print(indir+typeName+".png");
     c->Print(indir+typeName+".C");
@@ -250,7 +239,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
       for (json::iterator back = jtot[unc.key()].begin(); back != jtot[unc.key()].end(); ++back) {
         TString bkg = TString(back.key());
         if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
-          //double sf = getDataMCRatio(binvar, binnum);
           double up = jtot[unc.key()][back.key()][bin.key()][1];
           double dn = jtot[unc.key()][back.key()][bin.key()][0];
           hUp.push_back(up);
@@ -263,7 +251,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
     hist_up_total.at(binnum) = comb.second;
   }
 
-  TString totalName = "Total_" + suffix;
+  TString totalName = "Total" + suffix;
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
   if(j_bin[binName].size() > 120){

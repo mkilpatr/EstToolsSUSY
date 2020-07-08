@@ -713,7 +713,7 @@ public:
 
   }
 
-  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, bool normalize = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, bool normalize = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool inRatio = true, float scale = -1.){
     // make BKG vs Signal plots with the given cateogory selection
     // plot S/sqrt(B) in the lower pad
 
@@ -797,32 +797,27 @@ public:
       prepHists({hist});
       hist->SetLineStyle(kDashed);
       hist->SetLineWidth(3);
-      //hist->SetLineColor(kRed + color);
-      if (normalize) hist->Scale(totalbkg/hist->Integral(1, hist->GetNbinsX()+1));
+           if (scale > 0) hist->Scale(scale/hist->Integral(1, hist->GetNbinsX()+1));
+      else if (normalize) hist->Scale(totalbkg/hist->Integral(1, hist->GetNbinsX()+1));
+      if (normalize) cout << totalbkg << endl;
       if (saveHists_) saveHist(hist);
       sighists.push_back(hist);
       addLegendEntry(leg, hist, sample.label, "L");
-      if(normalize){
-        for (int i=0; i<=bkgtotal->GetNbinsX(); ++i){
-          auto q  =getHistBin(bkgtotal, i);
-          auto qs = getHistBin(hist, i);
-          auto qtot = Quantity(q.value + qs.value + q.error*q.error + qs.error*qs.error, sqrt(q.error*q.error + qs.error*qs.error));
-          if (q.value == 0) q=Quantity(0.0001, 0.0001);
-          setHistBin(bkgtotal, i, qtot);
-        }
-      }
       auto hs = (TH1*)hist->Clone(hname+"_signalOvSqrtBkg");
       hs->Divide(bkgtotal);
       sigmahists.push_back(hs);
       if (saveHists_) saveHist(hs);
-      color++;
     }
 
     leg->SetTextSize(0.04);
     setLegend(leg, 2, 0.45, 0.6, 0.92, 0.87);
 
     TCanvas *c = nullptr;
-    if (normalize){
+    if (!inRatio){
+      leg->SetTextSize(0.028);
+      setLegend(leg, 2, 0.45, 0.65, 0.92, 0.90);
+      c = drawStack(mchists, sighists, plotlog, leg);
+    }else if (normalize){
       c = drawStackAndRatio(mchists, nullptr, leg, plotlog, "Significance", 0, 0.150, 0, -1, sighists, nullptr, sigmahists);
     }else if (showSigma){
       c = drawStackAndRatio(mchists, nullptr, leg, plotlog, RYTitle, 0, 2.999, 0, -1, sighists, nullptr, sigmahists);
@@ -848,6 +843,7 @@ public:
     TH1* bkgtotal = nullptr;
     TH1* bkgtotal_norm = nullptr;
     vector<TH1*> bkgtotal_up, bkgtotal_dn;
+    TH1* sigmahist = nullptr;
     TH1* httbar = nullptr;
     auto leg = initLegend();
 
@@ -876,6 +872,11 @@ public:
       if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
       else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
       else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttbar","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-wjets","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-tW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttZ","");
       if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
@@ -888,6 +889,11 @@ public:
 	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
 	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
 	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-wjets","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-tW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
 	sMC = sMC.ReplaceAll("-cr","");
 	sMC = sMC.ReplaceAll("-withveto","");
 	if(sMC == scomb){
@@ -896,6 +902,8 @@ public:
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
 	  if(!hist) hist = (TH1*) hmc_buff->Clone();
 	  else      hist->Add(hmc_buff);
+          double totalEvents = hist->Integral(1, hist->GetNbinsX()+1);
+          cout << hist->GetName() << ": " << totalEvents << endl;
 	}
       }
 
@@ -906,6 +914,8 @@ public:
         mchists_up.push_back(hist);
         mchists_dn.push_back(hist);
         hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+        double totalEvents = hist->Integral(1, hist->GetNbinsX()+1);
+        cout << hist->GetName() << ": " << totalEvents << endl;
         
         addLegendEntry(leg, hist, label, "F");
         if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
@@ -949,6 +959,14 @@ public:
           sf = (data_inc/mc_inc).value;
           cout << "... normScaleFactor = " << sf << endl;
         }
+        // scale the mc hists
+        for (auto *hist : mchists){ 
+          hist->Scale(sf);
+          if (!bkgtotal_norm){ bkgtotal_norm = (TH1*)hist->Clone("bkgtotal_norm"); }
+          else{ bkgtotal_norm->Add(hist); }
+        }
+        cout << "The SF Normalization is " << sf << endl;
+        // Get syst normalization
         for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
           auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
           auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
@@ -962,56 +980,59 @@ public:
           }
           sf_up = hdata->Integral(1, hsum_up->GetNbinsX()+1) / hsum_up->Integral(1, hsum_up->GetNbinsX()+1);
           sf_dn = hdata->Integral(1, hsum_dn->GetNbinsX()+1) / hsum_dn->Integral(1, hsum_dn->GetNbinsX()+1);
-          hsum_up->Scale(sf_up);
-          hsum_dn->Scale(sf_dn);
+          if (TString(inUnc_up[iunc]->GetName()).Contains("Powheg")){
+            hsum_up->Scale(sf);
+            hsum_dn->Scale(sf);
+          } else {
+            hsum_up->Scale(sf_up);
+            hsum_dn->Scale(sf_dn);
+          }
           hsum_up->Divide(bkgtotal_norm);
           hsum_dn->Divide(bkgtotal_norm);
           bkgtotal_up.push_back(hsum_up);
           bkgtotal_dn.push_back(hsum_dn);
         }
-        // scale the mc hists
-        for (auto *hist : mchists){ 
-          hist->Scale(sf);
-          if (!bkgtotal_norm){ bkgtotal_norm = (TH1*)hist->Clone("bkgtotal_norm"); }
-          else{ bkgtotal_norm->Add(hist); }
+      }
+    }
+
+    if(bkgtotal_up.size() > 0){
+      for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
+        for (int ibin=0; ibin<=bkgtotal_up[iunc]->GetNbinsX(); ++ibin){
+          auto q_up  = getHistBin(bkgtotal_up[iunc], ibin);
+          auto q_dn  = getHistBin(bkgtotal_dn[iunc], ibin);
+
+          cout << bkgtotal_up[iunc]->GetName() << " Up/Down = " << q_up.value << "/" << q_dn.value << endl;
         }
-        cout << "The SF Normalization is " << sf << endl;
-        cout << "The SF Up Normalization is " << sf_up << endl;
-        cout << "The SF Down Normalization is " << sf_dn << endl;
       }
     }
 
     TGraphAsymmErrors *unc = nullptr;
     if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
       unc = !bkgtotal_norm ? new TGraphAsymmErrors(bkgtotal) : new TGraphAsymmErrors(bkgtotal_norm);
+      vector<double> up, dn;
       for (int ibin = 0; ibin < unc->GetN(); ++ibin){
         int ibin_hist = ibin+1;
         Quantity q_up(0,0), q_dn(0,0), q_bkg(0,0);
-        double unc_up = 0., unc_dn = 0.;
         for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
           q_up  = getHistBin(bkgtotal_up[iunc], ibin_hist);
           q_dn  = getHistBin(bkgtotal_dn[iunc], ibin_hist);
           q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
-          unc_up += ((q_up.value - 1)*q_bkg.value)*((q_up.value - 1)*q_bkg.value);
-          unc_dn += ((1 - q_dn.value)*q_bkg.value)*((1 - q_dn.value)*q_bkg.value);
-
-          if(plotvar.Contains("nTop") && iunc == 1){
-            cout << inUnc_up[iunc]->GetName() << " Down/Up = " << q_dn.value << "/" << q_up.value << endl;
-          }
+          up.push_back(q_up.value);
+          dn.push_back(q_dn.value);
         }
         if(bkgtotal_up.size() == 0){ 
           for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
             q_up  = getHistBin(inUnc_up[iunc], ibin_hist);
             q_dn  = getHistBin(inUnc_dn[iunc], ibin_hist);
-            q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
-            unc_up += ((q_up.value - 1)*q_bkg.value)*((q_up.value - 1)*q_bkg.value);
-            unc_dn += ((1 - q_dn.value)*q_bkg.value)*((1 - q_dn.value)*q_bkg.value);
-            if(plotvar.Contains("nTop") && iunc == 1){
-              cout << inUnc_up[iunc]->GetName() << " Down/Up = " << q_dn.value << "/" << q_up.value << endl;
-            }
+            q_bkg = getHistBin(bkgtotal, ibin_hist);
+            up.push_back(q_up.value);
+            dn.push_back(q_dn.value);
           } 
         }
-        cout << "Up/Down: " << unc_up << "/" << unc_dn << endl;
+        pair<double, double> comb = doLogNorm(dn, up); 
+        double unc_up = ((comb.second - 1)*q_bkg.value)*((comb.second - 1)*q_bkg.value);
+        double unc_dn = ((1 - comb.first)*q_bkg.value)*((1 - comb.first)*q_bkg.value);
+        cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         //Statistical
         // ttbar:
         unc_up += q_bkg.error*q_bkg.error;
@@ -1019,21 +1040,31 @@ public:
         
         //Nominal
         double pred = q_bkg.value;
-        cout << "pred: " << pred << " Up/Down: " << unc_up << "/" << unc_dn << endl;
+        cout << "pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
         unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
         unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
       }
+      sigmahist = getPullHist(hdata, unc, true);
+    }
+
+    if(sigmahist){
+      for(unsigned ibin = 0; ibin != sigmahist->GetNbinsX() + 1; ibin++){
+        auto q = getHistBin(sigmahist, ibin);
+        cout << "bin " << ibin << " Pull = " << q.value << "+/-" << q.error << endl;
+      }
     }
 
     TCanvas *c = nullptr;
+    //TCanvas *c_sigma = nullptr;
     if (hdata){
       if (ttbarRatio)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, "(N_{obs} - N_{non-ttbar})/N_{ttbar}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, ttbarRatio);
-      else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0)
-        c = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc, {}, nullptr, false, false, false, true);
-      else
+      else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
+        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+        //c_sigma = drawStackAndRatio(mchists, hdata, leg, plotlog, "Pull",  RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc, {sigmahist}, nullptr, false, false, false, true);
+      } else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{
       c = drawStack(mchists, {}, plotlog, leg);
@@ -1042,9 +1073,15 @@ public:
     if (plotextra) (*plotextra)(c);
     c->Update();
 
+
     TString plotname = filterString(plotvar)+"_DataMC_"+category.name+"__"+postfix_;
     c->SetTitle(plotname);
     savePlot(c, plotname);
+    //if(c_sigma){
+    //  c_sigma->Update();
+    //  c_sigma->SetTitle(plotname+"_sigma");
+    //  savePlot(c_sigma, plotname+"_sigma");
+    //}
 
     if (hdata)
       if (ttbarRatio)

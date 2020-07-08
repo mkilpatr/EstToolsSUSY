@@ -290,6 +290,7 @@ void compSignal(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputN
     setHistBin(bkgtotal, i, q);
   } 
 
+  vector<pair<TString, double>> sigYields;
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search bin number;Events", nullptr);
     h->SetLineStyle(kDashed);
@@ -306,6 +307,17 @@ void compSignal(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputN
     sigplusbkg.push_back(hd);
 
   }
+
+  for(unsigned ibin = 0; ibin != hsigs[0]->GetNbinsX() + 1; ibin++){
+    auto q_0 = getHistBin(hsigs[0], ibin);
+    auto q_1 = getHistBin(hsigs[1], ibin);
+    auto q_2 = getHistBin(hsigs[2], ibin);
+
+    if(q_1.value > q_0.value && q_1.value > q_2.value) cout << hsigs[1]->GetName() << " bin " << ibin - 1 << ", Yields: " << hsigs[1]->GetName() << " " << q_1.value << ", " << hsigs[0]->GetName() << " " << q_0.value << ", " << hsigs[2]->GetName() << " " << q_2.value << endl;
+    if(q_1.value < q_0.value && q_1.value < q_2.value) cout << hsigs[1]->GetName() << " bin " << ibin - 1 << ", Yields: " << hsigs[1]->GetName() << " " << q_1.value << ", " << hsigs[0]->GetName() << " " << q_0.value << ", " << hsigs[2]->GetName() << " " << q_2.value << endl;
+
+  }
+
 
   TH1* pull;
   TH1* pull_post;

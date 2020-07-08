@@ -7,14 +7,14 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_2016 = "nanoaod_all_skim_2016_061120_devv6_limits/";
-const TString inputdir_2017 = "nanoaod_all_skim_2017_061120_devv6_limits/";
-const TString inputdir_2018 = "nanoaod_all_skim_2018_061120_devv6_limits/";
-const TString inputdir_sig  = "nanoaod_all_skim_2017_061120_devv6_limits/";
+const TString inputdir_2016 = "nanoaod_all_skim_2016_070720_devv6_limits/";
+const TString inputdir_2017 = "nanoaod_all_skim_2017_070720_devv6_limits/";
+const TString inputdir_2018 = "nanoaod_all_skim_2018_070720_devv6_limits/";
+const TString inputdir_sig  = "nanoaod_all_skim_2017_070720_devv6_limits/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_061120_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_070720_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -102,7 +102,6 @@ const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
 const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30)) && Pass_LHETTbar";
-//const TString dataselHEM = " && Pass_EventFilter && Pass_HT && Pass_JetID && Pass_CaloMETRatio && (run >= 319077 || run == 1) && Pass_exHEMVeto30 && Pass_LHETTbar";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )

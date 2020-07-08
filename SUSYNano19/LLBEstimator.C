@@ -1,7 +1,6 @@
 #include "../EstMethods/LLBEstimator.hh"
 
 #include "SRParameters.hh"
-//#include "LowMET_Parameters.hh"
 
 using namespace EstTools;
 
@@ -37,7 +36,7 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
-  TString region = "TransferFactor_devv6_061720";
+  TString region = "TransferFactor_devv6_070120";
   llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
@@ -183,7 +182,7 @@ vector<Quantity> LLBPredSeparate(){
       appendLegends(legend, {h2016Sum}, {"TF 2016"}, "l");
       appendLegends(legend, {h2017Sum}, {"TF 2017"}, "l");
       appendLegends(legend, {h2018Sum}, {"TF 2018"}, "l");
-      setLegend(legend, 1, 0.68, 0.87, 0.92,0.87);
+      setLegend(legend, 1, 0.75, 0.87, 0.92,0.87);
       legend->SetTextSize(0.03);
       legend->SetY1NDC(legend->GetY2NDC() - 0.2);
       TCanvas* sum_c = drawCompMatt({h2016Sum, h2017Sum, h2018Sum}, legend, -1., &plotextra);
@@ -780,9 +779,26 @@ void plot1LepInclusive(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "lepcr_inclusive_v6_062220";
+  // qcdsr
+  config.addSample("qcd-2016",         "QCD",           inputdir_2016+"qcd",       qcdwgt,         datasel + revert_vetoes);
+  config.addSample("qcd-2017",  "QCD",           inputdir_2017+"qcd",              qcdwgt_2017,    datasel + revert_vetoes);
+  config.addSample("qcd-2018",   "QCD",           inputdir_2018+"qcd",             qcdwgt_2018,    datasel + revert_vetoes);
+  // Znunu
+  config.addSample("znunu-2016",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2016+"znunu",        lepselwgt,       datasel + revert_vetoes);
+  config.addSample("znunu-2017",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2017+"znunu",        lepselwgt_2017,  datasel + revert_vetoes);
+  config.addSample("znunu-2018",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2018+"znunu",        lepselwgt_2018,  datasel + revert_vetoes);
+  // diboson
+  config.addSample("diboson-2016",       "Diboson",         inputdir_2016+"diboson",        lepselwgt,       datasel + revert_vetoes);
+  config.addSample("diboson-2017",       "Diboson",         inputdir_2017+"diboson",        lepselwgt_2017,  datasel + revert_vetoes);
+  config.addSample("diboson-2018",       "Diboson",         inputdir_2018+"diboson",        lepselwgt_2018,  datasel + revert_vetoes);
+  // ttZ
+  config.addSample("ttZ-2016",       "ttZ",         inputdir_2016+"ttZ",        lepselwgt,       datasel + revert_vetoes);
+  config.addSample("ttZ-2017",       "ttZ",         inputdir_2017+"ttZ",        lepselwgt_2017,  datasel + revert_vetoes);
+  config.addSample("ttZ-2018",       "ttZ",         inputdir_2018+"ttZ",        lepselwgt_2018,  datasel + revert_vetoes);
+
+  TString region = "lepcr_inclusive_v6_070120";
   BaseEstimator z(config.outputdir+"/"+region);
-  config.plotFormat = "png";
+  config.plotFormat = "pdf";
   z.setConfig(config);
 
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
@@ -797,6 +813,7 @@ void plot1LepInclusive(){
 
   map<TString, BinInfo> varDict {
 	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"met_phi",       BinInfo("MET_phi", "#slash{E}_{T} #phi", 64, -3.2, 3.2)},
 	//{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"toppt",      BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]", 16, 0, 800)},
@@ -815,36 +832,43 @@ void plot1LepInclusive(){
   std::function<void(TCanvas*)> plotextra;
   for (auto &var : varDict){
     z.resetSelection();
-    z.setSelection(LLCR_LM , "llcr_lm", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_LM , "llcr_lm", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    //z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
     z.setSelection(LLCR_HM, "llcr_hm", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
     z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
 
-    lumistr = lumistr_2016;
-    z.setSelection(LLCR_LM , "llcr_lm_2016", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2016", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 High #Deltam}{LL control region}", 0.2, 0.75); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra));
+    //lumistr = lumistr_2016;
+    //z.setSelection(LLCR_LM , "llcr_lm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2016", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 High #Deltam}{LL control region}", 0.2, 0.75); };
+    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra));
 
-    lumistr = lumistr_2017;
-    z.setSelection(LLCR_LM , "llcr_lm_2017", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2017", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra));
+    //lumistr = lumistr_2017;
+    //z.setSelection(LLCR_LM , "llcr_lm_2017", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2017", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
+    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra));
 
-    lumistr = lumistr_2018PostHEM;
-    z.setSelection(LLCR_LM , "llcr_lm_2018", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
-    z.setSelection(LLCR_HM, "llcr_hm_2018", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
-    ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
+    //lumistr = lumistr_2018PostHEM;
+    //z.setSelection(LLCR_LM , "llcr_lm_2018", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2018", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
+    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
+    //without HEM Veto
+    //z.setSelection(LLCR_LM , "llcr_lm_2018_withoutHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    //z.setSelection(LLCR_HM, "llcr_hm_2018_withoutHEM", "");
+    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
+    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
   }
   
   //TFile *output = new TFile(z.config.outputdir+"/LostLepton_HM_topAK8_weight.root", "RECREATE");
@@ -853,9 +877,86 @@ void plot1LepInclusive(){
   
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void plot1LepInclusiveLepton(){
+  auto config = lepConfig();
+  TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
+  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  //config.samples.clear();
+  config.sel = baseline;
+  //ttbar electron
+  config.addSample("ttbarplusw-ttbar-electron-2016",   "electron",       inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-ttbar-electron-2017",   "electron",       inputdir_2017+"ttbar",           lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-ttbar-electron-2018",   "electron",       inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-wjets-electron-2016",   "electron",       inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-wjets-electron-2017",   "electron",       inputdir_2017+"wjets",           lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-wjets-electron-2018",   "electron",       inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-tW-electron-2016",      "electron",       inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-tW-electron-2017",      "electron",       inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-tW-electron-2018",      "electron",       inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-ttW-electron-2016",     "electron",       inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-ttW-electron-2017",     "electron",       inputdir_2017+"ttW",             lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  config.addSample("ttbarplusw-ttW-electron-2018",     "electron",       inputdir_2018+"ttW",             lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoElectron == 1");
+  //ttbar muon
+  config.addSample("ttbarplusw-ttbar-muon-2016",       "muon",           inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-ttbar-muon-2017",       "muon",           inputdir_2017+"ttbar",           lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-ttbar-muon-2018",       "muon",           inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-wjets-muon-2016",       "muon",           inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-wjets-muon-2017",       "muon",           inputdir_2017+"wjets",           lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-wjets-muon-2018",       "muon",           inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-tW-muon-2016",          "muon",           inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-tW-muon-2017",          "muon",           inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-tW-muon-2018",          "muon",           inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-ttW-muon-2016",         "muon",           inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-ttW-muon-2017",         "muon",           inputdir_2017+"ttW",             lepselwgt_2017,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+  config.addSample("ttbarplusw-ttW-muon-2018",         "muon",           inputdir_2018+"ttW",             lepselwgt_2018,      datasel + revert_vetoes + " && Stop0l_nVetoMuon == 1");
+
+  config.categories.push_back("dummy");
+  config.catMaps["dummy"] = Category::dummy_category();
+
+  TString region = "lepcr_inclusive_sepLeptons_v6_070720";
+  BaseEstimator z(config.outputdir+"/"+region);
+  config.plotFormat = "pdf";
+  z.setConfig(config);
+
+  vector<TString> mc_samples = {"ttbarplusw-ttbar-electron-2016", "ttbarplusw-ttbar-electron-2017", "ttbarplusw-ttbar-electron-2018", "ttbarplusw-wjets-electron-2016", "ttbarplusw-wjets-electron-2017", "ttbarplusw-wjets-electron-2018", 
+				"ttbarplusw-tW-electron-2016", "ttbarplusw-tW-electron-2017", "ttbarplusw-tW-electron-2018", "ttbarplusw-ttW-electron-2016", "ttbarplusw-ttW-electron-2017", "ttbarplusw-ttW-electron-2018",
+				"ttbarplusw-ttbar-muon-2016", "ttbarplusw-ttbar-muon-2017", "ttbarplusw-ttbar-muon-2018", "ttbarplusw-wjets-muon-2016", "ttbarplusw-wjets-muon-2017", "ttbarplusw-wjets-muon-2018", 
+				"ttbarplusw-tW-muon-2016", "ttbarplusw-tW-muon-2017", "ttbarplusw-tW-muon-2018", "ttbarplusw-ttW-muon-2016", "ttbarplusw-ttW-muon-2017", "ttbarplusw-ttW-muon-2018"};
+  TString data_sample = "singlelep";
+
+  map<TString, BinInfo> varDict {
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"toppt",      BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
+	{"ak8jet",      BinInfo("FatJet_pt[0]", "p_{T}(ak8) [GeV]", 16, 0, 800)},
+        {"ptb12",       BinInfo("Stop0l_Ptb", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
+        {"ptlepbmet",     BinInfo("Stop0l_PtLepMetB", "p_{T}(l,b,#slash{E}_{T}) [GeV]", 32, 0, 800)},
+	{"nivf",         BinInfo("Stop0l_nSoftb", "N_{SV}", 5, -0.5, 4.5)},
+	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 4, -0.5, 3.5)},
+	{"nrestop",     BinInfo("Stop0l_nResolved", "N_{t}", 4, -0.5, 3.5)},
+	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 4, -0.5, 3.5)},
+	{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
+	{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
+	{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
+  };
+
+  std::function<void(TCanvas*)> plotextra;
+  for (auto &var : varDict){
+    z.resetSelection();
+    z.setSelection(LLCR_LM , "llcr_lm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+  }
+}
+
 void plotMtb(){
   auto config = lepConfig();
-  TString mtb = "Pass_Baseline && Pass_dPhiMETHighDM";
+  TString mtb = "Pass_Baseline && Pass_dPhiMETHighDM && Stop0l_Mtb < 350";
   config.sel = baseline;
 
   LOG_YMIN = 100.;
@@ -895,7 +996,7 @@ void plotMtb(){
   config.addSample("T2tt-500-325",     "T2tt(500, 325)",     inputdir_sig+"SMS_T2tt_mStop500_mLSP325",  "1.0", datasel);
   config.addSample("T2tt-850-100",     "T2tt(850, 100)",     inputdir_sig+"SMS_T2tt_mStop_850_mLSP_100",  "1.0", datasel);
 
-  TString region = "lepcr_inclusive_v6_060420";
+  TString region = "lepcr_inclusive_v6_062920";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -920,14 +1021,15 @@ void plotMtb(){
   for (auto &var : varDict){
     //z.resetSelection();
     z.setSelection(mtb, "baseline", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{signal scaled}{to bkg sum}", 0.2, 0.75); };
-    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, true, &plotextra);
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{signal scaled}{to bkg sum}", 0.22, 0.73); };
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false, 113022);
   }
 }
 
 void plot1LepInclusiveWithSyst(){
   auto config = lepConfig();
   TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
   TString noTopPt = "/Stop0l_topptWeight";
   config.sel = baseline;
 
@@ -942,9 +1044,9 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_v6_060920";
+  TString region = "lepcr_inclusive_withSyst_v6_062420";
   BaseEstimator z(config.outputdir+"/"+region);
-  config.plotFormat = "pdf";
+  config.plotFormat = "png";
   z.setConfig(config);
 
   vector<TString> mc_samples = {
@@ -958,20 +1060,36 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	{"nw",          BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	{"met",         BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"ntop_nowgt",  BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop_nowgt",     BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"nw_nowgt",    BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"met",         BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"met_nowgt",         BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ht_nowgt",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+        //{"ak8isrpt",  BinInfo("Stop0l_ISRJetPt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
+        //{"ak8isrpt_nowgt",  BinInfo("Stop0l_ISRJetPt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
+	{"nb",        BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	{"nb_nowgt",  BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	{"nisr",        BinInfo("nISRJets",  "N_{ISR}", 4, 0.5, 4.5)},
+	{"nisr_nowgt",  BinInfo("nISRJets",  "N_{ISR}", 4, 0.5, 4.5)},
+
   };
-  vector<TString> systFile = {
-				"uncertainties_CRInclusive_Run2_061120_MET_v2",
-				"uncertainties_CRInclusive_Run2_061120_top_v2",
-				"uncertainties_CRInclusive_Run2_061120_w_v2",
-				"uncertainties_CRInclusive_Run2_061120_res_v2",
-				"uncertainties_CRInclusive_Run2_061220_toppt",
+  vector<pair<TString, TString>> systFile = {
+				make_pair("met",   "uncertainties_CRInclusive_Run2_061120_MET_v2"),
+				make_pair("ntop",  "uncertainties_CRInclusive_Run2_061120_top_v2"),
+				make_pair("nw",    "uncertainties_CRInclusive_Run2_061120_w_v2"),
+				make_pair("nrestop","uncertainties_CRInclusive_Run2_061120_res_v2"),
+				make_pair("toppt", "uncertainties_CRInclusive_Run2_061220_toppt"),
+				make_pair("ht",    "uncertainties_CRInclusive_Run2_062620_ht"),
+				make_pair("nb",    "uncertainties_CRInclusive_Run2_070820_btags"),
+				make_pair("nisr",  "uncertainties_CRInclusive_Run2_070820_ISR"),
 				};
 
-  vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err"};
+  vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
 
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
@@ -983,29 +1101,35 @@ void plot1LepInclusiveWithSyst(){
       unc_dn.clear();
       TString suffix = "";
       for (auto s : systs){
-             if(var.first == "met") location = systFile[0];
-        else if(var.first == "ntop") location = systFile[1];
-        else if(var.first == "nw") location = systFile[2];
-        else if(var.first == "nrestop") location = systFile[3];
-        else if(var.first.Contains("toppt")) location = systFile[4];
-        if (i == 0 && !var.first.Contains("toppt")) suffix = "_norm";
-        if (var.first == "toppt") suffix = "_withtoppt";
+        TString whichVar = var.first;
+        //whichVar.ReplaceAll("_nowgt", "");
+        for ( vector < pair<TString, TString> >::const_iterator it = systFile.begin() ; it != systFile.end(); it++)
+          if (whichVar == it->first) location = it->second;
 
-        TString filename = location + "/" + s + suffix + ".root";
+        if (i == 0 && !var.first.Contains("toppt")) suffix = "_norm";
+        else if (var.first == "toppt") suffix = "_withtoppt";
+        if (var.first.Contains("nowgt") && (s.Contains("PowhegOverMG") || s.Contains("toppt"))) continue;
+        if (suffix.Contains("norm") && s.Contains("xsecNorm")) continue;
+
+        TString filename = location + "/" + s + ".root";
         TFile *p = TFile::Open(filename);
         assert(p);
         cout << filename << endl;
         unc_up.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Up")}, s + "up", ";"+var.first+";Events", nullptr));
         unc_dn.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Down")}, s + "down", ";"+var.first+";Events", nullptr));
       }
+      if (var.first.Contains("nowgt")) suffix += "_notoppt";
       z.resetSelection();
       //Make final plot with stat + syst
       z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
-      if (!var.first.Contains("toppt") && suffix.Contains("norm")){
+      if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.73); };
+        ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
+      } else if (!var.first.Contains("toppt") && suffix.Contains("norm")){
         plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
         z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn);
-      } else if (var.first == "toppt_nowgt"){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.75); };
+      } else if (var.first.Contains("_nowgt")){
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.73); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       } else {
         plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
@@ -1018,100 +1142,6 @@ void plot1LepInclusiveWithSyst(){
   for (auto *h : ratiohist) h->Write();
   output->Close();
 
-}
-
-void plot1LepInclusiveWithJESSyst(){
-  auto config = lepConfig();
-  TString datasel_JESUp = " && Pass_EventFilter_JESUp && Pass_HT_JESUp && Pass_JetID_JESUp && Pass_CaloMETRatio_JESUp && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30_JESUp)) && Pass_LHETTbar_JESUp"; 
-  TString datasel_JESDown = " && Pass_EventFilter_JESDown && Pass_HT_JESDown && Pass_JetID_JESDown && Pass_CaloMETRatio_JESDown && (run < 319077 || (run >= 319077 && Pass_exHEMVeto30_JESDown)) && Pass_LHETTbar_JESDown"; 
-
-  TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
-  TString LLCR_HM_JESUp = " && Stop0l_nJets_JESUp>=5 && Stop0l_nbtags_JESUp>=1 && Pass_dPhiMETHighDM_JESUp";
-  TString LLCR_HM_JESDown = " && Stop0l_nJets_JESDown>=5 && Stop0l_nbtags_JESDown>=1 && Pass_dPhiMETHighDM_JESDown";
-  config.sel = baseline;
-
-  LOG_YMIN = 1.;
-  RATIO_YMIN = 0.499;
-  RATIO_YMAX = 1.501;
-
-  config.categories.push_back("dummy");
-  config.catMaps["dummy"] = Category::dummy_category();
-
-  config.addSample("singlelep-jesup",       "Observed",      datadir+"met",                   "1.0",                          datasel + + " && " + LLCR_HM + trigSR + revert_vetoes);
-  config.addSample("ttbar-jesup-2016",      "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",         datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("ttbar-jesup-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017,        	      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("ttbar-jesup-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,                 datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("wjets-jesup-2016",      "W+jets",        inputdir_2016+"wjets",           lepselwgt,                      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("wjets-jesup-2017",      "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017,        	      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("wjets-jesup-2018",      "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,                 datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("tW-jesup-2016",         "tW",            inputdir_2016+"tW",              lepselwgt,                      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("tW-jesup-2017",         "tW",            inputdir_2017+"tW",              lepselwgt_2017,        	      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("tW-jesup-2018",         "tW",            inputdir_2018+"tW",              lepselwgt_2018,                 datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("ttW-jesup-2016",        "ttW",           inputdir_2016+"ttW",             lepselwgt,                      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("ttW-jesup-2017",        "ttW",           inputdir_2017+"ttW",             lepselwgt_2017,        	      datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-  config.addSample("ttW-jesup-2018",        "ttW",           inputdir_2018+"ttW",             lepselwgt_2018,                 datasel_JESUp + LLCR_HM_JESUp + revert_vetoes);
-
-  config.addSample("singlelep-jesdn",       "Observed",      datadir+"met",                   "1.0",                          datasel + + " && " + LLCR_HM + trigSR + revert_vetoes);
-  config.addSample("ttbar-jesdn-2016",      "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",         datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("ttbar-jesdn-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017,        	      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("ttbar-jesdn-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,                 datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("wjets-jesdn-2016",      "W+jets",        inputdir_2016+"wjets",           lepselwgt,                      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("wjets-jesdn-2017",      "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017,        	      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("wjets-jesdn-2018",      "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,                 datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("tW-jesdn-2016",         "tW",            inputdir_2016+"tW",              lepselwgt,                      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("tW-jesdn-2017",         "tW",            inputdir_2017+"tW",              lepselwgt_2017,        	      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("tW-jesdn-2018",         "tW",            inputdir_2018+"tW",              lepselwgt_2018,                 datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("ttW-jesdn-2016",        "ttW",           inputdir_2016+"ttW",             lepselwgt,                      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("ttW-jesdn-2017",        "ttW",           inputdir_2017+"ttW",             lepselwgt_2017,        	      datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-  config.addSample("ttW-jesdn-2018",        "ttW",           inputdir_2018+"ttW",             lepselwgt_2018,                 datasel_JESDown + LLCR_HM_JESDown + revert_vetoes);
-
-  TString region = "lepcr_inclusive_withSyst_v6_060920";
-  BaseEstimator z(config.outputdir+"/"+region);
-  config.plotFormat = "pdf";
-  z.setConfig(config);
-
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_samples_jesup = {"ttbar-jesup-2016", "ttbar-jesup-2017", "ttbar-jesup-2018", "wjets-jesup-2016", "wjets-jesup-2017", "wjets-jesup-2018", 
-				"tW-jesup-2016", "tW-jesup-2017", "tW-jesup-2018", "ttW-jesup-2016", "ttW-jesup-2017", "ttW-jesup-2018"};
-  vector<TString> mc_samples_jesdn = {"ttbar-jesdn-2016", "ttbar-jesdn-2017", "ttbar-jesdn-2018", "wjets-jesdn-2016", "wjets-jesdn-2017", "wjets-jesdn-2018", 
-				"tW-jesdn-2016", "tW-jesdn-2017", "tW-jesdn-2018", "ttW-jesdn-2016", "ttW-jesdn-2017", "ttW-jesdn-2018"};
-  TString data_sample = "singlelep";
-  TString data_sample_jesup = "singlelep-jesup";
-  TString data_sample_jesdn = "singlelep-jesdn";
-
-  map<TString, BinInfo> varDict {
-	{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-  };
-
-  std::function<void(TCanvas*)> plotextra;
-  for (auto &var : varDict){
-    z.resetSelection();
-    //JES UP
-    z.setSelection("1==1", "llcr_hm_syst_jesup", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Up}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_jesup, data_sample_jesup, Category::dummy_category(), false, "", true, &plotextra);
-    //JES Down
-    z.setSelection("1==1", "llcr_hm_syst_jesdn", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Down}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_jesdn, data_sample_jesdn, Category::dummy_category(), false, "", true, &plotextra);
-    //JES Normal
-    z.setSelection(LLCR_HM, "llcr_hm_syst_jes_nominal", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Nominal}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
-    //JES UP
-    z.setSelection("1==1", "llcr_hm_syst_jesup_norm", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Up Normalized}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_jesup, data_sample_jesup, Category::dummy_category(), true, "", true, &plotextra);
-    //JES Down
-    z.setSelection("1==1", "llcr_hm_syst_jesdn_norm", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Down Normalized}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples_jesdn, data_sample_jesdn, Category::dummy_category(), true, "", true, &plotextra);
-    //JES Normal
-    z.setSelection(LLCR_HM, "llcr_hm_syst_jes_nominal_norm", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{#splitline{LL control region}{JES Nominal Normalized}}", 0.2, 0.75); };
-    z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra);
-  }
 }
 
 void topPtSyst(){

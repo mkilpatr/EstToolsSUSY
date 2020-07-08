@@ -29,14 +29,16 @@ if isRun2:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll.conf')
     uncfiles.append(uncdir + 'Zinvisible/zinv_syst_Run2.conf')
+    uncfiles.append(uncdir + '../01Jul2020_Run2_dev_v6/TTZRare/TTZ_syst.conf')
+    uncfiles.append(uncdir + '../01Jul2020_Run2_dev_v6/TTZRare/Rare_syst.conf')
 else:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll_2016.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll_2016.conf')
     uncfiles.append(uncdir + 'Zinvisible/zinv_syst_2016.conf')
+    uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
+    uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
 uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
 uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
-uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
 
 all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 

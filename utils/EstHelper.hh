@@ -295,9 +295,6 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
 #endif
   }
   if (leg) leg->Draw();
-#ifdef TDR_STYLE_
-  CMS_lumi(c, 4, 10);
-#endif
   if (plotextra) (*plotextra)(c);
   c->Update();
 
@@ -387,7 +384,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
 	h->SetMinimum(0.85*min);
       }
       if(!isVal) h->GetYaxis()->SetRangeUser(0,plotMax*ymax);
-      if(forceymax>0) h->GetYaxis()->SetRangeUser(0,plotMax*forceymax);
+      if(forceymax>0) h->GetYaxis()->SetRangeUser(-0.05,plotMax*forceymax);
       if(logymin>0) {
         float gap = 0.40;
         h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
@@ -528,6 +525,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
   hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
   hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
+  TGaxis::SetMaxDigits(4);
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
 #ifdef DEBUG_
@@ -763,6 +761,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     TH1F* hRatio = nullptr;
     if (diffRatio)       hRatio = new TRatioPlot(inData, hbkgtotal);
     else if (ttbarRatio) hRatio = makeRatioHists(hnonttbar, httbar, inData);
+    else if (inRatios.size() != 0 && manualLabelChange) hRatio = inRatios[0];
     else 	         hRatio = makeRatioHists(inData, hbkgtotal);
     if (ttbarRatio) hRatio->SetTitleSize  (0.08,"Y");
     else hRatio->SetTitleSize  (0.14,"Y");
