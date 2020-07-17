@@ -74,7 +74,7 @@ vector<Quantity> getYieldVector(const std::unique_ptr<TTree>& intree, TString wg
     yields.push_back(getHistBin(&htmp, i+1));
 #ifdef DEBUG_
   stringstream ss;
-  ss << intree->GetTitle() << ": " << cutstr << ", " << bin.var << ", entries=" << nentries << endl
+  ss << intree->GetTitle() << ": " << cutstr << ", " << bin.var << ", " << bin.cuts << ", entries=" << nentries << endl
        << "  --> " << yields << endl;
   cerr << ss.str();
 #endif
@@ -416,6 +416,12 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if(!isVal) CMS_lumi(p1, 4, 10);
 #endif
 
+  if(inratiohists.size() == 0){
+    for(unsigned int imc = 0; imc != hists.size(); imc++){
+      ratiohists.push_back(makeRatioHists(hists[imc], hists[0]));
+    }
+  }
+
   c->cd();
   TPad *p2 = new TPad("p2","p2",0,0,1,PAD_SPLIT_Y);
   p2->SetLeftMargin  (0.16);
@@ -562,13 +568,15 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false, bool manualLabelChange = false)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false, bool manualLabelChange = false, bool mcRatio = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
   TH1* hbkgtotal = nullptr;
   TH1* hnonttbar = nullptr;
   TH1* httbar = nullptr;
+  TH1* helec = nullptr;
+  TH1* hmuon = nullptr;
   TString name = "";
   THStack* hstack = new THStack(inhists.front()->GetName()+TString("_stack"), inhists.front()->GetTitle());
   for (auto *h : inhists){
@@ -585,6 +593,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       hnonttbar = (TH1*)hmc->Clone("hnonttbar");
     else
       hnonttbar->Add(hmc);
+
+    if (mcRatio && TString(hmc->GetName()).Contains("electron"))
+      helec = (TH1*)hmc->Clone("helec");
+    else if (mcRatio && TString(hmc->GetName()).Contains("muon"))
+      hmuon = (TH1*)hmc->Clone("hmuon");
+    
+
     if (hmc->GetLineColor()!=kBlack){
       hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack);
     }
@@ -725,6 +740,8 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       for (int i=1; i < hnonttbarNoError->GetNbinsX()+1; ++i) hnonttbarNoError->SetBinError(i, 0);
       for (int i=1; i < httbarNoError->GetNbinsX()+1; ++i) httbarNoError->SetBinError(i, 0);
       ratio = getRatioAsymmErrors(h3, hnonttbarNoError, httbarNoError);
+    } else if (mcRatio){   
+      ratio = getRatioAsymmErrors(helec, hmuon);
     } else {   
       TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
       for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
@@ -761,6 +778,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
     TH1F* hRatio = nullptr;
     if (diffRatio)       hRatio = new TRatioPlot(inData, hbkgtotal);
     else if (ttbarRatio) hRatio = makeRatioHists(hnonttbar, httbar, inData);
+    else if (mcRatio)    hRatio = makeRatioHists(helec, hmuon);
     else if (inRatios.size() != 0 && manualLabelChange) hRatio = inRatios[0];
     else 	         hRatio = makeRatioHists(inData, hbkgtotal);
     if (ttbarRatio) hRatio->SetTitleSize  (0.08,"Y");

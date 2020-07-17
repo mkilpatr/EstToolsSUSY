@@ -63,7 +63,7 @@ void SystBTagLight_LL(){
   // nominal
   {
     sys_name = "nominal";
-    btagwgt = "BTagWeightLight*BTagWeightHeavy";
+    btagwgt = "BTagWeight";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -71,7 +71,7 @@ void SystBTagLight_LL(){
   // btag - up
   {
     sys_name = "b_light_Up";
-    btagwgt = "BTagWeightLight_Up*BTagWeightHeavy";
+    btagwgt = "BTagWeight_Up/BTagWeightHeavy";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -79,7 +79,7 @@ void SystBTagLight_LL(){
   // btag - down
   {
     sys_name = "b_light_Down";
-    btagwgt = "BTagWeightLight_Down*BTagWeightHeavy";
+    btagwgt = "BTagWeight_Down/BTagWeightHeavy";
     auto llb = getLLBPred();
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

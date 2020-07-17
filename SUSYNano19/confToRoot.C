@@ -83,34 +83,6 @@ std::vector<std::string> readFileTotal(std::string FILENAME){
   return filenames;
 }
 
-//std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
-//  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
-//  double log_syst_up_total = 0., log_syst_down_total = 0.;
-//  double log_final_up = 0., log_final_down = 0.;
-//  for(unsigned p = 0; p != p_down.size(); p++){
-//    double log_syst_up     = p_up[p];
-//    double log_syst_down   = p_down[p];
-//    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
-//      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
-//      log_syst_up   /= geometric_mean;
-//      log_syst_down /= geometric_mean;
-//    }
-//    if (log_syst_up > 1 || log_syst_down < 1){
-//        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
-//        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
-//    } else{
-//        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
-//        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
-//    }
-//    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
-//    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
-//    log_final_up   = log_syst_up_total;
-//    log_final_down = log_syst_down_total;
-//  }
-//
-//  return make_pair(log_final_down, log_final_up);
-//}
-
 void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = ""){
 
   std::string indir = indir_ + "/";
@@ -161,7 +133,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
           double dn = jtot[unc.key()][back.key()][bin.key()][0];
-          if(binnum == 0) cout << unc.key() << "UP/Down: " << up << "/" << dn << endl;
+          if(up < 1 && dn < 1) cout << bin.key() << " UP/Down: " << up << "/" << dn << endl;
           hist_up.at(binnum) = up;
           hist_down.at(binnum) = dn;
         } else {

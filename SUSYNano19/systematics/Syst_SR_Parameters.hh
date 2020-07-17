@@ -3,8 +3,8 @@
 
 #include "../../utils/EstHelper.hh"
 //#include "../binDefinitions.hh"
-#include "../binDefinitions_Inclusive.hh"
-//#include "../binDefinitions_CR.hh"
+//#include "../binDefinitions_Inclusive.hh"
+#include "../binDefinitions_CR_small.hh"
 //#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
@@ -80,7 +80,7 @@ TString ttbarxsecvar()  { return ttbarxsec; }
 TString wjetsxsecvar()  { return wjetsxsec; }
 TString lhewgtvar()     { return lhewgt;}
 TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*(("+restopwgt+restop_jes_postfix+" && event != 23688846) || " + restopwgt+")*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
 TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
 TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
 
@@ -90,8 +90,8 @@ TString phowgt() { return wgtvar(); }
 
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "CRInclusive";
-TString binvar = "nISRJets";
+TString region = "CR";
+TString binvar = "MET_pt";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -120,7 +120,7 @@ TString vetoes()	     { return  " && Pass_LeptonVeto"+jes_postfix; }
 bool ADD_LEP_TO_MET = false;
 bool ICHEPCR = false;
 TString lepsel = "ElecVeto";
-TString revert_vetoes() { return " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30))"; }
+TString revert_vetoes() { return " && Stop0l_nVetoElecMuon"+jes_postfix+" == 1 && Stop0l_MtLepMET"+jes_postfix+" < 100 && (run < 319077 || (run >= 319077 && Pass_exHEMVetoElec30"+jes_postfix+"))"; }
 TString revert_vetoes_sep() {return " && Pass_" + lepsel + " == 0"; }
 
 // MET+LEP LL method
@@ -292,8 +292,8 @@ std::map<TString, TString> cutMap_JESUp = []{
         {"htgt1500",    "Stop0l_HT_JESUp>=1500"},
         {"htlt1300",    "Stop0l_HT_JESUp<1300"},
         {"htgt1300",    "Stop0l_HT_JESUp>=1300"},
-	{"met400",	"MET_pt < 400"},
-	{"met300",	"MET_pt < 300"},
+	{"met400",	"MET_pt_jesTotalUp < 400"},
+	{"met300",	"MET_pt_jesTotalUp < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -359,8 +359,8 @@ std::map<TString, TString> cutMap_JESDown = []{
         {"htgt1500",    "Stop0l_HT_JESDown>=1500"},
         {"htlt1300",    "Stop0l_HT_JESDown<1300"},
         {"htgt1300",    "Stop0l_HT_JESDown>=1300"},
-	{"met400",	"MET_pt < 400"},
-	{"met300",	"MET_pt < 300"},
+	{"met400",	"MET_pt_jesTotalDown < 400"},
+	{"met300",	"MET_pt_jesTotalDown < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -426,8 +426,8 @@ std::map<TString, TString> cutMap_METUnClustUp = []{
         {"htgt1500",    "Stop0l_HT>=1500"},
         {"htlt1300",    "Stop0l_HT<1300"},
         {"htgt1300",    "Stop0l_HT>=1300"},
-	{"met400",	"MET_pt < 400"},
-	{"met300",	"MET_pt < 300"},
+	{"met400",	"MET_pt_unclustEnUp < 400"},
+	{"met300",	"MET_pt_unclustEnUp < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -493,8 +493,8 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
         {"htgt1500",    "Stop0l_HT>=1500"},
         {"htlt1300",    "Stop0l_HT<1300"},
         {"htgt1300",    "Stop0l_HT>=1300"},
-	{"met400",	"MET_pt < 400"},
-	{"met300",	"MET_pt < 300"},
+	{"met400",	"MET_pt_unclustEnDown < 400"},
+	{"met300",	"MET_pt_unclustEnDown < 300"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -712,8 +712,10 @@ std::map<TString, TString> lepcrCuts = []{
 
 std::map<TString, TString> lepcrCuts_JESUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMapping)
+    for (auto sr2cr : lepcrMapping){
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+      cout << createCutString(sr2cr.second, cutMap_JESUp) << endl;
+    }
     return cuts;
 }();
 
