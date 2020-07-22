@@ -94,7 +94,7 @@ vector<Quantity> LLBPredSeparate(){
   int max_tf = 2;
   for(int j = 0; j <= max_graph; j++){
     if(l.splitTF){
-      if(j == 1){ 
+      if(j == 1){
         start = 0;
         manualBins = 53;
       } else if(j == 2){
@@ -105,7 +105,7 @@ vector<Quantity> LLBPredSeparate(){
         manualBins = 65;
       }
     }else{
-      if(j == 1){ 
+      if(j == 1){
         start = 0;
         manualBins = 19;
       } else if(j == 2){
@@ -172,12 +172,12 @@ vector<Quantity> LLBPredSeparate(){
       }
 
       prepHists({h2016Sum, h2017Sum, h2018Sum}, false, false, false, {kRed, kAzure+6, 876});
-      
+
       TString Mean2016 = TString(to_string(h2016Sum->GetMean()));
       TString Mean2017 = TString(to_string(h2017Sum->GetMean()));
       TString Mean2018 = TString(to_string(h2018Sum->GetMean()));
       std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{TF 2016 Mean: " + Mean2016 + "}{#splitline{TF 2017 Mean: " + Mean2017 + "}{TF 2018 Mean: " + Mean2018 + "}}", 0.22, 0.74); };
- 
+
       auto legend = prepLegends({}, {""}, "l");
       appendLegends(legend, {h2016Sum}, {"TF 2016"}, "l");
       appendLegends(legend, {h2017Sum}, {"TF 2017"}, "l");
@@ -201,9 +201,9 @@ vector<Quantity> LLBPredSeparate(){
       sum_c->Print(l.config.outputdir+"/"+outputBase+"_sum.pdf");
       sum_c->Print(l.config.outputdir+"/"+outputBase+"_sum.root");
 
-      delete gROOT->FindObject("hTF_0"); 
-      delete gROOT->FindObject("hTF_1");  
-      delete gROOT->FindObject("hTF_3"); 
+      delete gROOT->FindObject("hTF_0");
+      delete gROOT->FindObject("hTF_1");
+      delete gROOT->FindObject("hTF_3");
     }
   }
 
@@ -269,7 +269,7 @@ vector<Quantity> ANQuestion(){
     mc_2018_sr_ratio->Divide(mc_Run2_sr);
     mc_2018_sr_ratio->SetLineWidth(2);
     prepHists({mc_2018_sr_ratio}, false, false, false, {kMagenta+2});
-    
+
     auto leg = prepLegends({}, {""}, "l");
     appendLegends(leg, {mc_2016_cr}, {mc_name[i] + " CR 2016"}, "L");
     appendLegends(leg, {mc_2017_cr}, {mc_name[i] + " CR 2017"}, "L");
@@ -287,8 +287,8 @@ vector<Quantity> ANQuestion(){
     c->Print(l.config.outputdir+"/" + mc_name[i] + ".pdf");
     c->Print(l.config.outputdir+"/" + mc_name[i] + ".C");
     c->Print(l.config.outputdir+"/" + mc_name[i] + "_canvas.root");
-  } 
- 
+  }
+
   return l.yields.at("_pred");
 }
 
@@ -298,42 +298,39 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6_071520_withSyst";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6_071520";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   TString data_sample = "singlelep";
-
-  vector<pair<TString, TString>> systFile = {
-				make_pair("CR",   "uncertainties_CR_Run2_051920"),
-				};
 
   vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
 
   int binNum = 0;
   int ix = 0;
   for (auto category : z.config.categories){
-    TString location = "uncertainties_CR_Run2_051920";
+    TString location = "uncertainties_CR_Run2_071520";
     vector<TH1*> unc_up, unc_dn;
     unc_up.clear();
     unc_dn.clear();
     const auto &cat = z.config.crCatMaps.at(category);
     cout << cat.bin.plotbins.size() << endl;
     TString suffix = "";
-    for (auto s : systs){
-      TString filename = location + "/" + s + ".root";
-      TFile *p = TFile::Open(filename);
-      assert(p);
-      cout << filename << endl;
-      unc_up.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Up")}, s + "up", ";MET_pt;Events", nullptr, true, binNum, binNum + cat.bin.plotbins.size()));
-      unc_dn.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Down")}, s + "down", ";MET_pt;Events", nullptr, true, binNum, binNum + cat.bin.plotbins.size()));
-    }
+    //for (auto s : systs){
+    //  TString filename = location + "/" + s + ".root";
+    //  TFile *p = TFile::Open(filename);
+    //  assert(p);
+    //  cout << filename << endl;
+    //  unc_up.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Up")}, s + "up", ";MET_pt;Events", nullptr, true, binNum, binNum + cat.bin.plotbins.size()));
+    //  unc_dn.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Down")}, s + "down", ";MET_pt;Events", nullptr, true, binNum, binNum + cat.bin.plotbins.size()));
+    //}
     //const auto &cat = z.config.crCatMaps.at(category);
     auto cat_label = translateString(cat.label, plotLabelMap, "_", ", ", true);
     std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC(cat_label, 0.2, 0.75); };
-    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra, false, unc_up, unc_dn);
+    //z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra, false, unc_up, unc_dn);
+    z.plotDataMC(cat.bin, mc_samples, data_sample, cat, false, "", false, &plotextra);
     binNum += cat.bin.plotbins.size();
     ix++;
   }
@@ -537,6 +534,83 @@ void srYields(){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+void yieldsForAnna(){
+
+  auto config = lepConfig();
+  //config.crCatMaps.clear();
+
+  config.samples.clear();
+  config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2017",          "tW",            inputdir_2017+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2018",          "tW",            inputdir_2018+"tW",              "1.0",      datasel + revert_vetoes);
+
+  BaseEstimator z(config);
+
+  std::map<TString,int> digits;
+  digits["Total ttW"] = -3;
+
+  z.calcYields();
+  z.sumYields({"tW-2016", "tW-2017", "tW-2018"}, "Total ttW");
+  auto htW_2016 = convertToHist(z.yields.at("tW-2016"),"tW 2016" ,";Control Region;Raw Yields for tW", nullptr);
+  auto htW_2017 = convertToHist(z.yields.at("tW-2017"),"tW 2017" ,";Control Region;Raw Yields for tW", nullptr);
+  auto htW_2018 = convertToHist(z.yields.at("tW-2018"),"tW 2018" ,";Control Region;Raw Yields for tW", nullptr);
+  TFile *output = new TFile(config.outputdir+"/tW_yield_forAnna.root", "RECREATE");
+  htW_2016->Write();
+  htW_2017->Write();
+  htW_2018->Write();
+  output->Close();
+
+  //z.printYieldsTable({"tW-2016", "tW-2017", "tW-2018", "Total ttW"});
+  //z.printYieldsTableLatex({"tW-2016", "tW-2017", "tW-2018", "Total ttW"}, labelMap, "yields_llb_hm_raw.tex", "hm", digits);
+
+}
+
+void yieldsForZhenbin(){
+
+  auto config = lepConfig();
+  //config.crCatMaps.clear();
+
+  config.samples.clear();
+  config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
+  config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
+  config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
+  config.addSample("ttW-2016",         "t#bar{t}W",           inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes);
+  config.addSample("ttbar-2017",         "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("wjets-2017",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("tW-2017",            "tW",            inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("ttW-2017",           "t#bar{t}W",           inputdir_2017+"ttW",             lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("ttbar-2018",         "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes);
+  config.addSample("wjets-2018",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes);
+  config.addSample("tW-2018",            "tW",            inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
+  config.addSample("ttW-2018",           "t#bar{t}W",           inputdir_2018+"ttW",             lepselwgt_2018,      datasel + revert_vetoes);
+
+  //Rare processes
+  config.addSample("ttZ-2016",         "ttZ",           inputdir_2016+"ttZ",           lepselwgt,      datasel + revert_vetoes);
+  config.addSample("ttZ-2017",           "ttZ",           inputdir_2017+"ttZ",           lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("ttZ-2018",           "ttZ",           inputdir_2018+"ttZ",           lepselwgt_2018,      datasel + revert_vetoes);
+  config.addSample("diboson-2016",     "Diboson",       inputdir_2016+"diboson",       lepselwgt,      datasel + revert_vetoes);
+  config.addSample("diboson-2017",       "Diboson",       inputdir_2017+"diboson",       lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("diboson-2018",       "Diboson",       inputdir_2018+"diboson",       lepselwgt_2018,      datasel + revert_vetoes);
+
+  BaseEstimator z(config);
+
+  std::map<TString,int> digits;
+  digits["Total LL"] = -3;
+  digits["Total ttZ"] = -3;
+  digits["Total diboson"] = -3;
+
+  z.calcYields();
+  z.sumYields({"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016", "ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017", "ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018",}, "Total LL");
+  z.sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "Total ttZ");
+  z.sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "Total diboson");
+  z.yields["ttZOverLL"] = z.yields.at("Total ttZ")/z.yields.at("Total LL");
+  z.yields["DibosonOverLL"] = z.yields.at("Total diboson")/z.yields.at("Total LL");
+  z.printYieldsTable({"ttZOverLL", "DibosonOverLL"});
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void SBv4Yields(){
 
   auto config = lepConfig();
@@ -609,7 +683,7 @@ void lepcrYields(){
   mc.push_back(convertToHist(z.yields.at("tW"),"tW_cr",";Search Region;Events"));
   mc.push_back(convertToHist(z.yields.at("ttW"),"ttWcr",";Search Region;Events"));
   mc.push_back(convertToHist(z.yields.at("ttbarplusw-cr"),"ttbarplusw_cr",";Search Region;Events"));
-  
+
   auto hdata = convertToHist(z.yields.at("singlelep"),"data",";Search Region;Events");
 
   TFile *output = new TFile(z.config.outputdir+"/llcr_yields.root", "RECREATE");
@@ -709,17 +783,17 @@ void ExtrapStudies(){
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
   vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018"};
-  vector<TString> mc_toppt_mgpow_samples = {"ttbar-topptmgpow-2016", "ttbar-topptmgpow-2017", "ttbar-topptmgpow-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_toppt_mgpow_samples = {"ttbar-topptmgpow-2016", "ttbar-topptmgpow-2017", "ttbar-topptmgpow-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 		     			    "tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_toppt_mgpow_samples_2016 = {"ttbar-topptmgpow-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_toppt_mgpow_samples_2017 = {"ttbar-topptmgpow-2017", "wjets-2017", "tW-2017", "ttW-2017"};
   vector<TString> mc_toppt_mgpow_samples_2018 = {"ttbar-topptmgpow-2018", "wjets-2018", "tW-2018", "ttW-2018"};
-  vector<TString> mc_topAK8Full_samples = {"ttbar-topAK8Full-2016", "ttbar-topAK8Full-2017", "ttbar-topAK8Full-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_topAK8Full_samples = {"ttbar-topAK8Full-2016", "ttbar-topAK8Full-2017", "ttbar-topAK8Full-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 		      			   "tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_topAK8Full_samples_2016 = {"ttbar-topAK8Full-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_topAK8Full_samples_2017 = {"ttbar-topAK8Full-2017", "wjets-2017", "tW-2017", "ttW-2017"};
@@ -832,14 +906,14 @@ void plot1LepInclusive(){
 
   vector<TString> mc_samples_ISR = {
 				"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018",
-				"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+				"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
 				};
   vector<TString> mc_samples_ttbar_ISR = {
 				"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018",
-				"ttbar-2016", "ttbar-2017", "ttbar-2018", 
+				"ttbar-2016", "ttbar-2017", "ttbar-2018",
 				};
-  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
@@ -969,9 +1043,9 @@ void plot1LepInclusiveLepton(){
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> mc_samples = {"ttbarplusw-ttbar-electron-2016", "ttbarplusw-ttbar-electron-2017", "ttbarplusw-ttbar-electron-2018", "ttbarplusw-wjets-electron-2016", "ttbarplusw-wjets-electron-2017", "ttbarplusw-wjets-electron-2018", 
+  vector<TString> mc_samples = {"ttbarplusw-ttbar-electron-2016", "ttbarplusw-ttbar-electron-2017", "ttbarplusw-ttbar-electron-2018", "ttbarplusw-wjets-electron-2016", "ttbarplusw-wjets-electron-2017", "ttbarplusw-wjets-electron-2018",
 				"ttbarplusw-tW-electron-2016", "ttbarplusw-tW-electron-2017", "ttbarplusw-tW-electron-2018", "ttbarplusw-ttW-electron-2016", "ttbarplusw-ttW-electron-2017", "ttbarplusw-ttW-electron-2018",
-				"ttbarplusw-ttbar-muon-2016", "ttbarplusw-ttbar-muon-2017", "ttbarplusw-ttbar-muon-2018", "ttbarplusw-wjets-muon-2016", "ttbarplusw-wjets-muon-2017", "ttbarplusw-wjets-muon-2018", 
+				"ttbarplusw-ttbar-muon-2016", "ttbarplusw-ttbar-muon-2017", "ttbarplusw-ttbar-muon-2018", "ttbarplusw-wjets-muon-2016", "ttbarplusw-wjets-muon-2017", "ttbarplusw-wjets-muon-2018",
 				"ttbarplusw-tW-muon-2016", "ttbarplusw-tW-muon-2017", "ttbarplusw-tW-muon-2018", "ttbarplusw-ttW-muon-2016", "ttbarplusw-ttW-muon-2017", "ttbarplusw-ttW-muon-2018"};
   TString data_sample = "singlelep";
 
@@ -1051,11 +1125,11 @@ void plotMtb(){
   z.setConfig(config);
 
   vector<TString> mc_samples = {
-				"qcd-2016", "qcd-2017", "qcd-2018", 
+				"qcd-2016", "qcd-2017", "qcd-2018",
 				"znunu-2016", "znunu-2017", "znunu-2018",
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"ttbarplusw-ttbar-2016", "ttbarplusw-ttbar-2017", "ttbarplusw-ttbar-2018", 
-				"ttbarplusw-tW-2016", "ttbarplusw-tW-2017", "ttbarplusw-tW-2018", 
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"ttbarplusw-ttbar-2016", "ttbarplusw-ttbar-2017", "ttbarplusw-ttbar-2018",
+				"ttbarplusw-tW-2016", "ttbarplusw-tW-2017", "ttbarplusw-tW-2018",
 				"ttbarplusw-ttW-2016", "ttbarplusw-ttW-2017", "ttbarplusw-ttW-2018",
 				"ttbarplusw-ttZ-2016", "ttbarplusw-ttZ-2017", "ttbarplusw-ttZ-2018"
 				};
@@ -1099,40 +1173,38 @@ void plot1LepInclusiveWithSyst(){
   z.setConfig(config);
 
   vector<TString> mc_samples = {
-				"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+				"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
 				};
-  vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {
-	//{"toppt_nowgt", BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	//{"toppt",       BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	//{"ntop",        BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	//{"ntop_nowgt",  BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	//{"nrestop",     BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	//{"nrestop_nowgt",     BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	//{"nw",          BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	//{"nw_nowgt",    BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	//{"met",         BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	//{"met_nowgt",         BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	//{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	//{"ht_nowgt",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-        //{"ak8isrpt",  BinInfo("Stop0l_ISRJetPt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
-        //{"ak8isrpt_nowgt",  BinInfo("Stop0l_ISRJetPt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
-	//{"nb",        BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
-	//{"nb_nowgt",  BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
+	{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
+	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"nb",        		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	{"nb_nowgt",  		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
 
   };
   vector<pair<TString, TString>> systFile = {
-				make_pair("met",   "uncertainties_CRInclusive_Run2_061120_MET_v2"),
-				make_pair("ntop",  "uncertainties_CRInclusive_Run2_061120_top_v2"),
-				make_pair("nw",    "uncertainties_CRInclusive_Run2_061120_w_v2"),
-				make_pair("nrestop","uncertainties_CRInclusive_Run2_061120_res_v2"),
-				make_pair("toppt", "uncertainties_CRInclusive_Run2_061220_toppt"),
-				make_pair("ht",    "uncertainties_CRInclusive_Run2_062620_ht"),
-				make_pair("nb",    "uncertainties_CRInclusive_Run2_070820_btags"),
+				make_pair("met",   "uncertainties_CRInclusive_Run2_071720_MET"),
+				make_pair("ntop",  "uncertainties_CRInclusive_Run2_071720_top"),
+				make_pair("nw",    "uncertainties_CRInclusive_Run2_071720_w"),
+				make_pair("nrestop","uncertainties_CRInclusive_Run2_071720_res"),
+				make_pair("toppt", "uncertainties_CRInclusive_Run2_071720_toppt"),
+				make_pair("ht",    "uncertainties_CRInclusive_Run2_071720_ht"),
+				make_pair("nb",    "uncertainties_CRInclusive_Run2_071720_btags"),
 				};
 
   vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
@@ -1163,6 +1235,7 @@ void plot1LepInclusiveWithSyst(){
         cout << filename << endl;
         unc_up.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Up")}, s + "up", ";"+var.first+";Events", nullptr));
         unc_dn.push_back(convertToHist({(TH1*)p->Get("ttbarplusw_Down")}, s + "down", ";"+var.first+";Events", nullptr));
+        //p->Close();
       }
       if (var.first.Contains("nowgt")) suffix += "_notoppt";
       z.resetSelection();
@@ -1263,38 +1336,38 @@ void plot1LepTTbarMatch(){
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> mc_toppt_mgpow_samples = {"ttbar-topptmgpow-2016", "ttbar-topptmgpow-2017", "ttbar-topptmgpow-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_toppt_mgpow_samples = {"ttbar-topptmgpow-2016", "ttbar-topptmgpow-2017", "ttbar-topptmgpow-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_toppt_samples = {"ttbar-toppt-2016", "ttbar-toppt-2017", "ttbar-toppt-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_toppt_samples = {"ttbar-toppt-2016", "ttbar-toppt-2017", "ttbar-toppt-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_topAK8_samples = {"ttbar-topAK8-2016", "ttbar-topAK8-2017", "ttbar-topAK8-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_topAK8_samples = {"ttbar-topAK8-2016", "ttbar-topAK8-2017", "ttbar-topAK8-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_topAK8Full_samples = {"ttbar-topAK8Full-2016", "ttbar-topAK8Full-2017", "ttbar-topAK8Full-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_topAK8Full_samples = {"ttbar-topAK8Full-2016", "ttbar-topAK8Full-2017", "ttbar-topAK8Full-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_orig_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_orig_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_mgpow_samples = {"ttbar-mgpow-2016", "ttbar-mgpow-2017", "ttbar-mgpow-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_mgpow_samples = {"ttbar-mgpow-2016", "ttbar-mgpow-2017", "ttbar-mgpow-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_ptlepmetb_samples = {"ttbar-ptlepmetb-2016", "ttbar-ptlepmetb-2017", "ttbar-ptlepmetb-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
-				"tW-2016", "tW-2017", "tW-2018", 
+  vector<TString> mc_ptlepmetb_samples = {"ttbar-ptlepmetb-2016", "ttbar-ptlepmetb-2017", "ttbar-ptlepmetb-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
+				"tW-2016", "tW-2017", "tW-2018",
 				"ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_match_samples = {"ttbar-topmatch-2016", "ttbar-topmatch-2017", "ttbar-topmatch-2018", 
-                                "ttbar-wmatch-2016", "ttbar-wmatch-2017", "ttbar-wmatch-2018", 
-				"ttbar-fake-2016", "ttbar-fake-2017", "ttbar-fake-2018", 
-				"wjets-2016", "wjets-2017", "wjets-2018", 
+  vector<TString> mc_match_samples = {"ttbar-topmatch-2016", "ttbar-topmatch-2017", "ttbar-topmatch-2018",
+                                "ttbar-wmatch-2016", "ttbar-wmatch-2017", "ttbar-wmatch-2018",
+				"ttbar-fake-2016", "ttbar-fake-2017", "ttbar-fake-2018",
+				"wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
   vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
   vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
@@ -1319,7 +1392,7 @@ void plot1LepTTbarMatch(){
                                                                             make_pair("",           make_pair("1 == 1",                  "")),
       //                                                                      make_pair("_lowmtb",           make_pair("Stop0l_Mtb < 175",                  "M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175")),
       //                                                                      make_pair("_highmtb",          make_pair("Stop0l_Mtb => 175",                 "M_{T}(b_{1,2},#vec{p}_{T}^{miss}) #geq 175"))
-                                                                          }; 
+                                                                          };
 
   vector<pair<TString, pair<double, double>>> ratioFitValues;
   std::function<void(TCanvas*)> plotextra;

@@ -28,15 +28,11 @@ map<TString, vector<Quantity>> getLLBPred(){
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
   vector<Quantity> yields;
-       if(EstTools::region.Contains("SR")) yields = l.yields.at("ttbarplusw-sr");
-  else if(EstTools::region.Contains("CR")) yields = l.yields.at("ttbarplusw");
-  else				           yields = l.yields.at("_TF");
+  yields = l.yields.at("_TF");
   llbcfg.reset();
   
   return {
     {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
   };
 }
 

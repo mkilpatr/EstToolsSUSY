@@ -934,6 +934,10 @@ public:
       }
     }
 
+    std::reverse(mchists.begin(),mchists.end());
+    std::reverse(mchists_up.begin(),mchists_up.end());
+    std::reverse(mchists_dn.begin(),mchists_dn.end());
+
     if(bkgtotal_notoppt){
       prepHists({bkgtotal, bkgtotal_notoppt}, false, true, false, {kRed, kBlue});
       bkgtotal->SetFillStyle(0); bkgtotal_notoppt->SetFillStyle(0);
@@ -977,9 +981,11 @@ public:
         cout << "The SF Normalization is " << sf << endl;
         // Get syst normalization
         for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
+          cout << inUnc_up[iunc]->GetName() << endl;
           auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
           auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
-          for (int ibin=0; ibin<=hsum_up->GetNbinsX(); ++ibin){
+          for (int ibin=1; ibin<=hsum_up->GetNbinsX(); ibin++){
+            cout << ibin << endl;
             auto q_nom = getHistBin(bkgtotal, ibin);
             auto q_up  = getHistBin(inUnc_up[iunc], ibin);
             auto q_dn  = getHistBin(inUnc_dn[iunc], ibin);

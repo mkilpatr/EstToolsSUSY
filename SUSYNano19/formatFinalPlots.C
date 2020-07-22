@@ -17,9 +17,8 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_name = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
-  vector<TString> sigs = {"T2tt_150_25"};
-  //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400", "T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
   //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
+  vector<TString> sigs = {"T2tt_1000_0"};
   TString data = "hdata";
 
   vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
