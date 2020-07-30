@@ -790,20 +790,17 @@
 	"Stop0l_nTop_Systematics": {
 		"bin_lepcr_hm_Stop0l_nTop0to1": "0",
 		"bin_lepcr_hm_Stop0l_nTop1to2": "1",
-		"bin_lepcr_hm_Stop0l_nTop2to3": "2",
-		"bin_lepcr_hm_Stop0l_nTop3toinf": "3"
+		"bin_lepcr_hm_Stop0l_nTop2toinf": "2"
 	},
 	"Stop0l_nW_Systematics": {
 		"bin_lepcr_hm_Stop0l_nW0to1": "0",
 		"bin_lepcr_hm_Stop0l_nW1to2": "1",
-		"bin_lepcr_hm_Stop0l_nW2to3": "2",
-		"bin_lepcr_hm_Stop0l_nW3toinf": "3"
+		"bin_lepcr_hm_Stop0l_nW2toinf": "2"
 	},
 	"Stop0l_nResolved_Systematics": {
 		"bin_lepcr_hm_Stop0l_nResolved0to1": "0",
 		"bin_lepcr_hm_Stop0l_nResolved1to2": "1",
-		"bin_lepcr_hm_Stop0l_nResolved2to3": "2",
-		"bin_lepcr_hm_Stop0l_nResolved3toinf": "3"
+		"bin_lepcr_hm_Stop0l_nResolved2toinf": "2"
 	},
 	"FatJet_TopPt_Systematics": {
 		"bin_lepcr_hm_FatJet_TopPt400to450": "0",

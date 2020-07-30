@@ -984,7 +984,7 @@ public:
           cout << inUnc_up[iunc]->GetName() << endl;
           auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
           auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
-          for (int ibin=1; ibin<=hsum_up->GetNbinsX(); ibin++){
+          for (int ibin=0; ibin<=hsum_up->GetNbinsX(); ++ibin){
             cout << ibin << endl;
             auto q_nom = getHistBin(bkgtotal, ibin);
             auto q_up  = getHistBin(inUnc_up[iunc], ibin);

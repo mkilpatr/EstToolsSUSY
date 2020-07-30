@@ -116,7 +116,9 @@ public:
     sumYields({"wjets-2016", "wjets-2017", "wjets-2018"}, "wjets");
     sumYields({"tW-2016", "tW-2017", "tW-2018"}, "tW");
     sumYields({"ttW-2016", "ttW-2017", "ttW-2018"}, "ttW");
-    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+    sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttZ");
+    sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
+    sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
 
     sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
     sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
@@ -200,7 +202,9 @@ public:
     sumYields({"wjets-2016", "wjets-2017", "wjets-2018"}, "wjets");
     sumYields({"tW-2016", "tW-2017", "tW-2018"}, "tW");
     sumYields({"ttW-2016", "ttW-2017", "ttW-2018"}, "ttW");
-    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+    sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttZ");
+    sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
+    sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
 
     sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
     sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
@@ -306,11 +310,13 @@ public:
     sumYields({"wjets-2016", "wjets-2017", "wjets-2018"}, "wjets");
     sumYields({"tW-2016", "tW-2017", "tW-2018"}, "tW");
     sumYields({"ttW-2016", "ttW-2017", "ttW-2018"}, "ttW");
-    sumYields({"ttbar", "wjets", "tW", "ttW"}, "ttbarplusw");
+    sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttZ");
+    sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
+    sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
 
-    sumYields({"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"}, "ttbarplusw-2016");
-    sumYields({"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"}, "ttbarplusw-2017");
-    sumYields({"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018"}, "ttbarplusw-2018");
+    sumYields({"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016", "diboson-2016", "ttZ-2016"}, "ttbarplusw-2016");
+    sumYields({"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017", "diboson-2017", "ttZ-2017"}, "ttbarplusw-2017");
+    sumYields({"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018", "diboson-2018", "ttZ-2018"}, "ttbarplusw-2018");
 
     sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
     sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");

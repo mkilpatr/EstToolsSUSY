@@ -133,7 +133,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
           double dn = jtot[unc.key()][back.key()][bin.key()][0];
-          if(up < 1 && dn < 1) cout << bin.key() << " UP/Down: " << up << "/" << dn << endl;
+          if(binnum == 0) cout << bin.key() << " UP/Down: " << up << "/" << dn << endl;
           hist_up.at(binnum) = up;
           hist_down.at(binnum) = dn;
         } else {

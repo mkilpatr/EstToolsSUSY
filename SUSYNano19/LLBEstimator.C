@@ -540,9 +540,9 @@ void yieldsForAnna(){
   //config.crCatMaps.clear();
 
   config.samples.clear();
-  config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              "1.0",      datasel + revert_vetoes);
-  config.addSample("tW-2017",          "tW",            inputdir_2017+"tW",              "1.0",      datasel + revert_vetoes);
-  config.addSample("tW-2018",          "tW",            inputdir_2018+"tW",              "1.0",      datasel + revert_vetoes);
+  config.addSample("tW-2016",          "tW",            inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
+  config.addSample("tW-2017",          "tW",            inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes);
+  config.addSample("tW-2018",          "tW",            inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
 
   BaseEstimator z(config);
 
@@ -554,7 +554,7 @@ void yieldsForAnna(){
   auto htW_2016 = convertToHist(z.yields.at("tW-2016"),"tW 2016" ,";Control Region;Raw Yields for tW", nullptr);
   auto htW_2017 = convertToHist(z.yields.at("tW-2017"),"tW 2017" ,";Control Region;Raw Yields for tW", nullptr);
   auto htW_2018 = convertToHist(z.yields.at("tW-2018"),"tW 2018" ,";Control Region;Raw Yields for tW", nullptr);
-  TFile *output = new TFile(config.outputdir+"/tW_yield_forAnna.root", "RECREATE");
+  TFile *output = new TFile(config.outputdir+"/tW_yield_withWeight_forAnna.root", "RECREATE");
   htW_2016->Write();
   htW_2017->Write();
   htW_2018->Write();
@@ -592,20 +592,45 @@ void yieldsForZhenbin(){
   config.addSample("diboson-2017",       "Diboson",       inputdir_2017+"diboson",       lepselwgt_2017,      datasel + revert_vetoes);
   config.addSample("diboson-2018",       "Diboson",       inputdir_2018+"diboson",       lepselwgt_2018,      datasel + revert_vetoes);
 
+  TString region = "RareContamination_devv6_072720";
+  config.outputdir += "/" +region;
   BaseEstimator z(config);
 
   std::map<TString,int> digits;
-  digits["Total LL"] = -3;
-  digits["Total ttZ"] = -3;
-  digits["Total diboson"] = -3;
+  digits["ttbarplusw"] = -3;
+  digits["ttz"] = -3;
+  digits["diboson"] = -3;
 
   z.calcYields();
-  z.sumYields({"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016", "ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017", "ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018",}, "Total LL");
-  z.sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "Total ttZ");
-  z.sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "Total diboson");
-  z.yields["ttZOverLL"] = z.yields.at("Total ttZ")/z.yields.at("Total LL");
-  z.yields["DibosonOverLL"] = z.yields.at("Total diboson")/z.yields.at("Total LL");
-  z.printYieldsTable({"ttZOverLL", "DibosonOverLL"});
+  z.sumYields({"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016", "ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017", "ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018",}, "ttbarplusw");
+  z.sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttz");
+  z.sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
+  z.yields["ttzOverLL"] = z.yields.at("ttz")/z.yields.at("ttbarplusw");
+  z.yields["dibosonOverLL"] = z.yields.at("diboson")/z.yields.at("ttbarplusw");
+  auto hLL = convertToHist(z.yields.at("ttbarplusw"),"LostLepton" ,";Control Region;Yields", nullptr);
+  auto httZ = convertToHist(z.yields.at("ttz"),"ttZ" ,";Control Region;Yields", nullptr);
+  auto hdiboson = convertToHist(z.yields.at("diboson"),"Diboson" ,";Control Region;Yields", nullptr);
+  auto httzOverLL = convertToHist(z.yields.at("ttzOverLL"),"ttzOverLL" ,";Control Region;Ratio", nullptr);
+  auto hdibosonOverLL = convertToHist(z.yields.at("dibosonOverLL"),"dibosonOverLL" ,";Control Region;Ratio", nullptr);
+  prepHists({hLL, httZ, hdiboson}, false, false, false);
+  prepHists({httzOverLL, hdibosonOverLL}, false, false, false);
+
+  auto leg = prepLegends({hLL, httZ, hdiboson}, {"ttbarplusw", "ttZ", "Rare"}, "L");
+  TCanvas* c = drawCompAndRatio({hLL, httZ, hdiboson}, {httzOverLL, hdibosonOverLL}, leg, "N_{other}/N_{LL}", 0.000, 0.200, true, 0.001);  
+  TString outputBase = "LostLepton_Rare_contribution";
+  c->SetTitle(outputBase);
+  c->Print(z.config.outputdir+"/"+outputBase+".pdf");
+  c->Print(z.config.outputdir+"/"+outputBase+".C");
+
+  TFile *output = new TFile(z.config.outputdir+"/"+outputBase+".root", "RECREATE");
+  hLL->Write();
+  httZ->Write();
+  hdiboson->Write();
+  httzOverLL->Write();
+  hdibosonOverLL->Write();
+  output->Close();
+  
+  //z.printYieldsTable({"ttzOverLL", "dibosonOverLL"});
 
 }
 
@@ -899,7 +924,7 @@ void plot1LepInclusive(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_v6_070120";
+  TString region = "lepcr_inclusive_v6_072620";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -924,7 +949,7 @@ void plot1LepInclusive(){
   TString data_sample_2018 = "singlelep-2018";
 
   map<TString, BinInfo> varDict {
-	//{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met",       BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_phi",       BinInfo("MET_phi", "#slash{E}_{T} #phi", 64, -3.2, 3.2)},
 	//{"ht",       BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"toppt",      BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
@@ -938,7 +963,7 @@ void plot1LepInclusive(){
 	//{"softbsf",     BinInfo("SoftBSF", "SoftBSF", 100, 0.5, 1.5)},
 	//{"j1pt",      BinInfo("Jet_pt[0]", "p_{T}(j1)", vector<int>{30, 50, 100, 200, 400, 1000}, "GeV")},
 	//{"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-	{"nisr",        BinInfo("nISRJets",  "N_{ISR}", 8, 2.5, 10.5)},
+	//{"nisr",        BinInfo("nISRJets",  "N_{ISR}", 8, 2.5, 10.5)},
   };
 
   std::function<void(TCanvas*)> plotextra;
@@ -967,29 +992,29 @@ void plot1LepInclusive(){
       z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
     }
 
-    //lumistr = lumistr_2016;
-    //z.setSelection(LLCR_LM , "llcr_lm_2016", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm_2016", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra));
+    lumistr = lumistr_2016;
+    z.setSelection(LLCR_LM , "llcr_lm_2016", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2016", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
-    //lumistr = lumistr_2017;
-    //z.setSelection(LLCR_LM , "llcr_lm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra));
+    lumistr = lumistr_2017;
+    z.setSelection(LLCR_LM , "llcr_lm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
-    //lumistr = lumistr_2018PostHEM;
-    //z.setSelection(LLCR_LM , "llcr_lm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //ratiohist.push_back(z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra));
+    lumistr = lumistr_2018PostHEM;
+    z.setSelection(LLCR_LM , "llcr_lm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
     //without HEM Veto
     //z.setSelection(LLCR_LM , "llcr_lm_2018_withoutHEM", "");
     //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
@@ -1167,7 +1192,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_v6_062420";
+  TString region = "lepcr_inclusive_withSyst_v6_072620";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1198,13 +1223,13 @@ void plot1LepInclusiveWithSyst(){
 
   };
   vector<pair<TString, TString>> systFile = {
-				make_pair("met",   "uncertainties_CRInclusive_Run2_071720_MET"),
-				make_pair("ntop",  "uncertainties_CRInclusive_Run2_071720_top"),
-				make_pair("nw",    "uncertainties_CRInclusive_Run2_071720_w"),
-				make_pair("nrestop","uncertainties_CRInclusive_Run2_071720_res"),
-				make_pair("toppt", "uncertainties_CRInclusive_Run2_071720_toppt"),
-				make_pair("ht",    "uncertainties_CRInclusive_Run2_071720_ht"),
-				make_pair("nb",    "uncertainties_CRInclusive_Run2_071720_btags"),
+				make_pair("met",   "uncertainties_CRInclusive_Run2_072620_MET"),
+				make_pair("ntop",  "uncertainties_CRInclusive_Run2_072620_top"),
+				make_pair("nw",    "uncertainties_CRInclusive_Run2_072620_w"),
+				make_pair("nrestop","uncertainties_CRInclusive_Run2_072620_res"),
+				make_pair("toppt", "uncertainties_CRInclusive_Run2_072620_toppt"),
+				make_pair("ht",    "uncertainties_CRInclusive_Run2_072620_ht"),
+				make_pair("nb",    "uncertainties_CRInclusive_Run2_072620_btag"),
 				};
 
   vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};

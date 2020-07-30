@@ -13,6 +13,7 @@
 #include <set>
 #include "TTreeFormula.h"
 #include "TRegexp.h"
+#include "TH2Poly.h"
 
 #include "Style.hh"
 #include "QuantityAsymmErrors.h"
@@ -156,6 +157,13 @@ TH1* normalize(TH1 *h, double norm = 1){
 vector<TH1*> normalize(vector<TH1*> hist, double norm = 1){
   for(auto *h : hist){
     h->Scale(norm/h->Integral(0, h->GetNbinsX()+1));
+  }
+  return hist;
+}
+
+vector<TH2Poly*> normalize(vector<TH2Poly*> hist, double norm = 1){
+  for(auto *h : hist){
+    h->Scale(norm/h->Integral(""));
   }
   return hist;
 }
