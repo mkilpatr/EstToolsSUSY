@@ -538,9 +538,11 @@ def readYields(pred_file):
             else :               statUnc_pieces[bin][sample] = (e_low, e_up)
     h = f.Get('hdata')
     for ibin in xrange(0, h.GetNbinsX()):
-            bin = binlist[ibin]
-            yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
-            #yields_data[bin] = (1, 1)
+        bin = binlist[ibin]
+        yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
+        if yields_data[bin][0] > yields_total[bin]:
+            print("bin: {0}, data: {1}, pred: {2}".format(bin, yields_data[bin], yields_total[bin]))
+        #yields_data[bin] = (1, 1)
     # get total pred (w/ asymmetric errors)
     h = f.Get(pred_total_name)
     for ibin in xrange(0, h.GetNbinsX()):

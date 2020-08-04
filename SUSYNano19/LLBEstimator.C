@@ -36,7 +36,7 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
-  TString region = "TransferFactor_devv6_070120";
+  TString region = "TransferFactor_devv7_073120";
   llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
@@ -182,7 +182,7 @@ vector<Quantity> LLBPredSeparate(){
       appendLegends(legend, {h2016Sum}, {"TF 2016"}, "l");
       appendLegends(legend, {h2017Sum}, {"TF 2017"}, "l");
       appendLegends(legend, {h2018Sum}, {"TF 2018"}, "l");
-      setLegend(legend, 1, 0.75, 0.87, 0.92,0.87);
+      setLegend(legend, 1, 0.75, 0.75, 0.92,0.87);
       legend->SetTextSize(0.03);
       legend->SetY1NDC(legend->GetY2NDC() - 0.2);
       TCanvas* sum_c = drawCompMatt({h2016Sum, h2017Sum, h2018Sum}, legend, -1., &plotextra);
@@ -298,12 +298,13 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv6_071520";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv7_073120";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
-				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
+				"diboson-2016", "diboson-2017", "diboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
   TString data_sample = "singlelep";
 
   vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
@@ -592,7 +593,7 @@ void yieldsForZhenbin(){
   config.addSample("diboson-2017",       "Diboson",       inputdir_2017+"diboson",       lepselwgt_2017,      datasel + revert_vetoes);
   config.addSample("diboson-2018",       "Diboson",       inputdir_2018+"diboson",       lepselwgt_2018,      datasel + revert_vetoes);
 
-  TString region = "RareContamination_devv6_072720";
+  TString region = "RareContamination_devv7_072720";
   config.outputdir += "/" +region;
   BaseEstimator z(config);
 
@@ -911,20 +912,20 @@ void plot1LepInclusive(){
   config.addSample("znunu-2016",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2016+"znunu",        lepselwgt,       datasel + revert_vetoes);
   config.addSample("znunu-2017",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2017+"znunu",        lepselwgt_2017,  datasel + revert_vetoes);
   config.addSample("znunu-2018",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2018+"znunu",        lepselwgt_2018,  datasel + revert_vetoes);
-  // diboson
-  config.addSample("diboson-2016",       "Diboson",         inputdir_2016+"diboson",        lepselwgt,       datasel + revert_vetoes);
-  config.addSample("diboson-2017",       "Diboson",         inputdir_2017+"diboson",        lepselwgt_2017,  datasel + revert_vetoes);
-  config.addSample("diboson-2018",       "Diboson",         inputdir_2018+"diboson",        lepselwgt_2018,  datasel + revert_vetoes);
-  // ttZ
-  config.addSample("ttZ-2016",       "ttZ",         inputdir_2016+"ttZ",        lepselwgt,       datasel + revert_vetoes);
-  config.addSample("ttZ-2017",       "ttZ",         inputdir_2017+"ttZ",        lepselwgt_2017,  datasel + revert_vetoes);
-  config.addSample("ttZ-2018",       "ttZ",         inputdir_2018+"ttZ",        lepselwgt_2018,  datasel + revert_vetoes);
+  //// diboson
+  //config.addSample("diboson-2016",       "Diboson",         inputdir_2016+"diboson",        lepselwgt,       datasel + revert_vetoes);
+  //config.addSample("diboson-2017",       "Diboson",         inputdir_2017+"diboson",        lepselwgt_2017,  datasel + revert_vetoes);
+  //config.addSample("diboson-2018",       "Diboson",         inputdir_2018+"diboson",        lepselwgt_2018,  datasel + revert_vetoes);
+  //// ttZ
+  //config.addSample("ttZ-2016",       "ttZ",         inputdir_2016+"ttZ",        lepselwgt,       datasel + revert_vetoes);
+  //config.addSample("ttZ-2017",       "ttZ",         inputdir_2017+"ttZ",        lepselwgt_2017,  datasel + revert_vetoes);
+  //config.addSample("ttZ-2018",       "ttZ",         inputdir_2018+"ttZ",        lepselwgt_2018,  datasel + revert_vetoes);
 
   config.addSample("ttbar-notoppt-2016",      "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+noTopPt+"*ISRWeight",         datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_v6_072620";
+  TString region = "lepcr_inclusive_devv7_073120";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -939,10 +940,11 @@ void plot1LepInclusive(){
 				"ttbar-2016", "ttbar-2017", "ttbar-2018",
 				};
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
-				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
-  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016"};
-  vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017"};
-  vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018"};
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
+				"diboson-2016", "diboson-2017", "diboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
+  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttW-2016", "diboson-2016", "ttZ-2016"};
+  vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttW-2017", "diboson-2017", "ttZ-2017"};
+  vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttW-2018", "diboson-2018", "ttZ-2018"};
   TString data_sample = "singlelep";
   TString data_sample_2016 = "singlelep-2016";
   TString data_sample_2017 = "singlelep-2017";
@@ -1192,17 +1194,17 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_v6_072620";
+  TString region = "lepcr_inclusive_withSyst_devv7_073120";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> mc_samples = {
-				"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
+  vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
-				};
+				"diboson-2016", "diboson-2017", "diboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
   vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018",
-				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018"};
+				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
+				"diboson-2016", "diboson-2017", "diboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
   TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {

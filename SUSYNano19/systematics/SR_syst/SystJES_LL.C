@@ -12,51 +12,6 @@
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
-  auto llbcfg = lepConfig();
-       if(EstTools::region.Contains("2016and2017")) llbcfg = lepConfig2016and2017();
-  else if(EstTools::region.Contains("2016")) llbcfg = lepConfig2016();
-  else if(EstTools::region.Contains("2017")) llbcfg = lepConfig2017();
-  else if(EstTools::region.Contains("2018")) llbcfg = lepConfig2018();
-
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
-  LLBEstimator l(llbcfg);
-
-       if(EstTools::region.Contains("2016and2017")) l.pred2016and2017();
-  else if(EstTools::region.Contains("201"))         l.predYear();
-  else				                    l.pred();
-
-  l.printYields();
-  Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-  Quantity::removeNegatives(l.yields.at("diboson-sr"));
-  vector<Quantity> yields;
-       if(EstTools::region.Contains("SR")) yields = l.yields.at("ttbarplusw-sr");
-  else if(EstTools::region.Contains("CR")) yields = l.yields.at("ttbarplusw");
-  else				           yields = l.yields.at("_TF");
-  llbcfg.reset();
-  
-  return {
-    {"ttbarplusw", yields},
-    //{"ttZ",        l.yields.at("ttZ-sr")},
-    //{"diboson",    l.yields.at("diboson-sr")},
-  };
-}
-
 void SystJES_LL(){
 
   std::string bins = "sb";
@@ -137,6 +92,7 @@ void SystJES_LL(){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
           auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = EstTools::region.Contains("CR") ? "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh : "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
+          binname.ReplaceAll("_jesTotalDown", "");
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 
 	  if (std::isnan(uncs_Up.at(ibin).value)) {

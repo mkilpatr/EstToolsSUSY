@@ -157,6 +157,18 @@ public:
     return make_pair(unc_up, unc_down);
   }
 
+  static std::vector<Quantity> combineSepUncs(const std::vector<Quantity> &up, bool doHalf = false){
+    // input need to be relative unc: "up/nominal", "down/nominal"
+    std::vector<Quantity> unc_up;
+    for (unsigned i=0; i<up.size(); ++i){
+      double sign = up[i].value - 1;
+      if(up[i].value < 1) sign = -1*(1 - up[i].value);
+      double val_up = doHalf ? (1 + sign/2) : 1 + sign;
+      unc_up.emplace_back(val_up, 0); 
+    }
+    return unc_up;
+  }
+
   static std::vector<Quantity> combineDownUncs(const std::vector<Quantity> &down){
     // input need to be relative unc: "down/nominal", "down/nominal"
     std::vector<Quantity> unc;

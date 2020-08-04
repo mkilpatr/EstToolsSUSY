@@ -909,6 +909,10 @@ public:
 
 
       if(hist != nullptr){
+        for (int ibin=0; ibin<=hist->GetNbinsX(); ++ibin){
+          auto q_nom = getHistBin(hist, ibin);
+          setHistBin(hist, ibin, q_nom);
+        }
         prepHists({hist});
         if(saveHists_) saveHist(hist);
         mchists.push_back(hist);
