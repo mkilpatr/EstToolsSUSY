@@ -176,7 +176,7 @@ vector<Quantity> LLBPredSeparate(){
       TString Mean2016 = TString(to_string(h2016Sum->GetMean()));
       TString Mean2017 = TString(to_string(h2017Sum->GetMean()));
       TString Mean2018 = TString(to_string(h2018Sum->GetMean()));
-      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{TF 2016 Mean: " + Mean2016 + "}{#splitline{TF 2017 Mean: " + Mean2017 + "}{TF 2018 Mean: " + Mean2018 + "}}", 0.22, 0.74); };
+      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{TF 2016 Mean: " + Mean2016 + "}{#splitline{TF 2017 Mean: " + Mean2017 + "}{TF 2018 Mean: " + Mean2018 + "}}", 0.20, 0.74); };
 
       auto legend = prepLegends({}, {""}, "l");
       appendLegends(legend, {h2016Sum}, {"TF 2016"}, "l");
@@ -1208,33 +1208,33 @@ void plot1LepInclusiveWithSyst(){
   TString data_sample = "singlelep";
 
   map<TString, BinInfo> varDict {
-	{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
+	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
+	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"nb",        		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
-	{"nb_nowgt",  		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"nb",        		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	//{"nb_nowgt",  		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
 
   };
   vector<pair<TString, TString>> systFile = {
-				make_pair("met",   "uncertainties_CRInclusive_Run2_072620_MET"),
-				make_pair("ntop",  "uncertainties_CRInclusive_Run2_072620_top"),
-				make_pair("nw",    "uncertainties_CRInclusive_Run2_072620_w"),
-				make_pair("nrestop","uncertainties_CRInclusive_Run2_072620_res"),
-				make_pair("toppt", "uncertainties_CRInclusive_Run2_072620_toppt"),
-				make_pair("ht",    "uncertainties_CRInclusive_Run2_072620_ht"),
-				make_pair("nb",    "uncertainties_CRInclusive_Run2_072620_btag"),
+				make_pair("met",   "uncertainties_CRInclusive_Run2_080520_MET"),
+				make_pair("ntop",  "uncertainties_CRInclusive_Run2_080520_top"),
+				make_pair("nw",    "uncertainties_CRInclusive_Run2_080520_w"),
+				make_pair("nrestop","uncertainties_CRInclusive_Run2_080520_res"),
+				make_pair("toppt", "uncertainties_CRInclusive_Run2_080520_toppt"),
+				make_pair("ht",    "uncertainties_CRInclusive_Run2_080520_ht"),
+				make_pair("nb",    "uncertainties_CRInclusive_Run2_080520_btag"),
 				};
 
-  vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
+  vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b_light", "b_heavy", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
 
   std::function<void(TCanvas*)> plotextra;
   TString location = "";

@@ -97,10 +97,11 @@ TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btag
 TString phowgt() { return wgtvar(); }
 //TString phowgt = wgtvar + "*qcdRespTailWeight";
 
+bool addTTZRare = true;
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
 TString region = "CRInclusive";
-TString binvar = "Stop0l_nbtags";
+TString binvar = "FatJet_TopPt";
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -1445,7 +1446,7 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   }
   LLBEstimator l(llbcfg);
 
-  if(doLepSyst){ 
+  if(region.Contains("SR") && doLepSyst == true){
     l.calcYieldsExcludes(exclude_cr_samples);
     l.sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
     l.sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
@@ -1462,9 +1463,9 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
     l.sumYields({"ttW-2016-eventsf-sr", "ttW-2017-eventsf-sr", "ttW-2018-eventsf-sr"}, "ttW-eventsf-sr");
     l.sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017-eventsf-sr", "ttZ-2018-eventsf-sr"}, "ttZ-eventsf-sr");
     l.sumYields({"diboson-2016-eventsf-sr", "diboson-2017-eventsf-sr", "diboson-2018-eventsf-sr"}, "diboson-eventsf-sr");
-    l.sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr", "ttZ-eventsf-sr", "diboson-eventsf-sr"}, "ttbarplusw-eventsf-sr");
     Quantity::removeNegatives(l.yields.at("ttZ-eventsf-sr"));
     Quantity::removeNegatives(l.yields.at("diboson-eventsf-sr"));
+    l.sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr", "ttZ-eventsf-sr", "diboson-eventsf-sr"}, "ttbarplusw-eventsf-sr");
     l.yields["lepSF_"] = (l.yields.at("ttbarplusw-sr") + l.yields.at("ttbarplusw-eventsf-sr"))/l.yields.at("ttbarplusw-sr"); 
     l.yields["_LepSR"]  = l.yields.at("lepSF_")*l.yields.at("ttbarplusw-sr");
   } else if(region.Contains("SR")){         

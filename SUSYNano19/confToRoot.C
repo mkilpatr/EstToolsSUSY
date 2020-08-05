@@ -189,7 +189,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
     TString typeName = type+suffix;
     c->SetTitle(typeName);
     c->Print(indir+typeName+".png");
-    c->Print(indir+typeName+".C");
 
     TFile *outFile = new TFile(indir+typeName+".root", "RECREATE");
     for(unsigned h = 0; h != hUp.size(); h++){
@@ -252,7 +251,6 @@ void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = "")
   TCanvas* c = drawCompAndRatio({hUp, hDown}, {hDiv}, leg, "Up/Down", 0.749, 1.999, false, -1., -1., true);
   c->SetTitle(totalName);
   c->Print(indir+totalName+".png");
-  c->Print(indir+totalName+".C");
 
   TFile *outFile = new TFile(indir+totalName+".root", "RECREATE");
   hUp->Write();
