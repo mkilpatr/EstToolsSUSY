@@ -295,9 +295,9 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
 #endif
   }
   if (leg) leg->Draw();
-#ifdef TDR_STYLE_
-  CMS_lumi(c, 4, 10);
-#endif
+//#ifdef TDR_STYLE_
+//  CMS_lumi(c, 4, 10);
+//#endif
   if (plotextra) (*plotextra)(c);
   c->Update();
 
@@ -340,7 +340,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false, double forceymin = 9999.)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -376,6 +376,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
     nbin = h->GetNbinsX();
     h->SetLineWidth(2);
     h->GetXaxis()->SetLabelOffset(0.20);
+    if(forceymin<9999.) h->SetMinimum(forceymin);
     if (isFirst){
       isFirst = false;
       if(isVal){
@@ -394,6 +395,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
         h->SetMinimum(logymin);
         gPad->SetLogy(1);
       }
+      if(forceymin<9999.) h->SetMinimum(forceymin);
       h->Draw("histe");
     }
     h->Draw("histesame");

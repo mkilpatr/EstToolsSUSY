@@ -7,8 +7,8 @@
 
 using namespace EstTools;
 
-//void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_allMethods/pred_binnum_"){
-void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_lowT2tt/pred_binnum_"){
+void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods/pred_binnum_"){
+//void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_lowT2tt/pred_binnum_"){
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -18,20 +18,19 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
   if(inputDir.Contains("2016")) lumistr = "35.815165";
 
   TString inputFile = "/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/" + inputDir + "/SearchBinsPlot/";
-  TString inputFile_rare = "/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/19May2020_Run2Unblind_dev_v6/SearchBinsPlot/";
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_post = {"TTZ", "Rare", "qcd", "znunu", "ttbarplusw"};
-  vector<TString> sigs = {"T2tt_150_25"};
+  //vector<TString> sigs = {"T2tt_150_25"};
   //vector<TString> sigs = {"T2bW_750_500", "T2bW_750_526", "T2bW_750_550"};
-  //vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
+  vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
   TString data = "hdata";
   TString data_post = "Graph";
 
   vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare", "t#bar{t}Z"};
-  vector<TString> siglabels = {"T2tt(150, 25)"};
+  //vector<TString> siglabels = {"T2tt(150, 25)"};
   //vector<TString> siglabels = {"T2bW(750, 500)", "T2bW(750, 526)", "T2bW(750, 550)"};
-  //vector<TString> siglabels = {"T2tt(1000, 0)", "T1tttt(2200, 400)"};
+  vector<TString> siglabels = {"T2tt(1000, 0)", "T1tttt(2200, 400)"};
   vector<TString> datalabel = {"Observed"};
 
   vector<TString> split = {"lm",
@@ -144,14 +143,14 @@ void getFinalPlot_compare_post(TString inputDir="26May2020_Run2Unblind_dev_v6", 
 
   TString suffix = "";
   if(inputDir.Contains("2016")) suffix = "_2016";
-  TFile *ttz = TFile::Open(inputFile_rare + "TTZ_final_sb" + suffix + ".root");
+  TFile *ttz = TFile::Open(inputFile + "TTZ_final_sb" + suffix + ".root");
   assert(ttz);
   TH1D* httZ = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_pred", ";Search bin number;Events", nullptr);
   TH1D* httZ_comp = convertToHist({(TH1*)ttz->Get("Prediction")}, "ttZ_comp", ";Search bin number;Events", nullptr);
   pred.push_back(httZ);
   pred_comp.push_back(httZ_comp);
 
-  TFile *r = TFile::Open(inputFile_rare + "Rare_final_sb" + suffix + ".root");
+  TFile *r = TFile::Open(inputFile + "Rare_final_sb" + suffix + ".root");
   assert(r);
   TH1D* hRare = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_pred", ";Search bin number;Events", nullptr);
   TH1D* hRare_comp = convertToHist({(TH1*)r->Get("Prediction")}, "Rare_comp", ";Search bin number;Events", nullptr);

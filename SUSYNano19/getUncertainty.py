@@ -21,24 +21,26 @@ from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend
 
 isRun2 = True
 
-uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/13Jul2020_Run2_dev_v6p5/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
+uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/31Jul2020_Run2_dev_v7/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
 uncfiles=[]
 if isRun2:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll.conf')
-    uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/Zinvisible/zinv_syst_Run2.conf')
+    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_Run2.conf')
     uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
     uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
+    uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
+    uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
 else:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll_2016.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll_2016.conf')
     uncfiles.append(uncdir + 'Zinvisible/zinv_syst_2016.conf')
     uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
     uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
-uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/QCD/JSW_Baseline_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
+    uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
+    uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
 
 all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 
@@ -48,7 +50,8 @@ graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
 table_header='Search bin & \\met [\GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD multijet &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
 
 uncMap = {
-    "b"         : "b-tag",
+    "b_light"       : "Light b-tag",
+    "b_heavy"       : "Heavy b-tag",
     "ivfunc"        : "Soft b-tag",
     #"LHEScale"     : "LHE Scale",
     "ISR_Weight_background" : "ISR",
@@ -75,7 +78,7 @@ systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
 debug = False
 test_samp = ['znunu']
-test_bin  = ['bin_hm_nb3_highmtb_nt0_nrt1_nw0_htgt1500_MET_pt350to550']
+test_bin  = ['bin_hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to350']
 test_type = ['PDF_Weight']
 
 # ordered bin list

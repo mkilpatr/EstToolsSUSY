@@ -58,7 +58,7 @@ public:
   }
 
   friend Quantity operator/(const Quantity &a, const Quantity &b){
-    double val = a.value / b.value;
+    double val = b.value == 0.0 ? 0.0 : a.value / b.value;
     double err = std::sqrt(a.error*a.error / (b.value*b.value) + a.value*a.value/(b.value*b.value*b.value*b.value) * b.error*b.error);
     return Quantity(val, err);
   }

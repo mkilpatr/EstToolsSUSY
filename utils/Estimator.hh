@@ -900,6 +900,11 @@ public:
           label = sample.label;
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
+          for (int ibin=0; ibin<=hmc_buff->GetNbinsX(); ++ibin){
+            auto q_nom = getHistBin(hmc_buff, ibin);
+            //cout << hmc_buff->GetName() << ": bin: " << ibin << " ---> " << q_nom.value << "+/-" << q_nom.error << endl;
+            setHistBin(hmc_buff, ibin, q_nom);
+          }
 	  if(!hist) hist = (TH1*) hmc_buff->Clone();
 	  else      hist->Add(hmc_buff);
           double totalEvents = hist->Integral(1, hist->GetNbinsX()+1);
@@ -911,7 +916,7 @@ public:
       if(hist != nullptr){
         for (int ibin=0; ibin<=hist->GetNbinsX(); ++ibin){
           auto q_nom = getHistBin(hist, ibin);
-          setHistBin(hist, ibin, q_nom);
+          cout << hist->GetName() << ": bin: " << ibin << " ---> " << q_nom.value << "+/-" << q_nom.error << endl;
         }
         prepHists({hist});
         if(saveHists_) saveHist(hist);
@@ -985,11 +990,9 @@ public:
         cout << "The SF Normalization is " << sf << endl;
         // Get syst normalization
         for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
-          cout << inUnc_up[iunc]->GetName() << endl;
           auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
           auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
           for (int ibin=0; ibin<=hsum_up->GetNbinsX(); ++ibin){
-            cout << ibin << endl;
             auto q_nom = getHistBin(bkgtotal, ibin);
             auto q_up  = getHistBin(inUnc_up[iunc], ibin);
             auto q_dn  = getHistBin(inUnc_dn[iunc], ibin);
@@ -1009,16 +1012,16 @@ public:
       }
     }
 
-    if(bkgtotal_up.size() > 0){
-      for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
-        for (int ibin=0; ibin<=bkgtotal_up[iunc]->GetNbinsX(); ++ibin){
-          auto q_up  = getHistBin(bkgtotal_up[iunc], ibin);
-          auto q_dn  = getHistBin(bkgtotal_dn[iunc], ibin);
+    //if(bkgtotal_up.size() > 0){
+    //  for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
+    //    for (int ibin=0; ibin<=bkgtotal_up[iunc]->GetNbinsX(); ++ibin){
+    //      auto q_up  = getHistBin(bkgtotal_up[iunc], ibin);
+    //      auto q_dn  = getHistBin(bkgtotal_dn[iunc], ibin);
 
-          cout << bkgtotal_up[iunc]->GetName() << " Up/Down = " << q_up.value << "/" << q_dn.value << endl;
-        }
-      }
-    }
+    //      //cout << bkgtotal_up[iunc]->GetName() << " Up/Down = " << q_up.value << "/" << q_dn.value << endl;
+    //    }
+    //  }
+    //}
 
     TGraphAsymmErrors *unc = nullptr;
     if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
@@ -1046,7 +1049,7 @@ public:
         pair<double, double> comb = doLogNorm(dn, up); 
         double unc_up = ((comb.second - 1)*q_bkg.value)*((comb.second - 1)*q_bkg.value);
         double unc_dn = ((1 - comb.first)*q_bkg.value)*((1 - comb.first)*q_bkg.value);
-        cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        //cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         //Statistical
         // ttbar:
         unc_up += q_bkg.error*q_bkg.error;
@@ -1054,7 +1057,7 @@ public:
         
         //Nominal
         double pred = q_bkg.value;
-        cout << "pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        //cout << "pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
         unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));

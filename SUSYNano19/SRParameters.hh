@@ -2,6 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
+//#include "binDefinitions.hh"
 #include "binDefinitions.hh"
 
 namespace EstTools{
@@ -10,11 +11,15 @@ const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/
 const TString inputdir_2016 = "nanoaod_all_skim_2016_073020_devv6_limits/";
 const TString inputdir_2017 = "nanoaod_all_skim_2017_073020_devv6_limits/";
 const TString inputdir_2018 = "nanoaod_all_skim_2018_073020_devv6_limits/";
+const TString inputdir_2016_ttZRare = "nanoaod_all_skim_2016_081320_devv6_limits/";
+const TString inputdir_2017_ttZRare = "nanoaod_all_skim_2017_081320_devv6_limits/";
+const TString inputdir_2018_ttZRare = "nanoaod_all_skim_2018_081320_devv6_limits/";
 const TString inputdir_sig  = "nanoaod_all_skim_2017_073020_devv6_limits/";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_data_all_skim_073020_devv6_limits/";
+const TString datadir = "nanoaod_data_all_skim_080720_devv6_limits/";
+const TString datadir_v6p5 = "nanoaod_data_all_skim_070720_devv6_limits/";
 
 TString lumistr = "137.00079";
 const TString lumistr_2016 = "35.815165"; //Units are in pb
@@ -27,8 +32,9 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 const TString HEMVeto     = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30) + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30))";
 const TString HEMVetoElec = "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30 && Pass_exHEMVetoElec30) + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30 && Pass_exHEMVetoElec30)))";
 
+const TString ResNanCheck = "(isnan(Stop0l_ResTopWeight) ? 1 : Stop0l_ResTopWeight)";
 // lumi and base weight
-const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_ResTopWeight*Stop0l_topptWeight";
+const TString basic_wgt = "*Stop0l_evtWeight*puWeight*BTagWeight*Stop0l_DeepAK8_SFWeight*SoftBSF*Stop0l_topptWeight*" + ResNanCheck;
 const TString wgtvar = lumistr_2016+"*1000*PrefireWeight"+basic_wgt;// //2016
 const TString wgtvar_2017 = lumistr_2017+"*1000*PrefireWeight"+basic_wgt;// //2017
 const TString wgtvar_2018 = HEMVeto+"*1000"+basic_wgt;// //2018
@@ -74,6 +80,7 @@ const TString invert_genLep = " && genMatchedLep";
 // MET+LEP LL method
 //bool ADD_LEP_TO_MET = true;
 const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
+const TString ttznorm = "1.214";
 
 
 // lepton trigger eff.
@@ -99,6 +106,7 @@ const TString qcdvetowgt_2018  = lepvetowgt_2018 + "*qcdRespTailWeight";
 const TString sigwgt = lepvetowgt;
 
 // triggers
+const TString dibosonBadEventRemoval = " && event != 237972";
 const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
@@ -484,81 +492,81 @@ BaseConfig lepConfig(){
     config.addSample("singlelep-2016",   "Data 2016",     datadir+"met_2016",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
-    config.addSample("tW-2016",          "single t",      inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
-    config.addSample("ttW-2016",         "t#bar{t}W",     inputdir_2016+"ttW",             lepselwgt,      datasel + revert_vetoes);
-    config.addSample("ttZ-2016",         "ttZ",           inputdir_2016+"ttZ",             lepselwgt, datasel + revert_vetoes + invert_genLep);
-    config.addSample("diboson-2016",     "Rare",            inputdir_2016+"diboson",         lepselwgt, datasel + revert_vetoes + invert_genLep);
+    config.addSample("tW-2016",          "Single t",      inputdir_2016+"tW",              lepselwgt,      datasel + revert_vetoes);
+    config.addSample("ttW-2016",         "t#bar{t}W",     inputdir_2016_ttZRare+"ttW",             lepselwgt,      datasel + revert_vetoes);
+    config.addSample("ttZ-2016",         "ttZ",           inputdir_2016_ttZRare+"ttZ",             lepselwgt+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
+    config.addSample("diboson-2016",     "Rare",            inputdir_2016_ttZRare+"diboson",         lepselwgt, datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
     // For plotting
-    //config.addSample("rare-2016",         "ttX",           inputdir_2016+"ttX",             lepselwgt, datasel + revert_vetoes + invert_genLep);
-    //config.addSample("vvv-2016",         "RareV",           inputdir_2016+"vvv",             lepselwgt, datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2016",    "VV/VVV",           inputdir_2016_ttZRare+"polyboson",             lepselwgt,      datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
+    config.addSample("ttx-2016",        "ttX",          inputdir_2016_ttZRare+"ttX",            lepselwgt,      datasel + revert_vetoes + invert_genLep);
 
     config.addSample("singlelep-2017",   "Data 2017",     datadir+"met_2017",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2017",       "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017,      datasel + revert_vetoes);
     config.addSample("wjets-2017",       "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017,      datasel + revert_vetoes);
-    config.addSample("tW-2017",          "single t",      inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes);
-    config.addSample("ttW-2017",         "t#bar{t}W",     inputdir_2017+"ttW",             lepselwgt_2017,      datasel + revert_vetoes);
-    config.addSample("ttZ-2017",         "ttZ",           inputdir_2017+"ttZ",             lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
-    config.addSample("diboson-2017",     "Rare",            inputdir_2017+"diboson",         lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
+    config.addSample("tW-2017",          "Single t",      inputdir_2017+"tW",              lepselwgt_2017,      datasel + revert_vetoes);
+    config.addSample("ttW-2017",         "t#bar{t}W",     inputdir_2017_ttZRare+"ttW",             lepselwgt_2017,      datasel + revert_vetoes);
+    config.addSample("ttZ-2017",         "ttZ",           inputdir_2017_ttZRare+"ttZ",             lepselwgt_2017+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
+    config.addSample("diboson-2017",     "Rare",            inputdir_2017_ttZRare+"diboson",         lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
     // For plotting
-    //config.addSample("ttX-2017",         "ttX",           inputdir_2017+"ttX",             lepselwgt, datasel + revert_vetoes + invert_genLep);
-    //config.addSample("vvv-2017",         "vvv",           inputdir_2017+"vvv",             lepselwgt, datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2017",    "VV/VVV",           inputdir_2017_ttZRare+"polyboson",             lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
+    config.addSample("ttx-2017",        "ttX",          inputdir_2017_ttZRare+"ttX",            lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
 
     config.addSample("singlelep-2018",   "Data 2018",     datadir+"met_2018",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2018",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes);
     config.addSample("wjets-2018",       "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("tW-2018",          "single t",      inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("ttW-2018",         "t#bar{t}W",     inputdir_2018+"ttW",             lepselwgt_2018,      datasel + revert_vetoes);
-    config.addSample("ttZ-2018",         "ttZ",           inputdir_2018+"ttZ",             lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
-    config.addSample("diboson-2018",     "Rare",            inputdir_2018+"diboson",         lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
+    config.addSample("tW-2018",          "Single t",      inputdir_2018+"tW",              lepselwgt_2018,      datasel + revert_vetoes);
+    config.addSample("ttW-2018",         "t#bar{t}W",     inputdir_2018_ttZRare+"ttW",             lepselwgt_2018,      datasel + revert_vetoes);
+    config.addSample("ttZ-2018",         "ttZ",           inputdir_2018_ttZRare+"ttZ",             lepselwgt_2018+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
+    config.addSample("diboson-2018",     "Rare",            inputdir_2018_ttZRare+"diboson",         lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
     // For plotting
-    //config.addSample("ttX-2018",         "ttX",           inputdir_2018+"ttX",             lepselwgt, datasel + revert_vetoes + invert_genLep);
-    //config.addSample("vvv-2018",         "vvv",           inputdir_2018+"vvv",             lepselwgt, datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2018",    "VV/VVV",           inputdir_2018_ttZRare+"polyboson",             lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
+    config.addSample("ttx-2018",        "ttX",          inputdir_2018_ttZRare+"ttX",            lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
   }
 
   // samples for sr categories
   config.addSample("ttbar-2016-sr",       "t#bar{t}",     inputdir_2016+"ttbar",                lepvetowgt+"*ISRWeight", datasel + vetoes);
   config.addSample("wjets-2016-sr",       "W+jets",       inputdir_2016+"wjets",                lepvetowgt, datasel + vetoes);
-  config.addSample("tW-2016-sr",          "single t",     inputdir_2016+"tW",                   lepvetowgt, datasel + vetoes);
-  config.addSample("ttW-2016-sr",         "t#bar{t}W",    inputdir_2016+"ttW",                  lepvetowgt, datasel + vetoes);
-  config.addSample("ttZ-2016-sr",         "ttZ",          inputdir_2016+"ttZ",                  lepvetowgt, datasel + vetoes + invert_genLep);
-  config.addSample("diboson-2016-sr",     "VV",           inputdir_2016+"diboson",              lepvetowgt, datasel + vetoes + invert_genLep);
+  config.addSample("tW-2016-sr",          "Single t",     inputdir_2016+"tW",                   lepvetowgt, datasel + vetoes);
+  config.addSample("ttW-2016-sr",         "t#bar{t}W",    inputdir_2016_ttZRare+"ttW",                  lepvetowgt, datasel + vetoes);
+  config.addSample("ttZ-2016-sr",         "ttZ",          inputdir_2016_ttZRare+"ttZ",                  lepvetowgt+"*"+ttznorm, datasel + vetoes + invert_genLep);
+  config.addSample("diboson-2016-sr",     "diboson",      inputdir_2016_ttZRare+"diboson",              lepvetowgt, datasel + vetoes + invert_genLep);
 
   config.addSample("ttbar-2017-sr",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_2017, datasel + vetoes);
   config.addSample("wjets-2017-sr",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_2017, datasel + vetoes);
-  config.addSample("tW-2017-sr",       "single t",      inputdir_2017+"tW",               lepvetowgt_2017, datasel + vetoes);
-  config.addSample("ttW-2017-sr",      "t#bar{t}W",     inputdir_2017+"ttW",              lepvetowgt_2017, datasel + vetoes);
-  config.addSample("ttZ-2017-sr",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_2017, datasel + vetoes + invert_genLep);
-  config.addSample("diboson-2017-sr",  "VV",       inputdir_2017+"diboson",          lepvetowgt_2017, datasel + vetoes + invert_genLep);
+  config.addSample("tW-2017-sr",       "Single t",      inputdir_2017+"tW",               lepvetowgt_2017, datasel + vetoes);
+  config.addSample("ttW-2017-sr",      "t#bar{t}W",     inputdir_2017_ttZRare+"ttW",              lepvetowgt_2017, datasel + vetoes);
+  config.addSample("ttZ-2017-sr",      "ttZ",           inputdir_2017_ttZRare+"ttZ",              lepvetowgt_2017+"*"+ttznorm, datasel + vetoes + invert_genLep);
+  config.addSample("diboson-2017-sr",  "diboson",       inputdir_2017_ttZRare+"diboson",          lepvetowgt_2017, datasel + vetoes + invert_genLep);
 
   config.addSample("ttbar-2018-sr",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_2018, datasel + vetoes);
   config.addSample("wjets-2018-sr",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_2018, datasel + vetoes);
-  config.addSample("tW-2018-sr",       "single t",      inputdir_2018+"tW",                lepvetowgt_2018, datasel + vetoes);
-  config.addSample("ttW-2018-sr",      "t#bar{t}W",     inputdir_2018+"ttW",               lepvetowgt_2018, datasel + vetoes);
-  config.addSample("ttZ-2018-sr",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_2018, datasel + vetoes + invert_genLep);
-  config.addSample("diboson-2018-sr",  "VV",       inputdir_2018+"diboson",           lepvetowgt_2018, datasel + vetoes + invert_genLep);
+  config.addSample("tW-2018-sr",       "Single t",      inputdir_2018+"tW",                lepvetowgt_2018, datasel + vetoes);
+  config.addSample("ttW-2018-sr",      "t#bar{t}W",     inputdir_2018_ttZRare+"ttW",               lepvetowgt_2018, datasel + vetoes);
+  config.addSample("ttZ-2018-sr",      "ttZ",           inputdir_2018_ttZRare+"ttZ",               lepvetowgt_2018+"*"+ttznorm, datasel + vetoes + invert_genLep);
+  config.addSample("diboson-2018-sr",  "diboson",       inputdir_2018_ttZRare+"diboson",           lepvetowgt_2018, datasel + vetoes + invert_genLep);
 
   // samples for splitting the TF (optional, see l.splitTF)
   if (SPLITTF){
     config.addSample("ttbar-2016-sr-int",       "t#bar{t}",      inputdir_2016+"ttbar",                lepvetowgt+"*ISRWeight", datasel + vetoes);
     config.addSample("wjets-2016-sr-int",       "W+jets",        inputdir_2016+"wjets",                lepvetowgt, datasel + vetoes);
-    config.addSample("tW-2016-sr-int",          "single t",      inputdir_2016+"tW",                   lepvetowgt, datasel + vetoes);
-    config.addSample("ttW-2016-sr-int",         "t#bar{t}W",     inputdir_2016+"ttW",                  lepvetowgt, datasel + vetoes);
-    config.addSample("ttZ-2016-sr-int",         "ttZ",           inputdir_2016+"ttZ",                  lepvetowgt, datasel + vetoes + invert_genLep);
-    config.addSample("diboson-2016-sr-int",     "VV",       inputdir_2016+"diboson",              lepvetowgt, datasel + vetoes + invert_genLep);
+    config.addSample("tW-2016-sr-int",          "Single t",      inputdir_2016+"tW",                   lepvetowgt, datasel + vetoes);
+    config.addSample("ttW-2016-sr-int",         "t#bar{t}W",     inputdir_2016_ttZRare+"ttW",                  lepvetowgt, datasel + vetoes);
+    config.addSample("ttZ-2016-sr-int",         "ttZ",           inputdir_2016_ttZRare+"ttZ",                  lepvetowgt+"*"+ttznorm, datasel + vetoes + invert_genLep);
+    config.addSample("diboson-2016-sr-int",     "diboson",       inputdir_2016_ttZRare+"diboson",              lepvetowgt, datasel + vetoes + invert_genLep);
 
     config.addSample("ttbar-2017-sr-int",    "t#bar{t}",      inputdir_2017+"ttbar",            lepvetowgt_2017, datasel + vetoes);
     config.addSample("wjets-2017-sr-int",    "W+jets",        inputdir_2017+"wjets",            lepvetowgt_2017, datasel + vetoes);
-    config.addSample("tW-2017-sr-int",       "single t",      inputdir_2017+"tW",               lepvetowgt_2017, datasel + vetoes);
-    config.addSample("ttW-2017-sr-int",      "t#bar{t}W",     inputdir_2017+"ttW",              lepvetowgt_2017, datasel + vetoes);
-    config.addSample("ttZ-2017-sr-int",      "ttZ",           inputdir_2017+"ttZ",              lepvetowgt_2017, datasel + vetoes + invert_genLep);
-    config.addSample("diboson-2017-sr-int",  "VV",       inputdir_2017+"diboson",          lepvetowgt_2017, datasel + vetoes + invert_genLep);
+    config.addSample("tW-2017-sr-int",       "Single t",      inputdir_2017+"tW",               lepvetowgt_2017, datasel + vetoes);
+    config.addSample("ttW-2017-sr-int",      "t#bar{t}W",     inputdir_2017_ttZRare+"ttW",              lepvetowgt_2017, datasel + vetoes);
+    config.addSample("ttZ-2017-sr-int",      "ttZ",           inputdir_2017_ttZRare+"ttZ",              lepvetowgt_2017+"*"+ttznorm, datasel + vetoes + invert_genLep);
+    config.addSample("diboson-2017-sr-int",  "diboson",       inputdir_2017_ttZRare+"diboson",          lepvetowgt_2017, datasel + vetoes + invert_genLep);
 
     config.addSample("ttbar-2018-sr-int",    "t#bar{t}",      inputdir_2018+"ttbar",             lepvetowgt_2018, datasel + vetoes);
     config.addSample("wjets-2018-sr-int",    "W+jets",        inputdir_2018+"wjets",             lepvetowgt_2018, datasel + vetoes);
-    config.addSample("tW-2018-sr-int",       "single t",      inputdir_2018+"tW",                lepvetowgt_2018, datasel + vetoes);
-    config.addSample("ttW-2018-sr-int",      "t#bar{t}W",     inputdir_2018+"ttW",               lepvetowgt_2018, datasel + vetoes);
-    config.addSample("ttZ-2018-sr-int",      "ttZ",           inputdir_2018+"ttZ",               lepvetowgt_2018, datasel + vetoes + invert_genLep);
-    config.addSample("diboson-2018-sr-int",  "VV",       inputdir_2018+"diboson",           lepvetowgt_2018, datasel + vetoes + invert_genLep);
+    config.addSample("tW-2018-sr-int",       "Single t",      inputdir_2018+"tW",                lepvetowgt_2018, datasel + vetoes);
+    config.addSample("ttW-2018-sr-int",      "t#bar{t}W",     inputdir_2018_ttZRare+"ttW",               lepvetowgt_2018, datasel + vetoes);
+    config.addSample("ttZ-2018-sr-int",      "ttZ",           inputdir_2018_ttZRare+"ttZ",               lepvetowgt_2018+"*"+ttznorm, datasel + vetoes + invert_genLep);
+    config.addSample("diboson-2018-sr-int",  "diboson",       inputdir_2018_ttZRare+"diboson",           lepvetowgt_2018, datasel + vetoes + invert_genLep);
   }
 
   config.sel = baseline;
@@ -579,6 +587,7 @@ BaseConfig srConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
 
+  config.addSample("data-v6p5",              "Data v6p5",     datadir_v6p5+"met",                     "1.0",      datasel + trigSR + vetoes);
   config.addSample("data",                   "Data",          datadir+"met",                     "1.0",      datasel + trigSR + vetoes);
   //config.addSample("ttbar",       "t#bar{t}",      inputdir_2016+"ttbar",        "1.0", datasel + vetoes);
   //config.addSample("wjets",       "W+jets",        inputdir_2016+"wjets",        "1.0", datasel + vetoes);
