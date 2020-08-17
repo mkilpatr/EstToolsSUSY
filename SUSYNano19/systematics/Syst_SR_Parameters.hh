@@ -4,10 +4,11 @@
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../utils/EstHelper.hh"
 //#include "../binDefinitions.hh"
+//#include "../binDefinitions_nanBin.hh"
 //#include "../binDefinitions_Inclusive.hh"
 //#include "../binDefinitions_CR.hh"
-//#include "../LowMET_binDefinitions.hh"
-#include "../binDefinitions_nanBin_small.hh"
+//#include "../binDefinitions_CR_nanBin.hh"
+#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
@@ -87,16 +88,16 @@ TString restop_jes_postfix = "";
 TString HEMVeto()     { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!Pass_exHEMVeto30" + jes_postfix + "))";}
 TString HEMVetoElec() { return "(" + lumistr_2018PostHEM + "*(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ") + " + lumistr_2018PreHEM + "*(!(Pass_exHEMVeto30" + jes_postfix + " && Pass_exHEMVetoElec30" + jes_postfix + ")))";}
 
-TString ResNanCheck()   { return "(isnan(" + restopwgt + ") ? 1 : " + restopwgt + ")";}
+TString ResNanCheck()   { return "(isnan(" + restopwgt+restop_jes_postfix + ") ? 1 : " + restopwgt+restop_jes_postfix + ")";}
 TString densetopwgtvar(){ return densetopwgt; }
 TString isrwgtvar()     { return isrwgt; }
 TString ttbarxsecvar()  { return ttbarxsec; }
 TString wjetsxsecvar()  { return wjetsxsec; }
 TString lhewgtvar()     { return lhewgt;}
-TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+ResNanCheck; }
-TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*(("+restopwgt+restop_jes_postfix+" && event != 23688846) || " + restopwgt+")*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+ResNanCheck; }
-TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+ResNanCheck; }
-TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+ResNanCheck; }
+TString wgtvar()        { return lumistr_2016+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt+"*"+ResNanCheck(); }
+TString wgtvar_2017()   { return lumistr_2017+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+prefirewgt+"*"+sdmvawgt+"*(("+restopwgt+restop_jes_postfix+" && event != 23688846) || " + restopwgt+")*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
+TString wgtvar_2018() { return HEMVeto()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
+TString wgtvar_2018_1LepCR() { return HEMVetoElec()+"*"+mcwgt+"*"+puwgt+"*"+btagwgt+"*"+sdmvawgt+"*"+restopwgt+restop_jes_postfix+"*"+softbwgt+"*"+pdfwgt+"*"+topptwgt; }
 
 // photon trigger eff.
 TString phowgt() { return wgtvar(); }
@@ -105,7 +106,7 @@ TString phowgt() { return wgtvar(); }
 bool addTTZRare = true;
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "SR";
+TString region = "LowMET";
 TString binvar = "MET_pt";
 
 // No Lepton SF

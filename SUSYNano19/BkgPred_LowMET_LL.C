@@ -21,16 +21,10 @@ void BkgPred_LowMET_LL(){
 
   auto convert = [&bkgnames](const ToyCombination &c, vector<TH1*> &hists, vector<TGraphAsymmErrors*> &graphs, TString region = "", int start = 0, int manualBins = 0){
     for(const auto &s : bkgnames){
-      cout << s << endl;
-      cout << c.getPrediction(s) << endl;
       hists.push_back(convertToHist(c.getPrediction(s), s, ";" + region + " #Deltam Validation Region;Events", nullptr, start, manualBins));
-  cout << "Made it here 1.1" << endl;
       graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(s), s+"_gr", ";" + region + " #Deltam Validation Region;Events"));
-  cout << "Made it here 1.2" << endl;
     }
-  cout << "Made it here 1.3" << endl;
     graphs.push_back(convertToGraphAsymmErrors(c.getPrediction(), "pred_total_gr", ";" + region + " #Deltam Validation Region;Events"));
-  cout << "Made it here 1.4" << endl;
   };
 
   // traditional method for LLB
@@ -44,35 +38,29 @@ void BkgPred_LowMET_LL(){
   lc.addBackground("ttbarplusw_pred",   &l.yields.at("singlelep"), &l.yields.at("_TF"));
   lc.combine();
 
-  cout << "Made it here" << endl;
   vector<TH1*> altpred_low;
   vector<TGraphAsymmErrors*> altgraphs_low;
   convert(lc, altpred_low, altgraphs_low, "Low", 0, 19);
 
-  cout << "Made it here" << endl;
   vector<TH1*> altpred;
   vector<TGraphAsymmErrors*> altgraphs;
   convert(lc, altpred, altgraphs);
 
-  cout << "Made it here" << endl;
   vector<TH1*> altpred_high;
   vector<TGraphAsymmErrors*> altgraphs_high;
   convert(lc, altpred_high, altgraphs_high, "High", 19, 24);
 
-  cout << "Made it here" << endl;
   vector<TH1*> mc_low;
   mc_low.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
   vector<TH1*> lepcr_low;
   lepcr_low.push_back(convertToHist(l.yields.at("ttbarplusw"),"ttbarplusw_mc_cr",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
   lepcr_low.push_back(convertToHist(l.yields.at("singlelep"),"data_cr",";Low #Deltam Validation Region;Events", nullptr, 0, 19));
-  cout << "Made it here" << endl;
 
   vector<TH1*> mc;
   mc.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";#Deltam Validation Region;Events", nullptr));
   vector<TH1*> lepcr;
   lepcr.push_back(convertToHist(l.yields.at("ttbarplusw"),"ttbarplusw_mc_cr",";#Deltam Validation Region;Events", nullptr));
   lepcr.push_back(convertToHist(l.yields.at("singlelep"),"data_cr",";#Deltam Validation Region;Events", nullptr));
-  cout << "Made it here" << endl;
 
   vector<TH1*> mc_high;
   mc_high.push_back(convertToHist(l.yields.at("ttbarplusw-sr"),"ttbarplusw_mc",";High #Deltam Validation Region;Events", nullptr, 19, 24));
@@ -80,13 +68,9 @@ void BkgPred_LowMET_LL(){
   lepcr_high.push_back(convertToHist(l.yields.at("ttbarplusw"),"ttbarplusw_mc_cr",";High #Deltam Validation Region;Events", nullptr, 19, 24));
   lepcr_high.push_back(convertToHist(l.yields.at("singlelep"),"data_cr",";High #Deltam Validation Region;Events", nullptr, 19, 24));
 
-  cout << "Made it here" << endl;
   auto sigcfg = sigConfig();
-  cout << "Made it here" << endl;
   BaseEstimator s(sigcfg);
-  cout << "Made it here" << endl;
   s.calcYields();
-  cout << "Made it here" << endl;
 
   auto hdata     = convertToHist(s.yields.at("data-sr"),"data",";#Deltam Validation Region;Events", nullptr);
   auto hdata_low = convertToHist(s.yields.at("data-sr"),"data",";Low #Deltam Validation Region;Events", nullptr, 0, 19);

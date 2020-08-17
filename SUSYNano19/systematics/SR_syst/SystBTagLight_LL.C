@@ -87,7 +87,7 @@ void SystBTagLight_LL(){
         auto &cat = EstTools::region.Contains("CR") ? config.crCatMaps.at(cat_name) : config.catMaps.at(cat_name);
         for (unsigned ix = 0; ix < cat.bin.nbins; ++ix){
           auto xlow = toString(cat.bin.plotbins.at(ix), 0);
-          auto xhigh = (ix==cat.bin.nbins-1) ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
+          auto xhigh = (ix==cat.bin.nbins-1 && toString(cat.bin.plotbins.at(ix+1), 0) == "1000") ? "inf" : toString(cat.bin.plotbins.at(ix+1), 0);
           auto binname = EstTools::region.Contains("CR") ? "bin_lepcr_" + TString(lepcrMapping.at(cat_name)) + "_" + cat.bin.var + xlow + "to" + xhigh : "bin_" + cat_name + "_" + cat.bin.var + xlow + "to" + xhigh;
           auto uncType_Up   = TString(sPair.first); 
           auto uncType_Down = TString(sPair.first).ReplaceAll("_Up", "_Down"); 

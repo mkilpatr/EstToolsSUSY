@@ -195,10 +195,8 @@ TH1* addUnderflow(TH1 *h){
 Quantity getHistBin(const TH1* h, int ibin){
   double value = h->GetBinContent(ibin);
   double error = h->GetBinError(ibin);
-  cout << "getHist: " << "ibin: " << ibin << "--->"<< value << "+/-" << error << endl;
   if (std::isnan(value)) value = 0;
   if (std::isnan(error)) error = 0;
-  cout << "getHist: " << "ibin: " << ibin << "--->"<< value << "+/-" << error << endl;
 
   return Quantity(value, error);
   //return Quantity(h->GetBinContent(ibin), h->GetBinError(ibin));

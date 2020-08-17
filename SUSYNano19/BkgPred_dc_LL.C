@@ -83,7 +83,7 @@ void runBkgPred(){
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open(outputdir+"/LLB/ll_BkgPred_081320_Run2_unblind.json");
+  jout.open(outputdir+"/LLB/ll_BkgPred_081320_Run2_unblind_nanBin_small.json");
   jout << j.dump(2);
   jout.close();
 

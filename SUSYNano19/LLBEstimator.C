@@ -36,7 +36,7 @@ vector<Quantity> LLBPred(){
 vector<Quantity> LLBPredSeparate(){
 
   auto llbcfg = lepConfig();
-  TString region = "TransferFactor_devv7_073120";
+  TString region = "TransferFactor_devv7_081620";
   llbcfg.outputdir += "/" +region;
   LLBEstimator l(llbcfg);
   l.splitTF = SPLITTF;
@@ -298,7 +298,7 @@ void plotLepCR(){
   auto config = lepConfig();
   config.catMaps = lepCatMap();
 
-  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv7_073120";
+  TString region = ICHEPCR ? "lepcr_ichepcr" : "lepcr_devv7_081620";
   BaseEstimator z(config.outputdir+"/"+region);
   z.setConfig(config);
 
@@ -570,7 +570,7 @@ void yieldsForDataCheck(){
 
   auto config = srConfig();
 
-  TString region = "DataCheck_devv7_080720";
+  TString region = "DataCheck_devv7_081620";
   config.outputdir += "/" +region;
   BaseEstimator z(config);
 
@@ -634,7 +634,7 @@ void yieldsForZhenbin(){
   config.addSample("ttX-2017",    	"ttX",              inputdir_2017+"ttX",            lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
   config.addSample("ttX-2018",    	"ttX",              inputdir_2018+"ttX",            lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
 
-  TString region = "RareContamination_devv7_072720";
+  TString region = "RareContamination_devv7_081620_newbin";
   config.outputdir += "/" +region;
   BaseEstimator z(config);
 
@@ -702,7 +702,7 @@ void predYieldCheck(){
 
   auto config = lepConfig();
 
-  TString region = "predictionYieldCheck_devv7_081220";
+  TString region = "predictionYieldCheck_devv7_081620";
   config.outputdir += "/" +region;
   BaseEstimator z(config);
   vector<TString> TTZRare = {
@@ -764,29 +764,29 @@ void predYieldCheck(){
   z.yields["_TF_SR_extrap-ratio"] = z.yields.at("_TF_SR_extrap-v6p5")/z.yields.at("_TF_SR_extrap-v7");
   z.yields["_pred-ratio"] = z.yields.at("_pred-v6p5")/z.yields.at("_pred-v7");
   //v6p5
-  auto httbarplusw_v6p5 = convertToHist(z.yields.at("ttbarplusw-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_v6p5 = convertToHist(z.yields.at("ttbarplusw-sr-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_int_v6p5 = convertToHist(z.yields.at("ttbarplusw-sr-int-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_v6p5 = convertToHist(z.yields.at("_TF-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_CR_to_SR_noextrap_v6p5 = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_SR_extrap_v6p5 = convertToHist(z.yields.at("_TF_SR_extrap-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_pred_v6p5 = convertToHist(z.yields.at("_pred-v6p5"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
+  auto httbarplusw_v6p5 = convertToHist(z.yields.at("ttbarplusw-v6p5"),"ttbarplusw-v6p5" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_v6p5 = convertToHist(z.yields.at("ttbarplusw-sr-v6p5"),"ttbarplusw-sr-v6p5" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_int_v6p5 = convertToHist(z.yields.at("ttbarplusw-sr-int-v6p5"),"ttbarplusw-sr-int-v6p5" ,";Search Region;Events", nullptr);
+  auto h_TF_v6p5 = convertToHist(z.yields.at("_TF-v6p5"),"_TF-v6p5" ,";Search Region;Events", nullptr);
+  auto h_TF_CR_to_SR_noextrap_v6p5 = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-v6p5"),"_TF_CR_to_SR_noextrap-v6p5" ,";Search Region;Events", nullptr);
+  auto h_TF_SR_extrap_v6p5 = convertToHist(z.yields.at("_TF_SR_extrap-v6p5"),"_TF_SR_extrap-v6p5" ,";Search Region;Events", nullptr);
+  auto h_pred_v6p5 = convertToHist(z.yields.at("_pred-v6p5"),"_pred-v6p5" ,";Search Region;Events", nullptr);
   //v7
-  auto httbarplusw_v7 = convertToHist(z.yields.at("ttbarplusw-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_v7 = convertToHist(z.yields.at("ttbarplusw-sr-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_int_v7 = convertToHist(z.yields.at("ttbarplusw-sr-int-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_v7 = convertToHist(z.yields.at("_TF-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_CR_to_SR_noextrap_v7 = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_SR_extrap_v7 = convertToHist(z.yields.at("_TF_SR_extrap-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_pred_v7 = convertToHist(z.yields.at("_pred-v7"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
+  auto httbarplusw_v7 = convertToHist(z.yields.at("ttbarplusw-v7"),"ttbarplusw-v7" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_v7 = convertToHist(z.yields.at("ttbarplusw-sr-v7"),"ttbarplusw-sr-v7" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_int_v7 = convertToHist(z.yields.at("ttbarplusw-sr-int-v7"),"ttbarplusw-sr-int-v7" ,";Search Region;Events", nullptr);
+  auto h_TF_v7 = convertToHist(z.yields.at("_TF-v7"),"_TF-v7" ,";Search Region;Events", nullptr);
+  auto h_TF_CR_to_SR_noextrap_v7 = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-v7"),"_TF_CR_to_SR_noextrap-v7" ,";Search Region;Events", nullptr);
+  auto h_TF_SR_extrap_v7 = convertToHist(z.yields.at("_TF_SR_extrap-v7"),"_TF_SR_extrap-v7" ,";Search Region;Events", nullptr);
+  auto h_pred_v7 = convertToHist(z.yields.at("_pred-v7"),"_pred-v7" ,";Search Region;Events", nullptr);
   //ratio
-  auto httbarplusw_ratio = convertToHist(z.yields.at("ttbarplusw-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_ratio = convertToHist(z.yields.at("ttbarplusw-sr-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto httbarplusw_sr_int_ratio = convertToHist(z.yields.at("ttbarplusw-sr-int-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_ratio = convertToHist(z.yields.at("_TF-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_CR_to_SR_noextrap_ratio = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_TF_SR_extrap_ratio = convertToHist(z.yields.at("_TF_SR_extrap-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
-  auto h_pred_ratio = convertToHist(z.yields.at("_pred-ratio"),"Lost Lepton CR" ,";Search Region;Events", nullptr);
+  auto httbarplusw_ratio = convertToHist(z.yields.at("ttbarplusw-ratio"),"ttbarplusw-ratio" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_ratio = convertToHist(z.yields.at("ttbarplusw-sr-ratio"),"ttbarplusw-sr-ratio" ,";Search Region;Events", nullptr);
+  auto httbarplusw_sr_int_ratio = convertToHist(z.yields.at("ttbarplusw-sr-int-ratio"),"ttbarplusw-sr-int-ratio" ,";Search Region;Events", nullptr);
+  auto h_TF_ratio = convertToHist(z.yields.at("_TF-ratio"),"_TF-ratio" ,";Search Region;Events", nullptr);
+  auto h_TF_CR_to_SR_noextrap_ratio = convertToHist(z.yields.at("_TF_CR_to_SR_noextrap-ratio"),"_TF_CR_to_SR_noextrap-ratio" ,";Search Region;Events", nullptr);
+  auto h_TF_SR_extrap_ratio = convertToHist(z.yields.at("_TF_SR_extrap-ratio"),"_TF_SR_extrap-ratio" ,";Search Region;Events", nullptr);
+  auto h_pred_ratio = convertToHist(z.yields.at("_pred-ratio"),"_pred-ratio" ,";Search Region;Events", nullptr);
   prepHists({httbarplusw_v6p5, httbarplusw_v7, httbarplusw_ratio}, false, false, false, {kBlue, kRed, kBlue});
   prepHists({httbarplusw_sr_v6p5, httbarplusw_sr_v7, httbarplusw_sr_ratio}, false, false, false, {kBlue, kRed, kBlue});
   prepHists({httbarplusw_sr_int_v6p5, httbarplusw_sr_int_v7, httbarplusw_sr_int_ratio}, false, false, false, {kBlue, kRed, kBlue});
@@ -799,10 +799,13 @@ void predYieldCheck(){
   vector<TH1D*> v7    = {httbarplusw_v7, httbarplusw_sr_v7, httbarplusw_sr_int_v7, h_TF_v7, h_TF_CR_to_SR_noextrap_v7, h_TF_SR_extrap_v7, h_pred_v7};
   vector<TH1D*> ratio = {httbarplusw_ratio, httbarplusw_sr_ratio, httbarplusw_sr_int_ratio, h_TF_ratio, h_TF_CR_to_SR_noextrap_ratio, h_TF_SR_extrap_ratio, h_pred_ratio};
   vector<TString> label={"CR", "SR", "SR_noextrap", "TF", "TF_CR_to_SR_noextrap", "TF_SR_extrap", "Prediction"};
+  vector<double> yMin = {1.,   0.01, 0.1,           0.001, 0.1,                   0.001,          0.001};
+  vector<double> rMin = {0.8,  0.249,0.249,         0.249, 0.499,                 0.499,          0.499};
+  vector<double> rMax = {1.2,  1.1,  1.1,           1.3,   1.1,                   1.251,          1.251};
 
   for(unsigned iS = 0; iS != ratio.size(); iS++){
     auto leg = prepLegends({v6p5[iS], v7[iS]}, {label[iS] + " v6p5", label[iS] + " v7"}, "L");
-    TCanvas* c = drawCompAndRatio({v6p5[iS], v7[iS]}, {ratio[iS]}, leg, "v6p5/v7", 0.499, 1.501, true, 0.001);  
+    TCanvas* c = drawCompAndRatio({v6p5[iS], v7[iS]}, {ratio[iS]}, leg, "v6p5/v7", rMin[iS], rMax[iS], true, yMin[iS]);  
     TString outputBase = label[iS] + "_comparison";
     c->SetTitle(outputBase);
     c->Print(z.config.outputdir+"/"+outputBase+".pdf");
@@ -1108,7 +1111,7 @@ void plot1LepInclusive(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_devv7_073120";
+  TString region = "lepcr_inclusive_devv7_081620";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1157,25 +1160,25 @@ void plot1LepInclusive(){
   TString extra = norm ? "Normalized" : "";
   for (auto &var : varDict){
     z.resetSelection();
-    //if (var.first.Contains("nisr")){
-    //  z.setSelection(LLCR_LM, "llcr_lm_syst" + suffix, "");
-    //  plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 Low #Deltam}{LL control region}}{" + extra + "}", 0.2, 0.73); };
-    //  z.plotDataMC(var.second, mc_samples_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
-    //  z.setSelection(LLCR_LM, "llcr_lm_syst_ttbar" + suffix, "");
-    //  z.plotDataMC(var.second, mc_samples_ttbar_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
-    //  z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
-    //  plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{" + extra + "}", 0.2, 0.73); };
-    //  z.plotDataMC(var.second, mc_samples_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
-    //  z.setSelection(LLCR_HM, "llcr_hm_syst_ttbar" + suffix, "");
-    //  z.plotDataMC(var.second, mc_samples_ttbar_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
-    //} else{
-    //  z.setSelection(LLCR_LM , "llcr_lm", "");
-    //  plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //  z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
-    //  z.setSelection(LLCR_HM, "llcr_hm", "");
-    //  plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //  z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
-    //}
+    if (var.first.Contains("nisr")){
+      z.setSelection(LLCR_LM, "llcr_lm_syst" + suffix, "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 Low #Deltam}{LL control region}}{" + extra + "}", 0.2, 0.73); };
+      z.plotDataMC(var.second, mc_samples_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
+      z.setSelection(LLCR_LM, "llcr_lm_syst_ttbar" + suffix, "");
+      z.plotDataMC(var.second, mc_samples_ttbar_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
+      z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{" + extra + "}", 0.2, 0.73); };
+      z.plotDataMC(var.second, mc_samples_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
+      z.setSelection(LLCR_HM, "llcr_hm_syst_ttbar" + suffix, "");
+      z.plotDataMC(var.second, mc_samples_ttbar_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
+    } else{
+      z.setSelection(LLCR_LM , "llcr_lm", "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+      z.setSelection(LLCR_HM, "llcr_hm", "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
+      z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
+    }
 
     lumistr = lumistr_2016;
     z.setSelection(LLCR_LM , "llcr_lm_2016", "");
@@ -1185,21 +1188,21 @@ void plot1LepInclusive(){
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2016 High #Deltam}{LL control region}", 0.2, 0.75); };
     z.plotDataMC(var.second, mc_samples_2016, data_sample_2016, Category::dummy_category(), false, "", true, &plotextra);
 
-    //lumistr = lumistr_2017;
-    //z.setSelection(LLCR_LM , "llcr_lm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm_2017", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    lumistr = lumistr_2017;
+    z.setSelection(LLCR_LM , "llcr_lm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2017", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2017 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2017, data_sample_2017, Category::dummy_category(), false, "", true, &plotextra);
 
-    //lumistr = lumistr_2018PostHEM;
-    //z.setSelection(LLCR_LM , "llcr_lm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
-    //z.setSelection(LLCR_HM, "llcr_hm_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
-    //z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    lumistr = lumistr_2018PostHEM;
+    z.setSelection(LLCR_LM , "llcr_lm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 Low #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
+    z.setSelection(LLCR_HM, "llcr_hm_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 High #Deltam}{LL control region}", 0.2, 0.75); };
+    z.plotDataMC(var.second, mc_samples_2018, data_sample_2018, Category::dummy_category(), false, "", true, &plotextra);
   }
 }
 
@@ -1372,7 +1375,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_073120";
+  TString region = "lepcr_inclusive_withSyst_devv7_081620";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);

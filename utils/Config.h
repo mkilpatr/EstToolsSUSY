@@ -70,7 +70,7 @@ struct BinInfo{
 
     for (unsigned i=0; i<bins.size()-1; ++i){
       Number lower = bins.at(i), upper = bins.at(i+1);
-      if (i==bins.size()-2 || bins.size() == 1 && upper == 1000){
+      if ((i==bins.size()-2 || bins.size() == 1) && upper == 1000){
         cuts.push_back(var + ">=" + to_string(lower));
         //if(var=="MET_pt") binnames.push_back("mt" + to_string(int(lower)) + "toinf");
         //else 		  binnames.push_back(var + to_string(int(lower)) + "toinf");

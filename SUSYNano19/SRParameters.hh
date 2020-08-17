@@ -2,8 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-//#include "binDefinitions.hh"
-#include "binDefinitions.hh"
+#include "binDefinitions_CR.hh"
 
 namespace EstTools{
 
