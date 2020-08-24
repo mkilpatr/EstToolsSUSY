@@ -3,12 +3,10 @@
 
 #include "../../EstMethods/LLBEstimator.hh"
 #include "../../utils/EstHelper.hh"
-//#include "../binDefinitions.hh"
-//#include "../binDefinitions_nanBin.hh"
+#include "../binDefinitions.hh"
 //#include "../binDefinitions_Inclusive.hh"
 //#include "../binDefinitions_CR.hh"
-//#include "../binDefinitions_CR_nanBin.hh"
-#include "../LowMET_binDefinitions.hh"
+//#include "../LowMET_binDefinitions.hh"
 
 namespace EstTools{
 
@@ -106,8 +104,10 @@ TString phowgt() { return wgtvar(); }
 bool addTTZRare = true;
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "LowMET";
+TString region = "SR";
 TString binvar = "MET_pt";
+TString binMap_ = "lm_nb2_lowmtb_highptisr_lowptb12";
+TString binMap() { return binMap_;}
 
 // No Lepton SF
 //TString lepvetowgt() {return wgtvar();}
@@ -522,42 +522,55 @@ std::map<TString, TString> cutMap_METUnClustDown = []{
 
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
-    for (auto name : srbins)
+    for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       cuts[name] = createCutString(name, cutMap);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> srcuts_JESUp = []{
     std::map<TString, TString> cuts;
-    for (auto name : srbins)
+    for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       cuts[name] = createCutString(name, cutMap_JESUp);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> srcuts_JESDown = []{
     std::map<TString, TString> cuts;
-    for (auto name : srbins)
+    for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       cuts[name] = createCutString(name, cutMap_JESDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> srcuts_METUnClustUp = []{
     std::map<TString, TString> cuts;
-    for (auto name : srbins)
+    for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       cuts[name] = createCutString(name, cutMap_METUnClustUp);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> srcuts_METUnClustDown = []{
     std::map<TString, TString> cuts;
-    for (auto name : srbins)
+    for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       cuts[name] = createCutString(name, cutMap_METUnClustDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> srlabels = []{
     std::map<TString, TString> cmap;
-    for (auto s: srbins) cmap[s] = s;
+    for (auto s: srbins){
+      if(s != binMap() && binMap() != "all") continue;
+      cmap[s] = s;
+    }
     return cmap;
 }();
 
@@ -682,53 +695,67 @@ std::map<TString, TString> phoNormMap_METUnClustDown = []{
 
 std::map<TString, TString> phocrCuts = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrCuts_JESUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrCuts_JESDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrCuts_METUnClustUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrCuts_METUnClustDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrlabels = phocrMapping;
 
-std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
+std::map<TString, std::vector<int>> phocrMETbins_small { {binMap(), srMETbins[binMap()]}};
+std::map<TString, std::vector<int>> phocrMETbins = (binMap() == "all") ? srMETbins : phocrMETbins_small;
 
 std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMapping)
+    for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> lepcrCuts_JESUp = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
       cout << createCutString(sr2cr.second, cutMap_JESUp) << endl;
     }
@@ -737,27 +764,34 @@ std::map<TString, TString> lepcrCuts_JESUp = []{
 
 std::map<TString, TString> lepcrCuts_JESDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMapping)
+    for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> lepcrCuts_METUnClustUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMapping)
+    for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> lepcrCuts_METUnClustDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : lepcrMapping)
+    for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> lepcrlabels = lepcrMapping;
-std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
+std::map<TString, std::vector<int>> lepcrMETbins_small { {binMap(), srMETbins[binMap()]} };
+std::map<TString, std::vector<int>> lepcrMETbins = (binMap() == "all") ? srMETbins : lepcrMETbins_small;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
@@ -771,37 +805,48 @@ std::map<TString, TString> qcdcrMapping =[]{
 }();
 std::map<TString, TString> qcdcrCuts = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcdcrCuts_JESUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESUp);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcdcrCuts_JESDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_JESDown);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcdcrCuts_METUnClustUp = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustUp);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcdcrCuts_METUnClustDown = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "all") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap_METUnClustDown);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcd1to1crCuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -812,6 +857,7 @@ std::map<TString, TString> qcd1to1crCuts = []{
 std::map<TString, TString> qcd1to1crCuts_JESUp = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -822,6 +868,7 @@ std::map<TString, TString> qcd1to1crCuts_JESUp = []{
 std::map<TString, TString> qcd1to1crCuts_JESDown = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -832,6 +879,7 @@ std::map<TString, TString> qcd1to1crCuts_JESDown = []{
 std::map<TString, TString> qcd1to1crCuts_METUnClustUp = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -842,6 +890,7 @@ std::map<TString, TString> qcd1to1crCuts_METUnClustUp = []{
 std::map<TString, TString> qcd1to1crCuts_METUnClustDown = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -854,6 +903,7 @@ std::map<TString, TString> qcdcrlabels = lepcrlabels;
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo(binvar, "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -862,6 +912,7 @@ map<TString, Category> srCatMap(){
 map<TString, Category> srCatMap_JESUp(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, srcuts_JESUp.at(name), srlabels.at(name), BinInfo(binvar, "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -870,6 +921,7 @@ map<TString, Category> srCatMap_JESUp(){
 map<TString, Category> srCatMap_JESDown(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, srcuts_JESDown.at(name), srlabels.at(name), BinInfo(binvar, "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -878,6 +930,7 @@ map<TString, Category> srCatMap_JESDown(){
 map<TString, Category> srCatMap_METUnClustUp(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, srcuts_METUnClustUp.at(name), srlabels.at(name), BinInfo(binvar, "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -886,6 +939,7 @@ map<TString, Category> srCatMap_METUnClustUp(){
 map<TString, Category> srCatMap_METUnClustDown(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, srcuts_METUnClustDown.at(name), srlabels.at(name), BinInfo(binvar, "#slash{E}_{T}", srMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -896,6 +950,7 @@ map<TString, Category> phoCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -906,6 +961,7 @@ map<TString, Category> phoCatMap_JESUp(){
   const auto &cuts = ICHEPCR ? srcuts_JESUp: phocrCuts_JESUp;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -916,6 +972,7 @@ map<TString, Category> phoCatMap_JESDown(){
   const auto &cuts = ICHEPCR ? srcuts_JESDown: phocrCuts_JESDown;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -926,6 +983,7 @@ map<TString, Category> phoCatMap_METUnClustUp(){
   const auto &cuts = ICHEPCR ? srcuts_METUnClustUp: phocrCuts_METUnClustUp;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -936,6 +994,7 @@ map<TString, Category> phoCatMap_METUnClustDown(){
   const auto &cuts = ICHEPCR ? srcuts_METUnClustDown: phocrCuts_METUnClustDown;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -947,6 +1006,7 @@ map<TString, Category> lepCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: lepcrCuts;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -958,6 +1018,7 @@ map<TString, Category> lepCatMap_JESUp(){
   const auto &cuts = ICHEPCR ? srcuts_JESUp: lepcrCuts_JESUp;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -969,6 +1030,7 @@ map<TString, Category> lepCatMap_JESDown(){
   const auto &cuts = ICHEPCR ? srcuts_JESDown: lepcrCuts_JESDown;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -980,6 +1042,7 @@ map<TString, Category> lepCatMap_METUnClustUp(){
   const auto &cuts = ICHEPCR ? srcuts_METUnClustUp: lepcrCuts_METUnClustUp;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -991,6 +1054,7 @@ map<TString, Category> lepCatMap_METUnClustDown(){
   const auto &cuts = ICHEPCR ? srcuts_METUnClustDown: lepcrCuts_METUnClustDown;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1001,6 +1065,7 @@ map<TString, Category> qcdCatMap(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1011,6 +1076,7 @@ map<TString, Category> qcdCatMap_JESUp(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts_JESUp: qcdcrCuts_JESUp;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1021,6 +1087,7 @@ map<TString, Category> qcdCatMap_JESDown(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts_JESDown: qcdcrCuts_JESDown;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1031,6 +1098,7 @@ map<TString, Category> qcdCatMap_METUnClustUp(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts_METUnClustUp: qcdcrCuts_METUnClustUp;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1041,6 +1109,7 @@ map<TString, Category> qcdCatMap_METUnClustDown(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts_METUnClustDown: qcdcrCuts_METUnClustDown;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+      if(name != binMap() && binMap() != "all") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo(binvar, "#slash{E}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -1185,8 +1254,14 @@ BaseConfig lepConfig(){
     config.addSample("diboson-2018-eventsf-sr",  "Rare",       inputdir_2018_ttZRare+"diboson",           seplepvetowgt_2018(), datasel() + revert_vetoes_sep() + invert_genLep());
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "all") continue;
+    srbins_small.push_back(name);
+  }
+
   config.sel = baseline();
-  config.categories = srbins;
+  config.categories = (binMap() == "all") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
   config.crMapping = lepcrMapping;

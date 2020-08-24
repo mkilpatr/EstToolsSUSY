@@ -7,7 +7,9 @@
 
 using namespace EstTools;
 
-void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TString outputName="getFinalPlot_validation/pred_binnum_"){
+void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation"){
+
+  gSystem->mkdir(outputName, true);
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -21,7 +23,7 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   TString data = "data";
 
-  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare", "t#bar{t}Z"};
+  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "t#bar{t}Z/Rare"};
   vector<TString> siglabels = {"T2tt(1000, 0)"};
   vector<TString> datalabel = {"Observed"};
 
@@ -60,7 +62,7 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
   assert(q);
   TH1D* hqcd = convertToHist({(TH1*)q->Get("QCD")}, "qcd_pred", ";Validation bin number;Events", nullptr);
 
-  TFile *f = TFile::Open(inputFile+ "LostLepton/std_pred_trad_Run2.root");
+  TFile *f = TFile::Open(inputFile+ "LostLepton/std_pred_trad_Run2_withttZRare.root");
   TFile *f_syst = TFile::Open(inputFile+ "LostLepton/Total.root");
   assert(f);
   TH1D* httbar = convertToHist({(TH1*)f->Get("ttbarplusw_pred")}, "httbar_pred", ";Validation bin number;Events", nullptr);
@@ -155,7 +157,9 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
     }
   }
 
-  pred.push_back(httz);
+  //Adding ttZ to Rare
+  hRare->Add(httz);
+
   pred.push_back(hRare);
   pred.push_back(hqcd);
   pred.push_back(hznunu);
@@ -165,7 +169,6 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
   pred_leg.push_back(hznunu);
   pred_leg.push_back(hqcd);
   pred_leg.push_back(hRare);
-  pred_leg.push_back(httz);
   
   TH1* hdata = (TH1*)f->Get(data);
 
@@ -280,7 +283,7 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
-    TString basename = outputName + "_" + region;
+    TString basename = outputName + "/pred_binnum__" + region;
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
   }
@@ -293,11 +296,11 @@ void getFinalPlot_validation(TString inputDir="26May2020_Run2Unblind_dev_v6", TS
     auto c_pull = drawCompMatt({pull}, 0, -1., &plotextra);
     c_pull->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    TString basename = outputName + "_pull";
+    TString basename = outputName + "/pred_binnum__pull";
     c_pull->Print(basename+".pdf");
   }
 
-  TFile *output = new TFile(outputName + "getFinalPlot_Nano.root", "RECREATE");
+  TFile *output = new TFile(outputName + "/pred_binnum_getFinalPlot_Nano.root", "RECREATE");
   for (auto *h : pred) h->Write();
   if(hdata) pull->Write();
   if(hdata) hdata->Write();

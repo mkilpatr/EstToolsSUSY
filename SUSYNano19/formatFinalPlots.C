@@ -6,7 +6,9 @@
 
 using namespace EstTools;
 
-void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot/"){
+void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot"){
+
+  gSystem->mkdir(outputName, true);
 
   RATIOPLOT_XTITLE_OFFSET = 1.35;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -17,12 +19,11 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
 
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   vector<TString> bkgs_name = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
-  vector<TString> sigs = {"T2tt_1000_0", "T1tttt_2200_400"};
-  //vector<TString> sigs = {"T2tt_1000_0"};
+  vector<TString> sigs = {"T2tt_1000_100", "T1tttt_2000_400", "T2fbd_500_460", "T2cc_500_460"};
   TString data = "hdata";
 
   vector<TString> bkglabels = {"ttZ", "Rare", "QCD", "Z#rightarrow#nu#nu", "t#bar{t}/W"};
-  vector<TString> siglabels = {"T2tt(1000,0)", "T1tttt(2200, 400)"};
+  vector<TString> siglabels = {"T2tt(1000,100)", "T1tttt(2000, 400)", "T2ttC(500, 460)", "T2cc(500, 460)"};
   vector<TString> datalabel = {"Observed"};
   vector<double> ratioYmax = {2.999, 2.999, 2.999, 6.999, 2.999, 6.999};
 
@@ -52,7 +53,7 @@ void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_
   //hdata->GetXaxis()->SetTitle("#slash{E}_{T} [GeV]");
 
 
-  TFile *output = new TFile(outputName+"SumOfBkg.root", "RECREATE");
+  TFile *output = new TFile(outputName+"/SumOfBkg.root", "RECREATE");
   for (auto *h : pred) h->Write();
   for (auto *s : hsigs) s->Write();
   if(hdata) hdata->Write();

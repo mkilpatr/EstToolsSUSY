@@ -702,7 +702,7 @@ void predYieldCheck(){
 
   auto config = lepConfig();
 
-  TString region = "predictionYieldCheck_devv7_081620";
+  TString region = "predictionYieldCheck_devv7_082020";
   config.outputdir += "/" +region;
   BaseEstimator z(config);
   vector<TString> TTZRare = {
@@ -756,13 +756,13 @@ void predYieldCheck(){
   z.yields["_TF_CR_to_SR_noextrap-v7"] = z.yields.at("ttbarplusw-sr-int-v7")/z.yields.at("ttbarplusw-v7");
   z.yields["_TF_SR_extrap-v7"]         = z.yields.at("ttbarplusw-sr-v7")/z.yields.at("ttbarplusw-sr-int-v7");
  
-  z.yields["ttbarplusw-ratio"] = z.yields.at("ttbarplusw-v6p5")/z.yields.at("ttbarplusw-v7");
-  z.yields["ttbarplusw-sr-ratio"] = z.yields.at("ttbarplusw-sr-v6p5")/z.yields.at("ttbarplusw-sr-v7");
-  z.yields["ttbarplusw-sr-int-ratio"] = z.yields.at("ttbarplusw-sr-int-v6p5")/z.yields.at("ttbarplusw-sr-int-v7");
-  z.yields["_TF-ratio"] = z.yields.at("_TF-v6p5")/z.yields.at("_TF-v7");
-  z.yields["_TF_CR_to_SR_noextrap-ratio"] = z.yields.at("_TF_CR_to_SR_noextrap-v6p5")/z.yields.at("_TF_CR_to_SR_noextrap-v7");
-  z.yields["_TF_SR_extrap-ratio"] = z.yields.at("_TF_SR_extrap-v6p5")/z.yields.at("_TF_SR_extrap-v7");
-  z.yields["_pred-ratio"] = z.yields.at("_pred-v6p5")/z.yields.at("_pred-v7");
+  z.yields["ttbarplusw-ratio"] = z.yields.at("ttbarplusw-v7")/z.yields.at("ttbarplusw-v6p5");
+  z.yields["ttbarplusw-sr-ratio"] = z.yields.at("ttbarplusw-sr-v7")/z.yields.at("ttbarplusw-sr-v6p5");
+  z.yields["ttbarplusw-sr-int-ratio"] = z.yields.at("ttbarplusw-sr-int-v7")/z.yields.at("ttbarplusw-sr-int-v6p5");
+  z.yields["_TF-ratio"] = z.yields.at("_TF-v7")/z.yields.at("_TF-v6p5");
+  z.yields["_TF_CR_to_SR_noextrap-ratio"] = z.yields.at("_TF_CR_to_SR_noextrap-v7")/z.yields.at("_TF_CR_to_SR_noextrap-v6p5");
+  z.yields["_TF_SR_extrap-ratio"] = z.yields.at("_TF_SR_extrap-v7")/z.yields.at("_TF_SR_extrap-v6p5");
+  z.yields["_pred-ratio"] = z.yields.at("_pred-v7")/z.yields.at("_pred-v6p5");
   //v6p5
   auto httbarplusw_v6p5 = convertToHist(z.yields.at("ttbarplusw-v6p5"),"ttbarplusw-v6p5" ,";Search Region;Events", nullptr);
   auto httbarplusw_sr_v6p5 = convertToHist(z.yields.at("ttbarplusw-sr-v6p5"),"ttbarplusw-sr-v6p5" ,";Search Region;Events", nullptr);
@@ -800,8 +800,8 @@ void predYieldCheck(){
   vector<TH1D*> ratio = {httbarplusw_ratio, httbarplusw_sr_ratio, httbarplusw_sr_int_ratio, h_TF_ratio, h_TF_CR_to_SR_noextrap_ratio, h_TF_SR_extrap_ratio, h_pred_ratio};
   vector<TString> label={"CR", "SR", "SR_noextrap", "TF", "TF_CR_to_SR_noextrap", "TF_SR_extrap", "Prediction"};
   vector<double> yMin = {1.,   0.01, 0.1,           0.001, 0.1,                   0.001,          0.001};
-  vector<double> rMin = {0.8,  0.249,0.249,         0.249, 0.499,                 0.499,          0.499};
-  vector<double> rMax = {1.2,  1.1,  1.1,           1.3,   1.1,                   1.251,          1.251};
+  vector<double> rMin = {0.8,  0.8,  0.8,         0.249, 0.499,                 0.499,          0.499};
+  vector<double> rMax = {1.2,  1.8,  1.8,           1.3,   1.1,                   1.251,          1.251};
 
   for(unsigned iS = 0; iS != ratio.size(); iS++){
     auto leg = prepLegends({v6p5[iS], v7[iS]}, {label[iS] + " v6p5", label[iS] + " v7"}, "L");

@@ -655,7 +655,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   unc->SetLineWidth(0);
   unc->SetMarkerSize(0);
   unc->Draw("E2same");
-  if(leg) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
+  if(leg && !finalPlot) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
 
   if (hData){
     TH1F *h00 = (TH1F*)hData->Clone("data0");

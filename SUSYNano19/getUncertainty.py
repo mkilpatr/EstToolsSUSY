@@ -47,7 +47,7 @@ all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 all_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd')
 unc_samples=('ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare')
 graph_names=('httbar', 'hznunu', 'httz', 'hRare', 'hqcd')
-table_header='Search bin & \\met [\GeV]  &  Lost lepton  &  \\znunu  & Rare & QCD multijet &  Total SM  &  $N_{\\rm data}$  \\\\ \n'
+table_header='Search bin & \ptmiss [{\GeVns}]  &  Lost lepton  &  \\zparennunujets  & Rare & QCD multijet &  Total SM  &  \\ND{}  \\\\ \n'
 
 uncMap = {
     "b_light"       : "Light b-tag",
@@ -297,20 +297,20 @@ labelMap = {
     'lm': r'Low \dm',
     'lowptb12': r'$\ptbonetwo < 80\GeV$',
     'highptb12': r'$\ptbonetwo > 140\GeV$',
-    'lowmtb': r'$\mtb < 175\GeV$',
-    'highmtb': r'$\mtb > 175\GeV$',
+    'lowmtb': r'$\mTb < 175\GeV$',
+    'highmtb': r'$\mTb > 175\GeV$',
     'nt1': r'$\Nt = 1$',
     'medptb12': r'$80 < \ptbonetwo < 140\GeV$',
     'nrtgeq1': r'$\Nres \geq 1$',
     'nj6': r'$\Nj \geq 6$',
     'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw) \geq 2$',
     'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw) \geq 3$',
-    'htlt1000': r'$\Ht < 1000\GeV$',
-    'htgt1000': r'$\Ht > 1000\GeV$',
-    'ht1000to1500': r'$1000 < \Ht < 1500\GeV$',
-    'htgt1500': r'$\Ht > 1500\GeV$',
-    'htlt1300': r'$\Ht < 1300\GeV$',
-    'htgt1300': r'$\Ht > 1300\GeV$',
+    'htlt1000': r'$\HT < 1000\GeV$',
+    'htgt1000': r'$\HT > 1000\GeV$',
+    'ht1000to1500': r'$1000 < \HT < 1500\GeV$',
+    'htgt1500': r'$\HT > 1500\GeV$',
+    'htlt1300': r'$\HT < 1300\GeV$',
+    'htgt1300': r'$\HT > 1300\GeV$',
     'lmNoDPhi': r'low $\Delta m$',
     'hmNoDPhi': r'high $\Delta m$',
     'MET': r'',
@@ -435,6 +435,7 @@ allVals = {}
 def readRelUnc(config_path):
     '''Read in percentage syst. uncertainty from the config files.'''
     for unc_fn in uncfiles:
+        print(os.path.join(config_path, unc_fn))
         with open(os.path.join(config_path, unc_fn), 'r') as f:
             for line in f.readlines():
                 if line[0]=='#' or line[0]=='%': continue
@@ -543,8 +544,6 @@ def readYields(pred_file):
     for ibin in xrange(0, h.GetNbinsX()):
         bin = binlist[ibin]
         yields_data[bin] = (h.GetBinContent(ibin+1), h.GetBinError(ibin+1))
-        if yields_data[bin][0] > yields_total[bin]:
-            print("bin: {0}, data: {1}, pred: {2}".format(bin, yields_data[bin], yields_total[bin]))
         #yields_data[bin] = (1, 1)
     # get total pred (w/ asymmetric errors)
     h = f.Get(pred_total_name)
@@ -754,24 +753,23 @@ def makeUncertaintyTable(output='pred_unc.tex'):
    
 def beginTable(table_index, ibini, ibinf):
     '''Add a break between the bins to fit on each page'''
-    s  = '\\begin{table}[!h]\n'
+    s  = '\\begin{table*}[!h]\n'
     label='tab:pred-%d'%table_index
     desc='Prediction for bins %d--%d'%(ibini, ibinf)
-    s += '\\begin{center}\n'
+    s += '\\centering\n'
     s += '\\internallinenumbers\n'
     s += '\\topcaption[' + desc + ']{Observed number of events and SM background predictions in search bins %d--%d.}\n'%(ibini, ibinf)
     s += '\\label{' + label + '}\n'
-    s += '\\vspace*{-2ex}\n'
-    s += '\\resizebox*{1.0\\textwidth}{!}{\n'
+    s += '\\cmsTable{\n'
     s += '\\renewcommand*{\\arraystretch}{1.25}\n'
-    s += '\\begin{tabular}{cccccccr}\n'
+    s += '\\begin{scotch}{cccccccr}\n'
     #s += '\\hline\n'
     return s
 
 def beginUncTable():
     col = ''
     '''Add a break between the bins to fit on each page'''
-    s  = '\\begin{table}[!h]\n'
+    s  = '\\begin{table}[!p]\n'
     s += '\\begin{center}\n'
     s += '\\resizebox*{1.0\\textwidth}{!}{\n'
     for type in uncMap.keys():
@@ -784,10 +782,9 @@ def endTable():
     '''Add a break between the bins to fit on each page'''
     s  = '\n'
     #s += '\\hline\n'
-    s += '\\end{tabular}\n'
-    s += '} % End \\resizebox\n'
-    s += '\\end{center}\n'
-    s += '\\end{table}\n'
+    s += '\\end{scotch}\n'
+    s += '} % End \cmsTable\n'
+    s += '\\end{table*}\n'
     return s
 
 def endUncTable(ibini, ibinf):

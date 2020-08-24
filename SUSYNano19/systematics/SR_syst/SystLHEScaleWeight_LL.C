@@ -22,7 +22,7 @@ void SystLHEScaleWeight_LL(){
   else if(EstTools::region.Contains("2017"))   mc = "_2017";
   else if(EstTools::region.Contains("2018"))   mc = "_2018";
 
-  std::string outfile_path = "values_unc_" + bins + mc + "_ll_lhe.conf";
+  std::string outfile_path = "values_unc_" + bins + mc + (string)binMap_ + "_ll_lhe.conf";
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}

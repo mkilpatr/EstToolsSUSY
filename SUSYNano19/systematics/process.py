@@ -18,6 +18,7 @@ parser.add_argument("-l", "--location", dest="location", default=".", help="move
 parser.add_argument("--output-suffix", dest="suffix", default="_tree.root", help="Suffix of output file. [Default: %(default)s. Use '.json' with dumpJSON.C.]")
 parser.add_argument("--jobdir", dest="jobdir", default="jobs", help="Job dir. [Default: %(default)s]")
 parser.add_argument("--path-to-rootlogon", dest="rootlogon", default="../../rootlogon.C", help="Path to the root logon file. [Default: %(default)s]")
+parser.add_argument("-b", "--bins", dest="bins", default="srbins.conf", help="List of signal files. [Default: T2tt_signals.conf]")
 #parser.print_help()
 args = parser.parse_args()
 
@@ -27,6 +28,14 @@ snum = 0
 samples = []
 macro = []
 sysname = []
+bins = []
+with open((args.bins),"r") as f :
+    for line in f:
+        content = os.path.splitext(line)[0]
+        bins.append(content)
+
+bins = [x.strip() for x in bins]
+
 if not args.config == "":
     with open((args.path+"/"+args.config),"r") as f :
         for line in f :
@@ -39,8 +48,7 @@ else:
 
 os.system("mkdir -p %s" % args.jobdir)
 
-if "Inclusive" in args.outdir: memory = 2000
-else:                       memory = 10000
+memory = 2000
 
 if args.config == "":
     print "Creating submission file: ",args.submit+".sh"
@@ -94,7 +102,7 @@ if args.config == "":
     cat > submit.cmd << EOF
     universe                = vanilla
     Executable              = {runscript}{stype}.sh
-    Arguments               = {macro} . {workdir} {outdir} {scram} {location}
+    Arguments               = {macro} . {workdir} {outdir} {scram} {location} {sysname}
     Output                  = logs/{sysname}.out
     Error                   = logs/{sysname}.err
     Log                     = logs/{sysname}.log
@@ -136,15 +144,17 @@ echo "$runscript $runmacro $workdir $outputdir"
         
     for i in xrange(len(macro)):
 	print(sysname[i])
-        scriptSep = open(os.path.join(args.jobdir,"submitSep_{}.sh".format(sysname[i])),"w")
-        scriptSep.write("""#!/bin/bash
+        for b in xrange(len(bins)):
+            scriptSep = open(os.path.join(args.jobdir,"submitSep_{}_{}.sh".format(sysname[i], bins[b])),"w")
+            scriptSep.write("""#!/bin/bash
 outputdir={outdir}
 runmacro={macro}
 location={location}
 sysname={sysname}
-""".format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], location=args.location, sysname=sysname[i]))
-        if args.submittype == "lsf" or args.submittype == "condor" :
-            scriptSep.write("""
+bins={bins}
+""".format(outdir=args.outdir, pathtomacro=args.path, macro=macro[i], location=args.location, sysname=sysname[i], bins=bins[b]))
+            if args.submittype == "lsf" or args.submittype == "condor" :
+                scriptSep.write("""
 workdir=$CMSSW_BASE
 scram=$SCRAM_ARCH
 runscript={runscript}{stype}.sh
@@ -158,22 +168,22 @@ cp {rootlogon} $workdir
 cp {pathtomacro}/{location}/$runmacro $workdir
 """.format(pathtomacro=args.path,location=args.location,runscript=args.script,stype=args.submittype,rootlogon=args.rootlogon))
 
-        if args.submittype == "interactive" :
-            scriptSep.write("""root -l -q -b {rootlogon} {pathtomacro}/$runmacro+\()\n""".format(
-            rootlogon=args.rootlogon, pathtomacro=args.path, 
-            ))
-        elif args.submittype == "condor" :
-            os.system("mkdir -p %s/logs" % args.outdir)
-            jobscript = open(os.path.join(args.jobdir,"submit_{}.sh".format(sysname[i])),"w")
-            outputname = ''
-            jobscript.write("""
+            if args.submittype == "interactive" :
+                scriptSep.write("""root -l -q -b {rootlogon} {pathtomacro}/$runmacro+\()\n""".format(
+                rootlogon=args.rootlogon, pathtomacro=args.path, 
+                ))
+            elif args.submittype == "condor" :
+                os.system("mkdir -p %s/logs" % args.outdir)
+                jobscript = open(os.path.join(args.jobdir,"submit_{}_{}.sh".format(sysname[i], bins[b])),"w")
+                outputname = ''
+                jobscript.write("""
 cat > submit.cmd << EOF
 universe                = vanilla
 Executable              = {runscript}{stype}.sh
-Arguments               = {macro} . {workdir} {outdir} {scram} {location}
-Output                  = logs/{sysname}.out
-Error                   = logs/{sysname}.err
-Log                     = logs/{sysname}.log
+Arguments               = {macro} . {workdir} {outdir} {scram} {location} {sysname} {bins}
+Output                  = logs/{sysname}_{bins}.out
+Error                   = logs/{sysname}_{bins}.err
+Log                     = logs/{sysname}_{bins}.log
 x509userproxy           = 
 request_memory 		= {memory}
 initialdir              = {outdir}
@@ -186,13 +196,13 @@ EOF
 
   condor_submit submit.cmd;
   rm submit.cmd""".format(
-        runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location, memory=memory
-        ))
-        jobscript.close()
-        scriptSep.write("./{jobdir}/submit_{name}.sh\n".format(jobdir=args.jobdir, name=sysname[i]))
-        script.write("./{jobdir}/submitSep_{name}.sh\n".format(jobdir=args.jobdir, name=sysname[i]))
-        os.system("chmod +x %s/submit_%s.sh" %(args.jobdir, sysname[i]))
-        os.system("chmod +x %s/submitSep_%s.sh" %(args.jobdir, sysname[i]))
+            runscript=args.script, stype=args.submittype, macro=macro[i], sysname=sysname[i], workdir="${CMSSW_BASE}", outdir=args.outdir, outname=outputname, scram="${SCRAM_ARCH}", location=args.location, memory=memory, bins=bins[b]
+            ))
+            jobscript.close()
+            scriptSep.write("./{jobdir}/submit_{name}_{bins}.sh\n".format(jobdir=args.jobdir, name=sysname[i], bins=bins[b]))
+            script.write("./{jobdir}/submitSep_{name}_{bins}.sh\n".format(jobdir=args.jobdir, name=sysname[i], bins=bins[b]))
+            os.system("chmod +x %s/submit_%s_%s.sh" %(args.jobdir, sysname[i], bins[b]))
+            os.system("chmod +x %s/submitSep_%s_%s.sh" %(args.jobdir, sysname[i], bins[b]))
         
        
     

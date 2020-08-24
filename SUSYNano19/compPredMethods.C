@@ -32,8 +32,8 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     return gr;
   };
 
-  TString predFile = "sig/std_pred_trad_withExtrap_052820.root";
-  TString predFile_noextrap = "sig/std_pred_trad_withoutExtrap_052820.root";
+  TString predFile = "sig/std_pred_trad_withExtrap_081620.root";
+  TString predFile_noextrap = "sig/std_pred_trad_withoutExtrap_081620.root";
 //  TString output  = "";
 
   TFile *fpred = TFile::Open(predFile);
@@ -159,5 +159,5 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   ratio_pred_noextrap->Draw("P0same");
 
   c->cd();
-  c->SaveAs("bkgpred_comp_"+bkg+".png");
+  c->SaveAs("bkgpred_comp_"+bkg+".pdf");
 }

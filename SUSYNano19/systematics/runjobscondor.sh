@@ -6,6 +6,8 @@ scramdir=$3
 outdir=${4}
 scram=${5}
 location=${6}
+sysname=${7}
+bins=${8}
 
 workdir=`pwd`
 cmssw=${scramdir##*/}
@@ -40,6 +42,8 @@ cd ${_CONDOR_SCRATCH_DIR}
 pwd
 cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
 echo $outdir
+
+sed -i -e "s/lm_nb2_lowmtb_highptisr_lowptb12/$bins/g" Syst_SR_Parameters.hh
 
 ulimit -s unlimited
 cd $location

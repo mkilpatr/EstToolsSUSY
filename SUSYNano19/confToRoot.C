@@ -19,46 +19,6 @@ using json = nlohmann::json;
 
 using namespace EstTools;
 
-void GetAverages(vector<double> Up, vector<double> Down){
-  bool useValUp = false, useValDown = false;
-  double value_up = 0., value_down = 0.;
-  vector<double> values;
- 
-  assert(Up.size() == Down.size());
-  
-  for(int ibin = 0; ibin != Up.size(); ibin++){
-    if (Up[ibin] > 0 && Up[ibin] != 1){
-      value_up = Up[ibin];
-      if (Up[ibin] < 1) value_up = 1.0/Up[ibin];
-      if (value_up < 3.0) useValUp = true;
-    }
-    if (Down[ibin] > 0 && Down[ibin] != 1){
-      value_down = Down[ibin];
-      if (Down[ibin] < 1) value_down = 1.0/Down[ibin];
-      if (value_down < 3.0) useValDown = true;
-    }
-    //cout << "values: " << value_up - 1 << "/" << value_down - 1 << endl;
-    //cout << "values: " << TMath::Log(value_up - 1) << "/" << TMath::Log(value_down - 1) << endl;
-
-    if (useValUp) values.push_back(TMath::Log(value_up - 1));
-    if (useValDown) values.push_back(TMath::Log(value_down - 1));
-  }
-
-  cout << "--- estimated systematic ranges ---" << endl;
-  double sum = std::accumulate(std::begin(values), std::end(values), 0.0);
-  double m =  sum / values.size();
-
-  double accum = 0.0;
-  std::for_each (std::begin(values), std::end(values), [&](const double d) {
-    accum += (d - m) * (d - m);
-  });
-
-  double stdev = sqrt(accum / (values.size()-1));
-
-
-  cout << "Range for Systematics = " << 100.0*TMath::Exp(m - stdev) << "--" << 100.0*TMath::Exp(m + stdev) << endl;
-}
-
 json readFile(std::string FILENAME){
 //std::pair< std::pair<vector<TString>, vector<double> >, std::pair<vector<TString>, vector<double> > > readFile(std::string FILENAME){
   std::ifstream file(FILENAME);
