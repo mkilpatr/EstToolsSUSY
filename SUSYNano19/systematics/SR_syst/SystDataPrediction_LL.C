@@ -12,29 +12,12 @@
 
 using namespace EstTools;
 
-map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
+map<TString, vector<Quantity>> getLLBPred(){
   auto llbcfg = lepConfig();
        if(EstTools::region.Contains("2016and2017")) llbcfg = lepConfig2016and2017();
   else if(EstTools::region.Contains("2016")) llbcfg = lepConfig2016();
   else if(EstTools::region.Contains("2017")) llbcfg = lepConfig2017();
   else if(EstTools::region.Contains("2018")) llbcfg = lepConfig2018();
-
-  if(sys_name == "JES_Up"){
-    llbcfg.catMaps = srCatMap_JESUp();
-    llbcfg.crCatMaps = lepCatMap_JESUp();
-  } else if(sys_name == "JES_Down"){
-    llbcfg.catMaps = srCatMap_JESDown();
-    llbcfg.crCatMaps = lepCatMap_JESDown();
-  } else if(sys_name == "metres_Up"){
-    llbcfg.catMaps = srCatMap_METUnClustUp();
-    llbcfg.crCatMaps = lepCatMap_METUnClustUp();
-  } else if(sys_name == "metres_Down"){
-    llbcfg.catMaps = srCatMap_METUnClustDown();
-    llbcfg.crCatMaps = lepCatMap_METUnClustDown();
-  } else{
-    llbcfg.catMaps = srCatMap();
-    llbcfg.crCatMaps = lepCatMap();
-  }
   LLBEstimator l(llbcfg);
 
        if(EstTools::region.Contains("2016and2017")) l.pred2016and2017();
@@ -45,10 +28,13 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   Quantity::removeNegatives(l.yields.at("ttZ-sr"));
   Quantity::removeNegatives(l.yields.at("diboson-sr"));
   vector<Quantity> yields;
-       if(EstTools::region.Contains("SR")) yields = l.yields.at("ttbarplusw-sr");
-  else if(EstTools::region.Contains("CR")) yields = l.yields.at("ttbarplusw");
-  else				           yields = l.yields.at("_TF");  
+  yields = l.yields.at("singlelep")/l.yields.at("ttbarplusw");
+  //     if(EstTools::region.Contains("SR")) yields = l.yields.at("ttbarplusw-sr");
+  //else if(EstTools::region.Contains("CR")) yields = l.yields.at("singlelep")/l.yields.at("ttbarplusw");
+  //else				           yields = l.yields.at("_TF");
   llbcfg.reset();
+
+  
   
   return {
     {"ttbarplusw", yields},
@@ -57,7 +43,8 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   };
 }
 
-void SystMETUnclust_LL(){
+
+void SystDataPrediction_LL(){
 
   std::string bins = "sb";
   std::string mc = "";
@@ -67,7 +54,7 @@ void SystMETUnclust_LL(){
   else if(EstTools::region.Contains("2017"))   mc = "_2017";
   else if(EstTools::region.Contains("2018"))   mc = "_2018";
 
-  std::string outfile_path = "values_unc_" + bins + mc + "_ll_metres.conf";
+  std::string outfile_path = "values_unc_" + bins + mc + "_ll_dataPred.conf";
 
   vector<TString> bkgnames  = {"ttbarplusw"};
   map<TString, map<TString, vector<Quantity>>> proc_syst_pred; // {proc: {syst: yields}}
@@ -75,29 +62,11 @@ void SystMETUnclust_LL(){
     proc_syst_pred[bkg] = map<TString, vector<Quantity>>();
   }
 
+  //inputdir = "/uscms_data/d3/hqu/trees/0207_syst/others";
   // nominal
   {
-    //inputdir = ".";
-    sys_name = "nominal";
-    EstTools::jes_postfix = "";
+    sys_name = "DataPred_LepCR_Up";
     auto llb = getLLBPred();
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  // metres - up
-  {
-    sys_name = "metres_Up";
-    EstTools::jes_postfix = "_METUnClustUp";
-    if(binvar.Contains("MET_pt")) binvar = "MET_pt_unclustEnUp";
-    auto llb = getLLBPred(sys_name);
-    for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
-  }
-
-  {
-    sys_name = "metres_Down";
-    EstTools::jes_postfix = "_METUnClustDown";
-    if(binvar.Contains("MET_pt")) binvar = "MET_pt_unclustEnDown";
-    auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
 
@@ -110,7 +79,6 @@ void SystMETUnclust_LL(){
   else if(EstTools::region.Contains("2018")) config = lepConfig2018();
 
   for (auto &bkg : bkgnames){
-    auto nominal_pred = proc_syst_pred[bkg]["nominal"];
     for (auto &sPair : proc_syst_pred[bkg]){
       if(sPair.first=="nominal") continue;
       if(sPair.first.EndsWith("_Down")) continue; // ignore down: processed at the same time as up
@@ -118,14 +86,13 @@ void SystMETUnclust_LL(){
       vector<Quantity> uncs_Up, uncs_Down;
 
       if(sPair.first.EndsWith("_Up")){
-        auto varup = sPair.second / nominal_pred;
+        auto varup = sPair.second;
         auto name_Down = TString(sPair.first).ReplaceAll("_Up", "_Down");
-        auto vardown = proc_syst_pred[bkg].at(name_Down) / nominal_pred;
-        uncs = Quantity::combineUpDownSepUncs(varup, vardown);
+        uncs = Quantity::combineUpDownSepUncs(varup, std::vector<Quantity>(), true);
 	uncs_Up = uncs.first;
 	uncs_Down = uncs.second;
       } else{
-        uncs_Down = sPair.second / nominal_pred;
+        uncs_Down = sPair.second;
       }
 
       unsigned ibin = 0;

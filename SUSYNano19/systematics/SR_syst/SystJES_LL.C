@@ -89,6 +89,7 @@ void SystJES_LL(){
     sys_name = "JES_Up";
     EstTools::jes_postfix = "_JESUp";
     EstTools::restop_jes_postfix= "_JESUp";
+    if(binvar.Contains("MET_pt")) binvar = "MET_pt_jesTotalUp";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }
@@ -97,6 +98,7 @@ void SystJES_LL(){
     sys_name = "JES_Down";
     EstTools::jes_postfix = "_JESDown";
     EstTools::restop_jes_postfix= "_JESDown";
+    if(binvar.Contains("MET_pt")) binvar = "MET_pt_jesTotalDown";
     auto llb = getLLBPred(sys_name);
     for (auto &p : llb) proc_syst_pred[p.first][sys_name] = p.second;
   }

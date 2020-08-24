@@ -21,22 +21,24 @@ from ROOT import TCanvas, TFile, TProfile, TNtuple, TH1F, TH2F, THStack, TLegend
 
 isRun2 = True
 
-uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/26May2020_Run2Unblind_dev_v6/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
+uncdir = '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/13Jul2020_Run2_dev_v6p5/' if isRun2 else '/eos/uscms/store/user/lpcsusyhad/Stop_production/LimitInputs/12May2020_2016Unblind_dev_v6/'
 uncdir_local = '/uscms/home/mkilpatr/nobackup/CMSSW_10_2_9/src/Limits/Datacards/setup/SUSYNano19/'
 
 uncfiles=[]
 if isRun2:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll.conf')
-    uncfiles.append(uncdir + 'Zinvisible/zinv_syst_Run2.conf')
+    uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/Zinvisible/zinv_syst_Run2.conf')
+    uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
+    uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
 else:
     uncfiles.append(uncdir + 'LostLepton/values_unc_sb_ll_2016.conf')
     uncfiles.append(uncdir + 'LostLepton/values_unc_cb_ll_2016.conf')
     uncfiles.append(uncdir + 'Zinvisible/zinv_syst_2016.conf')
-uncfiles.append(uncdir + 'QCD/JSW_Baseline_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + 'QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
-uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
-uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
+    uncfiles.append(uncdir + 'TTZRare/TTZ_syst.conf')
+    uncfiles.append(uncdir + 'TTZRare/Rare_syst.conf')
+uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/QCD/JSW_Baseline_systematics_QCDResidMET.conf')
+uncfiles.append(uncdir + '../26May2020_Run2Unblind_dev_v6/QCD/JSW_QCDCR_systematics_QCDResidMET.conf')
 
 all_bin_unc_file = uncdir_local + 'values_unc_all.conf'
 

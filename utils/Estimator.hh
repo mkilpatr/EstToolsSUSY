@@ -713,7 +713,7 @@ public:
 
   }
 
-  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr){
+  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, bool normalize = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool inRatio = true, float scale = -1.){
     // make BKG vs Signal plots with the given cateogory selection
     // plot S/sqrt(B) in the lower pad
 
@@ -729,23 +729,64 @@ public:
 
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
-    for (auto &sname : mc_samples){
-      const auto& sample = config.samples.at(sname);
-      auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
-      auto hist = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
-      prepHists({hist});
-      if (saveHists_) saveHist(hist);
-      mchists.push_back(hist);
-      hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
-      addLegendEntry(leg, hist, sample.label, "F");
-      if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
-      else{ bkgtotal->Add(hist); }
+
+    vector<TString> mc;
+    for(auto &scomb : mc_samples){
+      TString sMC = TString(scomb);
+      if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
+      else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
+      else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttbar","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-tW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttZ","");
+      if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
-    for (int i=0; i<=bkgtotal->GetNbinsX(); ++i){
-      auto q =getHistBin(bkgtotal, i).power(0.5);
-      if (q.value == 0) q=Quantity(0.0001, 0.0001);
-      setHistBin(bkgtotal, i, q);
+    for (auto &scomb : mc){
+      TH1 *hist = nullptr;
+      TString label = "";
+      for (auto &sname : mc_samples){
+        const auto& sample = config.samples.at(sname);
+	TString sMC = TString(sname);
+	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
+	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
+	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-tW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
+	sMC = sMC.ReplaceAll("-cr","");
+	sMC = sMC.ReplaceAll("-withveto","");
+	if(sMC == scomb){
+          label = sample.label;
+          auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
+          auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
+	  if(!hist) hist = (TH1*) hmc_buff->Clone();
+	  else      hist->Add(hmc_buff);
+	}
+      }
+
+      if(hist != nullptr){
+        prepHists({hist});
+        if(saveHists_) saveHist(hist);
+        mchists.push_back(hist);
+        hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+        
+        addLegendEntry(leg, hist, label, "F");
+        if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
+        else{ bkgtotal->Add(hist); }
+      }
+    }
+    
+    double totalbkg = bkgtotal->Integral(1, bkgtotal->GetNbinsX()+1);
+
+    if(!normalize){
+      for (int i=0; i<=bkgtotal->GetNbinsX(); ++i){
+        auto q =getHistBin(bkgtotal, i).power(0.5);
+        if (q.value == 0) q=Quantity(0.0001, 0.0001);
+        setHistBin(bkgtotal, i, q);
+      }
     }
 
     int color = 0;
@@ -756,7 +797,9 @@ public:
       prepHists({hist});
       hist->SetLineStyle(kDashed);
       hist->SetLineWidth(3);
-      hist->SetLineColor(kRed + color);
+           if (scale > 0) hist->Scale(scale/hist->Integral(1, hist->GetNbinsX()+1));
+      else if (normalize) hist->Scale(totalbkg/hist->Integral(1, hist->GetNbinsX()+1));
+      if (normalize) cout << totalbkg << endl;
       if (saveHists_) saveHist(hist);
       sighists.push_back(hist);
       addLegendEntry(leg, hist, sample.label, "L");
@@ -764,14 +807,19 @@ public:
       hs->Divide(bkgtotal);
       sigmahists.push_back(hs);
       if (saveHists_) saveHist(hs);
-      color++;
     }
 
     leg->SetTextSize(0.04);
     setLegend(leg, 2, 0.45, 0.6, 0.92, 0.87);
 
     TCanvas *c = nullptr;
-    if (showSigma){
+    if (!inRatio){
+      leg->SetTextSize(0.028);
+      setLegend(leg, 2, 0.45, 0.65, 0.92, 0.90);
+      c = drawStack(mchists, sighists, plotlog, leg);
+    }else if (normalize){
+      c = drawStackAndRatio(mchists, nullptr, leg, plotlog, "Significance", 0, 0.150, 0, -1, sighists, nullptr, sigmahists);
+    }else if (showSigma){
       c = drawStackAndRatio(mchists, nullptr, leg, plotlog, RYTitle, 0, 2.999, 0, -1, sighists, nullptr, sigmahists);
     }else{
       c = drawStack(mchists, sighists, plotlog, leg);
@@ -786,20 +834,23 @@ public:
   }
 
 
-  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, bool doSyst = false){
+  TH1* plotDataMC(const BinInfo& var_info, const vector<TString> mc_samples, TString data_sample, const Category& category, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, vector<TH1*> inUnc_up={}, vector<TH1*> inUnc_dn = {}, bool mcRatio = false){
     // make DataMC plots with the given cateogory selection
     // possible to normalize MC to Data with a different selection (set by *norm_cut*)
 
-    vector<TH1*> mchists, mchists_up, mchists_down;
-    TH1* hnonttbar = nullptr;
-    TH1* httbar = nullptr;
+    vector<TH1*> mchists, mchists_up, mchists_dn;
+    TH1* bkgtotal = nullptr;
+    TH1* bkgtotal_norm = nullptr;
+    TH1* bkgtotal_notoppt = nullptr;
+    vector<TH1*> bkgtotal_up, bkgtotal_dn;
     auto leg = initLegend();
+    auto leg_mc = initLegend();
 
     TString plotvar = var_info.var;
     TString title = ";"
         + var_info.label + (var_info.unit=="" ? "" : " ["+var_info.unit + "]") +";"
-        + "Events";
-    TString RYTitle = "N_{obs}/N_{exp}";
+        + (plotvar.Contains("MET") ? "Events/bin" : "Events");
+    TString RYTitle = "N_{obs}/N_{sim}";
 
     auto cut = config.sel + " && " + category.cut + TString(selection_=="" ? "" : " && "+selection_);
 
@@ -811,67 +862,69 @@ public:
       hdata = getHist(d_sample->tree, plotvar, d_sample->wgtvar, cut + d_sample->sel, hname, title, var_info.plotbins);
       prepHists({hdata});
       if (saveHists_) saveHist(hdata);
-      addLegendEntry(leg, hdata, d_sample->label, "LP");
+      addLegendEntry(leg, hdata, d_sample->label, "EP");
     }
 
-    vector<TString> mc, mc_syst_up, mc_syst_dn;
+    vector<TString> mc;
     for(auto &scomb : mc_samples){
       TString sMC = TString(scomb);
       if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
       else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
       else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
-           if(!std::count(mc_syst_up.begin(), mc_syst_up.end(), sMC) && sMC.Contains("up") && doSyst) mc_syst_up.push_back(sMC);
-      else if(!std::count(mc_syst_dn.begin(), mc_syst_dn.end(), sMC) && sMC.Contains("dn") && doSyst) mc_syst_dn.push_back(sMC);
-      else if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttbar","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-wjets","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-tW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttW","");
+      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttZ","");
+      if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
+    bool isOnlyTTBAR = true;;
     for (auto &scomb : mc){
       TH1 *hist = nullptr;
-      TH1* hist_up = nullptr;
-      TH1* hist_dn = nullptr;
+      TString label = "";
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
 	TString sMC = TString(sname);
 	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
 	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
 	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-wjets","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-tW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttW","ttbarplusw");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
 	sMC = sMC.ReplaceAll("-cr","");
 	sMC = sMC.ReplaceAll("-withveto","");
 	if(sMC == scomb){
+          label = sample.label;
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
           auto hmc_buff = getHist(sample.tree, plotvar, sample.wgtvar, cut + sample.sel, hname, title, var_info.plotbins);
 	  if(!hist) hist = (TH1*) hmc_buff->Clone();
 	  else      hist->Add(hmc_buff);
-          if(!sMC.Contains("ttbar")){
-	    if(!hist_up) hist_up = (TH1*) hmc_buff->Clone();
-	    else         hist_up->Add(hmc_buff);
-	    if(!hist_dn) hist_dn = (TH1*) hmc_buff->Clone();
-	    else         hist_dn->Add(hmc_buff);
-          }
+          double totalEvents = hist->Integral(1, hist->GetNbinsX()+1);
+          cout << hist->GetName() << ": " << totalEvents << endl;
 	}
       }
+
 
       if(hist != nullptr){
         prepHists({hist});
         if(saveHists_) saveHist(hist);
         mchists.push_back(hist);
+        mchists_up.push_back(hist);
+        mchists_dn.push_back(hist);
         hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
+        double totalEvents = hist->Integral(1, hist->GetNbinsX()+1);
+        cout << hist->GetName() << ": " << totalEvents << endl;
         
-        addLegendEntry(leg, hist, scomb, "F");
+        addLegendEntry(leg, hist, label, "F");
+        if (!bkgtotal){ bkgtotal = (TH1*)hist->Clone("bkgtotal"); }
+        else{ bkgtotal->Add(hist); }
+        if (!bkgtotal_notoppt && TString(hist->GetName()).Contains("notoppt")){ bkgtotal_notoppt = (TH1*)hist->Clone("bkgtotal_notoppt"); }
+        else if (!TString(hist->GetName()).Contains("ttbar") && bkgtotal_notoppt) { bkgtotal_notoppt->Add(hist); }
+        if(!TString(hist->GetName()).Contains("ttbar")) isOnlyTTBAR = false;
       }
-
-      if(hist_up != nullptr){
-        prepHists({hist});
-        mchists.push_back(hist);
-        hist->SetFillColor(hist->GetLineColor()); hist->SetFillStyle(1001); hist->SetLineColor(kBlack);
-      }
-
-      if(ttbarRatio && TString(hist->GetName()).Contains("ttbar"))
-        httbar = (TH1*)hist->Clone("httbar");
-      else if (!hnonttbar)
-        hnonttbar = (TH1*)hist->Clone("hnonttbar");
-      else
-        hnonttbar->Add(hist);
 
       if((scomb.Contains("topmatch") || scomb.Contains("wmatch") || scomb.Contains("fake")) && hist != nullptr){
         Quantity q_mc;
@@ -881,9 +934,25 @@ public:
       }
     }
 
+    std::reverse(mchists.begin(),mchists.end());
+    std::reverse(mchists_up.begin(),mchists_up.end());
+    std::reverse(mchists_dn.begin(),mchists_dn.end());
+
+    if(bkgtotal_notoppt){
+      prepHists({bkgtotal, bkgtotal_notoppt}, false, true, false, {kRed, kBlue});
+      bkgtotal->SetFillStyle(0); bkgtotal_notoppt->SetFillStyle(0);
+      TString newName = isOnlyTTBAR ? "t#bar{t}" : "MC";
+      addLegendEntry(leg_mc, bkgtotal, newName, "L");
+      addLegendEntry(leg_mc, bkgtotal_notoppt, newName + TString(" w/o Top p_{T}"), "L");
+      if(norm_to_data){
+        bkgtotal->Scale(1/bkgtotal->Integral(1, bkgtotal->GetNbinsX()+1));
+        bkgtotal_notoppt->Scale(1/bkgtotal_notoppt->Integral(1, bkgtotal_notoppt->GetNbinsX()+1));
+      }
+    }
+
     if (hdata){
       if (norm_to_data){
-        double sf = 1;
+        double sf = 1, sf_up = 1, sf_dn = 1;
         // calc sf
         if (norm_cut==""){
           auto hsum = (TH1*)mchists.front()->Clone("hsum");
@@ -904,7 +973,88 @@ public:
           cout << "... normScaleFactor = " << sf << endl;
         }
         // scale the mc hists
-        for (auto *hist : mchists) hist->Scale(sf);
+        for (auto *hist : mchists){ 
+          hist->Scale(sf);
+          if (!bkgtotal_norm){ bkgtotal_norm = (TH1*)hist->Clone("bkgtotal_norm"); }
+          else{ bkgtotal_norm->Add(hist); }
+        }
+        cout << "The SF Normalization is " << sf << endl;
+        // Get syst normalization
+        for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
+          cout << inUnc_up[iunc]->GetName() << endl;
+          auto hsum_up = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_up");
+          auto hsum_dn = (TH1*)bkgtotal->Clone(TString(inUnc_up[iunc]->GetName())+"_dn");
+          for (int ibin=1; ibin<=hsum_up->GetNbinsX(); ibin++){
+            cout << ibin << endl;
+            auto q_nom = getHistBin(bkgtotal, ibin);
+            auto q_up  = getHistBin(inUnc_up[iunc], ibin);
+            auto q_dn  = getHistBin(inUnc_dn[iunc], ibin);
+            
+            setHistBin(hsum_up, ibin, q_nom*q_up);
+            setHistBin(hsum_dn, ibin, q_nom*q_dn);
+          }
+          sf_up = hdata->Integral(1, hsum_up->GetNbinsX()+1) / hsum_up->Integral(1, hsum_up->GetNbinsX()+1);
+          sf_dn = hdata->Integral(1, hsum_dn->GetNbinsX()+1) / hsum_dn->Integral(1, hsum_dn->GetNbinsX()+1);
+          hsum_up->Scale(sf_up);
+          hsum_dn->Scale(sf_dn);
+          hsum_up->Divide(bkgtotal_norm);
+          hsum_dn->Divide(bkgtotal_norm);
+          bkgtotal_up.push_back(hsum_up);
+          bkgtotal_dn.push_back(hsum_dn);
+        }
+      }
+    }
+
+    if(bkgtotal_up.size() > 0){
+      for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
+        for (int ibin=0; ibin<=bkgtotal_up[iunc]->GetNbinsX(); ++ibin){
+          auto q_up  = getHistBin(bkgtotal_up[iunc], ibin);
+          auto q_dn  = getHistBin(bkgtotal_dn[iunc], ibin);
+
+          cout << bkgtotal_up[iunc]->GetName() << " Up/Down = " << q_up.value << "/" << q_dn.value << endl;
+        }
+      }
+    }
+
+    TGraphAsymmErrors *unc = nullptr;
+    if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
+      unc = !bkgtotal_norm ? new TGraphAsymmErrors(bkgtotal) : new TGraphAsymmErrors(bkgtotal_norm);
+      vector<double> up, dn;
+      for (int ibin = 0; ibin < unc->GetN(); ++ibin){
+        int ibin_hist = ibin+1;
+        Quantity q_up(0,0), q_dn(0,0), q_bkg(0,0);
+        for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
+          q_up  = getHistBin(bkgtotal_up[iunc], ibin_hist);
+          q_dn  = getHistBin(bkgtotal_dn[iunc], ibin_hist);
+          q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
+          up.push_back(q_up.value);
+          dn.push_back(q_dn.value);
+        }
+        if(bkgtotal_up.size() == 0){ 
+          for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
+            q_up  = getHistBin(inUnc_up[iunc], ibin_hist);
+            q_dn  = getHistBin(inUnc_dn[iunc], ibin_hist);
+            q_bkg = getHistBin(bkgtotal, ibin_hist);
+            up.push_back(q_up.value);
+            dn.push_back(q_dn.value);
+          } 
+        }
+        pair<double, double> comb = doLogNorm(dn, up); 
+        double unc_up = ((comb.second - 1)*q_bkg.value)*((comb.second - 1)*q_bkg.value);
+        double unc_dn = ((1 - comb.first)*q_bkg.value)*((1 - comb.first)*q_bkg.value);
+        cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        //Statistical
+        // ttbar:
+        unc_up += q_bkg.error*q_bkg.error;
+        unc_dn += q_bkg.error*q_bkg.error;
+        
+        //Nominal
+        double pred = q_bkg.value;
+        cout << "pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        
+        unc->SetPoint(ibin, unc->GetX()[ibin], pred);
+        unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
+        unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
       }
     }
 
@@ -912,33 +1062,38 @@ public:
     if (hdata){
       if (ttbarRatio)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, "(N_{obs} - N_{non-ttbar})/N_{ttbar}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, ttbarRatio);
-      else
+      else if (mcRatio)
+        c = drawStackAndRatio(mchists, hdata, leg, plotlog, "N_{el}/N_{mu}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, false, false, false, mcRatio);
+      else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
+        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+      } else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{
-      c = drawStack(mchists, {}, plotlog, leg);
+      if (mcRatio && bkgtotal_notoppt != nullptr)
+        c = drawCompAndRatio({bkgtotal, bkgtotal_notoppt}, {makeRatioHists(bkgtotal, bkgtotal_notoppt)}, leg_mc, "N_{toppt}/N_{w/o toppt}", RATIO_YMIN, RATIO_YMAX, true, 0.01, -1., false, unc, false);
+      else
+        c = drawStack(mchists, {}, plotlog, leg);
     }
 
     if (plotextra) (*plotextra)(c);
     c->Update();
+
 
     TString plotname = filterString(plotvar)+"_DataMC_"+category.name+"__"+postfix_;
     c->SetTitle(plotname);
     savePlot(c, plotname);
 
     if (hdata)
-      if (ttbarRatio)
-        return makeRatioHists(hnonttbar, httbar, hdata);
-      else
         return makeRatioHists(hdata, sumHists(mchists, "bkgtotal"));
     else
       return nullptr;
   }
 
-  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, bool doSyst = false){
+  void plotDataMC(const vector<TString> mc_samples, TString data_sample, bool norm_to_data = false, TString norm_cut = "", bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool ttbarRatio = false, vector<TH1*> inUnc_up={}, vector<TH1*> inUnc_dn = {}, bool mcRatio = false){
     // make Data/MC plots for all categories
     for (auto category : config.categories){
       const auto &cat = config.catMaps.at(category);
-      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra, ttbarRatio, doSyst);
+      plotDataMC(cat.bin, mc_samples, data_sample, cat, norm_to_data, norm_cut, plotlog, plotextra, ttbarRatio, inUnc_up, inUnc_dn, mcRatio);
     }
   }
 

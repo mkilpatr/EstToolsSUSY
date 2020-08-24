@@ -83,35 +83,7 @@ std::vector<std::string> readFileTotal(std::string FILENAME){
   return filenames;
 }
 
-std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
-  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
-  double log_syst_up_total = 0., log_syst_down_total = 0.;
-  double log_final_up = 0., log_final_down = 0.;
-  for(unsigned p = 0; p != p_down.size(); p++){
-    double log_syst_up     = p_up[p];
-    double log_syst_down   = p_down[p];
-    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
-      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
-      log_syst_up   /= geometric_mean;
-      log_syst_down /= geometric_mean;
-    }
-    if (log_syst_up > 1 || log_syst_down < 1){
-        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
-        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
-    } else{
-        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
-        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
-    }
-    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
-    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
-    log_final_up   = log_syst_up_total;
-    log_final_down = log_syst_down_total;
-  }
-
-  return make_pair(log_final_down, log_final_up);
-}
-
-void confToRoot(std::string indir_ = "values_unc_val_2016"){
+void confToRoot(std::string indir_ = "values_unc_val_2016", TString suffix = ""){
 
   std::string indir = indir_ + "/";
   std::vector<std::string> files = readFileTotal(indir + "values_files.txt");
@@ -132,9 +104,17 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
   std::ifstream bin("binlist.json");
   bin >> j_bin;
 
-  string binName = "";
+  string binName = ""; TString binvar = "";
        if(TString(indir_).Contains("SR"))      binName = "binNum_SUSYNano";
   else if(TString(indir_).Contains("nb12"))    binName = "binNum_SUSYNano_HM_nb12";
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("MET")){      binName = "MET_pt_Systematics";           binvar = "MET";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("ht")){       binName = "Stop0l_HT_Systematics";        binvar = "ht";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("toppt")){    binName = "FatJet_TopPt_Systematics";     binvar = "toppt";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("top")){      binName = "Stop0l_nTop_Systematics";      binvar = "top";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("btag")){     binName = "Stop0l_nbtags_Systematics";    binvar = "btag";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("ISR")){      binName = "Stop0l_nISRJets_Systematics";  binvar = "nISR";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("w")){        binName = "Stop0l_nW_Systematics";        binvar = "w";}
+  else if(TString(indir_).Contains("Inclusive") && TString(indir_).Contains("res")){      binName = "Stop0l_nResolved_Systematics"; binvar = "res";}
   else if(TString(indir_).Contains("CR"))      binName = "binNum_SUSYNano_lepcr";
   else if(TString(indir_).Contains("LowMET"))  binName = "binNum_Validation";
   else if(TString(indir_).Contains("Moriond")) binName = "binNum_Moriond17";
@@ -152,11 +132,10 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
         if(TString(indir_).Contains("nb12")) binnum -= 53;
 	if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
-	  if(up > 5.){ 
-            cout << "LARGE ERROR: " << type << " " << bkg << " " << bin.key() << endl;
-          }
-          hist_up.at(binnum) = jtot[unc.key()][back.key()][bin.key()][1];
-          hist_down.at(binnum) = jtot[unc.key()][back.key()][bin.key()][0];
+          double dn = jtot[unc.key()][back.key()][bin.key()][0];
+          if(up < 1 && dn < 1) cout << bin.key() << " UP/Down: " << up << "/" << dn << endl;
+          hist_up.at(binnum) = up;
+          hist_down.at(binnum) = dn;
         } else {
 	  //cout << unc.key() << ": " << back.key() << ": " << bin.key() << endl;
           hist_up.at(binnum) = 1.;
@@ -207,11 +186,12 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     leg->SetTextSize(0.04);
     leg->SetY1NDC(leg->GetY2NDC() - 0.2);
     TCanvas* c = drawCompAndRatio(hTotal, hdiv, leg, "Up/Down", 0.749, 1.249, false, -1., -1., true);
-    c->SetTitle(type);
-    c->Print(indir+type+".png");
-    c->Print(indir+type+".C");
+    TString typeName = type+suffix;
+    c->SetTitle(typeName);
+    c->Print(indir+typeName+".png");
+    c->Print(indir+typeName+".C");
 
-    TFile *outFile = new TFile(indir+type+".root", "RECREATE");
+    TFile *outFile = new TFile(indir+typeName+".root", "RECREATE");
     for(unsigned h = 0; h != hUp.size(); h++){
       hUp[h]->Write();
       hDown[h]->Write();
@@ -232,9 +212,9 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
         TString bkg = TString(back.key());
         if (jtot[unc.key()][back.key()][bin.key()][1] != nullptr){
           double up = jtot[unc.key()][back.key()][bin.key()][1];
-          if(up > 5.) continue;
-          hUp.push_back(jtot[unc.key()][back.key()][bin.key()][1]);
-          hDown.push_back(jtot[unc.key()][back.key()][bin.key()][0]);
+          double dn = jtot[unc.key()][back.key()][bin.key()][0];
+          hUp.push_back(up);
+          hDown.push_back(dn);
         } 
       }
     }
@@ -243,7 +223,7 @@ void confToRoot(std::string indir_ = "values_unc_val_2016"){
     hist_up_total.at(binnum) = comb.second;
   }
 
-  TString totalName = "Total";
+  TString totalName = "Total" + suffix;
   TH1* hUp = nullptr;
   TH1* hDown = nullptr;
   if(j_bin[binName].size() > 120){

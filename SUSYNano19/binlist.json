@@ -758,5 +758,65 @@
 		"bin_hm_nb2_highmtb_nt2_nrt0_nw0_met250toinf": "101",
 		"bin_hm_nb2_highmtb_nt0_nrt2_nw0_met250toinf": "102",
 		"bin_hm_nb2_highmtb_nt0_nrt0_nw2_met250toinf": "103"
+	},
+	"MET_pt_Systematics": {
+		"bin_lepcr_hm_MET_pt250to350": "0",
+		"bin_lepcr_hm_MET_pt350to450": "1",
+		"bin_lepcr_hm_MET_pt450to550": "2",
+		"bin_lepcr_hm_MET_pt550to650": "3",
+		"bin_lepcr_hm_MET_pt650to750": "4",
+		"bin_lepcr_hm_MET_pt750toinf": "5"
+	},
+	"Stop0l_HT_Systematics": {
+		"bin_lepcr_hm_Stop0l_HT250to350": "0",
+		"bin_lepcr_hm_Stop0l_HT350to450": "1",
+		"bin_lepcr_hm_Stop0l_HT450to550": "2",
+		"bin_lepcr_hm_Stop0l_HT550to650": "3",
+		"bin_lepcr_hm_Stop0l_HT650to750": "4",
+		"bin_lepcr_hm_Stop0l_HT750toinf": "5"
+	},
+	"Stop0l_nbtags_Systematics": {
+		"bin_lepcr_hm_Stop0l_nbtags1to2": "0",
+		"bin_lepcr_hm_Stop0l_nbtags2to3": "1",
+		"bin_lepcr_hm_Stop0l_nbtags3to4": "2",
+		"bin_lepcr_hm_Stop0l_nbtags4toinf": "3"
+	},
+	"Stop0l_nISRJets_Systematics": {
+		"bin_lepcr_hm_nISRJets1to2": "0",
+		"bin_lepcr_hm_nISRJets2to3": "1",
+		"bin_lepcr_hm_nISRJets3to4": "2",
+		"bin_lepcr_hm_nISRJets4toinf": "3"
+	},
+	"Stop0l_nTop_Systematics": {
+		"bin_lepcr_hm_Stop0l_nTop0to1": "0",
+		"bin_lepcr_hm_Stop0l_nTop1to2": "1",
+		"bin_lepcr_hm_Stop0l_nTop2to3": "2",
+		"bin_lepcr_hm_Stop0l_nTop3toinf": "3"
+	},
+	"Stop0l_nW_Systematics": {
+		"bin_lepcr_hm_Stop0l_nW0to1": "0",
+		"bin_lepcr_hm_Stop0l_nW1to2": "1",
+		"bin_lepcr_hm_Stop0l_nW2to3": "2",
+		"bin_lepcr_hm_Stop0l_nW3toinf": "3"
+	},
+	"Stop0l_nResolved_Systematics": {
+		"bin_lepcr_hm_Stop0l_nResolved0to1": "0",
+		"bin_lepcr_hm_Stop0l_nResolved1to2": "1",
+		"bin_lepcr_hm_Stop0l_nResolved2to3": "2",
+		"bin_lepcr_hm_Stop0l_nResolved3toinf": "3"
+	},
+	"FatJet_TopPt_Systematics": {
+		"bin_lepcr_hm_FatJet_TopPt400to450": "0",
+		"bin_lepcr_hm_FatJet_TopPt450to500": "1",
+		"bin_lepcr_hm_FatJet_TopPt500to550": "2",
+		"bin_lepcr_hm_FatJet_TopPt550to600": "3",
+		"bin_lepcr_hm_FatJet_TopPt600to650": "4",
+		"bin_lepcr_hm_FatJet_TopPt650to700": "5",
+		"bin_lepcr_hm_FatJet_TopPt700to750": "6",
+		"bin_lepcr_hm_FatJet_TopPt750to800": "7",
+		"bin_lepcr_hm_FatJet_TopPt800to850": "8",
+		"bin_lepcr_hm_FatJet_TopPt850to900": "9",
+		"bin_lepcr_hm_FatJet_TopPt900to950": "10",
+		"bin_lepcr_hm_FatJet_TopPt950toinf": "11"
 	}
 }

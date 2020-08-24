@@ -264,21 +264,22 @@ TH1D* convertToHist(const vector<double> &vec, TString hname, TString title, con
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, bool noError = false){
+TH1D* convertToHist(const vector<TH1*> &vec, TString hname, TString title, const BinInfo *bin=nullptr, bool noError = false, int start = 0, int manualBins = 0){
   auto nbins = (unsigned)vec[0]->GetNbinsX();
+  if(manualBins > 0) nbins = manualBins;
   TH1D *hist;
 
   if (bin && bin->nbins==nbins){
     hist = new TH1D(hname, title, nbins, bin->plotbins.data());
     hist->SetXTitle(bin->label + (bin->unit=="" ? "" : "["+bin->unit+"]"));
   }else{
-    hist = new TH1D(hname, title, nbins, 0, nbins);
+    hist = new TH1D(hname, title, nbins, start, start + nbins);
   }
   hist->Sumw2();
   for (unsigned j=0; j!=vec.size();j++){
     for (unsigned i=1; i<nbins+1; ++i){
-      hist->SetBinContent(i, vec[j]->GetBinContent(i));
-      if (!noError) hist->SetBinError(i, vec[j]->GetBinError(i));
+      hist->SetBinContent(i, vec[j]->GetBinContent(i + start));
+      if (!noError) hist->SetBinError(i, vec[j]->GetBinError(i + start));
     }
   }
   return hist;
@@ -468,7 +469,7 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
-TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false){
   auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
@@ -489,7 +490,30 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs){
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
   }
+  if (Ratio) return ratio;
   return pull_h;
+}
+
+TH1* getQHist(TH1 *h_data, TGraphAsymmErrors* hs){
+  TH1 *q_h = (TH1 *)h_data->Clone("hq");
+  cout << "q = 2(sqrt(S+B) - sqrt(B))" << endl;
+  for(int ibin = 0; ibin < hs->GetN(); ++ibin){
+    int ibin_data = ibin + 1;
+    float a = h_data->GetBinContent(ibin_data);
+    float b = hs->GetY()[ibin];
+    //if data >= BG
+    float da = h_data->GetBinErrorLow(ibin_data) * h_data->GetBinErrorLow(ibin_data);
+    float db = hs->GetErrorYhigh(ibin) * hs->GetErrorYhigh(ibin);
+    if (a < b){//if data < BG
+      da = h_data->GetBinErrorUp(ibin_data) * h_data->GetBinErrorUp(ibin_data);
+      db = hs->GetErrorYlow(ibin) * hs->GetErrorYlow(ibin);
+    }
+    float q = 2*(sqrt(a+b) - sqrt(b));
+    q_h->SetBinContent(ibin, q);
+    q_h->SetBinError(ibin, 0);
+    cout << "bin " << ibin << ": " << q << " = " << "2*(sqrt(" << a << " + " << b << ") - sqrt(" << b << "))" << endl;  
+  }
+  return q_h;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -548,11 +572,12 @@ TLegend* initLegend(){
   leg->SetFillColor (0);
   leg->SetBorderSize(0);
   leg->SetTextSize(0.048);
+  leg->SetTextFont(42);
   return leg;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType = "LP", double height = 0.06){
+void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType = "EP", double height = 0.06){
   double fLegY1 = leg->GetY1()-height;
   leg->SetY1(fLegY1);
   leg->AddEntry(obj, label, legType);
@@ -560,7 +585,7 @@ void addLegendEntry(TLegend *leg, TObject* obj, TString label, TString legType =
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template<class T>
-TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, TString legType = "LP"){
+TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, TString legType = "EP"){
   assert(hists.size() == labels.size());
   double fLegY1 = leg->GetY1()-0.06*hists.size();
   leg->SetY1(fLegY1);
@@ -570,19 +595,19 @@ TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, T
   return leg;
 }
 
-TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "EP"){
   return appendLegends<TH1>(leg, hists, labels, legType);
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template<class T>
-TLegend* prepLegends(vector<T*> hists, vector<TString> labels, TString legType = "LP"){
+TLegend* prepLegends(vector<T*> hists, vector<TString> labels, TString legType = "EP"){
   assert(hists.size() == labels.size());
   auto leg = initLegend();
   appendLegends<T>(leg, hists, labels, legType);
   return leg;
 }
 
-TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "LP"){
+TLegend* prepLegends(vector<TH1*> hists, vector<TString> labels, TString legType = "EP"){
   return prepLegends<TH1>(hists, labels, legType);
 }
 
@@ -610,7 +635,7 @@ void drawHeader(TString text, TPad *p=0, double lowX = 0.7, double lowY = 0.93)
   lumi->SetTextAlign(   31 );
   lumi->SetTextSize ( 0.045);
   lumi->SetTextColor(    1 );
-  lumi->SetTextFont (   62 );
+  lumi->SetTextFont (   42 );
   lumi->AddText(text);
   lumi->Draw();
 }
@@ -641,13 +666,13 @@ void drawText(TString text, double lowX = 0.7, double lowY = 0.93)
   lumi->SetTextAlign(   11 );
   lumi->SetTextSize ( 0.03);
   lumi->SetTextColor(    1 );
-  lumi->SetTextFont (   62 );
+  lumi->SetTextFont (   42 );
   lumi->AddText(text);
   lumi->Draw();
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 62, int color = 1)
+void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, double align=11, double angle = 0, int font = 42, int color = 1)
 {
   TLatex tl;
   tl.SetTextSize(size);
@@ -817,6 +842,43 @@ void setBinLabels(TH1 *h, const vector<TString>& labels){
   for (unsigned i=0; i<labels.size() && i<unsigned(h->GetNbinsX()); ++i){
     h->GetXaxis()->SetBinLabel(i+1, labels.at(i));
   }
+}
+
+void SetEx(TGraphAsymmErrors* gae, Double_t Ex)
+{
+  Int_t np = gae->GetN();
+  for (Int_t i=0; i<np; i++) {
+    gae->SetPointEXhigh(i,Ex);
+    gae->SetPointEXlow(i,Ex);
+  }
+}
+
+std::pair<double, double> doLogNorm(vector<double> p_down, vector<double> p_up){
+  double log_syst_up_sum = 0., log_syst_down_sum = 0.;
+  double log_syst_up_total = 0., log_syst_down_total = 0.;
+  double log_final_up = 0., log_final_down = 0.;
+  for(unsigned p = 0; p != p_down.size(); p++){
+    double log_syst_up     = p_up[p];
+    double log_syst_down   = p_down[p];
+    if ((log_syst_up > 1 && log_syst_down > 1) || (log_syst_up < 1 && log_syst_down < 1)){
+      double geometric_mean = TMath::Sqrt(log_syst_up * log_syst_down);
+      log_syst_up   /= geometric_mean;
+      log_syst_down /= geometric_mean;
+    }
+    if (log_syst_up > 1 || log_syst_down < 1){
+        log_syst_up_sum     += pow(TMath::Log(log_syst_up), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_down), 2);
+    } else{
+        log_syst_up_sum     += pow(TMath::Log(log_syst_down), 2);
+        log_syst_down_sum   += pow(TMath::Log(log_syst_up), 2);
+    }
+    log_syst_up_total   = TMath::Exp( TMath::Sqrt(log_syst_up_sum));
+    log_syst_down_total = TMath::Exp(-TMath::Sqrt(log_syst_down_sum)); // Minus sign is needed because this is the *down* ratio
+    log_final_up   = log_syst_up_total;
+    log_final_down = log_syst_down_total;
+  }
+
+  return make_pair(log_final_down, log_final_up);
 }
 
 }
