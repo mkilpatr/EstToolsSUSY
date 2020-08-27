@@ -821,6 +821,61 @@ void predYieldCheck(){
 
 }
 
+void formatPredYieldCheck(){
+
+  TString outputdir = "LLB/predictionYieldCheck_devv7_082020";
+
+  TFile *yield = TFile::Open("LLB/predictionYieldCheck_devv7_082020/PredComp_v6p5_v7.root");
+
+  //v6p5
+  TH1D* httbarplusw_v6p5 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-v6p5")},"ttbarplusw-v6p5" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_v6p5 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-v6p5")},"ttbarplusw-sr-v6p5" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_int_v6p5 	= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-int-v6p5")},"ttbarplusw-sr-int-v6p5" ,";Search Region;Events", nullptr);
+  TH1D* h_TF_v6p5 			= convertToHist({(TH1D*)yield->Get("_TF-v6p5")},"_TF-v6p5" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_CR_to_SR_noextrap_v6p5 	= convertToHist({(TH1D*)yield->Get("_TF_CR_to_SR_noextrap-v6p5")},"_TF_CR_to_SR_noextrap-v6p5" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_SR_extrap_v6p5 		= convertToHist({(TH1D*)yield->Get("_TF_SR_extrap-v6p5")},"_TF_SR_extrap-v6p5" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_pred_v6p5 			= convertToHist({(TH1D*)yield->Get("_pred-v6p5")},"_pred-v6p5" ,";Search Region;Events", nullptr);
+  //v7
+  TH1D* httbarplusw_v7 			= convertToHist({(TH1D*)yield->Get("ttbarplusw-v7")},"ttbarplusw-v7" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_v7 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-v7")},"ttbarplusw-sr-v7" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_int_v7 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-int-v7")},"ttbarplusw-sr-int-v7" ,";Search Region;Events", nullptr);
+  TH1D* h_TF_v7 			= convertToHist({(TH1D*)yield->Get("_TF-v7")},"_TF-v7" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_CR_to_SR_noextrap_v7 	= convertToHist({(TH1D*)yield->Get("_TF_CR_to_SR_noextrap-v7")},"_TF_CR_to_SR_noextrap-v7" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_SR_extrap_v7 		= convertToHist({(TH1D*)yield->Get("_TF_SR_extrap-v7")},"_TF_SR_extrap-v7" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_pred_v7 			= convertToHist({(TH1D*)yield->Get("_pred-v7")},"_pred-v7" ,";Search Region;Events", nullptr);
+  //ratio
+  TH1D* httbarplusw_ratio 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-ratio")},"ttbarplusw-ratio" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_ratio 		= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-ratio")},"ttbarplusw-sr-ratio" ,";Search Region;Events", nullptr);
+  TH1D* httbarplusw_sr_int_ratio 	= convertToHist({(TH1D*)yield->Get("ttbarplusw-sr-int-ratio")},"ttbarplusw-sr-int-ratio" ,";Search Region;Events", nullptr);
+  TH1D* h_TF_ratio 			= convertToHist({(TH1D*)yield->Get("_TF-ratio")},"_TF-ratio" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_CR_to_SR_noextrap_ratio 	= convertToHist({(TH1D*)yield->Get("_TF_CR_to_SR_noextrap-ratio")},"_TF_CR_to_SR_noextrap-ratio" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_TF_SR_extrap_ratio 		= convertToHist({(TH1D*)yield->Get("_TF_SR_extrap-ratio")},"_TF_SR_extrap-ratio" ,";Search Region;Transfer Factor", nullptr);
+  TH1D* h_pred_ratio 			= convertToHist({(TH1D*)yield->Get("_pred-ratio")},"_pred-ratio" ,";Search Region;Events", nullptr);
+  prepHists({httbarplusw_v6p5, httbarplusw_v7, httbarplusw_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({httbarplusw_sr_v6p5, httbarplusw_sr_v7, httbarplusw_sr_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({httbarplusw_sr_int_v6p5, httbarplusw_sr_int_v7, httbarplusw_sr_int_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({h_TF_v6p5, h_TF_v7, h_TF_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({h_TF_CR_to_SR_noextrap_v6p5, h_TF_CR_to_SR_noextrap_v7, h_TF_CR_to_SR_noextrap_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({h_TF_SR_extrap_v6p5, h_TF_SR_extrap_v7, h_TF_SR_extrap_ratio}, false, false, false, {kBlue, kRed, kBlue});
+  prepHists({h_pred_v6p5, h_pred_v7, h_pred_ratio}, false, false, false, {kBlue, kRed, kBlue});
+
+  vector<TH1D*> v6p5  = {httbarplusw_v6p5, httbarplusw_sr_v6p5, httbarplusw_sr_int_v6p5, h_TF_v6p5, h_TF_CR_to_SR_noextrap_v6p5, h_TF_SR_extrap_v6p5, h_pred_v6p5};
+  vector<TH1D*> v7    = {httbarplusw_v7, httbarplusw_sr_v7, httbarplusw_sr_int_v7, h_TF_v7, h_TF_CR_to_SR_noextrap_v7, h_TF_SR_extrap_v7, h_pred_v7};
+  vector<TH1D*> ratio = {httbarplusw_ratio, httbarplusw_sr_ratio, httbarplusw_sr_int_ratio, h_TF_ratio, h_TF_CR_to_SR_noextrap_ratio, h_TF_SR_extrap_ratio, h_pred_ratio};
+  vector<TString> label={"CR", "SR", "SR noExtrap", "TF", "TF(CR-noextrap)", "TF(SR-extrap)", "Prediction"};
+  vector<double> yMin = {1.,   0.01, 0.1,           0.0001, 0.100,                   0.001,          0.001};
+  vector<double> rMin = {0.9,  0.8,  0.8,           0.799, 0.799,                   0.799,          0.799};
+  vector<double> rMax = {1.2,  1.8,  1.3,           1.501, 1.201,                   1.251,          1.501};
+
+  for(unsigned iS = 0; iS != ratio.size(); iS++){
+    auto leg = prepLegends({v6p5[iS], v7[iS]}, {label[iS] + " Orig.", label[iS] + " Rare"}, "L");
+    TCanvas* c = drawCompAndRatio({v6p5[iS], v7[iS]}, {ratio[iS]}, leg, "Rare/Original", rMin[iS], rMax[iS], true, yMin[iS]);  
+    TString outputBase = label[iS] + "_comparison";
+    c->SetTitle(outputBase);
+    c->Print(outputdir+"/"+outputBase+".pdf");
+  }
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void SBv4Yields(){
@@ -1361,6 +1416,7 @@ void plot1LepInclusiveWithSyst(){
   TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
   TString noTopPt = "/Stop0l_topptWeight";
   config.sel = baseline;
+  lumistr = "137.00079";
 
   LOG_YMIN = 1.;
   //RATIO_YMIN = 0.499;
@@ -1375,7 +1431,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_081620";
+  TString region = "lepcr_inclusive_withSyst_devv7_082520";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1399,9 +1455,9 @@ void plot1LepInclusiveWithSyst(){
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"nb",        		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
+	//{"nb",        		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
 	//{"nb_nowgt",  		BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 4, 0.5, 4.5)},
 
   };
@@ -1420,7 +1476,7 @@ void plot1LepInclusiveWithSyst(){
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
   vector<TH1*> ratiohist;
-  for (unsigned i = 0; i < 2; i++){
+  for (unsigned i = 0; i < 1; i++){
     for (auto &var : varDict){
       vector<TH1*> unc_up, unc_dn;
       unc_up.clear();

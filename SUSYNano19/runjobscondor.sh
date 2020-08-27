@@ -1,11 +1,13 @@
 #!/bin/bash
 
-runmacro=${1}
+runmacro=$1
 outputdir=$2
 scramdir=$3
 outdir=${4}
 scram=${5}
-function=${6}
+location=${6}
+sysname=${7}
+bins=${8}
 
 workdir=`pwd`
 cmssw=${scramdir##*/}
@@ -41,11 +43,12 @@ pwd
 cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/
 echo $outdir
 
-echo $runmacro
-root -l -b $runmacro+
-.L ${runmacro}+
-${function}
-xrdcp -np -r LLB/*  root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}/.
+sed -i -e "s/lm_nb2_lowmtb_highptisr_lowptb12/$bins/g" SRParameters.hh
+sed -i -e "s/lepcr_devv7_081620/$outdir/g" $runmacro
+
+cd $location
+root -l -b -q $runmacro+
+xrdcp -np LLB/$outdir/*.pdf root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}/.
 ls -a
 
 status=`echo $?`

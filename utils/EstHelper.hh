@@ -438,7 +438,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   p2->cd();
   isFirst = true;
   TString drawOpt = showErrorBarInRatio?"E":"hist";
-  if(isVal) gStyle->SetOptStat(0);
+  gStyle->SetOptStat(0);
   for (auto *h : ratiohists){
     if (isFirst) {
       isFirst = false;
