@@ -866,7 +866,7 @@ void GetAverages(vector<double> Up, vector<double> Down = {}){
   double value_up = 0., value_down = 0.;
   vector<double> values;
 
-  for(int ibin = 0; ibin != Up.size(); ibin++){
+  for(unsigned int ibin = 0; ibin != Up.size(); ibin++){
     if (Up[ibin] > 0 && Up[ibin] != 1){
       value_up = Up[ibin];
       if (Up[ibin] < 1) value_up = 1.0/Up[ibin];
