@@ -43,7 +43,7 @@ pwd
 cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/
 echo $outdir
 
-sed -i -e "s/lm_nb2_lowmtb_highptisr_lowptb12/$bins/g" SRParameters.hh
+sed -i -e "s/= "allBins";/= "$bins";/g" SRParameters.hh
 sed -i -e "s/lepcr_devv7_081620/$outdir/g" $runmacro
 
 cd $location

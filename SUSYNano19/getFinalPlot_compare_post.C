@@ -176,7 +176,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   assert(p);
   TH1D* hist_buff = nullptr;
   for (auto &b : bkgs_post){
-    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b, ";Search bin number;Events", nullptr);
+    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b + "_post", ";Search bin number;Events", nullptr);
     TH1D* hist_comp = convertToHist({(TH1*)p->Get(b)}, b + "_comp", ";Search bin number;Events", nullptr);
     if(b == "TTZ") hist_buff = (TH1D*)hist->Clone("httZ_add");
     if(b == "Rare") hist->Add(hist_buff);
@@ -295,11 +295,11 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   if(hdata) pull = getPullHist(hdata, unc);
   if(hdata_post) pull_post = getPullHist(hdata_post, unc_post);
 
-  prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
-  prepHists(pred_post, false, false, true, {797, 391, 811, 623, 866});
-  prepHists(pred_comp, false, false, false, {kRed, kRed, kRed, kRed, kRed});
+  prepHists(pred,      false, false, true, {391, 811, 623, 866});
+  prepHists(pred_post, false, false, true, {391, 811, 623, 866});
+  prepHists(pred_comp,      false, false, false, {kRed, kRed, kRed, kRed, kRed});
   prepHists(pred_comp_post, false, false, false, {kBlue, kBlue, kBlue, kBlue, kBlue});
-  prepHists(pred_leg, false, false, true, {866, 623, 811, 391, 797});
+  prepHists(pred_leg, false, false, true, {866, 623, 811, 391});
   if(hdata) prepHists({hdata, hdata_post}, false, false, false, {kBlack, kBlack});
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
@@ -355,7 +355,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
@@ -372,7 +372,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
     c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);

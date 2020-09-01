@@ -80,7 +80,8 @@ const TString invert_genLep = " && genMatchedLep";
 //bool ADD_LEP_TO_MET = true;
 const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
 const TString ttznorm = "1.214";
-TString binMap_ = "lm_nb2_lowmtb_highptisr_lowptb12";
+//TString binMap_ = "lm_nb2_lowmtb_highptisr_lowptb12";
+TString binMap_ = "allBins";
 TString binMap() { return binMap_;}
 
 // lepton trigger eff.
@@ -288,7 +289,7 @@ std::map<TString, TString> plotLabelMap{
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
-      if(name != binMap() && binMap() != "all") continue;
+      if(name != binMap() && binMap() != "allBins") continue;
       cuts[name] = createCutString(name, cutMap);
     }
     return cuts;
@@ -297,7 +298,7 @@ std::map<TString, TString> srcuts = []{
 std::map<TString, TString> srlabels = []{
     std::map<TString, TString> cmap;
     for (auto s: srbins){
-      if(s != binMap() && binMap() != "all") continue;
+      if(s != binMap() && binMap() != "allBins") continue;
       cmap[s] = s;
     }
     return cmap;
@@ -333,7 +334,7 @@ std::map<TString, TString> phoNormMap = []{
 std::map<TString, TString> phocrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : phocrMapping){
-      if(sr2cr.first != binMap() && binMap() != "all") continue;
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
     }
     return cuts;
@@ -342,12 +343,12 @@ std::map<TString, TString> phocrCuts = []{
 std::map<TString, TString> phocrlabels = phocrMapping;
 
 std::map<TString, std::vector<int>> phocrMETbins_small { {binMap(), srMETbins[binMap()]}};
-std::map<TString, std::vector<int>> phocrMETbins = (binMap() == "all") ? srMETbins : phocrMETbins_small;
+std::map<TString, std::vector<int>> phocrMETbins = (binMap() == "allBins") ? srMETbins : phocrMETbins_small;
 
 std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : lepcrMapping){
-      if(sr2cr.first != binMap() && binMap() != "all") continue;
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       TString sr2crCut = sr2cr.first;
       cuts[sr2crCut] = createCutString(sr2cr.second, cutMap);
     }
@@ -356,7 +357,7 @@ std::map<TString, TString> lepcrCuts = []{
 
 std::map<TString, TString> lepcrlabels = lepcrMapping;
 std::map<TString, std::vector<int>> lepcrMETbins_small { {binMap(), srMETbins[binMap()]} };
-std::map<TString, std::vector<int>> lepcrMETbins = (binMap() == "all") ? srMETbins : lepcrMETbins_small;
+std::map<TString, std::vector<int>> lepcrMETbins = (binMap() == "allBins") ? srMETbins : lepcrMETbins_small;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
@@ -371,7 +372,7 @@ std::map<TString, TString> qcdcrMapping =[]{
 std::map<TString, TString> qcdcrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : qcdcrMapping){
-      if(sr2cr.first != binMap() && binMap() != "all") continue;
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
     }
     return cuts;
@@ -379,7 +380,7 @@ std::map<TString, TString> qcdcrCuts = []{
 std::map<TString, TString> qcd1to1crCuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
-      if(name != binMap() && binMap() != "all") continue;
+      if(name != binMap() && binMap() != "allBins") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -392,7 +393,7 @@ std::map<TString, TString> qcdcrlabels = lepcrlabels;
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
-    if(name != binMap() && binMap() != "all") continue;
+    if(name != binMap() && binMap() != "allBins") continue;
     auto nameMet = name;
     cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo("MET_pt", "p^{miss}_{T}", srMETbins.at(nameMet), "GeV"));
   }
@@ -404,7 +405,7 @@ map<TString, Category> phoCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
-    if(name != binMap() && binMap() != "all") continue;
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -417,7 +418,7 @@ map<TString, Category> lepCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: lepcrCuts;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
-    if(name != binMap() && binMap() != "all") continue;
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -428,7 +429,7 @@ map<TString, Category> qcdCatMap(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
-    if(name != binMap() && binMap() != "all") continue;
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "p^{miss}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -585,12 +586,12 @@ BaseConfig lepConfig(){
 
   std::vector<TString> srbins_small;
   for (auto name : srbins){
-    if(name != binMap() && binMap() != "all") continue;
+    if(name != binMap() && binMap() != "allBins") continue;
     srbins_small.push_back(name);
   }
   
   config.sel = baseline;
-  config.categories = (binMap() == "all") ? srbins : srbins_small;
+  config.categories = (binMap() == "allBins") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
 

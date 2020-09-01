@@ -23,7 +23,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   TString data = "data";
 
-  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "t#bar{t}Z/Rare"};
+  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare"};
   vector<TString> siglabels = {"T2tt(1000, 0)"};
   vector<TString> datalabel = {"Observed"};
 
@@ -231,15 +231,23 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
   }
 
-  TH1* pull;
+  TH1* pull = nullptr; 
+  TH1* pull_ratio = nullptr;
   if(hdata){
     pull = getPullHist(hdata, unc);
+    pull_ratio = getPullHist(hdata, unc, true);
   }
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
   prepHists(pred_leg, false, false, true, {866, 623, 811, 391, 797});
   if(hdata) prepHists({hdata}, false, false, false, {kBlack});
-  if(hdata) prepHists({pull}, false, false, false, {kRed});
+  if(hdata) prepHists({pull, pull_ratio}, false, false, false, {kRed, kBlack});
+  unc->SetFillColor(kBlue);
+  unc->SetFillStyle(3013);
+  unc->SetLineStyle(0);
+  unc->SetLineWidth(0);
+  unc->SetMarkerSize(0);
+  unc->Draw("E2same");
 
   hdata->SetMarkerStyle(7);
 
@@ -273,6 +281,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
 
     auto leg = prepLegends({hdata}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
+    addLegendEntry(leg, unc,"Bkg. uncertainty","F");
 //    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
@@ -284,6 +293,16 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "/pred_binnum__" + region;
+    basename.ReplaceAll("nb[0-9]", "");
+    c->Print(basename+".pdf");
+
+    c = drawStackAndRatio(pred, hdata, leg, true, "Pull", -3.001, 3.001, xlow, xhigh, {}, unc, {pull_ratio}, nullptr, false, false, true, false, false, true);
+    c->SetCanvasSize(800, 600);
+    gStyle->SetOptStat(0);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawRegionLabels.at(ireg)();
+    drawVerticalLines.at(ireg)(c);
+    basename = outputName + "/pred_binnum__pull_" + region;
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
   }
