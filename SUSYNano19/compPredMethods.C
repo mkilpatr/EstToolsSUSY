@@ -1,17 +1,21 @@
 #include "../utils/EstHelper.hh"
 #include "SRParameters.hh"
+#include "TRegexp.h"
 #include "TLatex.h"
+#include <string.h>
 #include <functional>
-#include <regex>
 
 using namespace EstTools;
 
 void compPredMethods(TString bkg = "ttbarplusw"){
 
+
   SetStyle();
+  TDR_EXTRA_LABEL_ = "Supplementary";
+  TDR_EXTRA_LABEL_2 = "arXiv: XXXX.XXXXX";
   PAD_SPLIT_Y = 0.35;
 
-  double xlow=54, xhigh = 183.9;
+  double xlow=69, xhigh = 153;
 
   auto toQuantities = [](const TGraphAsymmErrors *gr){
     vector<Quantity> vec;
@@ -31,6 +35,37 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     }
     return gr;
   };
+  auto getRatioGraphError = [&](const TGraphAsymmErrors *num, TH1 *denom){
+    auto ratio = convertToHist(toQuantities(num), "tmp", "");
+    auto den   = convertToHist({denom}, "tmp_denom", "");
+    for(int ibin=0; ibin < ratio->GetNbinsX() + 1; ibin++){
+      Quantity r = getHistBin(ratio, ibin), d = getHistBin(den, ibin);
+      r.value = r.error;
+      r.error = 0;
+      d.value = d.error;
+      d.error = 0;
+      setHistBin(ratio, ibin, r);
+      setHistBin(den, ibin, d);
+    }
+    ratio->Divide(den);
+    auto gr = new TGraphAsymmErrors(ratio);
+    for (int i=0; i<gr->GetN(); ++i){
+      if(gr->GetY()[i] > 4.) gr->GetY()[i] = 4.0;
+      gr->GetEXlow()[i] = 0;
+      gr->GetEXhigh()[i] = 0;
+    }
+    return gr;
+  };
+
+  vector<TString> split = {
+			   "hm_nb1_bins",
+			   };
+  vector<TString> splitlabels = {
+      "High #Deltam, N_{b}=1,2",
+  };
+
+  auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
+
 
   TString predFile = "sig/std_pred_trad_withExtrap_081620.root";
   TString predFile_noextrap = "sig/std_pred_trad_withoutExtrap_081620.root";
@@ -75,9 +110,13 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
 
   for (int i=0; i<pred_noextrap->GetN(); ++i){
-    pred->GetX()[i] += 0.1;
-    pred_statOnly->GetX()[i] += 0.2;
-    pred_noextrap->GetX()[i] += 0.3;
+    if(i < 153) continue;
+    cout << "bin " << i << ": Pred: " << pred->GetY()[i] << "(+" << pred->GetErrorYhigh(i) << ")(-" << pred->GetErrorYlow(i) << ")" << endl;
+    cout << "bin " << i << ": pred_statOnly: " << pred_statOnly->GetY()[i] << "(+" << pred_statOnly->GetErrorYhigh(i) << ")(-" << pred_statOnly->GetErrorYlow(i) << ")" << endl;
+    cout << "bin " << i << ": pred_noextrap: " << pred_noextrap->GetY()[i] << "(+" << pred_noextrap->GetErrorYhigh(i) << ")(-" << pred_noextrap->GetErrorYlow(i) << ")" << endl;
+    pred->GetX()[i] += 1.5;
+    pred_statOnly->GetX()[i] += 1.5;
+    pred_noextrap->GetX()[i] += 1.5;
   }
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
   pred_statOnly->SetLineColor(kRed); pred_statOnly->SetMarkerColor(kRed);
@@ -93,13 +132,36 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   auto ratio_pred = getRatioGraph(pred, mc);
   auto ratio_pred_statOnly = getRatioGraph(pred_statOnly, mc);
   auto ratio_pred_noextrap = getRatioGraph(pred_noextrap, mc);
-  for (int i=0; i<ratio_pred_noextrap->GetN(); ++i){
-    ratio_pred->GetX()[i] += 0.1;
-    ratio_pred_statOnly->GetX()[i] += 0.2;
-    ratio_pred_noextrap->GetX()[i] += 0.3;
+  //for (int i=0; i<ratio_pred_noextrap->GetN(); ++i){
+  //  ratio_pred->GetX()[i] += 0.1;
+  //  ratio_pred_statOnly->GetX()[i] += 0.2;
+  //  ratio_pred_noextrap->GetX()[i] += 0.3;
+  //}
+
+  TH1* extrap = convertToHist(toQuantities(pred), "tmp", "");
+  auto ratio_new = getRatioGraphError(pred, extrap);
+  auto ratio_new_noextrap = getRatioGraphError(pred_noextrap, extrap);
+  for (int i=0; i<ratio_new_noextrap->GetN(); ++i){
+    if(i < 153) continue;
+    ratio_new->GetX()[i] += 1.5;
+    ratio_new_noextrap->GetX()[i] += 1.5;
   }
 
+  //Check Pull
+  TH1* pull = getPullHist(convertToHist(toQuantities(pred_noextrap), "tmp", ""), pred, false, "High #Deltam Search Regions", 53);
+  prepHists({pull}, false, false, false, {kRed});
+  double mean  = pull->GetMean();
+  double StdDev = pull->GetStdDev();
+  TString fitString = "#splitline{Mean = " + to_string(mean) + "}{StdDev = " + to_string(StdDev) + "}";
+  std::function<void(TCanvas*)> plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC(fitString, 0.2, 0.68); };
+  auto c_pull = drawCompMatt({pull}, 0, -1., &plotextra);
+  c_pull->SetCanvasSize(800, 600);
+  gStyle->SetOptStat(0);
+  TString basename = "bkgpred_comp_small__pull";
+  c_pull->Print(basename+".pdf");
+
   auto leg = prepLegends<TGraphAsymmErrors>({pred_statOnly, pred, pred_noextrap}, {"Stats. unc. only", "Stats. + Syst. unc.", "w/o extrapolation"}, "LP");
+  auto leg_new = prepLegends<TGraphAsymmErrors>({pred, pred_noextrap}, {"extrapolation (Stats. + Syst. unc.)", "w/o extrapolation (Stat. unc.)"}, "LP");
 
   auto c = MakeCanvas(1000, 600);
   TPad *p1 = new TPad("p1","p1",0,PAD_SPLIT_Y,1,1);
@@ -112,7 +174,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
 
   pred->GetXaxis()->SetRangeUser(xlow, xhigh);
-  pred->GetYaxis()->SetRangeUser(0.01, 1e6);
+  pred->GetYaxis()->SetRangeUser(0.01, 1e7);
   p1->SetLogy();
 
   pred->GetYaxis()->SetTitle("Prediction");
@@ -159,5 +221,76 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   ratio_pred_noextrap->Draw("P0same");
 
   c->cd();
-  c->SaveAs("bkgpred_comp_"+bkg+".pdf");
+  c->SaveAs("bkgpred_comp_small_"+bkg+".pdf");
+  c->SaveAs("bkgpred_comp_small_"+bkg+".png");
+
+  //Add new version with diff ratio
+  auto cnew = MakeCanvas(1000, 600);
+  TPad *p1new = new TPad("p1new","p1new",0,PAD_SPLIT_Y,1,1);
+  p1new->SetLeftMargin  (0.16);
+  p1new->SetTopMargin   (0.10);
+  p1new->SetRightMargin (0.04);
+  p1new->SetBottomMargin(0.03);
+  p1new->Draw();
+  p1new->cd();
+
+
+  pred->GetXaxis()->SetRangeUser(xlow, xhigh);
+  pred->GetYaxis()->SetRangeUser(0.01, 1e7);
+  p1new->SetLogy();
+
+  pred->GetYaxis()->SetTitle("Prediction");
+  pred->GetYaxis()->SetTitleSize(0.07);
+  pred->GetYaxis()->SetTitleOffset(0.8);
+  pred->GetXaxis()->SetLabelOffset(0.6);
+  pred->GetXaxis()->SetNdivisions(520);
+  pred->Draw("PA0");
+  //pred_statOnly->Draw("P0same[]");
+  pred_noextrap->Draw("P0same");
+  //double fLegX1 = 0.58, fLegY1 = 0.87, fLegX2 = 0.92, fLegY2 = 0.87;
+  setLegend(leg_new, 1, 0.5, 0.70, 0.92, 0.87);
+  leg_new->Draw();
+  CMS_lumi(p1new, 4, 10);
+  
+  cnew->cd();
+  drawTLatexNDC(splitlabels.at(0), 0.605, 0.76, 0.032);
+
+  TPad *p2new = new TPad("p2new","p2new",0,0,1,PAD_SPLIT_Y);
+  p2new->SetLeftMargin  (0.16);
+  p2new->SetTopMargin   (0.00);
+  p2new->SetRightMargin (0.04);
+  p2new->SetBottomMargin(PAD_BOTTOM_MARGIN);
+  p2new->SetGridy(1);
+  p2new->Draw();
+  p2new->cd();
+
+  ratio_new_noextrap->GetXaxis()->SetTitle("Search region");
+  ratio_new_noextrap->GetYaxis()->SetTitle("#frac{Unc.(w/o extrap)}{Unc.(extrap)}");
+  ratio_new_noextrap->GetXaxis()->SetRangeUser(xlow, xhigh);
+  ratio_new_noextrap->GetXaxis()->SetNdivisions(520);
+  ratio_new_noextrap->GetYaxis()->SetRangeUser(0, 1.999);
+  ratio_new_noextrap->GetXaxis()->SetTitleSize(0.12);
+  ratio_new_noextrap->GetYaxis()->SetTitleSize(0.09);
+  ratio_new_noextrap->GetYaxis()->SetTitleOffset(0.41);
+  ratio_new_noextrap->GetXaxis()->SetLabelSize(0.1);
+  ratio_new_noextrap->GetXaxis()->SetLabelOffset(0.01);
+  ratio_new_noextrap->GetYaxis()->SetLabelSize(0.1);
+  ratio_new_noextrap->GetYaxis()->CenterTitle(kTRUE);
+  ratio_new_noextrap->GetYaxis()->SetNdivisions(309);
+  ratio_new_noextrap->GetYaxis()->SetRangeUser(0., 4.501);
+  ratio_new_noextrap->GetYaxis()->ChangeLabel(5, -1, -1, -1, 1, -1, ">4");
+
+
+  ratio_new->SetLineColor(kBlue); ratio_new->SetMarkerColor(kBlue);
+  //ratio_new->SetMarkerSize(0);
+
+  //ratio_new->Draw("PA0");
+  ratio_new_noextrap->Draw("PA0");
+
+  p2new->SetTicks(1, 1);
+  p2new->RedrawAxis("G");
+  
+  cnew->cd();
+  cnew->SaveAs("bkgpred_comp_small_newratio_"+bkg+".pdf");
+  cnew->SaveAs("bkgpred_comp_small_newratio_"+bkg+".png");
 }

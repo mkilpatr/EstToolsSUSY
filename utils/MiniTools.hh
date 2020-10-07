@@ -41,6 +41,7 @@ TString filterString(TString instr){
 TString joinString(const vector<TString>& vec, TString delimiter){
   TString rlt = "";
   for (unsigned i=0; i<vec.size(); ++i){
+    if(vec.at(i) == "") continue;
     if (i==0){
       rlt = vec.at(i);
     }else{
@@ -171,7 +172,7 @@ vector<TH2Poly*> normalize(vector<TH2Poly*> hist, double norm = 1){
 Double_t ScaleX(Double_t x)
 {
   Double_t v;
-  v = x + 0.01; // "linear scaling" function example
+  v = x + 0.1; // "linear scaling" function example
   return v;
 }
 
@@ -515,11 +516,12 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
-TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false){
-  auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString yAxisTitle = "Search Regions", int skipUntil = 0){
+  auto pull_h=new TH1F("pull_h",";Pull;" + yAxisTitle, 40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
   for(int ibin = 0; ibin < hs->GetN(); ++ibin){
+    if(ibin < skipUntil) continue;
     int ibin_data = ibin + 1;
     ratio->SetBinError(ibin,0);
     float a = h_data->GetBinContent(ibin_data);
@@ -730,7 +732,7 @@ void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, dou
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void drawLine(double x1, double y1, double x2, double y2, int color=kGray+2, int style=kDashed, int width=3)
+void drawLine(double x1, double y1, double x2, double y2, int color=kGray+2, int style=kDashed, int width=2)
 {
   TLine *line = new TLine(x1,y1,x2,y2);
   line->SetLineColor(color);

@@ -258,7 +258,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist")
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
 
@@ -295,9 +295,10 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
 #endif
   }
   if (leg) leg->Draw();
-//#ifdef TDR_STYLE_
-//  CMS_lumi(c, 4, 10);
-//#endif
+#ifdef TDR_STYLE_
+  if(noLumi)CMS_lumi(c, 99, 10);
+  else      CMS_lumi(c, 4, 10);
+#endif
   if (plotextra) (*plotextra)(c);
   c->Update();
 
@@ -340,7 +341,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false, double forceymin = 9999.)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false, double forceymin = 9999., bool noLumi = false)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -418,6 +419,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
+  if(noLumi) CMS_lumi(p1, 99, 10);
   if(!isVal) CMS_lumi(p1, 4, 10);
 #endif
 
@@ -536,7 +538,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
   hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
   hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
-  TGaxis::SetMaxDigits(4);
+  TGaxis::SetMaxDigits(3);
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
 #ifdef DEBUG_
@@ -633,7 +635,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hbkgtotal->GetYaxis()->SetTitleSize(0.08);
   hbkgtotal->GetYaxis()->SetTitleOffset(0.85);
   hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
-  TGaxis::SetMaxDigits(4);
+  TGaxis::SetMaxDigits(3);
   hbkgtotal->Draw("hist");
 
   hstack->Draw("histsame");
@@ -641,8 +643,8 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *sig : sighists){
     auto h = (TH1*)sig->Clone();
     h->SetLineWidth(3);
-    //ScaleXaxis(h, ScaleX);
-    h->Draw("][histsame");
+    ScaleXaxis(h, ScaleX);
+    h->Draw("histsame");
 #ifdef DEBUG_
   cout << "-->drawing drawStacKAndRatio sighist: "<< h->GetName() << endl;
 #endif

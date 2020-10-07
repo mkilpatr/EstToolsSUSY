@@ -98,7 +98,7 @@ void BkgPredHM_LL(){
     output->Close();
   };
 
-  plot(altpred, altgraphs, mc, lepcr, "std_pred_trad_withoutExtrap_081620");
+  plot(altpred, altgraphs, mc, lepcr, "std_pred_trad_withExtrap_100520_small");
 
 
   cout << "\n\n Traditional \n";

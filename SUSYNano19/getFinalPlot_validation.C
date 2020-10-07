@@ -234,7 +234,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
   TH1* pull = nullptr; 
   TH1* pull_ratio = nullptr;
   if(hdata){
-    pull = getPullHist(hdata, unc);
+    pull = getPullHist(hdata, unc, false, "Validation bin");
     pull_ratio = getPullHist(hdata, unc, true);
   }
 
@@ -295,6 +295,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     TString basename = outputName + "/pred_binnum__" + region;
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
+    c->Print(basename+".png");
 
     c = drawStackAndRatio(pred, hdata, leg, true, "Pull", -3.001, 3.001, xlow, xhigh, {}, unc, {pull_ratio}, nullptr, false, false, true, false, false, true);
     c->SetCanvasSize(800, 600);
@@ -305,6 +306,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     basename = outputName + "/pred_binnum__pull_" + region;
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
+    c->Print(basename+".png");
   }
 
   if(hdata){
@@ -317,6 +319,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     gStyle->SetOptStat(0);
     TString basename = outputName + "/pred_binnum__pull";
     c_pull->Print(basename+".pdf");
+    c_pull->Print(basename+".png");
   }
 
   TFile *output = new TFile(outputName + "/pred_binnum_getFinalPlot_Nano.root", "RECREATE");

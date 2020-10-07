@@ -99,39 +99,39 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8,   LOG_YMIN, 8,   2000); 
-								    drawLine(16,  LOG_YMIN, 16,  200000); 
-								    drawLine(24,  LOG_YMIN, 24,  2000); 
-								    drawLine(32,  LOG_YMIN, 32,  2000); 
-								    drawLine(35,  LOG_YMIN, 35,  200000); 
-								    drawLine(44,  LOG_YMIN, 44,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57, LOG_YMIN, 57, 2000); 
-								    drawLine(61, LOG_YMIN, 61, 20000); 
-								    drawLine(65, LOG_YMIN, 65, 2000); 
-								    drawLine(69, LOG_YMIN, 69, 20000); 
-								    drawLine(78, LOG_YMIN, 78, 20000); 
-								    drawLine(84, LOG_YMIN, 84, 20000); 
-								    drawLine(99, LOG_YMIN, 99, 20000); 
-								    drawLine(101, LOG_YMIN, 101, 2000); 
-								    drawLine(103, LOG_YMIN, 103, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114, LOG_YMIN, 114, 20000); 
-								    drawLine(120, LOG_YMIN, 120, 20000); 
-								    drawLine(135, LOG_YMIN, 135, 20000); 
-								    drawLine(137, LOG_YMIN, 137, 20000); 
-								    drawLine(143, LOG_YMIN, 143, 20000); 
-								    drawLine(145, LOG_YMIN, 145, 20000); 
-								    drawLine(147, LOG_YMIN, 147, 20000); 
-								    drawLine(148, LOG_YMIN, 148, 20000); 
-								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162, LOG_YMIN, 162, 20000); 
-								    drawLine(165, LOG_YMIN, 165, 20000); 
-								    drawLine(174, LOG_YMIN, 174, 20000); 
-								    drawLine(175, LOG_YMIN, 175, 20000); 
-								    drawLine(177, LOG_YMIN, 177, 20000); 
-								    drawLine(178, LOG_YMIN, 178, 20000); 
-								    drawLine(179, LOG_YMIN, 179, 20000); 
-								    drawLine(180, LOG_YMIN, 180, 20000); 
-								    drawLine(182, LOG_YMIN, 182, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8.05,  LOG_YMIN, 8.05,   2000); 
+								    drawLine(16.05, LOG_YMIN, 16.05,  200000); 
+								    drawLine(24.05, LOG_YMIN, 24.05,  2000); 
+								    drawLine(32.05, LOG_YMIN, 32.05,  2000); 
+								    drawLine(35.05, LOG_YMIN, 35.05,  200000); 
+								    drawLine(44.05, LOG_YMIN, 44.05,  2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57.05, LOG_YMIN, 57.05, 2000); 
+								    drawLine(61.05, LOG_YMIN, 61.05, 20000); 
+								    drawLine(65.05, LOG_YMIN, 65.05, 2000); 
+								    drawLine(69.05, LOG_YMIN, 69.05, 20000); 
+								    drawLine(78.05, LOG_YMIN, 78.05, 20000); 
+								    drawLine(84.05, LOG_YMIN, 84.05, 20000); 
+								    drawLine(99.05, LOG_YMIN, 99.05, 20000); 
+								    drawLine(101.05, LOG_YMIN, 101.05, 2000); 
+								    drawLine(103.05, LOG_YMIN, 103.05, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114.05, LOG_YMIN, 114.05, 20000); 
+								    drawLine(120.05, LOG_YMIN, 120.05, 20000); 
+								    drawLine(135.05, LOG_YMIN, 135.05, 20000); 
+								    drawLine(137.05, LOG_YMIN, 137.05, 20000); 
+								    drawLine(143.05, LOG_YMIN, 143.05, 20000); 
+								    drawLine(145.05, LOG_YMIN, 145.05, 20000); 
+								    drawLine(147.05, LOG_YMIN, 147.05, 20000); 
+								    drawLine(148.05, LOG_YMIN, 148.05, 20000); 
+								    drawLine(152.05, LOG_YMIN, 152.05, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162.05, LOG_YMIN, 162.05, 20000); 
+								    drawLine(165.05, LOG_YMIN, 165.05, 20000); 
+								    drawLine(174.05, LOG_YMIN, 174.05, 20000); 
+								    drawLine(175.05, LOG_YMIN, 175.05, 20000); 
+								    drawLine(177.05, LOG_YMIN, 177.05, 20000); 
+								    drawLine(178.05, LOG_YMIN, 178.05, 20000); 
+								    drawLine(179.05, LOG_YMIN, 179.05, 20000); 
+								    drawLine(180.05, LOG_YMIN, 180.05, 20000); 
+								    drawLine(182.05, LOG_YMIN, 182.05, 20000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -172,7 +172,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   TH1D* httbar_comp = convertToHist({(TH1*)f->Get("httbar")}, "httbar_comp", ";Search bin number;Events", nullptr);
   TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search bin number;Events", nullptr); // KH hack: this is a hack which we should be careful with
 
-  TFile *p = TFile::Open("PostFit.root");
+  TFile *p = TFile::Open("PostFit_v7.root");
   assert(p);
   TH1D* hist_buff = nullptr;
   for (auto &b : bkgs_post){
@@ -287,9 +287,11 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search bin number;Events", nullptr);
     h->SetLineStyle(style);
+    h->SetLineWidth(3);
     hsigs.push_back(h);
     style++;
   }
+
   TH1* pull;
   TH1* pull_post;
   if(hdata) pull = getPullHist(hdata, unc);
@@ -304,7 +306,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});
-  prepHists(hsigs, false, false, false, {kRed, kGreen + 3});
+  prepHists(hsigs, false, false, false, {kRed, kGreen + 3, kBlack});
   unc->SetFillColor(kBlue);
   unc->SetFillStyle(3013);
   unc->SetLineStyle(0);
@@ -367,6 +369,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".png");
     c->Print(basename+".pdf");
+    c->Print(basename+".C");
 
     leg = prepLegends({hdata_post}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
@@ -384,6 +387,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".png");
     c->Print(basename+".pdf");
+    c->Print(basename+".C");
   }
 
   for (unsigned bkg = 0; bkg != pred_comp.size(); bkg++){

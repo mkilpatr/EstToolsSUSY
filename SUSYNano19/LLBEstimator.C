@@ -210,6 +210,137 @@ vector<Quantity> LLBPredSeparate(){
   return l.yields.at("_pred");
 }
 
+void LLBPredSeparateRePlot(){
+
+  TString region = "LLB/TransferFactor_devv7_081620";
+  vector<TString> tf = {"_TF", "_TF_CR_to_SR_noextrap", "_TF_SR_extrap"};
+  vector<TString> sep = {"", "_LM", "_HM_1", "_HM_2"};
+
+  int start = 0, manualBins = 0;
+  int max_graph = 3;
+  int max_tf = 2;
+  for(int j = 0; j <= max_graph; j++){
+    if(j == 1){
+      start = 0;
+      manualBins = 53;
+    } else if(j == 2){
+      start = 53;
+      manualBins = 65;
+    } else if(j == 3){
+      start = 117;
+      manualBins = 65;
+    }
+    for(int i = 0; i <= max_tf; i++){
+      TFile *tfFile = TFile::Open(region+"/LostLepton"+tf[i]+"_Comparison"+sep[j]+".root");
+
+      vector<TString> hNames = {"TF All00", "TF 201600", "TF 201700", "TF 201800"};
+      if(i == 1 && j == 0) hNames = {"TF All10", "TF 201610", "TF 201710", "TF 201810"};
+      if(i == 2 && j == 0) hNames = {"TF All20", "TF 201620", "TF 201720", "TF 201820"};
+      if(i == 0 && j == 1) hNames = {"TF All01", "TF 201601", "TF 201701", "TF 201801"};
+      if(i == 1 && j == 1) hNames = {"TF All11", "TF 201611", "TF 201711", "TF 201811"};
+      if(i == 2 && j == 1) hNames = {"TF All21", "TF 201621", "TF 201721", "TF 201821"};
+      if(i == 0 && j == 2) hNames = {"TF All02", "TF 201602", "TF 201702", "TF 201802"};
+      if(i == 1 && j == 2) hNames = {"TF All12", "TF 201612", "TF 201712", "TF 201812"};
+      if(i == 2 && j == 2) hNames = {"TF All22", "TF 201622", "TF 201722", "TF 201822"};
+      if(i == 0 && j == 3) hNames = {"TF All03", "TF 201603", "TF 201703", "TF 201803"};
+      if(i == 1 && j == 3) hNames = {"TF All13", "TF 201613", "TF 201713", "TF 201813"};
+      if(i == 2 && j == 3) hNames = {"TF All23", "TF 201623", "TF 201723", "TF 201823"};
+
+      TH1D* hAll  = convertToHist({(TH1*)tfFile->Get(hNames[0])},hNames[0], ";Search Region;Transfer Factor", nullptr, start, manualBins);
+      TH1D* h2016 = convertToHist({(TH1*)tfFile->Get(hNames[1])},hNames[1],";Search Region;Transfer Factor", nullptr, start, manualBins);
+      TH1D* h2017 = convertToHist({(TH1*)tfFile->Get(hNames[2])},hNames[2],";Search Region;Transfer Factor", nullptr, start, manualBins);
+      TH1D* h2018 = convertToHist({(TH1*)tfFile->Get(hNames[3])},hNames[3],";Search Region;Transfer Factor", nullptr, start, manualBins);
+
+      prepHists({hAll, h2016, h2017, h2018}, false, false, false, {kBlack, kRed, kAzure+6, 876});
+
+      TH1* h2016_div = (TH1*)h2016->Clone();
+      h2016_div->Divide(hAll);
+      h2016_div->SetLineWidth(2);
+
+      TH1* h2017_div = (TH1*)h2017->Clone();
+      h2017_div->Divide(hAll);
+      h2017_div->SetLineWidth(2);
+
+      TH1* h2018_div = (TH1*)h2018->Clone();
+      h2018_div->Divide(hAll);
+      h2018_div->SetLineWidth(2);
+      prepHists({h2016_div, h2017_div, h2018_div}, false, false, false, {kRed, kAzure+6, 876});
+
+      auto leg = prepLegends({}, {""}, "l");
+      appendLegends(leg, {hAll}, {"TF Run2"}, "l");
+      appendLegends(leg, {h2016}, {"TF 2016"}, "l");
+      appendLegends(leg, {h2017}, {"TF 2017"}, "l");
+      appendLegends(leg, {h2018}, {"TF 2018"}, "l");
+      leg->SetTextSize(0.03);
+//        leg->SetNColumns(2);
+      leg->SetY1NDC(leg->GetY2NDC() - 0.2);
+      TCanvas* c = nullptr;
+      if(i != 1) c = drawCompAndRatio({hAll, h2016, h2017, h2018}, {h2016_div, h2017_div, h2018_div}, leg, "TF_{era}/TF_{Run2}", 0.001, 2.999, true, 0.00001, 110);
+      else       c = drawCompAndRatio({hAll, h2016, h2017, h2018}, {h2016_div, h2017_div, h2018_div}, leg, "TF_{era}/TF_{Run2}", 0.001, 2.999, true, 0.1, 110);
+      TString outputBase = "LostLepton"+tf[i]+"_Comparison" + sep[j];
+      c->SetTitle(outputBase);
+      c->Print(region+"/"+outputBase+".pdf");
+      c->Print(region+"/"+outputBase+".png");
+      c->Print(region+"/"+outputBase+".C");
+
+      TH1F* h2016Sum = new TH1F("hTF_0", ";TF_{era}/TF_{Run2};Search Regions", 41, -0.025, 2.025);
+      TH1F* h2017Sum = new TH1F("hTF_1", ";TF_{era}/TF_{Run2};Search Regions", 41, -0.025, 2.025);
+      TH1F* h2018Sum = new TH1F("hTF_3", ";TF_{era}/TF_{Run2};Search Regions", 41, -0.025, 2.025);
+      for(int i = 1; i != h2016_div->GetNbinsX(); i++){
+        h2016Sum->Fill(h2016_div->GetBinContent(i));
+        h2017Sum->Fill(h2017_div->GetBinContent(i));
+        h2018Sum->Fill(h2018_div->GetBinContent(i));
+      }
+      for(int i = 1; i < h2016Sum->GetNbinsX() + 1; i++){
+        h2016Sum->SetBinError(i, 0.);;
+        h2017Sum->SetBinError(i, 0.);;
+        h2018Sum->SetBinError(i, 0.);;
+      }
+
+      prepHists({h2016Sum, h2017Sum, h2018Sum}, false, false, false, {kRed, kAzure+6, 876});
+
+      h2016Sum->SetLineWidth(3);
+      h2017Sum->SetLineWidth(3);
+      h2018Sum->SetLineWidth(3);
+
+      TString Mean2016 = TString(to_string(h2016Sum->GetMean()));
+      TString Mean2017 = TString(to_string(h2017Sum->GetMean()));
+      TString Mean2018 = TString(to_string(h2018Sum->GetMean()));
+      std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{TF 2016 Mean: " + Mean2016 + "}{#splitline{TF 2017 Mean: " + Mean2017 + "}{TF 2018 Mean: " + Mean2018 + "}}", 0.215, 0.67, 0.028); };
+
+      double stdDev = (h2016Sum->GetStdDev() + h2017Sum->GetStdDev() + h2018Sum->GetStdDev())/3;
+
+      auto legend = prepLegends({}, {""}, "l");
+      appendLegends(legend, {h2016Sum}, {"TF 2016"}, "l");
+      appendLegends(legend, {h2017Sum}, {"TF 2017"}, "l");
+      appendLegends(legend, {h2018Sum}, {"TF 2018"}, "l");
+      setLegend(legend, 1, 0.75, 0.75, 0.92,0.87);
+      legend->SetTextSize(0.03);
+      legend->SetY1NDC(legend->GetY2NDC() - 0.2);
+      TCanvas* sum_c = drawCompMatt({h2016Sum, h2017Sum, h2018Sum}, legend, -1., &plotextra);
+      gStyle->SetOptStat(0);
+      float ymax = 1.25*std::max(h2016Sum->GetMaximum(), std::max(h2017Sum->GetMaximum(), h2018Sum->GetMaximum()));
+      TLine *line_m = new TLine(1. - stdDev, 0, 1. - stdDev, ymax);
+      TLine *line_p = new TLine(1. + stdDev, 0, 1. + stdDev, ymax);
+      line_m->SetLineColor(kBlack);
+      line_p->SetLineColor(kBlack);
+      line_m->SetLineStyle(2);
+      line_p->SetLineStyle(2);
+      line_m->Draw();
+      line_p->Draw();
+      sum_c->Update();
+      sum_c->SetTitle(outputBase);
+      sum_c->Print(region+"/"+outputBase+"_sum.pdf");
+      sum_c->Print(region+"/"+outputBase+"_sum.png");
+      sum_c->Print(region+"/"+outputBase+"_sum.root");
+
+      delete gROOT->FindObject("hTF_0");
+      delete gROOT->FindObject("hTF_1");
+      delete gROOT->FindObject("hTF_3");
+    }
+  }
+}
+
 //--------------------------------------------------
 vector<Quantity> ANQuestion(){
 
@@ -1339,12 +1470,15 @@ void plot1LepInclusiveLepton(){
 }
 
 void plotMtb(){
+  TDR_EXTRA_LABEL_ = "Simulation";
+  TDR_EXTRA_LABEL_2 = "Supplementary";
+  TDR_EXTRA_LABEL_3 = "arXiv: XXXX.XXXXX";
   auto config = lepConfig();
   TString mtb = "Pass_Baseline && Pass_dPhiMETHighDM && Stop0l_Mtb > 0 && Stop0l_Mtb < 350";
   config.sel = baseline;
 
   LOG_YMIN = 100.;
-  PLOT_MAX_YSCALE = 1.0;
+  PLOT_MAX_YSCALE = 1.2;
 
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
@@ -1375,16 +1509,26 @@ void plotMtb(){
   config.addSample("znunu-2017",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2017+"znunu",        lepselwgt_2017,  datasel);
   config.addSample("znunu-2018",       "Z#rightarrow#nu#bar{#nu}",         inputdir_2018+"znunu",        lepselwgt_2018,  datasel);
   //signal
-  config.addSample("T1tttt-1200-800",  "T1tttt(1200, 800)",  inputdir_sig+"SMS_T1tttt_mGluino1200_mLSP800",  "1.0", datasel);
-  config.addSample("T1tttt-2000-100",  "T1tttt(2000, 100)",  inputdir_sig+"SMS_T1tttt_mGluino2000_mLSP100",  "1.0", datasel);
-  config.addSample("T2tt-500-325",     "T2tt(500, 325)",     inputdir_sig+"SMS_T2tt_mStop500_mLSP325",  "1.0", datasel);
-  config.addSample("T2tt-850-100",     "T2tt(850, 100)",     inputdir_sig+"SMS_T2tt_mStop_850_mLSP_100",  "1.0", datasel);
+  config.addSample("T1tttt-1200-800",  "T1tttt(1200, 800)",  inputdir_sig_2017+"SMS_T1tttt_mGluino1200_mLSP800",  "1.0", datasel);
+  config.addSample("T1tttt-2000-100",  "T1tttt(2000, 100)",  inputdir_sig_2017+"SMS_T1tttt_mGluino2000_mLSP100",  "1.0", datasel);
+  config.addSample("T2tt-500-325",     "T2tt(500, 325)",     inputdir_sig_2016+"SMS_T2tt_mStop_500_mLSP_325",  "1.0", datasel);
+  config.addSample("T2tt-850-100",     "T2tt(850, 100)",     inputdir_sig_2017+"SMS_T2tt_mStop_850_mLSP_100",  "1.0", datasel);
+  config.addSample("T2ttC-650-600",    "T2ttC(650, 600)",     inputdir_sig_2017+"SMS_T2fbd_mStop650_mLSP600",  "1.0", datasel);
 
   TString region = "lepcr_inclusive_devv7_083120_suplementary";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
+//  vector<TString> mc_samples = {
+//				"ttbarplusw-ttbar-2016", "ttbarplusw-ttbar-2017", "ttbarplusw-ttbar-2018",
+//				"ttbarplusw-tW-2016", "ttbarplusw-tW-2017", "ttbarplusw-tW-2018",
+//				"ttbarplusw-ttW-2016", "ttbarplusw-ttW-2017", "ttbarplusw-ttW-2018",
+//				"ttbarplusw-ttZ-2016", "ttbarplusw-ttZ-2017", "ttbarplusw-ttZ-2018",
+//				"wjets-2016", "wjets-2017", "wjets-2018",
+//				"znunu-2016", "znunu-2017", "znunu-2018",
+//				"qcd-2016", "qcd-2017", "qcd-2018",
+//				};
   vector<TString> mc_samples = {
 				"qcd-2016", "qcd-2017", "qcd-2018",
 				"znunu-2016", "znunu-2017", "znunu-2018",
@@ -1392,12 +1536,13 @@ void plotMtb(){
 				"ttbarplusw-ttbar-2016", "ttbarplusw-ttbar-2017", "ttbarplusw-ttbar-2018",
 				"ttbarplusw-tW-2016", "ttbarplusw-tW-2017", "ttbarplusw-tW-2018",
 				"ttbarplusw-ttW-2016", "ttbarplusw-ttW-2017", "ttbarplusw-ttW-2018",
-				"ttbarplusw-ttZ-2016", "ttbarplusw-ttZ-2017", "ttbarplusw-ttZ-2018"
+				"ttbarplusw-ttZ-2016", "ttbarplusw-ttZ-2017", "ttbarplusw-ttZ-2018",
 				};
-  vector<TString> sig_samples = {"T1tttt-1200-800", "T1tttt-2000-100", "T2tt-500-325", "T2tt-850-100"};
+  vector<TString> sig_samples = {"T2ttC-650-600", "T1tttt-2000-100", "T2tt-500-325", "T2tt-850-100"};
 
   map<TString, BinInfo> varDict {
-	{"mtb",      BinInfo("Stop0l_Mtb", "Mtb [GeV]", 34, 10, 350)},
+	{"mtb",      BinInfo("Stop0l_Mtb", "m_{T}^{b} [GeV]", 35, 0, 350)},
+	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
   };
 
   vector<TH1*> ratiohist;
@@ -1405,8 +1550,9 @@ void plotMtb(){
   for (auto &var : varDict){
     //z.resetSelection();
     z.setSelection(mtb, "baseline", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{signal scaled}{to bkg sum}", 0.22, 0.73); };
-    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false, 113022);
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Signal scaled}{to bkg sum}", 0.715, 0.65); };
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false);
+    //z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, true, &plotextra, false);
   }
 }
 

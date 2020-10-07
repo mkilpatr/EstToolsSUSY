@@ -2,7 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "binDefinitions.hh"
+#include "binDefinitions_getValue.hh"
 
 namespace EstTools{
 
@@ -13,7 +13,8 @@ const TString inputdir_2018 = "nanoaod_all_skim_2018_073020_devv6_limits/";
 const TString inputdir_2016_ttZRare = "nanoaod_all_skim_2016_081320_devv6_limits/";
 const TString inputdir_2017_ttZRare = "nanoaod_all_skim_2017_081320_devv6_limits/";
 const TString inputdir_2018_ttZRare = "nanoaod_all_skim_2018_081320_devv6_limits/";
-const TString inputdir_sig  = "nanoaod_all_skim_2017_073020_devv6_limits/";
+const TString inputdir_sig_2016  = "nanoaod_all_skim_2016_081320_devv6_limits/";
+const TString inputdir_sig_2017  = "nanoaod_all_skim_2017_081320_devv6_limits/";
 
 const TString outputdir = ".";
 
