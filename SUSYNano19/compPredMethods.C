@@ -50,7 +50,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     ratio->Divide(den);
     auto gr = new TGraphAsymmErrors(ratio);
     for (int i=0; i<gr->GetN(); ++i){
-      if(gr->GetY()[i] > 4.) gr->GetY()[i] = 4.0;
+      if(gr->GetY()[i] > 1.) cout << "bin: " << i << " num: " << num->GetEYhigh()[i] << " denom: " << denom->GetBinError(i+1) << " ratio: " << gr->GetY()[i] << endl;;
       gr->GetEXlow()[i] = 0;
       gr->GetEXhigh()[i] = 0;
     }
@@ -119,7 +119,8 @@ void compPredMethods(TString bkg = "ttbarplusw"){
     pred_noextrap->GetX()[i] += 1.5;
   }
   pred->SetLineColor(kBlue); pred->SetMarkerColor(kBlue);
-  pred_statOnly->SetLineColor(kRed); pred_statOnly->SetMarkerColor(kRed);
+  //pred_statOnly->SetLineColor(kRed); pred_statOnly->SetMarkerColor(kRed);
+  pred_statOnly->SetLineColor(kBlue); pred_statOnly->SetMarkerColor(kBlue);
   for (auto *gr : {pred, pred_statOnly, pred_noextrap}){
     for (int i=0; i<gr->GetN(); ++i){
       gr->GetEXlow()[i] = 0;
@@ -138,12 +139,10 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   //  ratio_pred_noextrap->GetX()[i] += 0.3;
   //}
 
-  TH1* extrap = convertToHist(toQuantities(pred), "tmp", "");
-  auto ratio_new = getRatioGraphError(pred, extrap);
-  auto ratio_new_noextrap = getRatioGraphError(pred_noextrap, extrap);
+  TH1* extrap = convertToHist(toQuantities(pred_noextrap), "tmp", "");
+  auto ratio_new_noextrap = getRatioGraphError(pred_statOnly, extrap);
   for (int i=0; i<ratio_new_noextrap->GetN(); ++i){
     if(i < 153) continue;
-    ratio_new->GetX()[i] += 1.5;
     ratio_new_noextrap->GetX()[i] += 1.5;
   }
 
@@ -161,7 +160,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   c_pull->Print(basename+".pdf");
 
   auto leg = prepLegends<TGraphAsymmErrors>({pred_statOnly, pred, pred_noextrap}, {"Stats. unc. only", "Stats. + Syst. unc.", "w/o extrapolation"}, "LP");
-  auto leg_new = prepLegends<TGraphAsymmErrors>({pred, pred_noextrap}, {"extrapolation (Stats. + Syst. unc.)", "w/o extrapolation (Stat. unc.)"}, "LP");
+  auto leg_new = prepLegends<TGraphAsymmErrors>({pred_statOnly, pred_noextrap}, {"extrapolation (Stats. unc.)", "w/o extrapolation (Stat. unc.)"}, "LP");
 
   auto c = MakeCanvas(1000, 600);
   TPad *p1 = new TPad("p1","p1",0,PAD_SPLIT_Y,1,1);
@@ -235,19 +234,17 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   p1new->cd();
 
 
-  pred->GetXaxis()->SetRangeUser(xlow, xhigh);
-  pred->GetYaxis()->SetRangeUser(0.01, 1e7);
+  pred_statOnly->GetXaxis()->SetRangeUser(xlow, xhigh);
+  pred_statOnly->GetYaxis()->SetRangeUser(0.01, 1e7);
   p1new->SetLogy();
 
-  pred->GetYaxis()->SetTitle("Prediction");
-  pred->GetYaxis()->SetTitleSize(0.07);
-  pred->GetYaxis()->SetTitleOffset(0.8);
-  pred->GetXaxis()->SetLabelOffset(0.6);
-  pred->GetXaxis()->SetNdivisions(520);
-  pred->Draw("PA0");
-  //pred_statOnly->Draw("P0same[]");
+  pred_statOnly->GetYaxis()->SetTitle("Prediction");
+  pred_statOnly->GetYaxis()->SetTitleSize(0.07);
+  pred_statOnly->GetYaxis()->SetTitleOffset(0.8);
+  pred_statOnly->GetXaxis()->SetLabelOffset(0.6);
+  pred_statOnly->GetXaxis()->SetNdivisions(520);
+  pred_statOnly->Draw("PA0");
   pred_noextrap->Draw("P0same");
-  //double fLegX1 = 0.58, fLegY1 = 0.87, fLegX2 = 0.92, fLegY2 = 0.87;
   setLegend(leg_new, 1, 0.5, 0.70, 0.92, 0.87);
   leg_new->Draw();
   CMS_lumi(p1new, 4, 10);
@@ -265,10 +262,10 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   p2new->cd();
 
   ratio_new_noextrap->GetXaxis()->SetTitle("Search region");
-  ratio_new_noextrap->GetYaxis()->SetTitle("#frac{Unc.(w/o extrap)}{Unc.(extrap)}");
+  ratio_new_noextrap->GetYaxis()->SetTitle("#frac{Unc.(extrap)}{Unc.(w/o extrap)}");
   ratio_new_noextrap->GetXaxis()->SetRangeUser(xlow, xhigh);
   ratio_new_noextrap->GetXaxis()->SetNdivisions(520);
-  ratio_new_noextrap->GetYaxis()->SetRangeUser(0, 1.999);
+  ratio_new_noextrap->GetYaxis()->SetRangeUser(0, 1.501);
   ratio_new_noextrap->GetXaxis()->SetTitleSize(0.12);
   ratio_new_noextrap->GetYaxis()->SetTitleSize(0.09);
   ratio_new_noextrap->GetYaxis()->SetTitleOffset(0.41);
@@ -277,11 +274,9 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   ratio_new_noextrap->GetYaxis()->SetLabelSize(0.1);
   ratio_new_noextrap->GetYaxis()->CenterTitle(kTRUE);
   ratio_new_noextrap->GetYaxis()->SetNdivisions(309);
-  ratio_new_noextrap->GetYaxis()->SetRangeUser(0., 4.501);
-  ratio_new_noextrap->GetYaxis()->ChangeLabel(5, -1, -1, -1, 1, -1, ">4");
+  //ratio_new_noextrap->GetYaxis()->ChangeLabel(5, -1, -1, -1, 1, -1, ">4");
 
 
-  ratio_new->SetLineColor(kBlue); ratio_new->SetMarkerColor(kBlue);
   //ratio_new->SetMarkerSize(0);
 
   //ratio_new->Draw("PA0");

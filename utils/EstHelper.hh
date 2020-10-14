@@ -399,7 +399,9 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
       if(forceymin<9999.) h->SetMinimum(forceymin);
       h->Draw("histe");
     }
-    h->Draw("histesame");
+    if(TString(h->GetName()).Contains("Nominal") && noLumi) h->Draw("histesame");
+    else if(noLumi) h->Draw("PA0same");
+    else h->Draw("histesame");
 #ifdef DEBUG_
     cout << "-->drawing drawCompAndRatio: "<< h->GetName() << endl;
 #endif
@@ -419,7 +421,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  if(noLumi) CMS_lumi(p1, 99, 10);
+  if(!noLumi) CMS_lumi(p1, 99, 10);
   if(!isVal) CMS_lumi(p1, 4, 10);
 #endif
 
