@@ -399,8 +399,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
       if(forceymin<9999.) h->SetMinimum(forceymin);
       h->Draw("histe");
     }
-    if(TString(h->GetName()).Contains("Nominal") && noLumi) h->Draw("histesame");
-    else if(noLumi) h->Draw("PA0same");
+    if(noLumi) h->Draw("PA0same");
     else h->Draw("histesame");
 #ifdef DEBUG_
     cout << "-->drawing drawCompAndRatio: "<< h->GetName() << endl;
@@ -421,8 +420,8 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  if(!noLumi) CMS_lumi(p1, 99, 10);
-  if(!isVal) CMS_lumi(p1, 4, 10);
+  //if(!noLumi) CMS_lumi(p1, 99, 10);
+  if(!isVal && !noLumi) CMS_lumi(p1, 4, 10);
 #endif
 
   if(inratiohists.size() == 0){
@@ -540,7 +539,6 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
   hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
   hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
-  TGaxis::SetMaxDigits(3);
   hbkgtotal->Draw("hist");
   hstack->Draw("histsame");
 #ifdef DEBUG_
@@ -637,7 +635,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hbkgtotal->GetYaxis()->SetTitleSize(0.08);
   hbkgtotal->GetYaxis()->SetTitleOffset(0.85);
   hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
-  TGaxis::SetMaxDigits(3);
   hbkgtotal->Draw("hist");
 
   hstack->Draw("histsame");

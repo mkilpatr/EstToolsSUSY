@@ -1564,6 +1564,9 @@ void plot1LepInclusiveWithSyst(){
   config.sel = baseline;
   lumistr = "137.00079";
 
+  TDR_EXTRA_LABEL_ = "";
+  TDR_EXTRA_LABEL_2 = "";
+
   LOG_YMIN = 1.;
   //RATIO_YMIN = 0.499;
   //RATIO_YMAX = 1.501;
@@ -1577,7 +1580,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_082520";
+  TString region = "lepcr_inclusive_withSyst_devv7_102220";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1652,16 +1655,16 @@ void plot1LepInclusiveWithSyst(){
       //Make final plot with stat + syst
       z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.73); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
       } else if (!var.first.Contains("toppt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.79); };
         z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn);
       } else if (var.first.Contains("_nowgt")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.73); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       } else {
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.75); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.79); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       }
     }

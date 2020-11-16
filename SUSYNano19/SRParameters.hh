@@ -2,7 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-#include "binDefinitions_getValue.hh"
+#include "binDefinitions.hh"
 
 namespace EstTools{
 
@@ -176,6 +176,7 @@ std::map<TString, TString> cutMap = []{
 	{"htgt1500",    "Stop0l_HT>=1500"},	
 	{"htlt1300",    "Stop0l_HT<1300"},	
 	{"htgt1300",    "Stop0l_HT>=1300"},	
+        {"noextrap",    "1 == 1"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -233,6 +234,7 @@ std::map<TString, TString> labelMap{
   {"htgt1300",    R"($\Ht\geq1300$)"},	
   {"lmNoDPhi",    R"(Low $\Delta m$)"},
   {"hmNoDPhi",    R"(High $\Delta m$)"},
+  {"noextrap",    R"()"},
   
 };
 
@@ -285,6 +287,7 @@ std::map<TString, TString> plotLabelMap{
   {"htgt1300",    R"(H_{T}#geq1300)"},	
   {"lmNoDPhi",    R"(Low #Delta m)"},
   {"hmNoDPhi",    R"(High #Delta m)"},
+  {"noextrap",    R"()"},
 };
 
 std::map<TString, TString> srcuts = []{

@@ -7,9 +7,11 @@
 
 using namespace EstTools;
 
-void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods", bool otherSig = false){
+void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods_CWR", bool otherSig = false){
 
   gSystem->mkdir(outputName, true);
+
+  TDR_EXTRA_LABEL_ = "";
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -185,9 +187,6 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     pred_comp_post.push_back(hist_comp);
   }
 
-  //Adding ttZ to Rare
-  hRare->Add(httZ);
-
   pred_comp.push_back(httZ_comp);
   pred.push_back(hRare);
   pred_comp.push_back(hRare_comp);
@@ -306,6 +305,8 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   }
 
   //Make unc for postfit
+  //Adding ttZ to Rare
+  hRare->Add(httZ);
   TGraphAsymmErrors* unc_post = (TGraphAsymmErrors*)p->Get("Sumb");
 
   int style = 2;
@@ -386,7 +387,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
@@ -404,7 +405,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);

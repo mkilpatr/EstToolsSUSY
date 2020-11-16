@@ -7,9 +7,11 @@
 
 using namespace EstTools;
 
-void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation"){
+void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR"){
 
   gSystem->mkdir(outputName, true);
+
+  TDR_EXTRA_LABEL_ = "";
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -157,9 +159,6 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     }
   }
 
-  //Adding ttZ to Rare
-  hRare->Add(httz);
-
   pred.push_back(hRare);
   pred.push_back(hqcd);
   pred.push_back(hznunu);
@@ -231,6 +230,9 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
   }
 
+  //Adding ttZ to Rare
+  hRare->Add(httz);
+
   TH1* pull = nullptr; 
   TH1* pull_ratio = nullptr;
   if(hdata){
@@ -289,7 +291,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "/pred_binnum__" + region;
@@ -300,7 +302,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     c = drawStackAndRatio(pred, hdata, leg, true, "Pull", -3.001, 3.001, xlow, xhigh, {}, unc, {pull_ratio}, nullptr, false, false, true, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     basename = outputName + "/pred_binnum__pull_" + region;
