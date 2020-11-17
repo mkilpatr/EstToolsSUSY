@@ -84,7 +84,7 @@ void lepcrYields(){
 
 void plotHtoTaus(){
   auto config = sigConfig();
-  TString baseline_plus = "nJets30 >=2 && HiggsCand_pt > 100 && Jet_dijetMass > 300 && nTauMatch > 1";
+  TString baseline_plus = "nJets30 >=2 && HiggsCand_pt > 100 && JetTau_dijetMass > 300 && Tau_dijetMass != -9";
   config.sel = baseline;
 
   config.categories.push_back("dummy");
@@ -96,7 +96,7 @@ void plotHtoTaus(){
   z.setConfig(config);
 
   vector<TString> sig_samples = {"GluGluHToTauTau", "VBFHToTauTau"};
-  vector<TString> mc_samples = {"vv", "ww"};
+  vector<TString> mc_samples = {"diboson"};
   TString data_sample_2016 = "";
 
   map<TString, BinInfo> varDict {
@@ -105,27 +105,27 @@ void plotHtoTaus(){
 	{"tauMatch",	BinInfo("nTauMatch",     	"Matched N_{#tau}", 4, -0.5, 3.5)},
 	{"tauHadDecay_1",	BinInfo("Tau_hadDecayFlag1", 	"Type of Decay", 3, -0.5, 2.5)},
 	{"tauHadDecay_2",	BinInfo("Tau_hadDecayFlag2", 	"Type of Decay", 3, -0.5, 2.5)},
-	{"jetMass",	BinInfo("Jet_dijetMass", 	"M_{jj}", 16, 0, 800)},
-	{"tauMass",	BinInfo("Tau_dijetMass", 	"M_{#tau#tau}", 10, 0, 400)},
-	{"jetDeltaR",	BinInfo("Jet_deltaR",    	"#DeltaR(j_{1}, j_{2})", 25, 0, 5)},
+	{"jetMass",	BinInfo("JetTau_dijetMass", 	"M_{jj}", 16, 0, 800)},
+	{"tauMass",	BinInfo("Tau_dijetMass", 	"M_{#tau#tau}", 100, 0, 50)},
+	{"jetDeltaR",	BinInfo("JetTau_deltaR",    	"#DeltaR(j_{1}, j_{2})", 25, 0, 5)},
 	{"tauDeltaR",	BinInfo("Tau_deltaR",    	"#DeltaR(#tau_{1}, #tau_{2})", 25, 0, 5)},
 	{"higgsPt",	BinInfo("HiggsCand_pt",  	"p_T(H) [GeV]", 12, 0, 1000)},
 	{"higgsEta",	BinInfo("HiggsCand_eta", 	"#eta(H)", 10, 0, 10)},
 	{"higgsPhi",	BinInfo("HiggsCand_phi", 	"#phi(H)", 64, -3.2, 3.2)},
 	{"higgsMass",	BinInfo("HiggsCand_mass",	"M(H)", 30, 0, 300)},
 	{"ht",	BinInfo("Tau_HT",        	"H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"j1pt",	BinInfo("Jet_matchPt_1"  , 	"p_T(j_{1}) [GeV]", 12, 400, 1000)},	
-	{"j1eta",	BinInfo("Jet_matchEta_1" , 	"#eta(j_{1})", 10, 0, 10)},         	
-	{"j1phi",	BinInfo("Jet_matchPhi_1" , 	"#phi(j_{1})", 64, -3.2, 3.2)},     	
-	{"jimass",	BinInfo("Jet_matchMass_1", 	"M(j_{1})", 30, 0, 300)},           	
-	{"j2pt",	BinInfo("Jet_matchPt_2"  , 	"p_T(j_{2}) [GeV]", 12, 400, 1000)},	
-	{"j2eta",	BinInfo("Jet_matchEta_2" , 	"#eta(j_{2})", 10, 0, 10)},         	
-	{"j2phi",	BinInfo("Jet_matchPhi_2" , 	"#phi(j_{2})", 64, -3.2, 3.2)},     	
-	{"j2mass",	BinInfo("Jet_matchMass_2", 	"M(j_{2})", 30, 0, 300)},           	
-	{"j3pt",	BinInfo("Jet_matchPt_3"  , 	"p_T(j_{3}) [GeV]", 12, 400, 1000)},	
-	{"j3eta",	BinInfo("Jet_matchEta_3" , 	"#eta(j_{3})", 10, 0, 10)},         	
-	{"j3phi",	BinInfo("Jet_matchPhi_3" , 	"#phi(j_{3})", 64, -3.2, 3.2)},     	
-	{"j3mass",	BinInfo("Jet_matchMass_3", 	"M(j_{3})", 30, 0, 300)},           	
+	{"j1pt",	BinInfo("JetTau_matchPt_1"  , 	"p_T(j_{1}) [GeV]", 12, 400, 1000)},	
+	{"j1eta",	BinInfo("JetTau_matchEta_1" , 	"#eta(j_{1})", 10, 0, 10)},         	
+	{"j1phi",	BinInfo("JetTau_matchPhi_1" , 	"#phi(j_{1})", 64, -3.2, 3.2)},     	
+	{"jimass",	BinInfo("JetTau_matchMass_1", 	"M(j_{1})", 30, 0, 300)},           	
+	{"j2pt",	BinInfo("JetTau_matchPt_2"  , 	"p_T(j_{2}) [GeV]", 12, 400, 1000)},	
+	{"j2eta",	BinInfo("JetTau_matchEta_2" , 	"#eta(j_{2})", 10, 0, 10)},         	
+	{"j2phi",	BinInfo("JetTau_matchPhi_2" , 	"#phi(j_{2})", 64, -3.2, 3.2)},     	
+	{"j2mass",	BinInfo("JetTau_matchMass_2", 	"M(j_{2})", 30, 0, 300)},           	
+	{"j3pt",	BinInfo("JetTau_matchPt_3"  , 	"p_T(j_{3}) [GeV]", 12, 400, 1000)},	
+	{"j3eta",	BinInfo("JetTau_matchEta_3" , 	"#eta(j_{3})", 10, 0, 10)},         	
+	{"j3phi",	BinInfo("JetTau_matchPhi_3" , 	"#phi(j_{3})", 64, -3.2, 3.2)},     	
+	{"j3mass",	BinInfo("JetTau_matchMass_3", 	"M(j_{3})", 30, 0, 300)},           	
 	{"nlep",	BinInfo("Tau_nLep",  		"N_{lep}", 4, -0.5, 3.5)},
 	{"lep1pt",	BinInfo("Tau_LeptonPt_1", 	"p_T(l_{1}) [GeV]", 12, 400, 1000)},
 	{"lep1eta",	BinInfo("Tau_LeptonEta_1", 	"#eta(l_{1})", 10, 0, 10)},
@@ -144,9 +144,9 @@ void plotHtoTaus(){
   for (auto &var : varDict){
     z.resetSelection();
     z.setSelection(baseline_plus, "baseline_2018", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{", 0.2, 0.75); };
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
     //plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
-    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, &plotextra);
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra);
   }
 }
 

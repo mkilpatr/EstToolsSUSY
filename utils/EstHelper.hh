@@ -642,7 +642,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *sig : sighists){
     auto h = (TH1*)sig->Clone();
     h->SetLineWidth(3);
-    ScaleXaxis(h, ScaleX);
     h->Draw("histsame");
 #ifdef DEBUG_
   cout << "-->drawing drawStacKAndRatio sighist: "<< h->GetName() << endl;
