@@ -575,38 +575,18 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr, bool diffRatio = false, bool ttbarRatio = false, bool finalPlot = false, bool manualLabelChange = false, bool mcRatio = false, bool ratioPull = false)
+TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, bool plotlog = false, TString ratioYTitle = "N_{obs}/N_{exp}", double lowY = RATIO_YMIN, double highY = RATIO_YMAX, double lowX = 0, double highX = -1, vector<TH1*> sighists={}, TGraphAsymmErrors* inUnc=nullptr, vector<TH1*> inRatios = {}, TGraphAsymmErrors* inRelUnc=nullptr)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   TH1* hData = inData ? (TH1*)inData->Clone() : nullptr;
   TH1* hbkgtotal = nullptr;
-  TH1* hnonttbar = nullptr;
-  TH1* httbar = nullptr;
-  TH1* helec = nullptr;
-  TH1* hmuon = nullptr;
-  TString name = "";
   THStack* hstack = new THStack(inhists.front()->GetName()+TString("_stack"), inhists.front()->GetTitle());
   for (auto *h : inhists){
     auto *hmc = (TH1*)h->Clone();
-    name = hmc->GetName();
     if (!hbkgtotal)
       hbkgtotal = (TH1*)hmc->Clone("hbkgtotal");
     else
       hbkgtotal->Add(hmc);
-
-    if(ttbarRatio && TString(hmc->GetName()).Contains("ttbar"))
-      httbar = (TH1*)hmc->Clone("httbar");
-    else if (!hnonttbar)
-      hnonttbar = (TH1*)hmc->Clone("hnonttbar");
-    else
-      hnonttbar->Add(hmc);
-
-    if (mcRatio && TString(hmc->GetName()).Contains("electron"))
-      helec = (TH1*)hmc->Clone("helec");
-    else if (mcRatio && TString(hmc->GetName()).Contains("muon"))
-      hmuon = (TH1*)hmc->Clone("hmuon");
-    
-
     if (hmc->GetLineColor()!=kBlack){
       hmc->SetFillColor(hmc->GetLineColor()); hmc->SetFillStyle(1001); hmc->SetLineColor(kBlack);
     }
@@ -656,13 +636,12 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   unc->SetLineWidth(0);
   unc->SetMarkerSize(0);
   unc->Draw("E2same");
-  if(leg && !finalPlot) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
+  if(leg) addLegendEntry(leg, unc,"Bkg. uncertainty","F");
 
   if (hData){
     TH1F *h00 = (TH1F*)hData->Clone("data0");
     TGraphAsymmErrors* gr = getAsymmErrors(h00);
     gr->SetMarkerStyle(20);
-    if(finalPlot) gr->SetMarkerStyle(7);
     gr->SetLineWidth(hData->GetLineWidth());
     gr->SetFillStyle(0);
     SetEx(gr, 0.);
@@ -675,10 +654,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   if (leg) leg->Draw();
 
   p1->SetTicks(1, 1);
-  if(finalPlot){ 
-    p1->SetTicks(1, 0);
-    hbkgtotal->Draw("AXISsame");
-  }
   p1->RedrawAxis();
   p1->RedrawAxis("G");
 
@@ -698,13 +673,8 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 
 #ifdef TDR_STYLE_
   TH1 *haxis = (TH1*)hbkgtotal->Clone("htmpaxis");
-  if (ttbarRatio){
-    haxis->SetTitleSize  (0.08,"Y");
-    haxis->SetTitleOffset(0.60,"Y");
-  } else{ 
-    haxis->SetTitleSize  (0.14,"Y");
-    haxis->SetTitleOffset(0.41,"Y");
-  }
+  haxis->SetTitleSize  (0.14,"Y");
+  haxis->SetTitleOffset(0.41,"Y");
   haxis->SetTitleSize  (0.14,"X");
   haxis->SetTitleOffset(RATIOPLOT_XTITLE_OFFSET,"X");
   haxis->SetLabelSize  (RATIOPLOT_XLABEL_FONTSIZE,"X");
@@ -719,46 +689,16 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   haxis->GetYaxis()->SetLabelFont(42);
   haxis->GetYaxis()->SetRangeUser(lowY,highY);
   if(lowX<highX) haxis->GetXaxis()->SetRangeUser(lowX, highX);
-  if(manualLabelChange){
-    if(name.Contains("nTop") || name.Contains("nW") || name.Contains("nResolved")){
-      haxis->GetXaxis()->ChangeLabel(1, -1, 0.);
-      haxis->GetXaxis()->ChangeLabel(3, -1, 0.);
-      haxis->GetXaxis()->ChangeLabel(5, -1, 0.);
-      haxis->GetXaxis()->ChangeLabel(7, -1, 0.);
-      haxis->GetXaxis()->ChangeLabel(6, -1, -1, -1, 1, -1, "2+");
-    } else if(name.Contains("MET")){
-      haxis->GetXaxis()->ChangeLabel(8, -1, -1, -1, 1, -1, "#infty");
-    }
-    if((lowX == 0 && highX == 53) || (lowX == 105 && highX == 153)){
-      haxis->GetXaxis()->ChangeLabel(1, -1, 0.);  
-    }
-
-  }
   haxis->Draw("AXIS");
 
   if (inData){
     TH1 *h3 = (TH1*)inData->Clone("data3");
 
     TGraphAsymmErrors* ratio;
-    if (ttbarRatio){
-      TH1* hnonttbarNoError = (TH1*)hnonttbar->Clone("hnonttbarNoError");
-      TH1* httbarNoError = (TH1*)httbar->Clone("httbarNoError");
-      for (int i=1; i < hnonttbarNoError->GetNbinsX()+1; ++i) hnonttbarNoError->SetBinError(i, 0);
-      for (int i=1; i < httbarNoError->GetNbinsX()+1; ++i) httbarNoError->SetBinError(i, 0);
-      ratio = getRatioAsymmErrors(h3, hnonttbarNoError, httbarNoError);
-    } else if (mcRatio){   
-      ratio = getRatioAsymmErrors(helec, hmuon);
-    } else if (ratioPull){   
-      ratio = getAsymmErrorsFromHist(inRatios[0]);
-    } else {   
-      TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
-      for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
-      ratio = getRatioAsymmErrors(h3, hMCNoError);
-    }
+    TH1* hMCNoError = (TH1*)hbkgtotal->Clone("hMCNoError");
+    for (int i=1; i < hMCNoError->GetNbinsX()+1; ++i) hMCNoError->SetBinError(i, 0);
+    ratio = getRatioAsymmErrors(h3, hMCNoError);
     ratio->SetLineWidth(h3->GetLineWidth());
-    SetEx(ratio, 0.);
-    if(finalPlot) ratio->SetMarkerStyle(7);
-    if(ratioPull) ratio->SetMarkerStyle(0);
     if(!inRelUnc) ratio->Draw("PZ0same");
   }
 
@@ -777,7 +717,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hRelUnc->SetLineStyle(0);
   hRelUnc->SetLineWidth(0);
   hRelUnc->SetMarkerSize(0);
-  if(!ratioPull) hRelUnc->Draw("E2same");
 
   p2->SetTicks(1, 1);
   p2->RedrawAxis("G");
@@ -785,14 +724,9 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
 #else
   if (inData){
     TH1F* hRatio = nullptr;
-    if (diffRatio)       hRatio = new TRatioPlot(inData, hbkgtotal);
-    else if (ratioPull)  hRatio = inRatios[0];
-    else if (ttbarRatio) hRatio = makeRatioHists(hnonttbar, httbar, inData);
-    else if (mcRatio)    hRatio = makeRatioHists(helec, hmuon);
-    else if (inRatios.size() != 0 && manualLabelChange) hRatio = inRatios[0];
+    if (inRatios.size() != 0) hRatio = inRatios[0];
     else 	         hRatio = makeRatioHists(inData, hbkgtotal);
-    if (ttbarRatio) hRatio->SetTitleSize  (0.08,"Y");
-    else hRatio->SetTitleSize  (0.14,"Y");
+    hRatio->SetTitleSize  (0.14,"Y");
     hRatio->SetTitleOffset(0.41,"Y");
     hRatio->SetTitleSize  (0.14,"X");
     hRatio->SetTitleOffset(0.85,"X");
@@ -819,15 +753,10 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   double xmin = inhists.front()->GetXaxis()->GetXmin();
   double xmax = inhists.front()->GetXaxis()->GetXmax();
   if (lowX<highX) { xmin = lowX; xmax = highX; }
-  if (!inRelUnc && !ratioPull){
+  if (!inRelUnc){
     TLine *l = new TLine(xmin,1,xmax,1);
     l->SetLineWidth(2);
     l->SetLineColor(kBlack);
-    l->Draw("same");
-  } else if (ratioPull){
-    TLine *l = new TLine(xmin,0,xmax,0);
-    l->SetLineWidth(2);
-    l->SetLineColor(kRed);
     l->Draw("same");
   }
 

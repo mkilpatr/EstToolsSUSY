@@ -1069,12 +1069,8 @@ public:
 
     TCanvas *c = nullptr;
     if (hdata){
-      if (ttbarRatio)
-        c = drawStackAndRatio(mchists, hdata, leg, plotlog, "(N_{obs} - N_{non-ttbar})/N_{ttbar}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, ttbarRatio);
-      else if (mcRatio)
-        c = drawStackAndRatio(mchists, hdata, leg, plotlog, "N_{el}/N_{mu}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, false, false, false, mcRatio);
-      else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
-        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+      if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
+        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr);
       } else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{

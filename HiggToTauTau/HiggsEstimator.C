@@ -84,13 +84,15 @@ void lepcrYields(){
 
 void plotHtoTaus(){
   auto config = sigConfig();
-  TString baseline_plus = "nJets30 >=2 && HiggsCand_pt > 100 && JetTau_dijetMass > 300 && Tau_dijetMass != -9";
+  TString baseline_plus = "nJets30 >=2 && HiggsCand_pt > 100 && JetTau_dijetMass > 300 && Tau_dijetMass != -9 && HiggsCand_mass > 0 && Tau_deltaR > -1 && JetTau_dijetMass != 0";
   config.sel = baseline;
+
+  LOG_YMIN = 10.;
 
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "Tau_training_111320";
+  TString region = "Tau_training_111620_small";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -100,44 +102,44 @@ void plotHtoTaus(){
   TString data_sample_2016 = "";
 
   map<TString, BinInfo> varDict {
-	{"njets",	BinInfo("nJets30",      	"N_{j}", 10, -0.5, 9.5)}, 
+	{"njets",	BinInfo("nJets30",      	"N_{j}", 8, 1.5, 9.5)}, 
 	{"tauChannel",	BinInfo("Tau_channel",   	"Tau channel", 5, 0, 5)},
 	{"tauMatch",	BinInfo("nTauMatch",     	"Matched N_{#tau}", 4, -0.5, 3.5)},
 	{"tauHadDecay_1",	BinInfo("Tau_hadDecayFlag1", 	"Type of Decay", 3, -0.5, 2.5)},
 	{"tauHadDecay_2",	BinInfo("Tau_hadDecayFlag2", 	"Type of Decay", 3, -0.5, 2.5)},
-	{"jetMass",	BinInfo("JetTau_dijetMass", 	"M_{jj}", 16, 0, 800)},
+	{"jetMass",	BinInfo("JetTau_dijetMass", 	"M_{jj}", 14, 300, 1000)},
 	{"tauMass",	BinInfo("Tau_dijetMass", 	"M_{#tau#tau}", 100, 0, 50)},
 	{"jetDeltaR",	BinInfo("JetTau_deltaR",    	"#DeltaR(j_{1}, j_{2})", 25, 0, 5)},
 	{"tauDeltaR",	BinInfo("Tau_deltaR",    	"#DeltaR(#tau_{1}, #tau_{2})", 25, 0, 5)},
-	{"higgsPt",	BinInfo("HiggsCand_pt",  	"p_T(H) [GeV]", 12, 0, 1000)},
-	{"higgsEta",	BinInfo("HiggsCand_eta", 	"#eta(H)", 10, 0, 10)},
+	{"higgsPt",	BinInfo("HiggsCand_pt",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"higgsEta",	BinInfo("HiggsCand_eta", 	"#eta(H)", 16, -4, 4)},
 	{"higgsPhi",	BinInfo("HiggsCand_phi", 	"#phi(H)", 64, -3.2, 3.2)},
-	{"higgsMass",	BinInfo("HiggsCand_mass",	"M(H)", 30, 0, 300)},
-	{"ht",	BinInfo("Tau_HT",        	"H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-	{"j1pt",	BinInfo("JetTau_matchPt_1"  , 	"p_T(j_{1}) [GeV]", 12, 400, 1000)},	
+	{"higgsMass",	BinInfo("HiggsCand_mass",	"M_{H}", 16, 0, 400)},
+	{"ht",		BinInfo("Tau_HT",        	"H_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"j1pt",	BinInfo("JetTau_matchPt_1"  , 	"p_{T}(j_{1}) [GeV]", 20, 0, 1000)},	
 	{"j1eta",	BinInfo("JetTau_matchEta_1" , 	"#eta(j_{1})", 10, 0, 10)},         	
 	{"j1phi",	BinInfo("JetTau_matchPhi_1" , 	"#phi(j_{1})", 64, -3.2, 3.2)},     	
 	{"jimass",	BinInfo("JetTau_matchMass_1", 	"M(j_{1})", 30, 0, 300)},           	
-	{"j2pt",	BinInfo("JetTau_matchPt_2"  , 	"p_T(j_{2}) [GeV]", 12, 400, 1000)},	
-	{"j2eta",	BinInfo("JetTau_matchEta_2" , 	"#eta(j_{2})", 10, 0, 10)},         	
+	{"j2pt",	BinInfo("JetTau_matchPt_2"  , 	"p_{T}(j_{2}) [GeV]", 20, 0, 1000)},	
+	{"j2eta",	BinInfo("JetTau_matchEta_2" , 	"#eta(j_{2})", 16, -4, 4)},
 	{"j2phi",	BinInfo("JetTau_matchPhi_2" , 	"#phi(j_{2})", 64, -3.2, 3.2)},     	
 	{"j2mass",	BinInfo("JetTau_matchMass_2", 	"M(j_{2})", 30, 0, 300)},           	
-	{"j3pt",	BinInfo("JetTau_matchPt_3"  , 	"p_T(j_{3}) [GeV]", 12, 400, 1000)},	
-	{"j3eta",	BinInfo("JetTau_matchEta_3" , 	"#eta(j_{3})", 10, 0, 10)},         	
+	{"j3pt",	BinInfo("JetTau_matchPt_3"  , 	"p_{T}(j_{3}) [GeV]", 20, 0, 1000)},	
+	{"j3eta",	BinInfo("JetTau_matchEta_3" , 	"#eta(j_{3})", 16, -4, 4)},
 	{"j3phi",	BinInfo("JetTau_matchPhi_3" , 	"#phi(j_{3})", 64, -3.2, 3.2)},     	
 	{"j3mass",	BinInfo("JetTau_matchMass_3", 	"M(j_{3})", 30, 0, 300)},           	
 	{"nlep",	BinInfo("Tau_nLep",  		"N_{lep}", 4, -0.5, 3.5)},
-	{"lep1pt",	BinInfo("Tau_LeptonPt_1", 	"p_T(l_{1}) [GeV]", 12, 400, 1000)},
-	{"lep1eta",	BinInfo("Tau_LeptonEta_1", 	"#eta(l_{1})", 10, 0, 10)},
+	{"lep1pt",	BinInfo("Tau_LeptonPt_1", 	"p_{T}(l_{1}) [GeV]", 16, 0, 400)},
+	{"lep1eta",	BinInfo("Tau_LeptonEta_1", 	"#eta(l_{1})", 16, -4, 4)},
 	{"lep1phi",	BinInfo("Tau_LeptonPhi_1", 	"#phi(l_{1})", 64, -3.2, 3.2)},
-	{"lep1charge",	BinInfo("Tau_LeptonCharge_1", 	"Charge l_{1}", 3, -1.5, 1.5)},
+	{"lep1charge",	BinInfo("Tau_LeptonCharge_1", 	"Charge l_{1}", 5, -2.5, 2.5)},
 	{"lep1pdgid",	BinInfo("Tau_LeptonPdgId_1", 	"PdgId l_{1}", 31, -15.5, 15.5)},
-	{"lep2pt",	BinInfo("Tau_LeptonPt_2", 	"p_T(l_{2}) [GeV]", 12, 400, 1000)},
-	{"lep2eta",	BinInfo("Tau_LeptonEta_2", 	"#eta(l_{2})", 10, 0, 10)},
+	{"lep2pt",	BinInfo("Tau_LeptonPt_2", 	"p_{T}(l_{2}) [GeV]", 16, 0, 400)},
+	{"lep2eta",	BinInfo("Tau_LeptonEta_2", 	"#eta(l_{2})", 16, -4, 4)},
 	{"lep2phi",	BinInfo("Tau_LeptonPhi_2", 	"#phi(l_{2})", 64, -3.2, 3.2)},
-	{"lep2charge",	BinInfo("Tau_LeptonCharge_2", 	"M(l_{2})", 30, 0, 300)},
+	{"lep2charge",	BinInfo("Tau_LeptonCharge_2", 	"Charge(l_{2})", 5, -2.5, 2.5)},
 	{"lep2pdgid",	BinInfo("Tau_LeptonPdgId_2",    "PdgId l_{2}", 31, -15.5, 15.5)},	
-	{"met",         BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met",         BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
   };
 
   std::function<void(TCanvas*)> plotextra;
@@ -145,7 +147,10 @@ void plotHtoTaus(){
     z.resetSelection();
     z.setSelection(baseline_plus, "baseline_2018", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-    //plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, std::function<void(TCanvas*)> *plotextra = nullptr)
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, false, &plotextra);
+    z.resetSelection();
+    z.setSelection(baseline_plus, "baseline_2018_linear", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
     z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra);
   }
 }
