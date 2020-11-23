@@ -66,6 +66,7 @@ vector<Quantity> getYieldVector(const std::unique_ptr<TTree>& intree, TString wg
   htmp.Sumw2();
   TString cutstr = wgtvar + "*(" + sel + ")";
   auto nentries = intree->Project("htmp", bin.var, cutstr, "e");
+  cout << cutstr << endl;
 
   addOverflow(&htmp);
 

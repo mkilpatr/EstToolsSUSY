@@ -13,9 +13,11 @@ namespace EstTools{
 vector<TString> exclude_cr_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
                                      "tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
                                      "diboson-2016", "diboson-2017", "diboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
+vector<TString> exclude_cr_samples_year = {"ttbar", "wjets", "tW", "ttW", "diboson", "ttZ"};
 vector<TString> exclude_sr_samples = {"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr", "wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr",
                                      "tW-2016-sr", "tW-2017-sr", "tW-2018-sr", "ttW-2016-sr", "ttW-2017-sr", "ttW-2018-sr",
                                      "diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr", "ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"};
+vector<TString> exclude_sr_samples_year = {"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"};
 
 TString sys_name = "nominal";
 //TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
@@ -104,7 +106,7 @@ TString phowgt() { return wgtvar(); }
 bool addTTZRare = true;
 bool doLepSyst = false;
 // for search region = "SR", control region = "CR", for LowMET all = "LowMET", 
-TString region = "SR";
+TString region = "2016SR";
 TString binvar = "MET_pt";
 TString binMap_ = "lm_nb2_lowmtb_highptisr_lowptb12";
 TString binMap() { return binMap_;}
@@ -1334,8 +1336,14 @@ BaseConfig lepConfig2016and2017(){
     config.addSample("diboson-2017-eventsf-sr",  "Rare",       inputdir_2017_ttZRare+"diboson",          seplepvetowgt_2017(), datasel() + revert_vetoes_sep());
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "all") continue;
+    srbins_small.push_back(name);
+  }
+
   config.sel = baseline();
-  config.categories = srbins;
+  config.categories = (binMap() == "all") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
   config.crMapping = lepcrMapping;
@@ -1387,8 +1395,14 @@ BaseConfig lepConfig2016(){
     config.addSample("diboson-eventsf-sr",     "Rare",       inputdir_2016_ttZRare+"diboson",              seplepvetowgt(), datasel() + revert_vetoes_sep() + invert_genLep());
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "all") continue;
+    srbins_small.push_back(name);
+  }
+
   config.sel = baseline();
-  config.categories = srbins;
+  config.categories = (binMap() == "all") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
   config.crMapping = lepcrMapping;
@@ -1440,8 +1454,14 @@ BaseConfig lepConfig2017(){
     config.addSample("diboson-eventsf-sr",  "Rare",       inputdir_2017_ttZRare+"diboson",          seplepvetowgt_2017(), datasel() + revert_vetoes_sep() + invert_genLep());
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "all") continue;
+    srbins_small.push_back(name);
+  }
+
   config.sel = baseline();
-  config.categories = srbins;
+  config.categories = (binMap() == "all") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
   config.crMapping = lepcrMapping;
@@ -1493,8 +1513,14 @@ BaseConfig lepConfig2018(){
     config.addSample("diboson-eventsf-sr",  "Rare",       inputdir_2018_ttZRare+"diboson",           seplepvetowgt_2018(), datasel() + revert_vetoes_sep() + invert_genLep());
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "all") continue;
+    srbins_small.push_back(name);
+  }
+
   config.sel = baseline();
-  config.categories = srbins;
+  config.categories = (binMap() == "all") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
   config.crMapping = lepcrMapping;
@@ -1503,11 +1529,12 @@ BaseConfig lepConfig2018(){
 }
 
 map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
-  auto llbcfg = lepConfig();
+  BaseConfig llbcfg;
        if(region.Contains("2016and2017")) llbcfg = lepConfig2016and2017();
   else if(region.Contains("2016")) llbcfg = lepConfig2016();
   else if(region.Contains("2017")) llbcfg = lepConfig2017();
   else if(region.Contains("2018")) llbcfg = lepConfig2018();
+  else                             llbcfg = lepConfig();
 
   if(sys_name == "JES_Up"){
     llbcfg.catMaps = srCatMap_JESUp();
@@ -1528,49 +1555,75 @@ map<TString, vector<Quantity>> getLLBPred(TString sys_name = ""){
   LLBEstimator l(llbcfg);
 
   if(region.Contains("SR") && doLepSyst == true){
-    l.calcYieldsExcludes(exclude_cr_samples);
-    l.sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
-    l.sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
-    l.sumYields({"tW-2016-sr", "tW-2017-sr", "tW-2018-sr"}, "tW-sr");
-    l.sumYields({"ttW-2016-sr", "ttW-2017-sr", "ttW-2018-sr"}, "ttW-sr");
-    l.sumYields({"ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"}, "ttZ-sr");
-    l.sumYields({"diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr"}, "diboson-sr");
-    Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-    Quantity::removeNegatives(l.yields.at("diboson-sr"));
-    l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
-    l.sumYields({"ttbar-2016-eventsf-sr", "ttbar-2017-eventsf-sr", "ttbar-2018-eventsf-sr"}, "ttbar-eventsf-sr");
-    l.sumYields({"wjets-2016-eventsf-sr", "wjets-2017-eventsf-sr", "wjets-2018-eventsf-sr"}, "wjets-eventsf-sr");
-    l.sumYields({"tW-2016-eventsf-sr", "tW-2017-eventsf-sr", "tW-2018-eventsf-sr"}, "tW-eventsf-sr");
-    l.sumYields({"ttW-2016-eventsf-sr", "ttW-2017-eventsf-sr", "ttW-2018-eventsf-sr"}, "ttW-eventsf-sr");
-    l.sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017-eventsf-sr", "ttZ-2018-eventsf-sr"}, "ttZ-eventsf-sr");
-    l.sumYields({"diboson-2016-eventsf-sr", "diboson-2017-eventsf-sr", "diboson-2018-eventsf-sr"}, "diboson-eventsf-sr");
-    Quantity::removeNegatives(l.yields.at("ttZ-eventsf-sr"));
-    Quantity::removeNegatives(l.yields.at("diboson-eventsf-sr"));
-    l.sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr", "ttZ-eventsf-sr", "diboson-eventsf-sr"}, "ttbarplusw-eventsf-sr");
-    l.yields["lepSF_"] = (l.yields.at("ttbarplusw-sr") + l.yields.at("ttbarplusw-eventsf-sr"))/l.yields.at("ttbarplusw-sr"); 
-    l.yields["_LepSR"]  = l.yields.at("lepSF_")*l.yields.at("ttbarplusw-sr");
+    if(region.Contains("201")){
+      l.calcYieldsExcludes(exclude_cr_samples_year);
+      Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-sr"));
+      l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
+      Quantity::removeNegatives(l.yields.at("ttZ-eventsf-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-eventsf-sr"));
+      l.sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr", "ttZ-eventsf-sr", "diboson-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+      l.yields["lepSF_"] = (l.yields.at("ttbarplusw-sr") + l.yields.at("ttbarplusw-eventsf-sr"))/l.yields.at("ttbarplusw-sr"); 
+      l.yields["_LepSR"]  = l.yields.at("lepSF_")*l.yields.at("ttbarplusw-sr");
+    } else{
+      l.calcYieldsExcludes(exclude_cr_samples);
+      l.sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
+      l.sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
+      l.sumYields({"tW-2016-sr", "tW-2017-sr", "tW-2018-sr"}, "tW-sr");
+      l.sumYields({"ttW-2016-sr", "ttW-2017-sr", "ttW-2018-sr"}, "ttW-sr");
+      l.sumYields({"ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"}, "ttZ-sr");
+      l.sumYields({"diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr"}, "diboson-sr");
+      Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-sr"));
+      l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
+      l.sumYields({"ttbar-2016-eventsf-sr", "ttbar-2017-eventsf-sr", "ttbar-2018-eventsf-sr"}, "ttbar-eventsf-sr");
+      l.sumYields({"wjets-2016-eventsf-sr", "wjets-2017-eventsf-sr", "wjets-2018-eventsf-sr"}, "wjets-eventsf-sr");
+      l.sumYields({"tW-2016-eventsf-sr", "tW-2017-eventsf-sr", "tW-2018-eventsf-sr"}, "tW-eventsf-sr");
+      l.sumYields({"ttW-2016-eventsf-sr", "ttW-2017-eventsf-sr", "ttW-2018-eventsf-sr"}, "ttW-eventsf-sr");
+      l.sumYields({"ttZ-2016-eventsf-sr", "ttZ-2017-eventsf-sr", "ttZ-2018-eventsf-sr"}, "ttZ-eventsf-sr");
+      l.sumYields({"diboson-2016-eventsf-sr", "diboson-2017-eventsf-sr", "diboson-2018-eventsf-sr"}, "diboson-eventsf-sr");
+      Quantity::removeNegatives(l.yields.at("ttZ-eventsf-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-eventsf-sr"));
+      l.sumYields({"ttbar-eventsf-sr", "wjets-eventsf-sr", "tW-eventsf-sr", "ttW-eventsf-sr", "ttZ-eventsf-sr", "diboson-eventsf-sr"}, "ttbarplusw-eventsf-sr");
+      l.yields["lepSF_"] = (l.yields.at("ttbarplusw-sr") + l.yields.at("ttbarplusw-eventsf-sr"))/l.yields.at("ttbarplusw-sr"); 
+      l.yields["_LepSR"]  = l.yields.at("lepSF_")*l.yields.at("ttbarplusw-sr");
+    }
   } else if(region.Contains("SR")){         
-    l.calcYieldsExcludes(exclude_cr_samples);
-    l.sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
-    l.sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
-    l.sumYields({"tW-2016-sr", "tW-2017-sr", "tW-2018-sr"}, "tW-sr");
-    l.sumYields({"ttW-2016-sr", "ttW-2017-sr", "ttW-2018-sr"}, "ttW-sr");
-    l.sumYields({"ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"}, "ttZ-sr");
-    l.sumYields({"diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr"}, "diboson-sr");
-    Quantity::removeNegatives(l.yields.at("ttZ-sr"));
-    Quantity::removeNegatives(l.yields.at("diboson-sr"));
-    l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
+    if(region.Contains("201")){
+      l.calcYieldsExcludes(exclude_cr_samples_year);
+      Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-sr"));
+      l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
+    } else {
+      l.calcYieldsExcludes(exclude_cr_samples);
+      l.sumYields({"ttbar-2016-sr", "ttbar-2017-sr", "ttbar-2018-sr"}, "ttbar-sr");
+      l.sumYields({"wjets-2016-sr", "wjets-2017-sr", "wjets-2018-sr"}, "wjets-sr");
+      l.sumYields({"tW-2016-sr", "tW-2017-sr", "tW-2018-sr"}, "tW-sr");
+      l.sumYields({"ttW-2016-sr", "ttW-2017-sr", "ttW-2018-sr"}, "ttW-sr");
+      l.sumYields({"ttZ-2016-sr", "ttZ-2017-sr", "ttZ-2018-sr"}, "ttZ-sr");
+      l.sumYields({"diboson-2016-sr", "diboson-2017-sr", "diboson-2018-sr"}, "diboson-sr");
+      Quantity::removeNegatives(l.yields.at("ttZ-sr"));
+      Quantity::removeNegatives(l.yields.at("diboson-sr"));
+      l.sumYields({"ttbar-sr", "wjets-sr", "tW-sr", "ttW-sr", "diboson-sr", "ttZ-sr"}, "ttbarplusw-sr");
+    }
   } else if(region.Contains("CR")){
-    l.calcYieldsExcludes(exclude_sr_samples);
-    l.sumYields({"ttbar-2016", "ttbar-2017", "ttbar-2018"}, "ttbar");
-    l.sumYields({"wjets-2016", "wjets-2017", "wjets-2018"}, "wjets");
-    l.sumYields({"tW-2016", "tW-2017", "tW-2018"}, "tW");
-    l.sumYields({"ttW-2016", "ttW-2017", "ttW-2018"}, "ttW");
-    l.sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttZ");
-    l.sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
-    Quantity::removeNegatives(l.yields.at("ttZ"));
-    Quantity::removeNegatives(l.yields.at("diboson"));
-    l.sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
+    if(region.Contains("201")){
+      l.calcYieldsExcludes(exclude_sr_samples_year);
+      Quantity::removeNegatives(l.yields.at("ttZ"));
+      Quantity::removeNegatives(l.yields.at("diboson"));
+      l.sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
+    } else {
+      l.calcYieldsExcludes(exclude_sr_samples);
+      l.sumYields({"ttbar-2016", "ttbar-2017", "ttbar-2018"}, "ttbar");
+      l.sumYields({"wjets-2016", "wjets-2017", "wjets-2018"}, "wjets");
+      l.sumYields({"tW-2016", "tW-2017", "tW-2018"}, "tW");
+      l.sumYields({"ttW-2016", "ttW-2017", "ttW-2018"}, "ttW");
+      l.sumYields({"ttZ-2016", "ttZ-2017", "ttZ-2018"}, "ttZ");
+      l.sumYields({"diboson-2016", "diboson-2017", "diboson-2018"}, "diboson");
+      Quantity::removeNegatives(l.yields.at("ttZ"));
+      Quantity::removeNegatives(l.yields.at("diboson"));
+      l.sumYields({"ttbar", "wjets", "tW", "ttW", "ttZ", "diboson"}, "ttbarplusw");
+    }
   } else l.pred();
 
   l.printYields();

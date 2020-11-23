@@ -40,7 +40,7 @@ ls
 
 cd ${_CONDOR_SCRATCH_DIR}
 pwd
-cd ${CMSSW}/src/AnalysisMethods/EstTools/SUSYNano19/systematics/
+cd ${CMSSW}/src/EstToolsSUSY/SUSYNano19/systematics/
 echo $outdir
 
 sed -i -e "s/lm_nb2_lowmtb_highptisr_lowptb12/$bins/g" Syst_SR_Parameters.hh
