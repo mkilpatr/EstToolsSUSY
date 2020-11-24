@@ -41,6 +41,7 @@ TString filterString(TString instr){
 TString joinString(const vector<TString>& vec, TString delimiter){
   TString rlt = "";
   for (unsigned i=0; i<vec.size(); ++i){
+    if(vec.at(i) == "") continue;
     if (i==0){
       rlt = vec.at(i);
     }else{
@@ -166,6 +167,44 @@ vector<TH2Poly*> normalize(vector<TH2Poly*> hist, double norm = 1){
     h->Scale(norm/h->Integral(""));
   }
   return hist;
+}
+
+Double_t ScaleX(Double_t x)
+{
+  Double_t v;
+  v = x + 0.1; // "linear scaling" function example
+  return v;
+}
+
+void ScaleAxis(TAxis *a, Double_t (*Scale)(Double_t))
+{
+  if (!a) return; // just a precaution
+  if (a->GetXbins()->GetSize())
+    {
+      // an axis with variable bins
+      // note: bins must remain in increasing order, hence the "Scale"
+      // function must be strictly (monotonically) increasing
+      TArrayD X(*(a->GetXbins()));
+      for(Int_t i = 0; i < X.GetSize(); i++) X[i] = Scale(X[i]);
+      a->Set((X.GetSize() - 1), X.GetArray()); // new Xbins
+    }
+  else
+    {
+      // an axis with fix bins
+      // note: we modify Xmin and Xmax only, hence the "Scale" function
+      // must be linear (and Xmax must remain greater than Xmin)
+      a->Set( a->GetNbins(),
+              Scale(a->GetXmin()), // new Xmin
+              Scale(a->GetXmax()) ); // new Xmax
+    }
+  return;
+}
+
+void ScaleXaxis(TH1 *h, Double_t (*Scale)(Double_t))
+{
+  if (!h) return; // just a precaution
+  ScaleAxis(h->GetXaxis(), Scale);
+  return;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -477,11 +516,12 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
-TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false){
-  auto pull_h=new TH1F("pull_h",";Pull;Search Regions",40,-4,4);
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString yAxisTitle = "Search Regions", int skipUntil = 0){
+  auto pull_h=new TH1F("pull_h",";Pull;" + yAxisTitle, 40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
   for(int ibin = 0; ibin < hs->GetN(); ++ibin){
+    if(ibin < skipUntil) continue;
     int ibin_data = ibin + 1;
     ratio->SetBinError(ibin,0);
     float a = h_data->GetBinContent(ibin_data);
@@ -494,9 +534,10 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false){
       db = hs->GetErrorYlow(ibin) * hs->GetErrorYlow(ibin);
     }
     float pull = (a-b)/sqrt(b+db);	//ken's formular: pull = data-pred/sqrt(pred + d_pred^2)
-    ratio->SetBinContent(ibin,pull);
+    ratio->SetBinContent(ibin_data, pull);
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
+    //cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
   }
   if (Ratio) return ratio;
   return pull_h;
@@ -531,7 +572,6 @@ void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdd
     auto *h = hists.at(ih);
     if (isNormalized) normalize(h);
     if (isOverflowAdded) addOverflow(h);
-
     bool isColored = false;
     if (ih < colors.size()){
       h->SetLineColor(colors.at(ih));
@@ -692,7 +732,7 @@ void drawTLatexNDC(TString text, double xpos, double ypos, double size=0.03, dou
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-void drawLine(double x1, double y1, double x2, double y2, int color=kGray+2, int style=kDashed, int width=3)
+void drawLine(double x1, double y1, double x2, double y2, int color=kGray+2, int style=kDashed, int width=2)
 {
   TLine *line = new TLine(x1,y1,x2,y2);
   line->SetLineColor(color);
@@ -762,6 +802,19 @@ TGraphAsymmErrors* getAsymmErrors(TH1* h){
       gr->SetPointEXlow(ibin, 0);
       gr->SetPointEXhigh(ibin, 0);
     }
+  }
+  return gr;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TGraphAsymmErrors* getAsymmErrorsFromHist(TH1* h){
+  TGraphAsymmErrors* gr = new TGraphAsymmErrors(h);
+  for(int ibin = 0; ibin < gr->GetN(); ++ibin) {
+    int ibin_hist = ibin+1;
+    auto q = getHistBin(h, ibin_hist);
+    gr->SetPoint(ibin, gr->GetX()[ibin], q.value);
+    gr->SetPointEYhigh(ibin, 0.);
+    gr->SetPointEYlow(ibin,  0.);
   }
   return gr;
 }
@@ -866,7 +919,7 @@ void GetAverages(vector<double> Up, vector<double> Down = {}){
   double value_up = 0., value_down = 0.;
   vector<double> values;
 
-  for(int ibin = 0; ibin != Up.size(); ibin++){
+  for(unsigned int ibin = 0; ibin != Up.size(); ibin++){
     if (Up[ibin] > 0 && Up[ibin] != 1){
       value_up = Up[ibin];
       if (Up[ibin] < 1) value_up = 1.0/Up[ibin];

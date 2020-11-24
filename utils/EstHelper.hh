@@ -66,7 +66,6 @@ vector<Quantity> getYieldVector(const std::unique_ptr<TTree>& intree, TString wg
   htmp.Sumw2();
   TString cutstr = wgtvar + "*(" + sel + ")";
   auto nentries = intree->Project("htmp", bin.var, cutstr, "e");
-  cout << cutstr << endl;
 
   addOverflow(&htmp);
 
@@ -259,7 +258,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist")
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
 
@@ -296,9 +295,10 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
 #endif
   }
   if (leg) leg->Draw();
-//#ifdef TDR_STYLE_
-//  CMS_lumi(c, 4, 10);
-//#endif
+#ifdef TDR_STYLE_
+  if(noLumi)CMS_lumi(c, 99, 10);
+  else      CMS_lumi(c, 4, 10);
+#endif
   if (plotextra) (*plotextra)(c);
   c->Update();
 
@@ -341,7 +341,7 @@ TCanvas* drawComp(vector<TGraph*> inhists, TLegend *leg = 0)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false, double forceymin = 9999.)
+TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLegend *leg = 0, TString ratioYTitle = "Ratio", double lowY = RATIO_YMIN, double highY=RATIO_YMAX, bool showErrorBarInRatio=true, float logymin = -1., float forceymax = -1., bool isVal = false, TGraphAsymmErrors* inUnc=nullptr, bool ratiolog = false, double forceymin = 9999., bool noLumi = false)
 {
 
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
@@ -399,7 +399,8 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
       if(forceymin<9999.) h->SetMinimum(forceymin);
       h->Draw("histe");
     }
-    h->Draw("histesame");
+    if(noLumi) h->Draw("PA0same");
+    else h->Draw("histesame");
 #ifdef DEBUG_
     cout << "-->drawing drawCompAndRatio: "<< h->GetName() << endl;
 #endif
@@ -419,7 +420,8 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  if(!isVal) CMS_lumi(p1, 4, 10);
+  //if(!noLumi) CMS_lumi(p1, 99, 10);
+  if(!isVal && !noLumi) CMS_lumi(p1, 4, 10);
 #endif
 
   if(inratiohists.size() == 0){
@@ -439,7 +441,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   p2->cd();
   isFirst = true;
   TString drawOpt = showErrorBarInRatio?"E":"hist";
-  if(isVal) gStyle->SetOptStat(0);
+  gStyle->SetOptStat(0);
   for (auto *h : ratiohists){
     if (isFirst) {
       isFirst = false;

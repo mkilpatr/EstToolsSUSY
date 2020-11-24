@@ -7,9 +7,11 @@
 
 using namespace EstTools;
 
-void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation"){
+void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR"){
 
   gSystem->mkdir(outputName, true);
+
+  TDR_EXTRA_LABEL_ = "";
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -23,7 +25,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
   vector<TString> bkgs = {"httz", "hRare", "hqcd", "hznunu", "httbar"};
   TString data = "data";
 
-  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "t#bar{t}Z/Rare"};
+  vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare"};
   vector<TString> siglabels = {"T2tt(1000, 0)"};
   vector<TString> datalabel = {"Observed"};
 
@@ -157,9 +159,6 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     }
   }
 
-  //Adding ttZ to Rare
-  hRare->Add(httz);
-
   pred.push_back(hRare);
   pred.push_back(hqcd);
   pred.push_back(hznunu);
@@ -231,15 +230,26 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
   }
 
-  TH1* pull;
+  //Adding ttZ to Rare
+  hRare->Add(httz);
+
+  TH1* pull = nullptr; 
+  TH1* pull_ratio = nullptr;
   if(hdata){
-    pull = getPullHist(hdata, unc);
+    pull = getPullHist(hdata, unc, false, "Validation bin");
+    pull_ratio = getPullHist(hdata, unc, true);
   }
 
   prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
   prepHists(pred_leg, false, false, true, {866, 623, 811, 391, 797});
   if(hdata) prepHists({hdata}, false, false, false, {kBlack});
-  if(hdata) prepHists({pull}, false, false, false, {kRed});
+  if(hdata) prepHists({pull, pull_ratio}, false, false, false, {kRed, kBlack});
+  unc->SetFillColor(kBlue);
+  unc->SetFillStyle(3013);
+  unc->SetLineStyle(0);
+  unc->SetLineWidth(0);
+  unc->SetMarkerSize(0);
+  unc->Draw("E2same");
 
   hdata->SetMarkerStyle(7);
 
@@ -273,6 +283,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
 
     auto leg = prepLegends({hdata}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
+    addLegendEntry(leg, unc,"Bkg. uncertainty","F");
 //    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
   //  leg->SetTextSize(0.03);
     setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
@@ -280,12 +291,24 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "/pred_binnum__" + region;
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".pdf");
+    c->Print(basename+".png");
+
+    c = drawStackAndRatio(pred, hdata, leg, true, "Pull", -3.001, 3.001, xlow, xhigh, {}, unc, {pull_ratio}, nullptr, false, false, true, false, false, true);
+    c->SetCanvasSize(800, 600);
+    gStyle->SetOptStat(0);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
+    drawRegionLabels.at(ireg)();
+    drawVerticalLines.at(ireg)(c);
+    basename = outputName + "/pred_binnum__pull_" + region;
+    basename.ReplaceAll("nb[0-9]", "");
+    c->Print(basename+".pdf");
+    c->Print(basename+".png");
   }
 
   if(hdata){
@@ -298,6 +321,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     gStyle->SetOptStat(0);
     TString basename = outputName + "/pred_binnum__pull";
     c_pull->Print(basename+".pdf");
+    c_pull->Print(basename+".png");
   }
 
   TFile *output = new TFile(outputName + "/pred_binnum_getFinalPlot_Nano.root", "RECREATE");
