@@ -7,7 +7,7 @@
 
 using namespace EstTools;
 
-void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR"){
+void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR_112420"){
 
   gSystem->mkdir(outputName, true);
 
@@ -37,7 +37,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
       "High #Deltam",
   };
 
-  vector<double> ratioYmax = {2.999, 2.999};
+  vector<double> ratioYmax = {1.999, 1.999};
 
   TLatex tl;
   tl.SetTextSize(0.025);
