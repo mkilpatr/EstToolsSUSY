@@ -38,6 +38,10 @@ namespace EstTools{
 TString getLumi();
 
 TString TDR_EXTRA_LABEL_ = "Preliminary";
+TString TDR_EXTRA_LABEL_2 = "";
+TString TDR_EXTRA_LABEL_3 = "";
+//TString TDR_EXTRA_LABEL_ = "Simulation";
+//TString TDR_EXTRA_LABEL_2 = "Supplementary";
 
 std::map<TString, Color_t> COLOR_MAP = {
     {"data",      kBlack},
@@ -349,7 +353,7 @@ void SetStyle()
 }
 #endif
 
-void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LABEL_)
+void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LABEL_, TString extraText2=TDR_EXTRA_LABEL_2, TString extraText3=TDR_EXTRA_LABEL_3)
 {
 
   // Global variables
@@ -369,7 +373,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
 
   float relPosX    = 0.045;
   float relPosY    = 0.035;
-  float relExtraDY = 1.2;
+  float relExtraDY = 1.10;
 
   // ratio of "CMS" and extra text size
   float extraOverCmsTextSize  = 0.76;
@@ -442,6 +446,9 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   else if ( iPeriod==12 ) {
     lumiText += "8 TeV";
   }
+  else if ( iPeriod==99 ) {
+    lumiText = "";
+  }
   else if ( iPeriod==0 ) {
     lumiText += lumi_sqrtS;
   }
@@ -454,6 +461,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   latex.SetTextColor(kBlack);
 
   float extraTextSize = extraOverCmsTextSize*cmsTextSize;
+  float extraTextSize3 = extraOverCmsTextSize*cmsTextSize*0.7;
 
   latex.SetTextFont(42);
   latex.SetTextAlign(31);
@@ -506,6 +514,14 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
         latex.SetTextAlign(align_);
         latex.SetTextSize(extraTextSize*t);
         latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText);
+        latex.SetTextFont(extraTextFont);
+        latex.SetTextAlign(align_);
+        latex.SetTextSize(extraTextSize*t);
+        latex.DrawLatex(posX_, posY_- 2*relExtraDY*cmsTextSize*t, extraText2);
+        latex.SetTextFont(extraTextFont);
+        latex.SetTextAlign(align_);
+        latex.SetTextSize(extraTextSize3*t);
+        latex.DrawLatex(posX_, posY_- 3*relExtraDY*cmsTextSize*t, extraText3);
       }
     }
   }

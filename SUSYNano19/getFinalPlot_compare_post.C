@@ -7,9 +7,11 @@
 
 using namespace EstTools;
 
-void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods", bool otherSig = false){
+void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods_CWR", bool otherSig = false){
 
   gSystem->mkdir(outputName, true);
+
+  TDR_EXTRA_LABEL_ = "";
 
   RATIOPLOT_XTITLE_OFFSET = 1.25;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
@@ -99,39 +101,39 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   };
 
   vector<std::function<void(TCanvas *)>> drawVerticalLines {
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8,   LOG_YMIN, 8,   2000); 
-								    drawLine(16,  LOG_YMIN, 16,  200000); 
-								    drawLine(24,  LOG_YMIN, 24,  2000); 
-								    drawLine(32,  LOG_YMIN, 32,  2000); 
-								    drawLine(35,  LOG_YMIN, 35,  200000); 
-								    drawLine(44,  LOG_YMIN, 44,  2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57, LOG_YMIN, 57, 2000); 
-								    drawLine(61, LOG_YMIN, 61, 20000); 
-								    drawLine(65, LOG_YMIN, 65, 2000); 
-								    drawLine(69, LOG_YMIN, 69, 20000); 
-								    drawLine(78, LOG_YMIN, 78, 20000); 
-								    drawLine(84, LOG_YMIN, 84, 20000); 
-								    drawLine(99, LOG_YMIN, 99, 20000); 
-								    drawLine(101, LOG_YMIN, 101, 2000); 
-								    drawLine(103, LOG_YMIN, 103, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114, LOG_YMIN, 114, 20000); 
-								    drawLine(120, LOG_YMIN, 120, 20000); 
-								    drawLine(135, LOG_YMIN, 135, 20000); 
-								    drawLine(137, LOG_YMIN, 137, 20000); 
-								    drawLine(143, LOG_YMIN, 143, 20000); 
-								    drawLine(145, LOG_YMIN, 145, 20000); 
-								    drawLine(147, LOG_YMIN, 147, 20000); 
-								    drawLine(148, LOG_YMIN, 148, 20000); 
-								    drawLine(152, LOG_YMIN, 152, 20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162, LOG_YMIN, 162, 20000); 
-								    drawLine(165, LOG_YMIN, 165, 20000); 
-								    drawLine(174, LOG_YMIN, 174, 20000); 
-								    drawLine(175, LOG_YMIN, 175, 20000); 
-								    drawLine(177, LOG_YMIN, 177, 20000); 
-								    drawLine(178, LOG_YMIN, 178, 20000); 
-								    drawLine(179, LOG_YMIN, 179, 20000); 
-								    drawLine(180, LOG_YMIN, 180, 20000); 
-								    drawLine(182, LOG_YMIN, 182, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(8.05,  LOG_YMIN, 8.05,   2000); 
+								    drawLine(16.05, LOG_YMIN, 16.05,  200000); 
+								    drawLine(24.05, LOG_YMIN, 24.05,  2000); 
+								    drawLine(32.05, LOG_YMIN, 32.05,  2000); 
+								    drawLine(35.05, LOG_YMIN, 35.05,  200000); 
+								    drawLine(44.05, LOG_YMIN, 44.05,  2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(57.05, LOG_YMIN, 57.05, 2000); 
+								    drawLine(61.05, LOG_YMIN, 61.05, 20000); 
+								    drawLine(65.05, LOG_YMIN, 65.05, 2000); 
+								    drawLine(69.05, LOG_YMIN, 69.05, 20000); 
+								    drawLine(78.05, LOG_YMIN, 78.05, 20000); 
+								    drawLine(84.05, LOG_YMIN, 84.05, 20000); 
+								    drawLine(99.05, LOG_YMIN, 99.05, 20000); 
+								    drawLine(101.05, LOG_YMIN, 101.05, 2000); 
+								    drawLine(103.05, LOG_YMIN, 103.05, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114.05, LOG_YMIN, 114.05, 20000); 
+								    drawLine(120.05, LOG_YMIN, 120.05, 20000); 
+								    drawLine(135.05, LOG_YMIN, 135.05, 20000); 
+								    drawLine(137.05, LOG_YMIN, 137.05, 20000); 
+								    drawLine(143.05, LOG_YMIN, 143.05, 20000); 
+								    drawLine(145.05, LOG_YMIN, 145.05, 20000); 
+								    drawLine(147.05, LOG_YMIN, 147.05, 20000); 
+								    drawLine(148.05, LOG_YMIN, 148.05, 20000); 
+								    drawLine(152.05, LOG_YMIN, 152.05, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162.05, LOG_YMIN, 162.05, 20000); 
+								    drawLine(165.05, LOG_YMIN, 165.05, 20000); 
+								    drawLine(174.05, LOG_YMIN, 174.05, 20000); 
+								    drawLine(175.05, LOG_YMIN, 175.05, 20000); 
+								    drawLine(177.05, LOG_YMIN, 177.05, 20000); 
+								    drawLine(178.05, LOG_YMIN, 178.05, 20000); 
+								    drawLine(179.05, LOG_YMIN, 179.05, 20000); 
+								    drawLine(180.05, LOG_YMIN, 180.05, 20000); 
+								    drawLine(182.05, LOG_YMIN, 182.05, 20000); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -172,11 +174,11 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   TH1D* httbar_comp = convertToHist({(TH1*)f->Get("httbar")}, "httbar_comp", ";Search bin number;Events", nullptr);
   TH1D* hznunu_aux = convertToHist({(TH1*)f->Get("hznunu")}, "hznunu_pred", ";Search bin number;Events", nullptr); // KH hack: this is a hack which we should be careful with
 
-  TFile *p = TFile::Open("PostFit.root");
+  TFile *p = TFile::Open("PostFit_v7.root");
   assert(p);
   TH1D* hist_buff = nullptr;
   for (auto &b : bkgs_post){
-    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b, ";Search bin number;Events", nullptr);
+    TH1D* hist = convertToHist({(TH1*)p->Get(b)}, b + "_post", ";Search bin number;Events", nullptr);
     TH1D* hist_comp = convertToHist({(TH1*)p->Get(b)}, b + "_comp", ";Search bin number;Events", nullptr);
     if(b == "TTZ") hist_buff = (TH1D*)hist->Clone("httZ_add");
     if(b == "Rare") hist->Add(hist_buff);
@@ -184,9 +186,6 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     if(b != "TTZ") pred_post.push_back(hist);
     pred_comp_post.push_back(hist_comp);
   }
-
-  //Adding ttZ to Rare
-  hRare->Add(httZ);
 
   pred_comp.push_back(httZ_comp);
   pred.push_back(hRare);
@@ -235,14 +234,24 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     //Systematics
     double unc_up = ((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist))*((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist));
     double unc_dn = ((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist))*((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist));
+    if(ibin > 180) cout << "ttbar bin: " << ibin << " Up/Down: " << ttbar_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttbar_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist))*((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist));
     unc_dn += ((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist))*((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist));
+    if(ibin > 180) cout << "ttZ bin: " << ibin << " Up/Down: " << ttZ_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttZ_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist))*((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist));
     unc_dn += ((1-Rare_dn_unc->GetBinContent(ibin_hist))*hRare->GetBinContent(ibin_hist))*((1-Rare_dn_unc->GetBinContent(ibin_hist))*hRare->GetBinContent(ibin_hist));
+    if(ibin > 180) cout << "Rare bin: " << ibin << " Up/Down: " << Rare_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-Rare_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((qcd_up_unc->GetBinContent(ibin_hist)-1)*hqcd->GetBinContent(ibin_hist))*((qcd_up_unc->GetBinContent(ibin_hist)-1)*hqcd->GetBinContent(ibin_hist));
     unc_dn += ((1-qcd_dn_unc->GetBinContent(ibin_hist))*hqcd->GetBinContent(ibin_hist))*((1-qcd_dn_unc->GetBinContent(ibin_hist))*hqcd->GetBinContent(ibin_hist));
+    if(ibin > 180) cout << "qcd bin: " << ibin << " Up/Down: " << qcd_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-qcd_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((znunu_up_unc->GetBinContent(ibin_hist)-1)*hznunu->GetBinContent(ibin_hist))*((znunu_up_unc->GetBinContent(ibin_hist)-1)*hznunu->GetBinContent(ibin_hist));
     unc_dn += ((1-znunu_dn_unc->GetBinContent(ibin_hist))*hznunu->GetBinContent(ibin_hist))*((1-znunu_dn_unc->GetBinContent(ibin_hist))*hznunu->GetBinContent(ibin_hist));
+    if(ibin > 180) cout << "znunu bin: " << ibin << " Up/Down: " << znunu_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-znunu_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
 
     //Statistical
     // ttbar:
@@ -250,9 +259,13 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     if(httbar->GetBinContent(ibin_hist) != 0)
       unc_dn += httbar->GetBinError(ibin_hist)*httbar->GetBinError(ibin_hist);
     else unc_dn += 0.; //
+    if(ibin > 180) cout << "stat ttbar bin: " << ibin << ": " << httbar->GetBinError(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     // qcd:
     unc_up += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
     unc_dn += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
+    if(ibin > 180) cout << "stat qcd bin: " << ibin << ": " << hqcd->GetBinError(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     // znunu:
     if(hznunu->GetBinContent(ibin_hist) != 0){
       unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist);
@@ -261,19 +274,30 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
       unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist); //KH hack: when histograms from Caleb get this error correctly, use it.
       unc_dn += 0.;
     }
+    if(ibin > 180) cout << "stat znunu bin: " << ibin << ": " << hznunu->GetBinError(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
     unc_dn += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
+    if(ibin > 180) cout << "stat ttZ bin: " << ibin << ": " << httZ->GetBinError(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += hRare->GetBinError(ibin_hist)*hRare->GetBinError(ibin_hist);
     unc_dn += hRare->GetBinError(ibin_hist)*hRare->GetBinError(ibin_hist);
+    if(ibin > 180) cout << "stat Rare bin: " << ibin << ": " << hRare->GetBinError(ibin_hist) << endl;
+    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
 
     //Nominal
     double pred = nominal->GetBinContent(ibin_hist);
+    if(ibin > 180) cout << "ttbar pred: " << nominal->GetBinContent(ibin_hist) << endl;
     pred += hqcd->GetBinContent(ibin_hist);
+    if(ibin > 180) cout << "qcd pred: " << hqcd->GetBinContent(ibin_hist) << endl;
     pred += hznunu->GetBinContent(ibin_hist);
+    if(ibin > 180) cout << "znunu pred: " << hznunu->GetBinContent(ibin_hist) << endl;
     pred += hRare->GetBinContent(ibin_hist);
+    if(ibin > 180) cout << "Rare pred: " << hRare->GetBinContent(ibin_hist) << endl;
     pred += httZ->GetBinContent(ibin_hist);
+    if(ibin > 180) cout << "httZ pred: " << httZ->GetBinContent(ibin_hist) << endl;
 
-    //cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
+    if(ibin > 180) cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
 
     unc->SetPoint(ibin, unc->GetX()[ibin], pred);
     unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
@@ -281,30 +305,34 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   }
 
   //Make unc for postfit
+  //Adding ttZ to Rare
+  hRare->Add(httZ);
   TGraphAsymmErrors* unc_post = (TGraphAsymmErrors*)p->Get("Sumb");
 
   int style = 2;
   for (auto &s : sigs){
     TH1 *h = convertToHist({(TH1*)f->Get(s)}, s, ";Search bin number;Events", nullptr);
     h->SetLineStyle(style);
+    h->SetLineWidth(3);
     hsigs.push_back(h);
     style++;
   }
+
   TH1* pull;
   TH1* pull_post;
   if(hdata) pull = getPullHist(hdata, unc);
   if(hdata_post) pull_post = getPullHist(hdata_post, unc_post);
 
-  prepHists(pred, false, false, true, {797, 391, 811, 623, 866});
-  prepHists(pred_post, false, false, true, {797, 391, 811, 623, 866});
-  prepHists(pred_comp, false, false, false, {kRed, kRed, kRed, kRed, kRed});
+  prepHists(pred,      false, false, true, {391, 811, 623, 866});
+  prepHists(pred_post, false, false, true, {391, 811, 623, 866});
+  prepHists(pred_comp,      false, false, false, {kRed, kRed, kRed, kRed, kRed});
   prepHists(pred_comp_post, false, false, false, {kBlue, kBlue, kBlue, kBlue, kBlue});
-  prepHists(pred_leg, false, false, true, {866, 623, 811, 391, 797});
+  prepHists(pred_leg, false, false, true, {866, 623, 811, 391});
   if(hdata) prepHists({hdata, hdata_post}, false, false, false, {kBlack, kBlack});
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});
-  prepHists(hsigs, false, false, false, {kRed, kGreen + 3});
+  prepHists(hsigs, false, false, false, {kRed, kGreen + 3, kBlack});
   unc->SetFillColor(kBlue);
   unc->SetFillStyle(3013);
   unc->SetLineStyle(0);
@@ -355,11 +383,11 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
+    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
@@ -367,16 +395,17 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".png");
     c->Print(basename+".pdf");
+    c->Print(basename+".C");
 
     leg = prepLegends({hdata_post}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
-    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 2.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
+    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
+    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.78, 0.025);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
@@ -384,6 +413,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     basename.ReplaceAll("nb[0-9]", "");
     c->Print(basename+".png");
     c->Print(basename+".pdf");
+    c->Print(basename+".C");
   }
 
   for (unsigned bkg = 0; bkg != pred_comp.size(); bkg++){
