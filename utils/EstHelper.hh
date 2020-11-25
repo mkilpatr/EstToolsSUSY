@@ -637,7 +637,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   hbkgtotal->GetYaxis()->SetTitleSize(0.08);
   hbkgtotal->GetYaxis()->SetTitleOffset(0.85);
   hbkgtotal->GetYaxis()->SetLabelSize  (0.06);
-  TGaxis::SetMaxDigits(3);
+  TGaxis::SetMaxDigits(4);
   hbkgtotal->Draw("hist");
 
   hstack->Draw("histsame");

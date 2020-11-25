@@ -13,7 +13,8 @@ const TString inputdir_2018 = "nanoaod_all_skim_2018_073020_devv6_limits/";
 const TString inputdir_2016_ttZRare = "nanoaod_all_skim_2016_081320_devv6_limits/";
 const TString inputdir_2017_ttZRare = "nanoaod_all_skim_2017_081320_devv6_limits/";
 const TString inputdir_2018_ttZRare = "nanoaod_all_skim_2018_081320_devv6_limits/";
-const TString inputdir_sig  = "nanoaod_all_skim_2017_073020_devv6_limits/";
+const TString inputdir_sig_2016  = "nanoaod_all_skim_2016_081320_devv6_limits/";
+const TString inputdir_sig_2017  = "nanoaod_all_skim_2017_081320_devv6_limits/";
 
 const TString outputdir = ".";
 
@@ -80,7 +81,9 @@ const TString invert_genLep = " && genMatchedLep";
 //bool ADD_LEP_TO_MET = true;
 const TString lepcrsel = " && Stop0l_nVetoElecMuon == 1 && Stop0l_MtLepMET < 100 && MET_pt>100";
 const TString ttznorm = "1.214";
-
+//TString binMap_ = "lm_nb2_lowmtb_highptisr_lowptb12";
+TString binMap_ = "allBins";
+TString binMap() { return binMap_;}
 
 // lepton trigger eff.
 //const TString trigLepCR = " && (passtrige || passtrigmu)";
@@ -173,6 +176,7 @@ std::map<TString, TString> cutMap = []{
 	{"htgt1500",    "Stop0l_HT>=1500"},	
 	{"htlt1300",    "Stop0l_HT<1300"},	
 	{"htgt1300",    "Stop0l_HT>=1300"},	
+        {"noextrap",    "1 == 1"},
     };
 
     cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
@@ -230,6 +234,7 @@ std::map<TString, TString> labelMap{
   {"htgt1300",    R"($\Ht\geq1300$)"},	
   {"lmNoDPhi",    R"(Low $\Delta m$)"},
   {"hmNoDPhi",    R"(High $\Delta m$)"},
+  {"noextrap",    R"()"},
   
 };
 
@@ -282,11 +287,13 @@ std::map<TString, TString> plotLabelMap{
   {"htgt1300",    R"(H_{T}#geq1300)"},	
   {"lmNoDPhi",    R"(Low #Delta m)"},
   {"hmNoDPhi",    R"(High #Delta m)"},
+  {"noextrap",    R"()"},
 };
 
 std::map<TString, TString> srcuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "allBins") continue;
       cuts[name] = createCutString(name, cutMap);
     }
     return cuts;
@@ -295,6 +302,7 @@ std::map<TString, TString> srcuts = []{
 std::map<TString, TString> srlabels = []{
     std::map<TString, TString> cmap;
     for (auto s: srbins){
+      if(s != binMap() && binMap() != "allBins") continue;
       cmap[s] = s;
     }
     return cmap;
@@ -329,18 +337,22 @@ std::map<TString, TString> phoNormMap = []{
 
 std::map<TString, TString> phocrCuts = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : phocrMapping)
+    for (auto sr2cr : phocrMapping){
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
+    }
     return cuts;
 }();
 
 std::map<TString, TString> phocrlabels = phocrMapping;
 
-std::map<TString, std::vector<int>> phocrMETbins = srMETbins;
+std::map<TString, std::vector<int>> phocrMETbins_small { {binMap(), srMETbins[binMap()]}};
+std::map<TString, std::vector<int>> phocrMETbins = (binMap() == "allBins") ? srMETbins : phocrMETbins_small;
 
 std::map<TString, TString> lepcrCuts = []{
     std::map<TString, TString> cuts;
     for (auto sr2cr : lepcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       TString sr2crCut = sr2cr.first;
       cuts[sr2crCut] = createCutString(sr2cr.second, cutMap);
     }
@@ -348,7 +360,8 @@ std::map<TString, TString> lepcrCuts = []{
 }();
 
 std::map<TString, TString> lepcrlabels = lepcrMapping;
-std::map<TString, std::vector<int>> lepcrMETbins = srMETbins;
+std::map<TString, std::vector<int>> lepcrMETbins_small { {binMap(), srMETbins[binMap()]} };
+std::map<TString, std::vector<int>> lepcrMETbins = (binMap() == "allBins") ? srMETbins : lepcrMETbins_small;
 
 // qcd-cr: inverted dPhi cut applied on CR samples now
 std::map<TString, TString> qcdcrMapping =[]{
@@ -362,13 +375,16 @@ std::map<TString, TString> qcdcrMapping =[]{
 }();
 std::map<TString, TString> qcdcrCuts = []{
     std::map<TString, TString> cuts;
-    for (auto sr2cr : qcdcrMapping)
+    for (auto sr2cr : qcdcrMapping){
+      if(sr2cr.first != binMap() && binMap() != "allBins") continue;
       cuts[sr2cr.first] = createCutString(sr2cr.second, cutMap);
+    }
     return cuts;
 }();
 std::map<TString, TString> qcd1to1crCuts = []{
     std::map<TString, TString> cuts;
     for (auto name : srbins){
+      if(name != binMap() && binMap() != "allBins") continue;
       TString crname = name;
       crname.ReplaceAll("lm_", "lmNoDPhi_");
       crname.ReplaceAll("hm_", "hmNoDPhi_");
@@ -381,6 +397,7 @@ std::map<TString, TString> qcdcrlabels = lepcrlabels;
 map<TString, Category> srCatMap(){
   map<TString, Category> cmap;
   for (auto &name : srbins){
+    if(name != binMap() && binMap() != "allBins") continue;
     auto nameMet = name;
     cmap[name] = Category(name, srcuts.at(name), srlabels.at(name), BinInfo("MET_pt", "p^{miss}_{T}", srMETbins.at(nameMet), "GeV"));
   }
@@ -392,6 +409,7 @@ map<TString, Category> phoCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: phocrCuts;
   const auto &labels = ICHEPCR ? srlabels: phocrlabels;
   for (auto &name : srbins){
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "#slash{E}_{T}^{#gamma}", phocrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -404,6 +422,7 @@ map<TString, Category> lepCatMap(){
   const auto &cuts = ICHEPCR ? srcuts: lepcrCuts;
   const auto &labels = ICHEPCR ? srlabels: lepcrlabels;
   for (auto &name : srbins){
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", varlabel, lepcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -414,6 +433,7 @@ map<TString, Category> qcdCatMap(){
   const auto &cuts = ICHEPCR ? qcd1to1crCuts: qcdcrCuts;
   const auto &labels = ICHEPCR ? srlabels: qcdcrlabels;
   for (auto &name : srbins){
+    if(name != binMap() && binMap() != "allBins") continue;
     cmap[name] = Category(name, cuts.at(name), labels.at(name), BinInfo("MET_pt", "p^{miss}_{T}", qcdcrMETbins.at(name), "GeV"));
   }
   return cmap;
@@ -496,8 +516,8 @@ BaseConfig lepConfig(){
     config.addSample("ttZ-2016",         "ttZ",           inputdir_2016_ttZRare+"ttZ",             lepselwgt+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
     config.addSample("diboson-2016",     "Rare",            inputdir_2016_ttZRare+"diboson",         lepselwgt, datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
     // For plotting
-    config.addSample("polyboson-2016",    "VV/VVV",           inputdir_2016_ttZRare+"polyboson",             lepselwgt,      datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
-    config.addSample("ttx-2016",        "ttX",          inputdir_2016_ttZRare+"ttX",            lepselwgt,      datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2016",    "Multiboson",           inputdir_2016_ttZRare+"polyboson",             lepselwgt,      datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
+    config.addSample("ttx-2016",        "t#bar{t}X",          inputdir_2016_ttZRare+"ttX",            lepselwgt,      datasel + revert_vetoes + invert_genLep);
 
     config.addSample("singlelep-2017",   "Data 2017",     datadir+"met_2017",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2017",       "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017,      datasel + revert_vetoes);
@@ -507,8 +527,8 @@ BaseConfig lepConfig(){
     config.addSample("ttZ-2017",         "ttZ",           inputdir_2017_ttZRare+"ttZ",             lepselwgt_2017+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
     config.addSample("diboson-2017",     "Rare",            inputdir_2017_ttZRare+"diboson",         lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
     // For plotting
-    config.addSample("polyboson-2017",    "VV/VVV",           inputdir_2017_ttZRare+"polyboson",             lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
-    config.addSample("ttx-2017",        "ttX",          inputdir_2017_ttZRare+"ttX",            lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2017",    "Multiboson",           inputdir_2017_ttZRare+"polyboson",             lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
+    config.addSample("ttx-2017",        "t#bar{t}X",          inputdir_2017_ttZRare+"ttX",            lepselwgt_2017, datasel + revert_vetoes + invert_genLep);
 
     config.addSample("singlelep-2018",   "Data 2018",     datadir+"met_2018",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2018",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018,      datasel + revert_vetoes);
@@ -518,8 +538,8 @@ BaseConfig lepConfig(){
     config.addSample("ttZ-2018",         "ttZ",           inputdir_2018_ttZRare+"ttZ",             lepselwgt_2018+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
     config.addSample("diboson-2018",     "Rare",            inputdir_2018_ttZRare+"diboson",         lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
     // For plotting
-    config.addSample("polyboson-2018",    "VV/VVV",           inputdir_2018_ttZRare+"polyboson",             lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
-    config.addSample("ttx-2018",        "ttX",          inputdir_2018_ttZRare+"ttX",            lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
+    config.addSample("polyboson-2018",    "Multiboson",           inputdir_2018_ttZRare+"polyboson",             lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
+    config.addSample("ttx-2018",        "t#bar{t}X",          inputdir_2018_ttZRare+"ttX",            lepselwgt_2018, datasel + revert_vetoes + invert_genLep);
   }
 
   // samples for sr categories
@@ -568,8 +588,14 @@ BaseConfig lepConfig(){
     config.addSample("diboson-2018-sr-int",  "diboson",       inputdir_2018_ttZRare+"diboson",           lepvetowgt_2018, datasel + vetoes + invert_genLep);
   }
 
+  std::vector<TString> srbins_small;
+  for (auto name : srbins){
+    if(name != binMap() && binMap() != "allBins") continue;
+    srbins_small.push_back(name);
+  }
+  
   config.sel = baseline;
-  config.categories = srbins;
+  config.categories = (binMap() == "allBins") ? srbins : srbins_small;
   config.catMaps = srCatMap();
   config.crCatMaps = lepCatMap();
 

@@ -291,7 +291,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.035);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "/pred_binnum__" + region;
@@ -302,7 +302,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     c = drawStackAndRatio(pred, hdata, leg, true, "Pull", -3.001, 3.001, xlow, xhigh, {}, unc, {pull_ratio}, nullptr, false, false, true, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
-    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
+    drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.035);
     drawRegionLabels.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     basename = outputName + "/pred_binnum__pull_" + region;
