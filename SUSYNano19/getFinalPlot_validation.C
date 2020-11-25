@@ -276,8 +276,8 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     }
 
 
-    if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0;}
-    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
+    if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0; PLOT_LOGY_MAX_SCALE = 10;}
+    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0; PLOT_LOGY_MAX_SCALE = 100;}
 
     hdata->SetMarkerStyle(7);
 

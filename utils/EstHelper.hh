@@ -29,6 +29,7 @@ using namespace std;
 namespace EstTools{
 
 double PLOT_MAX_YSCALE = 1.25;
+double PLOT_LOGY_MAX_SCALE = 100000;
 
 double PAD_SPLIT_Y = 0.3;
 double PAD_BOTTOM_MARGIN = 0.30;
@@ -538,7 +539,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   }
   hbkgtotal->SetLineColorAlpha(kWhite,0);
   hbkgtotal->SetMarkerColorAlpha(kWhite,0);
-  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*100000: plotMax));
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*PLOT_LOGY_MAX_SCALE: plotMax));
   hbkgtotal->SetMinimum(plotlog ? LOG_YMIN : 0);
   TGaxis::SetMaxDigits(3);
   hbkgtotal->Draw("hist");
@@ -630,7 +631,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   for (auto *h : sighists){
     if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
   }
-  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*10000 : plotMax));
+  hbkgtotal->SetMaximum(ymax*(plotlog ? plotMax*PLOT_LOGY_MAX_SCALE: plotMax));
   hbkgtotal->SetMinimum(plotlog? LOG_YMIN : 0);
   if(lowX<highX) hbkgtotal->GetXaxis()->SetRangeUser(lowX, highX);
   hbkgtotal->GetXaxis()->SetLabelOffset(0.20);
