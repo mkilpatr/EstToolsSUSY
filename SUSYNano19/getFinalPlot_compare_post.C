@@ -9,6 +9,7 @@ using namespace EstTools;
 
 void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods_CWR", bool otherSig = false){
 
+  gROOT->SetBatch(1);
   gSystem->mkdir(outputName, true);
 
   TDR_EXTRA_LABEL_ = "";
@@ -46,7 +47,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
       "High #Deltam, N_{b}#geq3, (N_{t}, N_{W}, N_{res})"
   };
 
-  TLatex tl, tv;
+  TLatex tl, tv, ts;
   tl.SetTextSize(0.025);
   tl.SetTextAlign(31);
   tl.SetTextFont(42);
@@ -54,17 +55,18 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   tv.SetTextAlign(31);
   tv.SetTextAngle(90);
   tv.SetTextFont(42);
+  ts.SetTextSize(0.020);
+  ts.SetTextAlign(31);
+  ts.SetTextFont(42);
   vector<std::function<void()>> drawRegionLabels {
-    [&tl](){ tl.DrawLatexNDC(0.345, 0.73, "N_{b}=0, p_{T}^{ISR}#geq500"); 
+    [&tl](){ tl.DrawLatexNDC(0.3525, 0.73, "N_{b}=0, p_{T}^{ISR}#geq500 GeV"); 
 	     tl.DrawLatexNDC(0.2425, 0.69, "N_{SV}=0"); 
 	     tl.DrawLatexNDC(0.35, 0.69, "N_{SV}#geq1"); 
 	     tl.DrawLatexNDC(0.57, 0.73, "N_{b}=1"); 
 	     tl.DrawLatexNDC(0.54, 0.69, "N_{SV}=0");
-	     tl.DrawLatexNDC(0.61, 0.66, "p_{T}^{ISR}[300, 500)      p_{T}^{ISR}#geq500"); 
 	     tl.DrawLatexNDC(0.68, 0.69, "N_{SV}#geq1"); 
-	     tl.DrawLatexNDC(0.85, 0.73, "N_{b}=2"); 
-	     tl.DrawLatexNDC(0.92, 0.69, "p_{T}^{ISR}[300, 500)       p_{T}^{ISR}#geq500");},
-    [&tl](){ tl.DrawLatexNDC(0.26, 0.73, "M_{T}^{b} < 175"); 
+	     tl.DrawLatexNDC(0.85, 0.73, "N_{b}=2");},
+    [&tl](){ tl.DrawLatexNDC(0.26, 0.73, "m_{T}^{b} < 175"); 
 	     tl.DrawLatexNDC(0.277, 0.68, "N_{b}=1    N_{b}#geq2"); 
 	     tl.DrawLatexNDC(0.37, 0.73, "(0, 0, 0)"); 
 	     tl.DrawLatexNDC(0.395, 0.68, "N_{b}=1    N_{b}#geq2"); 
@@ -77,6 +79,14 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     [&tl](){ tl.DrawLatexNDC(0.32, 0.70, "(1, 0, 0)");
 	     tl.DrawLatexNDC(0.47, 0.70, "(0, 1, 0)");
 	     tl.DrawLatexNDC(0.63, 0.70, "(0, 0, 1)");},
+  };
+
+  vector<std::function<void()>> drawRegionLabelsSmall {
+    [&ts](){ ts.DrawLatexNDC(0.6225, 0.66, "p_{T}^{ISR}[300, 500) GeV    p_{T}^{ISR}#geq500 GeV");
+	     ts.DrawLatexNDC(0.92, 0.66,   "p_{T}^{ISR}[300, 500) GeV    p_{T}^{ISR}#geq500 GeV");},
+    [&ts](){ },
+    [&ts](){ },
+    [&ts](){ },
   };
 
   vector<std::function<void()>> drawRegionLabelsVertical {
@@ -389,6 +399,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
+    drawRegionLabelsSmall.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     TString basename = outputName + "/pred_binnum__" + region;
@@ -407,6 +418,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
     drawRegionLabels.at(ireg)();
+    drawRegionLabelsSmall.at(ireg)();
     drawRegionLabelsVertical.at(ireg)();
     drawVerticalLines.at(ireg)(c);
     basename = outputName + "/pred_binnum__postfit_" + region;
