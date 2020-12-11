@@ -271,6 +271,14 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
 
 }
 
+vector<TH1*> getIntegratedHist(const vector<TH1*> hist, bool useGreaterThan = true, bool useUnderflow = false, bool useOverflow = true){
+  vector<TH1*> htemp;
+  for(auto *h : hist){
+    htemp.push_back(getIntegratedHist(h, useGreaterThan, useUnderflow, useOverflow));
+  }
+  return htemp;
+}
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TH1D* convertToHist(const vector<Quantity> &vec, TString hname, TString title, const BinInfo *bin=nullptr, int start = 0, int manualBins = 0){
   auto nbins = vec.size();
@@ -574,6 +582,7 @@ void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdd
     if (isOverflowAdded) addOverflow(h);
     bool isColored = false;
     if (ih < colors.size()){
+      cout << h->GetName() << ": " << colors.at(ih) << endl;
       h->SetLineColor(colors.at(ih));
       isColored = true;
     }else {

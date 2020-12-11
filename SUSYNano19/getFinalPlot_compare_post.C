@@ -244,24 +244,24 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     //Systematics
     double unc_up = ((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist))*((ttbar_up_unc->GetBinContent(ibin_hist)-1)*httbar->GetBinContent(ibin_hist));
     double unc_dn = ((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist))*((1-ttbar_dn_unc->GetBinContent(ibin_hist))*httbar->GetBinContent(ibin_hist));
-    if(ibin > 180) cout << "ttbar bin: " << ibin << " Up/Down: " << ttbar_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttbar_dn_unc->GetBinContent(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "ttbar bin: " << ibin << " Up/Down: " << ttbar_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttbar_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist))*((ttZ_up_unc->GetBinContent(ibin_hist)-1)*httZ->GetBinContent(ibin_hist));
     unc_dn += ((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist))*((1-ttZ_dn_unc->GetBinContent(ibin_hist))*httZ->GetBinContent(ibin_hist));
-    if(ibin > 180) cout << "ttZ bin: " << ibin << " Up/Down: " << ttZ_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttZ_dn_unc->GetBinContent(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "ttZ bin: " << ibin << " Up/Down: " << ttZ_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-ttZ_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist))*((Rare_up_unc->GetBinContent(ibin_hist)-1)*hRare->GetBinContent(ibin_hist));
     unc_dn += ((1-Rare_dn_unc->GetBinContent(ibin_hist))*hRare->GetBinContent(ibin_hist))*((1-Rare_dn_unc->GetBinContent(ibin_hist))*hRare->GetBinContent(ibin_hist));
-    if(ibin > 180) cout << "Rare bin: " << ibin << " Up/Down: " << Rare_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-Rare_dn_unc->GetBinContent(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "Rare bin: " << ibin << " Up/Down: " << Rare_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-Rare_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((qcd_up_unc->GetBinContent(ibin_hist)-1)*hqcd->GetBinContent(ibin_hist))*((qcd_up_unc->GetBinContent(ibin_hist)-1)*hqcd->GetBinContent(ibin_hist));
     unc_dn += ((1-qcd_dn_unc->GetBinContent(ibin_hist))*hqcd->GetBinContent(ibin_hist))*((1-qcd_dn_unc->GetBinContent(ibin_hist))*hqcd->GetBinContent(ibin_hist));
-    if(ibin > 180) cout << "qcd bin: " << ibin << " Up/Down: " << qcd_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-qcd_dn_unc->GetBinContent(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "qcd bin: " << ibin << " Up/Down: " << qcd_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-qcd_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += ((znunu_up_unc->GetBinContent(ibin_hist)-1)*hznunu->GetBinContent(ibin_hist))*((znunu_up_unc->GetBinContent(ibin_hist)-1)*hznunu->GetBinContent(ibin_hist));
     unc_dn += ((1-znunu_dn_unc->GetBinContent(ibin_hist))*hznunu->GetBinContent(ibin_hist))*((1-znunu_dn_unc->GetBinContent(ibin_hist))*hznunu->GetBinContent(ibin_hist));
-    if(ibin > 180) cout << "znunu bin: " << ibin << " Up/Down: " << znunu_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-znunu_dn_unc->GetBinContent(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "znunu bin: " << ibin << " Up/Down: " << znunu_up_unc->GetBinContent(ibin_hist)-1 << "/" << 1-znunu_dn_unc->GetBinContent(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
 
     //Statistical
     // ttbar:
@@ -269,13 +269,13 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
     if(httbar->GetBinContent(ibin_hist) != 0)
       unc_dn += httbar->GetBinError(ibin_hist)*httbar->GetBinError(ibin_hist);
     else unc_dn += 0.; //
-    if(ibin > 180) cout << "stat ttbar bin: " << ibin << ": " << httbar->GetBinError(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "stat ttbar bin: " << ibin << ": " << httbar->GetBinError(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     // qcd:
     unc_up += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
     unc_dn += hqcd->GetBinError(ibin_hist)*hqcd->GetBinError(ibin_hist);
-    if(ibin > 180) cout << "stat qcd bin: " << ibin << ": " << hqcd->GetBinError(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "stat qcd bin: " << ibin << ": " << hqcd->GetBinError(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     // znunu:
     if(hznunu->GetBinContent(ibin_hist) != 0){
       unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist);
@@ -284,30 +284,36 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
       unc_up += hznunu_aux->GetBinError(ibin_hist)*hznunu_aux->GetBinError(ibin_hist); //KH hack: when histograms from Caleb get this error correctly, use it.
       unc_dn += 0.;
     }
-    if(ibin > 180) cout << "stat znunu bin: " << ibin << ": " << hznunu->GetBinError(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "stat znunu bin: " << ibin << ": " << hznunu->GetBinError(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
     unc_dn += httZ->GetBinError(ibin_hist)*httZ->GetBinError(ibin_hist);
-    if(ibin > 180) cout << "stat ttZ bin: " << ibin << ": " << httZ->GetBinError(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "stat ttZ bin: " << ibin << ": " << httZ->GetBinError(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
     unc_up += hRare->GetBinError(ibin_hist)*hRare->GetBinError(ibin_hist);
     unc_dn += hRare->GetBinError(ibin_hist)*hRare->GetBinError(ibin_hist);
-    if(ibin > 180) cout << "stat Rare bin: " << ibin << ": " << hRare->GetBinError(ibin_hist) << endl;
-    if(ibin > 180) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+    if(ibin == 6) cout << "stat Rare bin: " << ibin << ": " << hRare->GetBinError(ibin_hist) << endl;
+    if(ibin == 6) cout << "Absolute Unc bin: " << ibin << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+
+    //Data
+    Quantity q_data = getHistBin(hdata, ibin_hist);
 
     //Nominal
     double pred = nominal->GetBinContent(ibin_hist);
-    if(ibin > 180) cout << "ttbar pred: " << nominal->GetBinContent(ibin_hist) << endl;
     pred += hqcd->GetBinContent(ibin_hist);
-    if(ibin > 180) cout << "qcd pred: " << hqcd->GetBinContent(ibin_hist) << endl;
     pred += hznunu->GetBinContent(ibin_hist);
-    if(ibin > 180) cout << "znunu pred: " << hznunu->GetBinContent(ibin_hist) << endl;
     pred += hRare->GetBinContent(ibin_hist);
-    if(ibin > 180) cout << "Rare pred: " << hRare->GetBinContent(ibin_hist) << endl;
     pred += httZ->GetBinContent(ibin_hist);
-    if(ibin > 180) cout << "httZ pred: " << httZ->GetBinContent(ibin_hist) << endl;
-
-    if(ibin > 180) cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
+    if(q_data.error > (unc_up - pred) || q_data.error > (pred - unc_dn)){
+      cout << "Bin: " << ibin_hist << endl;
+      cout << "ttbar pred: " << nominal->GetBinContent(ibin_hist) << endl;
+      cout << "qcd pred: " << hqcd->GetBinContent(ibin_hist) << endl;
+      cout << "znunu pred: " << hznunu->GetBinContent(ibin_hist) << endl;
+      cout << "Rare pred: " << hRare->GetBinContent(ibin_hist) << endl;
+      cout << "httZ pred: " << httZ->GetBinContent(ibin_hist) << endl;
+      cout << "bin: " << ibin << " pred: " << pred << " up: " << TMath::Sqrt(unc_up) << " dn: " << TMath::Sqrt(unc_dn) << endl;
+      cout << "bin: " << ibin << " data: " << q_data.value << " +/- " << q_data.error << endl;
+    }
 
     unc->SetPoint(ibin, unc->GetX()[ibin], pred);
     unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));

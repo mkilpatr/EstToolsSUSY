@@ -297,8 +297,7 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
   }
   if (leg) leg->Draw();
 #ifdef TDR_STYLE_
-  if(noLumi)CMS_lumi(c, 99, 10);
-  else      CMS_lumi(c, 4, 10);
+  if(!noLumi) CMS_lumi(c, 4, 10);
 #endif
   if (plotextra) (*plotextra)(c);
   c->Update();
@@ -422,8 +421,7 @@ TCanvas* drawCompAndRatio(vector<TH1*> inhists, vector<TH1*> inratiohists, TLege
   if (leg) leg->Draw();
 
 #ifdef TDR_STYLE_
-  if(!noLumi) CMS_lumi(p1, 99, 10);
-  if(!isVal) CMS_lumi(p1, 4, 10);
+  if(!isVal && !noLumi) CMS_lumi(p1, 4, 10);
 #endif
 
   if(inratiohists.size() == 0){

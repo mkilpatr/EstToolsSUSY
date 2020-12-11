@@ -1270,6 +1270,7 @@ void plot1LepInclusive(){
   auto config = lepConfig();
   TString LLCR_LM = "Stop0l_ISRJetPt>300 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>10 && Pass_dPhiMETLowDM";
   TString LLCR_HM = "Stop0l_nJets>=5 && Stop0l_nbtags>=1 && Pass_dPhiMETHighDM";
+  TString LLCR    = "Pass_LLCR";
   TString noTopPt = "/Stop0l_topptWeight";
   config.sel = baseline;
 
@@ -1314,6 +1315,10 @@ void plot1LepInclusive(){
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttx-2016", "ttx-2017", "ttx-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018"};
+  vector<TString> mc_samples_purity = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
+				       "tW-2016", "tW-2017", "tW-2018", "ttx-2016", "ttx-2017", "ttx-2018",
+				       "polyboson-2016", "polyboson-2017", "polyboson-2018",
+				       "qcd-2016", "qcd-2017", "qcd-2018", "znunu-2016", "znunu-2017", "znunu-2018"};
   vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016", "tW-2016", "ttx-2016", "polyboson-2016"};
   vector<TString> mc_samples_2017 = {"ttbar-2017", "wjets-2017", "tW-2017", "ttx-2017", "polyboson-2017"};
   vector<TString> mc_samples_2018 = {"ttbar-2018", "wjets-2018", "tW-2018", "ttx-2018", "polyboson-2018"};
@@ -1358,6 +1363,9 @@ void plot1LepInclusive(){
       z.setSelection(LLCR_HM, "llcr_hm_syst_ttbar" + suffix, "");
       z.plotDataMC(var.second, mc_samples_ttbar_ISR, "", Category::dummy_category(), norm, "", true, &plotextra, false, {}, {}, true);
     } else{
+      z.setSelection(LLCR , "llcr", "");
+      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2}{LL control region}", 0.2, 0.75); };
+      z.plotDataMC(var.second, mc_samples_purity, data_sample, Category::dummy_category(), false, "", true, &plotextra);
       z.setSelection(LLCR_LM , "llcr_lm", "");
       plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 Low #Deltam}{LL control region}", 0.2, 0.75); };
       z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra);
@@ -1596,13 +1604,13 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1655,16 +1663,16 @@ void plot1LepInclusiveWithSyst(){
       //Make final plot with stat + syst
       z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
       } else if (!var.first.Contains("toppt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
         z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn);
       } else if (var.first.Contains("_nowgt")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{Run 2 High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       } else {
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Run 2 High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
+        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       }
     }

@@ -914,10 +914,10 @@ public:
 
 
       if(hist != nullptr){
-        for (int ibin=0; ibin<=hist->GetNbinsX(); ++ibin){
-          auto q_nom = getHistBin(hist, ibin);
-          cout << hist->GetName() << ": bin: " << ibin << " ---> " << q_nom.value << "+/-" << q_nom.error << endl;
-        }
+        //for (int ibin=0; ibin<=hist->GetNbinsX(); ++ibin){
+        //  auto q_nom = getHistBin(hist, ibin);
+        //  cout << hist->GetName() << ": bin: " << ibin << " ---> " << q_nom.value << "+/-" << q_nom.error << endl;
+        //}
         prepHists({hist});
         if(saveHists_) saveHist(hist);
         mchists.push_back(hist);
@@ -1012,17 +1012,6 @@ public:
       }
     }
 
-    //if(bkgtotal_up.size() > 0){
-    //  for(unsigned iunc = 0; iunc != bkgtotal_up.size(); iunc++){
-    //    for (int ibin=0; ibin<=bkgtotal_up[iunc]->GetNbinsX(); ++ibin){
-    //      auto q_up  = getHistBin(bkgtotal_up[iunc], ibin);
-    //      auto q_dn  = getHistBin(bkgtotal_dn[iunc], ibin);
-
-    //      //cout << bkgtotal_up[iunc]->GetName() << " Up/Down = " << q_up.value << "/" << q_dn.value << endl;
-    //    }
-    //  }
-    //}
-
     TGraphAsymmErrors *unc = nullptr;
     if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
       unc = !bkgtotal_norm ? new TGraphAsymmErrors(bkgtotal) : new TGraphAsymmErrors(bkgtotal_norm);
@@ -1055,15 +1044,21 @@ public:
         unc_up += q_bkg.error*q_bkg.error;
         unc_dn += q_bkg.error*q_bkg.error;
         
+        //Data
+        Quantity q_data = getHistBin(hdata, ibin_hist);
+
         //Nominal
         double pred = q_bkg.value;
-        //cout << "pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        cout << "bin: " << ibin_hist << ", pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        cout << "bin: " << ibin_hist << ", pred: " << q_data.value << " +/- " << q_data.error << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
         unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
         unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
       }
     }
+
+    TH1* pull = getPullHist(hdata, unc);
 
     TCanvas *c = nullptr;
     if (hdata){
