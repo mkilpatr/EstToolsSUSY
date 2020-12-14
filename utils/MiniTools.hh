@@ -258,6 +258,7 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
 
   int nbins = hist->GetNbinsX();
   for(int ibin = 1; ibin <= nbins; ibin++) {
+    Quantity q = getHistBin(h, ibin);
     if(useGreaterThan) {
       integral = htmp->IntegralAndError(ibin, nbins, error);
     } else {
@@ -265,6 +266,7 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
     }
     hist->SetBinContent(ibin, integral);
     hist->SetBinError(ibin, error);
+    //if(TString(h->GetName()).Contains("base - kap")) cout << "bin: " << ibin << " " << q << " " << integral << "+/-" << error << endl;
   }
   delete htmp;
   return hist;
@@ -524,10 +526,12 @@ TH1* getReweightedHist(TTree *intree, TString plotvar, TString wgtvar, TString s
   return hist;
 }
 
-TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString yAxisTitle = "Search Regions", int skipUntil = 0){
+TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString yAxisTitle = "Search Regions", int skipUntil = 0, bool doChiSquared = false){
   auto pull_h=new TH1F("pull_h",";Pull;" + yAxisTitle, 40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
+  double chiSquared = 0.;
+  int nbins = hs->GetN();
   for(int ibin = 0; ibin < hs->GetN(); ++ibin){
     if(ibin < skipUntil) continue;
     int ibin_data = ibin + 1;
@@ -546,6 +550,16 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
     //cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
+    if(doChiSquared){
+      chiSquared += ((a-b)*(a-b))/(a+b);
+      //chiSquared += ((a/nbins-b/nbins)*(a/nbins-b/nbins))/(a/nbins+b/nbins);
+    }
+  }
+  if(doChiSquared){
+     double p = (double)(TMath::Exp((-1/2)*chiSquared)/TMath::Sqrt(2*TMath::Pi()*chiSquared));
+
+     cout << "p-value --> 1 - " << p << " = " << (double)(1/TMath::Sqrt(2*TMath::Pi()*chiSquared)) << " * " << (double)TMath::Exp((-1/2)*chiSquared) << endl;
+     cout << "Test gives a p-value = " << 1 - p << endl;
   }
   if (Ratio) return ratio;
   return pull_h;
@@ -582,7 +596,6 @@ void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdd
     if (isOverflowAdded) addOverflow(h);
     bool isColored = false;
     if (ih < colors.size()){
-      cout << h->GetName() << ": " << colors.at(ih) << endl;
       h->SetLineColor(colors.at(ih));
       isColored = true;
     }else {
