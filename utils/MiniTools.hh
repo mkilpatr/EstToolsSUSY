@@ -530,7 +530,7 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString
   auto pull_h=new TH1F("pull_h",";Pull;" + yAxisTitle, 40,-4,4);
   TH1D *ratio = (TH1D*)h_data->Clone("hratio");
   cout << "pull = (a-b)/sqrt(b+(db)^2)" << endl;
-  double chiSquared = 0.;
+  double chiSquared = 0., chiSquaredNorm = 0.;
   int nbins = hs->GetN();
   for(int ibin = 0; ibin < hs->GetN(); ++ibin){
     if(ibin < skipUntil) continue;
@@ -552,14 +552,16 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString
     //cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
     if(doChiSquared){
       chiSquared += ((a-b)*(a-b))/(a+b);
-      //chiSquared += ((a/nbins-b/nbins)*(a/nbins-b/nbins))/(a/nbins+b/nbins);
+      chiSquaredNorm += ((a/nbins-b/nbins)*(a/nbins-b/nbins))/(a/nbins+b/nbins);
     }
   }
   if(doChiSquared){
-     double p = (double)(TMath::Exp((-1/2)*chiSquared)/TMath::Sqrt(2*TMath::Pi()*chiSquared));
-
-     cout << "p-value --> 1 - " << p << " = " << (double)(1/TMath::Sqrt(2*TMath::Pi()*chiSquared)) << " * " << (double)TMath::Exp((-1/2)*chiSquared) << endl;
-     cout << "Test gives a p-value = " << 1 - p << endl;
+     double p = TMath::Exp(-0.5*chiSquared)/TMath::Sqrt(2*TMath::Pi()*chiSquared);
+     double pNorm = TMath::Exp(-0.5*chiSquaredNorm)/TMath::Sqrt(2*TMath::Pi()*chiSquaredNorm);
+     cout << "Test statistic T = " << chiSquared << endl;
+     cout << "Norm Test statistic T = " << chiSquaredNorm << endl;
+     cout << "p-value --> 1 - " << p << " = "     << TMath::Exp(-0.5*chiSquared) << " / " << TMath::Sqrt(2*TMath::Pi()*chiSquared) << " = " << 1 - p << endl;
+     cout << "Norm p-value --> 1 - " << pNorm << " = " << TMath::Exp(-0.5*chiSquaredNorm) << " / " << TMath::Sqrt(2*TMath::Pi()*chiSquaredNorm) << " = " << 1 - pNorm << endl;
   }
   if (Ratio) return ratio;
   return pull_h;
