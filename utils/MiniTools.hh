@@ -549,7 +549,7 @@ TH1* getPullHist(TH1 *h_data, TGraphAsymmErrors* hs, bool Ratio = false, TString
     ratio->SetBinContent(ibin_data, pull);
     pull_h->Fill(pull);
     if(TMath::Abs(pull) > 2.0)cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
-    //cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
+    cout << "bin " << ibin << ": " << pull << " = " << "(" << a << " - " << b << ")/sqrt(" << b << " + (" << sqrt(db) << ")^2)" << endl;  
     if(doChiSquared){
       chiSquared += ((a-b)*(a-b))/(a+b);
       chiSquaredNorm += ((a/nbins-b/nbins)*(a/nbins-b/nbins))/(a/nbins+b/nbins);

@@ -27,7 +27,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
 
   vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare"};
   vector<TString> siglabels = {"T2tt(1000, 0)"};
-  vector<TString> datalabel = {"Observed"};
+  vector<TString> datalabel = {"Data"};
 
   vector<TString> split = {"lm",
 			   "hm",

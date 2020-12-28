@@ -33,7 +33,7 @@ void getFinalPlot_compare_post(TString inputDir="31Jul2020_Run2_dev_v7", TString
   vector<TString> bkglabels = {"Lost lepton", "Z#rightarrow#nu#bar{#nu}", "QCD multijet", "Rare"};
   vector<TString> siglabels = {"T2tt(1000,100)", "T1tttt(2000, 400)"};
   if(otherSig)    siglabels = {"T2ttC(500, 460)", "T2cc(500, 460)"};
-  vector<TString> datalabel = {"Observed"};
+  vector<TString> datalabel = {"Data"};
 
   vector<TString> split = {"lm",
 			   "hm_nb1_bins",

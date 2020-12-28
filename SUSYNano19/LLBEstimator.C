@@ -1588,7 +1588,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_112520";
+  TString region = "lepcr_inclusive_withSyst_devv7_122120";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1604,13 +1604,13 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1633,7 +1633,7 @@ void plot1LepInclusiveWithSyst(){
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
   vector<TH1*> ratiohist;
-  for (unsigned i = 0; i < 1; i++){
+  for (unsigned i = 1; i < 2; i++){
     for (auto &var : varDict){
       vector<TH1*> unc_up, unc_dn;
       unc_up.clear();

@@ -507,7 +507,7 @@ BaseConfig lepConfig(){
     config.addSample("ttW-2016",         "t#bar{t}W",           inputdir_2016+"ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
 //    config.addSample("qcd",         "QCD",           "lepcr/qcd",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
   }else{
-    config.addSample("singlelep",        "Observed",      datadir+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
+    config.addSample("singlelep",        "Data",      datadir+"met",                   "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("singlelep-2016",   "Data 2016",     datadir+"met_2016",              "1.0",          datasel + trigSR + revert_vetoes);
     config.addSample("ttbar-2016",       "t#bar{t}",      inputdir_2016+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
     config.addSample("wjets-2016",       "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel + revert_vetoes);
