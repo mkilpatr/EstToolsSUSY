@@ -1604,13 +1604,13 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1629,11 +1629,12 @@ void plot1LepInclusiveWithSyst(){
 				};
 
   vector<TString> systs = {"ISR_Weight_background", "JES", "PDF_Weight", "PU_Weight", "PowhegOverMG", "Prefire_Weight", "b_light", "b_heavy", "eff_densetoptag", "eff_e", "eff_fatjet_veto", "eff_restoptag", "eff_tau", "eff_toptag", "eff_wtag", "err_mu", "ivfunc", "metres", "toppt", "trigger_err", "xsecNorm_ttbar", "xsecNorm_wjets"};
+  systs = {"eff_wtag"};
 
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
   vector<TH1*> ratiohist;
-  for (unsigned i = 1; i < 2; i++){
+  for (unsigned i = 0; i < 1; i++){
     for (auto &var : varDict){
       vector<TH1*> unc_up, unc_dn;
       unc_up.clear();
@@ -1661,7 +1662,7 @@ void plot1LepInclusiveWithSyst(){
       if (var.first.Contains("nowgt")) suffix += "_notoppt";
       z.resetSelection();
       //Make final plot with stat + syst
-      z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
+      z.setSelection(LLCR_HM, "llcr_hm_syst_onlyWtag" + suffix, "");
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
         plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));

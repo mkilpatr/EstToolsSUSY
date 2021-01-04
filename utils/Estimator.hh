@@ -1012,6 +1012,9 @@ public:
       }
     }
 
+    TH1* nominal = !bkgtotal_norm ? (TH1*)bkgtotal->Clone("nominal__") : (TH1*)bkgtotal_norm->Clone("nominal__");
+    TH1* downPred = !bkgtotal_norm ? (TH1*)bkgtotal->Clone("nominal__") : (TH1*)bkgtotal_norm->Clone("downPred__");
+
     TGraphAsymmErrors *unc = nullptr;
     if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
       unc = !bkgtotal_norm ? new TGraphAsymmErrors(bkgtotal) : new TGraphAsymmErrors(bkgtotal_norm);
@@ -1046,17 +1049,26 @@ public:
         
         //Data
         Quantity q_data = getHistBin(hdata, ibin_hist);
+        setHistBin(downPred, ibin_hist, Quantity(q_bkg.value - TMath::Sqrt(unc_dn), 0.));
 
         //Nominal
         double pred = q_bkg.value;
         cout << "bin: " << ibin_hist << ", pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         cout << "bin: " << ibin_hist << ", pred: " << q_data.value << " +/- " << q_data.error << endl;
+        cout << "bin: " << ibin_hist << ", data - nom: " << q_data.value - pred << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
         unc->SetPointEYhigh(ibin, TMath::Sqrt(unc_up));
         unc->SetPointEYlow(ibin,  TMath::Sqrt(unc_dn));
       }
     }
+
+    vector<TH1*> inRatios = {};
+    inRatios.push_back(makeRatioHistsCustom(nominal, hdata));
+    inRatios.push_back(makeRatioHistsCustom(nominal, downPred));
+    TFile *output = new TFile(config.outputdir+"/DataOverMC_ratio.root", "RECREATE");
+    for (auto *h : inRatios) h->Write();
+    output->Close();
 
     TH1* pull = getPullHist(hdata, unc);
 
@@ -1067,7 +1079,8 @@ public:
       else if (mcRatio)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, "N_{el}/N_{mu}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, false, false, false, mcRatio);
       else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
-        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+        //c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          inRatios, nullptr, false, false, false, true);
       } else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{

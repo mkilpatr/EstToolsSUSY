@@ -882,6 +882,16 @@ TGraphAsymmErrors* getRatioAsymmErrors(TH1* hD, TH1* hnonttbar, TH1* httbar) {
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TH1* makeRatioHistsCustom(TH1* Nominal, TH1* data, TString option = ""){
+  //(data - Nominal)
+  cout << "____Ratio: (data - nominal) " << endl;
+  assert(data && Nominal);
+  auto hnum = (TH1*)data->Clone(data->GetName() + TString("__num__"));
+  hnum->Add(Nominal, -1);
+  return hnum;
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity dileptonZtoLLScaleFactorHelper(Quantity data_peak, Quantity dy_peak, Quantity tt_peak, Quantity data_off, Quantity dy_off, Quantity tt_off){
   double num = (data_off*tt_peak - data_peak*tt_off).value;
   double den = (  dy_off*tt_peak -   dy_peak*tt_off).value;
