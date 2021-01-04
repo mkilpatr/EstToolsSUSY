@@ -84,7 +84,7 @@ void lepcrYields(){
 
 void plotHtoTaus(){
   auto config = sigConfig();
-  TString baseline_plus = "nJets30 >=2 && HiggsCand_pt > 100 && JetTau_dijetMass > 300 && Tau_dijetMass != -9 && HiggsCand_mass > 0 && Tau_deltaR > -1 && JetTau_dijetMass != 0";
+  TString baseline_plus = "nJets30 >=2 && SVFit_Pt > 100 && JetTau_dijetMass > 300 && SVFit_Mass > 0";
   config.sel = baseline;
 
   LOG_YMIN = 10.;
@@ -92,13 +92,15 @@ void plotHtoTaus(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "Tau_training_111920_small";
+  TString region = "Tau_training_122820_small";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> sig_samples = {"GluGluHToTauTau", "VBFHToTauTau"};
-  vector<TString> mc_samples = {"diboson"};
+  //vector<TString> sig_samples = {"GluGluHToTauTau", "VBFHToTauTau"};
+  vector<TString> sig_samples = {"GluGluHToTauTau"};
+  //vector<TString> mc_samples = {"diboson"};
+  vector<TString> mc_samples = {"GluGluHToTauTau"};
   TString data_sample_2016 = "";
 
   map<TString, BinInfo> varDict {
@@ -115,6 +117,7 @@ void plotHtoTaus(){
 	{"higgsEta",	BinInfo("HiggsCand_eta", 	"#eta(H)", 16, -4, 4)},
 	{"higgsPhi",	BinInfo("HiggsCand_phi", 	"#phi(H)", 64, -3.2, 3.2)},
 	{"higgsMass",	BinInfo("HiggsCand_mass",	"M_{H}", 16, 0, 400)},
+	{"SVFitMass",	BinInfo("SVFit_Mass",	        "M_{H}", 20, 0, 400)},
 	//{"ht",		BinInfo("Tau_HT",        	"H_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"j1pt",	BinInfo("JetTau_matchPt_1"  , 	"p_{T}(j_{1}) [GeV]", 20, 0, 1000)},	
 	//{"j1eta",	BinInfo("JetTau_matchEta_1" , 	"#eta(j_{1})", 10, 0, 10)},         	
