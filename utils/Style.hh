@@ -72,6 +72,7 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"triboson",  797},
     {"wmatch",    kGreen+3},
     {"topmatch",  kViolet+2},
+    {"GluGluToHHTo2B2Tau", kRed-9},
     {"GluGluHToTauTau", kViolet+2},
     {"VBFHToTauTau", kCyan+2},
 };

@@ -92,15 +92,13 @@ void plotHtoTaus(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "Tau_training_122820_small";
+  TString region = "Tau_training_010421";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  //vector<TString> sig_samples = {"GluGluHToTauTau", "VBFHToTauTau"};
-  vector<TString> sig_samples = {"GluGluHToTauTau"};
-  //vector<TString> mc_samples = {"diboson"};
-  vector<TString> mc_samples = {"GluGluHToTauTau"};
+  vector<TString> sig_samples = {"GluGluHToTauTau", "VBFHToTauTau"};
+  vector<TString> mc_samples = {"diboson", "wjets"};
   TString data_sample_2016 = "";
 
   map<TString, BinInfo> varDict {
@@ -110,14 +108,13 @@ void plotHtoTaus(){
 	//{"tauHadDecay_1",	BinInfo("Tau_hadDecayFlag1", 	"Type of Decay", 3, -0.5, 2.5)},
 	//{"tauHadDecay_2",	BinInfo("Tau_hadDecayFlag2", 	"Type of Decay", 3, -0.5, 2.5)},
 	//{"jetMass",	BinInfo("JetTau_dijetMass", 	"M_{jj}", 14, 300, 1000)},
-	{"tauMass",	BinInfo("Tau_dijetMass", 	"M_{#tau#tau}", 100, 0, 50)},
+	//{"tauMass",	BinInfo("Tau_dijetMass", 	"M_{#tau#tau}", 100, 0, 50)},
 	//{"jetDeltaR",	BinInfo("JetTau_deltaR",    	"#DeltaR(j_{1}, j_{2})", 25, 0, 5)},
 	//{"tauDeltaR",	BinInfo("Tau_deltaR",    	"#DeltaR(#tau_{1}, #tau_{2})", 25, 0, 5)},
-	{"higgsPt",	BinInfo("HiggsCand_pt",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
-	{"higgsEta",	BinInfo("HiggsCand_eta", 	"#eta(H)", 16, -4, 4)},
-	{"higgsPhi",	BinInfo("HiggsCand_phi", 	"#phi(H)", 64, -3.2, 3.2)},
-	{"higgsMass",	BinInfo("HiggsCand_mass",	"M_{H}", 16, 0, 400)},
-	{"SVFitMass",	BinInfo("SVFit_Mass",	        "M_{H}", 20, 0, 400)},
+	{"higgsPt",	BinInfo("SVFit_Pt",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"higgsEta",	BinInfo("SVFit_Eta", 	"#eta(H)", 16, -4, 4)},
+	{"higgsPhi",	BinInfo("SVFit_Phi", 	"#phi(H)", 64, -3.2, 3.2)},
+	{"higgsMass",	BinInfo("SVFit_Mass",	"M_{H}", 20, 0, 400)},
 	//{"ht",		BinInfo("Tau_HT",        	"H_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"j1pt",	BinInfo("JetTau_matchPt_1"  , 	"p_{T}(j_{1}) [GeV]", 20, 0, 1000)},	
 	//{"j1eta",	BinInfo("JetTau_matchEta_1" , 	"#eta(j_{1})", 10, 0, 10)},         	
