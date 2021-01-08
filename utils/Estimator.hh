@@ -1028,6 +1028,7 @@ public:
           q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
           up.push_back(q_up.value);
           dn.push_back(q_dn.value);
+          //cout << bkgtotal_up[iunc]->GetName() << " bin " << ibin << ": " << q_bkg << " + " << q_up.value << " - " << q_dn.value << endl;
         }
         if(bkgtotal_up.size() == 0){ 
           for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
