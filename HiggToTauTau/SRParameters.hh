@@ -7,8 +7,9 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_010421/";
+//const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_010821/";
+//const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
@@ -85,7 +86,7 @@ const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW=
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_NJets30";
+const TString baseline = "Pass_NJets30 && SVFitMET_isValid";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
@@ -368,6 +369,7 @@ BaseConfig sigConfig(){
   //config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
   config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
   config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
+  config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
 
   //config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
   //config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
