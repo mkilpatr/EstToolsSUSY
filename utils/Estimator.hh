@@ -1028,7 +1028,8 @@ public:
           q_bkg = getHistBin(bkgtotal_norm, ibin_hist);
           up.push_back(q_up.value);
           dn.push_back(q_dn.value);
-          //cout << bkgtotal_up[iunc]->GetName() << " bin " << ibin << ": " << q_bkg << " + " << q_up.value << " - " << q_dn.value << endl;
+          cout << bkgtotal_up[iunc]->GetName() << " bin " << ibin << ": " << q_bkg << " + " << q_up.value*q_bkg.value << " - " << q_dn.value*q_bkg.value << endl;
+          setHistBin(downPred, ibin_hist, Quantity(q_dn.value*q_bkg.value, 0.));
         }
         if(bkgtotal_up.size() == 0){ 
           for(unsigned iunc = 0; iunc != inUnc_up.size(); iunc++){
@@ -1042,7 +1043,7 @@ public:
         pair<double, double> comb = doLogNorm(dn, up); 
         double unc_up = ((comb.second - 1)*q_bkg.value)*((comb.second - 1)*q_bkg.value);
         double unc_dn = ((1 - comb.first)*q_bkg.value)*((1 - comb.first)*q_bkg.value);
-        //cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
+        cout << "Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
         //Statistical
         // ttbar:
         unc_up += q_bkg.error*q_bkg.error;
@@ -1050,12 +1051,11 @@ public:
         
         //Data
         Quantity q_data = getHistBin(hdata, ibin_hist);
-        setHistBin(downPred, ibin_hist, Quantity(q_bkg.value - TMath::Sqrt(unc_dn), 0.));
 
         //Nominal
         double pred = q_bkg.value;
         cout << "bin: " << ibin_hist << ", pred: " << pred << " Up/Down: " << TMath::Sqrt(unc_up) << "/" << TMath::Sqrt(unc_dn) << endl;
-        cout << "bin: " << ibin_hist << ", pred: " << q_data.value << " +/- " << q_data.error << endl;
+        cout << "bin: " << ibin_hist << ", data: " << q_data.value << " +/- " << q_data.error << endl;
         cout << "bin: " << ibin_hist << ", data - nom: " << q_data.value - pred << endl;
         
         unc->SetPoint(ibin, unc->GetX()[ibin], pred);
@@ -1067,7 +1067,7 @@ public:
     vector<TH1*> inRatios = {};
     inRatios.push_back(makeRatioHistsCustom(nominal, hdata));
     inRatios.push_back(makeRatioHistsCustom(nominal, downPred));
-    TFile *output = new TFile(config.outputdir+"/DataOverMC_ratio.root", "RECREATE");
+    TFile *output = new TFile(config.outputdir+"/DataOverMC_"+bkgtotal_up[0]->GetName()+".root", "RECREATE");
     for (auto *h : inRatios) h->Write();
     output->Close();
 
