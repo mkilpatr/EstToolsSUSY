@@ -85,7 +85,8 @@ void lepcrYields(){
 void plotHtoTaus(){
   auto config = sigConfig();
   //TString baseline_plus = "nJets30 >=2 && SVFit_Pt > 100 && JetTau_dijetMass > 300 && SVFit_Mass > 0";
-  TString baseline_plus = "nJets30 >=2 && HiggsSVFit_PassBaseline";
+  TString baseline_plus = "nJets30 >=2 && HiggsSVFit_Pt > 100 && HiggsSVFit_dijetMass > 300 && HiggsSVFit_PassBaseline";
+  //TString baseline_plus = "nJets30 >=2 && HiggsSVFit_PassBaseline";
   config.sel = baseline;
 
   LOG_YMIN = 10.;
@@ -93,7 +94,7 @@ void plotHtoTaus(){
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
-  TString region = "Tau_training_010821";
+  TString region = "Tau_training_011121_v2";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -121,14 +122,14 @@ void plotHtoTaus(){
 	{"tau2Mass",	BinInfo("HiggsSVFit_tau2Mass",	"M_{#tau_{2}}", 20, 0, 4)},
 	{"tau2pdgid",	BinInfo("HiggsSVFit_tau2pdgId",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
 	{"tau2DM",	BinInfo("HiggsSVFit_tau2DM",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
-	{"ht",		BinInfo("HiggsSVFit_HT",        "H_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"ht",		BinInfo("HiggsSVFit_HT",        "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000, 1500}, "GeV")},
 	{"elecMuonMT",	BinInfo("HiggsSVFit_elecMuonMT","M_{T}^{e+#mu}", 20, 0, 200)},
 	{"elecMT_tau1",	BinInfo("HiggsSVFit_tau1_elecMT","M_{T}^{e}", 20, 0, 200)},
 	{"muonMT_tau1",	BinInfo("HiggsSVFit_tau1_muMT",  "M_{T}^{#mu}", 20, 0, 200)},
 	{"tauMT_tau1",	BinInfo("HiggsSVFit_tau1_hadMT", "M_{T}^{#tau_{h}}", 20, 0, 200)},
 	{"muonMT_tau2",	BinInfo("HiggsSVFit_tau2_muMT",  "M_{T}^{#mu}", 20, 0, 200)},
 	{"tauMT_tau2",	BinInfo("HiggsSVFit_tau2_hadMT", "M_{T}^{#tau_{h}}", 20, 0, 200)},
-	{"ditauMass",	BinInfo("HiggsSVFit_ditauMass",  "M_{#tau#tau}", 20, 0, 200)},
+	{"ditauMass",	BinInfo("HiggsSVFit_ditauMass",  "M_{#tau#tau}", 50, 0, 500)},
 	{"ditauPt",	BinInfo("HiggsSVFit_ditauPt",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
 	{"ditau_dR",	BinInfo("HiggsSVFit_ditauDR",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
 	{"elecMuon_dR",	BinInfo("HiggsSVFit_deltaREMu",  "#DeltaR(e, #mu)", 30, 0, 6)},
@@ -147,24 +148,34 @@ void plotHtoTaus(){
 	{"j3Eta",	BinInfo("HiggsSVFit_j3Eta", 	 "#eta(j_{3})", 36, -4, 4)},
 	{"j3Phi",	BinInfo("HiggsSVFit_j3Phi", 	 "#phi(j_{3})", 64, -3.2, 3.2)},
 	{"j3Mass",	BinInfo("HiggsSVFit_j3Mass",	 "M_{j_{3}}", 20, 0, 40)},
-	{"dijetMass",	BinInfo("HiggsSVFit_dijetMass",  "M_{jj}", 25, 0, 1500)},
+	{"dijetMass",	BinInfo("HiggsSVFit_dijetMass",  "M_{jj}", 20, 300, 1500)},
 	{"dijetPt",	BinInfo("HiggsSVFit_dijetPt",    "p_{T}^{jj}", 25, 0, 400)},
-	{"ditaudijetMass",BinInfo("HiggsSVFit_2tau2jetPt", 	"p_{T}^{#tau#taujj+miss}", 25, 0, 400)},
+	{"ditaudijetMass",BinInfo("HiggsSVFit_2tau2jetPt", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
 	{"dijet_dR",	BinInfo("HiggsSVFit_dijetDR",    "#DeltaR(j_{1}, j_{2})", 30, 0, 6)},
+	{"maxdR_bjettau",BinInfo("HiggsSVFit_MaxbjetTauDR",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"mindR_bjettau",BinInfo("HiggsSVFit_MinbjetTauDR",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
 	{"dijet_dEta",	BinInfo("HiggsSVFit_dijetDEta",  "#Delta#eta(j_{1}, j_{2})", 30, 0, 6)},
 	{"met",         BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
   };
 
   std::function<void(TCanvas*)> plotextra;
   for (auto &var : varDict){
-    //z.resetSelection();
-    //z.setSelection(baseline_plus, "baseline_2018", "");
-    //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-    //z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, false, &plotextra);
+    z.resetSelection();
+    z.setSelection(baseline_plus, "baseline_2018", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, false, &plotextra, false);
     z.resetSelection();
     z.setSelection(baseline_plus, "baseline_2018_linear", "");
     plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra);
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra, false);
+    z.resetSelection();
+    z.setSelection(baseline_plus, "baseline_2018_norm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, true, &plotextra, false);
+    z.resetSelection();
+    z.setSelection(baseline_plus, "baseline_2018_linear_norm", "");
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
+    z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false);
   }
 }
 
