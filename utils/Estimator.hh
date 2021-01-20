@@ -1038,6 +1038,8 @@ public:
             q_bkg = getHistBin(bkgtotal, ibin_hist);
             up.push_back(q_up.value);
             dn.push_back(q_dn.value);
+          cout << inUnc_up[iunc]->GetName() << " bin " << ibin << ": " << q_bkg << " + " << q_up.value*q_bkg.value << " - " << q_dn.value*q_bkg.value << endl;
+          setHistBin(downPred, ibin_hist, Quantity(q_dn.value*q_bkg.value, 0.));
           } 
         }
         pair<double, double> comb = doLogNorm(dn, up); 
@@ -1067,7 +1069,7 @@ public:
     vector<TH1*> inRatios = {};
     inRatios.push_back(makeRatioHistsCustom(nominal, hdata));
     inRatios.push_back(makeRatioHistsCustom(nominal, downPred));
-    TFile *output = new TFile(config.outputdir+"/DataOverMC_"+bkgtotal_up[0]->GetName()+".root", "RECREATE");
+    TFile *output = new TFile(config.outputdir+"/DataOverMC_noNormSyst_"+inUnc_up[0]->GetName()+".root", "RECREATE");
     for (auto *h : inRatios) h->Write();
     output->Close();
 

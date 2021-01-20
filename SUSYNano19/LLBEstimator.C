@@ -1576,8 +1576,8 @@ void plot1LepInclusiveWithSyst(){
   TDR_EXTRA_LABEL_2 = "";
 
   LOG_YMIN = 1.;
-  //RATIO_YMIN = 0.499;
-  //RATIO_YMAX = 1.501;
+  RATIO_YMIN = 0.201;
+  RATIO_YMAX = 1.799;
 
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
@@ -1588,7 +1588,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_011121";
+  TString region = "lepcr_inclusive_withSyst_devv7_011821";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1634,12 +1634,12 @@ void plot1LepInclusiveWithSyst(){
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
   vector<TH1*> ratiohist;
-  for (unsigned i = 0; i < 1; i++){
+  for (unsigned i = 0; i < 2; i++){
     for (auto &var : varDict){
-      if (var.first.Contains("nw")) systs = {"eff_wtag"};
-      if (var.first.Contains("ntop")) systs = {"eff_toptag"};
-      if (var.first.Contains("nrestop")) systs = {"eff_restoptag"};
-      if (var.first.Contains("met")) systs = {"metres"};
+      //if (var.first.Contains("nw")) systs = {"eff_wtag"};
+      //if (var.first.Contains("ntop")) systs = {"eff_toptag"};
+      //if (var.first.Contains("nrestop")) systs = {"eff_restoptag"};
+      //if (var.first.Contains("met")) systs = {"metres"};
       vector<TH1*> unc_up, unc_dn;
       unc_up.clear();
       unc_dn.clear();
@@ -1653,7 +1653,6 @@ void plot1LepInclusiveWithSyst(){
         if (i == 0 && !var.first.Contains("toppt")) suffix = "_norm";
         else if (var.first == "toppt") suffix = "_withtoppt";
         if (var.first.Contains("nowgt") && (s.Contains("PowhegOverMG") || s.Contains("toppt"))) continue;
-        if (suffix.Contains("norm") && s.Contains("xsecNorm")) continue;
 
         TString filename = location + "/" + s + ".root";
         TFile *p = TFile::Open(filename);
