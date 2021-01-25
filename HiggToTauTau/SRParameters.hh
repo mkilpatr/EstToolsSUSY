@@ -8,12 +8,12 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 //const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_011121/";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_allVars_011921/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_skim_diHiggs_111620/";
+const TString datadir = "nanoaod_2018_skim_diHiggs_allVars_011921/";
 
 TString lumistr = "59.699489";
 
@@ -72,13 +72,18 @@ const TString onelepcrwgt  = lepselwgt;
 //const TString sigwgt = lepvetowgt + "*btagFastSimWeight*isrWeightTight*(0.85*(Stop0l_nSoftb>=1) + 1.0*(Stop0l_nSoftb==0))";
 const TString sigwgt = lepvetowgt;
 
+//Separate channel cuts
+const TString emuChannel = "(HiggsSVFit_channel == 5 && HiggsSVFit_DZeta > -35 && HiggsSVFit_elecMuonMT < 60)";
+const TString lephadChannel = "(HiggsSVFit_channel == 0 && HiggsSVFit_PassTight && HiggsSVFit_tau1_muMT < 50) || (HiggsSVFit_channel == 1 && HiggsSVFit_PassTight && HiggsSVFit_tau1_elecMT < 50)";
+const TString hadhadChannel = "(HiggsSVFit_channel == 2 && HiggsSVFit_PassTight && HiggsSVFit_ditauDR > 0.5 && HiggsSVFit_ditauPt > 50)";
+
 // triggers
 const TString dibosonBadEventRemoval = " && event != 237972";
 const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_HT && Pass_JetID";
+const TString datasel = " && Pass_EventFilter && Pass_JetID && (" + emuChannel + " || " + lephadChannel + " || " + hadhadChannel + ")";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -86,7 +91,7 @@ const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW=
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_NJets30 && SVFitMET_isValid";
+const TString baseline = "Pass_NJets30 && SVFitMET_isValid && HiggsSVFit_PassBaseline && HiggsSVFit_PassLepton";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
@@ -361,9 +366,9 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("GluGluToHHTo2B2Tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"GluGluToHHTo2B2Tau", wgtvar,  datasel);
-  config.addSample("GluGluHToTauTau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"GluGluHToTauTau", wgtvar,  datasel);
-  config.addSample("VBFHToTauTau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"VBFHToTauTau",    wgtvar,  datasel);
+  config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
+  config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
+  config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
   //config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
   //config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
   //config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
