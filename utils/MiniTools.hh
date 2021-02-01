@@ -939,6 +939,13 @@ void setBinLabels(TH1 *h, const vector<TString>& labels){
   }
 }
 
+void setBinLabelsYX(TH2 *h, const vector<TString>& labels){
+  for (unsigned i=0; i<labels.size() && i<unsigned(h->GetNbinsY()); ++i){
+    h->GetXaxis()->SetBinLabel(i+1, labels.at(i));
+    h->GetYaxis()->SetBinLabel(i+1, labels.at(i));
+  }
+}
+
 void SetEx(TGraphAsymmErrors* gae, Double_t Ex)
 {
   Int_t np = gae->GetN();
