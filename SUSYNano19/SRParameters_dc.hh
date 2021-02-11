@@ -2,8 +2,7 @@
 #define ESTTOOLS_LMPARAMETERS_HH_
 
 #include "../utils/EstHelper.hh"
-//#include "binDefinitions_dc.hh"
-#include "binDefinitions_dc_nanBin.hh"
+#include "binDefinitions_SSR_dc.hh"
 
 namespace EstTools{
 
@@ -133,6 +132,7 @@ std::map<TString, TString> cutMap = []{
 	{"nbeq2",       "Stop0l_nbtags==2"},
 	{"nb3",         "Stop0l_nbtags>=3"},
 	{"nivf0",       "Stop0l_nSoftb==0"},
+	{"nivfgt0",     "Stop0l_nSoftb>=0"},
 	{"nivf1",       "Stop0l_nSoftb>=1"},
 	{"lowptisr",    "Stop0l_ISRJetPt>=300 && Stop0l_ISRJetPt<500"},
 	{"medptisr",    "Stop0l_ISRJetPt>=300"},
@@ -160,6 +160,8 @@ std::map<TString, TString> cutMap = []{
 	{"nrt1",        "Stop0l_nResolved==1"},
 	{"nrt2",        "Stop0l_nResolved==2"},
 	{"nrtgeq1",     "Stop0l_nResolved>=1"},
+	{"nrtntnw1",    "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) == 1"},
+	{"nrtntnw2",    "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) == 2"},
 	{"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
 	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
 	{"htlt1000",    "Stop0l_HT<1000"},
