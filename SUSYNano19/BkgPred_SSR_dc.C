@@ -13,7 +13,7 @@ using json = nlohmann::json;
 #include "../EstMethods/LLBEstimator.hh"
 #include "../EstMethods/ZnunuEstimator.hh"
 #include "../EstMethods/QCDEstimator.hh"
-#include "SRParameters_dc.hh"
+#include "SRParameters_SSR_dc.hh"
 
 
 using namespace EstTools;
@@ -43,29 +43,29 @@ void runBkgPred(){
 
   auto srcfg = srConfig();
   BaseEstimator s(srcfg);
-  s.calcYields();
-  Quantity::removeNegatives(s.yields.at("ttZ"));
-  Quantity::removeNegatives(s.yields.at("diboson"));
-  for (const auto &samp : srcfg.samples){
-    s.convertYields(samp.first, "");
-  }
+  //s.calcYields();
+  //Quantity::removeNegatives(s.yields.at("ttZ"));
+  //Quantity::removeNegatives(s.yields.at("diboson"));
+  //for (const auto &samp : srcfg.samples){
+  //  s.convertYields(samp.first, "");
+  //}
   binlist = s.binlist;
 
   auto phocfg = phoConfig();
   ZnunuEstimator z(phocfg);
-  z.zllcr_cfg = zllConfig();
-  z.zll_normMap = normMap;
-  z.phocr_normMap = phoNormMap;
-  z.pred();
-  z.printYields();
-  z.prepDatacard();
+  //z.zllcr_cfg = zllConfig();
+  //z.zll_normMap = normMap;
+  //z.phocr_normMap = phoNormMap;
+  //z.pred();
+  //z.printYields();
+  //z.prepDatacard();
   binMaps["phocr"] = updateBinMap(z.binMap, phocrBinMap, binlist);
 
   auto qcdcfg = qcdConfig();
   QCDEstimator q(qcdcfg);
-  q.pred();
-  q.printYields();
-  q.prepDatacard();
+  //q.pred();
+  //q.printYields();
+  //q.prepDatacard();
   binMaps["qcdcr"] = updateBinMap(q.binMap, qcdcrBinMap, binlist);
 
   auto llbcfg = lepConfig();
@@ -76,32 +76,32 @@ void runBkgPred(){
   binMaps["lepcr"] = updateBinMap(l.binMap, lepcrBinMap, binlist);
 
 
-  vector<const BaseEstimator*> allPreds = {&z, &q, &l, &s};
+  //vector<const BaseEstimator*> allPreds = {&z, &q, &l, &s};
 
-  for (const auto *v : allPreds){
-    yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
-  }
+  //for (const auto *v : allPreds){
+  //  yieldsMap.insert(v->std_yields.begin(), v->std_yields.end());
+  //}
 
-  // manually fix any zero/negative yields
-  for (auto &s : yieldsMap){
-    if (s.first.find("data")!=std::string::npos) continue; // ignore data
-    double default_value = 1e-6;
-    for (auto &b : s.second){
-      auto &v = b.second;
-      if (v.size() && v.front()<=0){
-        cout << "fixing " << s.first << "," << b.first << " from " << v.front() << " to " << default_value << endl;
-        v.front() = default_value;
-        v.back()  = default_value;
-      }
-    }
-  }
+  //// manually fix any zero/negative yields
+  //for (auto &s : yieldsMap){
+  //  if (s.first.find("data")!=std::string::npos) continue; // ignore data
+  //  double default_value = 1e-6;
+  //  for (auto &b : s.second){
+  //    auto &v = b.second;
+  //    if (v.size() && v.front()<=0){
+  //      cout << "fixing " << s.first << "," << b.first << " from " << v.front() << " to " << default_value << endl;
+  //      v.front() = default_value;
+  //      v.back()  = default_value;
+  //    }
+  //  }
+  //}
 
   json j;
   j["binlist"] = binlist;
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open(outputdir+"/dc_BkgPred.json");
+  jout.open(outputdir+"/dc_BkgPred_SSR.json");
   jout << j.dump(2);
   jout.close();
 
@@ -159,7 +159,7 @@ void runBkgPred(){
 //}
 
 
-void BkgPred_dc(){
+void BkgPred_SSR_dc(){
   runBkgPred();
 //  runSignalYields();
 }
