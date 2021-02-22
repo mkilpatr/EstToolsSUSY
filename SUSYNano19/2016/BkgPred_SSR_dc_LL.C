@@ -79,6 +79,7 @@ void runBkgPred(){
   json j;
   j["binlist"] = binlist;
   j["binNum"] = lepcrBinNumMap;
+  j["srmerge"] = srMergeBinMap;
   j["unitSRNum"] = lepcrUnitNumMap;
   j["unitCRNum"]["lepcr"] = lepcrUnitCRNumMap;
   j["unitCRNum"]["qcdcr"] = qcdcrUnitCRNumMap;
@@ -86,7 +87,7 @@ void runBkgPred(){
   j["binMaps"] = binMaps;
   j["yieldsMap"] = yieldsMap;
   std::ofstream jout;
-  jout.open(outputdir+"/ll_BkgPred_2016_112320_forScarlet.json");
+  jout.open(outputdir+"/dc_BkgPred_BinMaps_SSR_master.json");
   jout << j.dump(2);
   jout.close();
 

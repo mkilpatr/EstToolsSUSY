@@ -1576,8 +1576,8 @@ void plot1LepInclusiveWithSyst(){
   TDR_EXTRA_LABEL_2 = "";
 
   LOG_YMIN = 1.;
-  RATIO_YMIN = 0.201;
-  RATIO_YMAX = 1.799;
+  RATIOPLOT_XLABEL_FONTSIZE = 0.11;
+  RATIOPLOT_XTITLE_OFFSET = 0.90;
 
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
@@ -1588,7 +1588,7 @@ void plot1LepInclusiveWithSyst(){
   config.addSample("ttbar-notoppt-2017",      "t#bar{t}",      inputdir_2017+"ttbar",           lepselwgt_2017+noTopPt,        	        datasel + revert_vetoes);
   config.addSample("ttbar-notoppt-2018",      "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt_2018+noTopPt,                 datasel + revert_vetoes);
 
-  TString region = "lepcr_inclusive_withSyst_devv7_011821";
+  TString region = "lepcr_inclusive_withSyst_devv7_021721";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
@@ -1596,6 +1596,9 @@ void plot1LepInclusiveWithSyst(){
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttx-2016", "ttx-2017", "ttx-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018"};
+  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016",
+				"tW-2016", "ttx-2016", 
+				"polyboson-2016"};
   vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
@@ -1604,11 +1607,11 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1634,12 +1637,18 @@ void plot1LepInclusiveWithSyst(){
   std::function<void(TCanvas*)> plotextra;
   TString location = "";
   vector<TH1*> ratiohist;
-  for (unsigned i = 0; i < 2; i++){
+  for (unsigned i = 0; i < 1; i++){
     for (auto &var : varDict){
-      //if (var.first.Contains("nw")) systs = {"eff_wtag"};
-      //if (var.first.Contains("ntop")) systs = {"eff_toptag"};
-      //if (var.first.Contains("nrestop")) systs = {"eff_restoptag"};
-      //if (var.first.Contains("met")) systs = {"metres"};
+      if (var.first.Contains("nw") || var.first.Contains("met")) PLOT_LOGY_MAX_SCALE = 1000;
+      else PLOT_LOGY_MAX_SCALE = 100000;
+      if (var.first.Contains("nrestop")){
+        RATIO_YMIN = 0.749;
+        RATIO_YMAX = 1.251;
+      } else {
+        RATIO_YMIN = 0.400;
+        RATIO_YMAX = 1.600;
+      }
+   
       vector<TH1*> unc_up, unc_dn;
       unc_up.clear();
       unc_dn.clear();
@@ -1665,7 +1674,7 @@ void plot1LepInclusiveWithSyst(){
       if (var.first.Contains("nowgt")) suffix += "_notoppt";
       z.resetSelection();
       //Make final plot with stat + syst
-      z.setSelection(LLCR_HM, "llcr_hm_syst_onlyWtag" + suffix, "");
+      z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
         plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));

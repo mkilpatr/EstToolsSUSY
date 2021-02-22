@@ -7,16 +7,16 @@
 
 using namespace EstTools;
 
-void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods_CWR", bool otherSig = false){
+void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_allMethods_CWR_021721", bool otherSig = false){
 
   gROOT->SetBatch(1);
   gSystem->mkdir(outputName, true);
 
   TDR_EXTRA_LABEL_ = "";
 
-  RATIOPLOT_XTITLE_OFFSET = 1.25;
+  RATIOPLOT_XTITLE_OFFSET = 1.05;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
-  RATIOPLOT_XLABEL_OFFSET = 0.00;
+  RATIOPLOT_XLABEL_OFFSET = 0.02;
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
   if(inputDir.Contains("2016")) lumistr = "35.815165";
@@ -124,26 +124,26 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
 								    drawLine(78.05, LOG_YMIN, 78.05, 20000); 
 								    drawLine(84.05, LOG_YMIN, 84.05, 20000); 
 								    drawLine(99.05, LOG_YMIN, 99.05, 20000); 
-								    drawLine(101.05, LOG_YMIN, 101.05, 2000); 
-								    drawLine(103.05, LOG_YMIN, 103.05, 2000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114.05, LOG_YMIN, 114.05, 20000); 
-								    drawLine(120.05, LOG_YMIN, 120.05, 20000); 
-								    drawLine(135.05, LOG_YMIN, 135.05, 20000); 
-								    drawLine(137.05, LOG_YMIN, 137.05, 20000); 
-								    drawLine(143.05, LOG_YMIN, 143.05, 20000); 
-								    drawLine(145.05, LOG_YMIN, 145.05, 20000); 
-								    drawLine(147.05, LOG_YMIN, 147.05, 20000); 
-								    drawLine(148.05, LOG_YMIN, 148.05, 20000); 
-								    drawLine(152.05, LOG_YMIN, 152.05, 20000); c->cd(); },
-    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162.05, LOG_YMIN, 162.05, 20000); 
-								    drawLine(165.05, LOG_YMIN, 165.05, 20000); 
-								    drawLine(174.05, LOG_YMIN, 174.05, 20000); 
-								    drawLine(175.05, LOG_YMIN, 175.05, 20000); 
-								    drawLine(177.05, LOG_YMIN, 177.05, 20000); 
-								    drawLine(178.05, LOG_YMIN, 178.05, 20000); 
-								    drawLine(179.05, LOG_YMIN, 179.05, 20000); 
-								    drawLine(180.05, LOG_YMIN, 180.05, 20000); 
-								    drawLine(182.05, LOG_YMIN, 182.05, 20000); c->cd(); },
+								    drawLine(101.05, LOG_YMIN, 101.05, 20000); 
+								    drawLine(103.05, LOG_YMIN, 103.05, 20000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(114.05, LOG_YMIN, 114.05, 2000); 
+								    drawLine(120.05, LOG_YMIN, 120.05, 2000); 
+								    drawLine(135.05, LOG_YMIN, 135.05, 2000); 
+								    drawLine(137.05, LOG_YMIN, 137.05, 2000); 
+								    drawLine(143.05, LOG_YMIN, 143.05, 2000); 
+								    drawLine(145.05, LOG_YMIN, 145.05, 2000); 
+								    drawLine(147.05, LOG_YMIN, 147.05, 2000); 
+								    drawLine(148.05, LOG_YMIN, 148.05, 2000); 
+								    drawLine(152.05, LOG_YMIN, 152.05, 2000); c->cd(); },
+    [](TCanvas *c){ ((TPad*)c->GetListOfPrimitives()->At(0))->cd(); drawLine(162.05, LOG_YMIN, 162.05, 200); 
+								    drawLine(165.05, LOG_YMIN, 165.05, 200); 
+								    drawLine(174.05, LOG_YMIN, 174.05, 200); 
+								    drawLine(175.05, LOG_YMIN, 175.05, 200); 
+								    drawLine(177.05, LOG_YMIN, 177.05, 200); 
+								    drawLine(178.05, LOG_YMIN, 178.05, 200); 
+								    drawLine(179.05, LOG_YMIN, 179.05, 200); 
+								    drawLine(180.05, LOG_YMIN, 180.05, 200); 
+								    drawLine(182.05, LOG_YMIN, 182.05, 200); c->cd(); },
   };
 
   auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
@@ -328,7 +328,8 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});
-  prepHists(hsigs, false, false, false, {kRed, kGreen + 3, kBlack});
+  prepHists(hsigs, false, false, false, {kRed, kGreen + 3});
+  if(otherSig) prepHists(hsigs, false, false, false, {kViolet+2, kGreen +3});
   unc->SetFillColor(kBlue);
   unc->SetFillStyle(3013);
   unc->SetLineStyle(0);
@@ -369,17 +370,19 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
       ibin += nbins;
     }
 
-    if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0;}
+    if (region.Contains("lm")) {LOG_YMIN = 0.1; PLOT_MAX_YSCALE = 1.0;}
+    else if (region.Contains("hm_nbeq2")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.001;}
+    else if (region.Contains("hm_nb3")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 0.0001;}
     else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0;}
 
-    hdata->SetMarkerStyle(7);
-    hdata_post->SetMarkerStyle(7);
+    hdata->SetMarkerStyle(8);
+    hdata_post->SetMarkerStyle(8);
 
     auto leg = prepLegends({hdata}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.63, 0.97, 0.87);
     TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
@@ -398,7 +401,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
-    setLegend(leg, 2, 0.49, 0.65, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.63, 0.97, 0.87);
     c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
@@ -418,7 +421,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
     auto leg = prepLegends({}, {""}, "L");
     appendLegends(leg, {pred_comp[bkg]}, {bkgs[bkg]}, "L");
     appendLegends(leg, {pred_comp_post[bkg]}, {bkgs[bkg] + " Postfit"}, "L");
-    setLegend(leg, 2, 0.49, 0.69, 0.94, 0.87);
+    setLegend(leg, 2, 0.49, 0.63, 0.97, 0.87);
  
     TCanvas* c = drawCompAndRatio({pred_comp[bkg], pred_comp_post[bkg]}, {ratio[bkg]}, leg, "N_{post}/N_{pre}", 0.749, 1.249, false, 0.001, -1., false);
     c->SetCanvasSize(800, 600);

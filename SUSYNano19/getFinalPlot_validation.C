@@ -7,15 +7,15 @@
 
 using namespace EstTools;
 
-void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR_112420"){
+void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="getFinalPlot_validation_CWR_021620"){
 
   gSystem->mkdir(outputName, true);
 
   TDR_EXTRA_LABEL_ = "";
 
-  RATIOPLOT_XTITLE_OFFSET = 1.25;
+  RATIOPLOT_XTITLE_OFFSET = 1.05;
   RATIOPLOT_XLABEL_FONTSIZE = 0.128;
-  RATIOPLOT_XLABEL_OFFSET = 0.00;
+  RATIOPLOT_XLABEL_OFFSET = 0.02;
   PAD_SPLIT_Y = 0.34;
   PAD_BOTTOM_MARGIN = 0.4;
   if(inputDir.Contains("2016")) lumistr = "35.815165";
@@ -37,7 +37,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
       "High #Deltam",
   };
 
-  vector<double> ratioYmax = {1.999, 1.999};
+  vector<double> ratioYmax = {1.6, 1.6};
 
   TLatex tl;
   tl.SetTextSize(0.025);
@@ -251,7 +251,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
   unc->SetMarkerSize(0);
   unc->Draw("E2same");
 
-  hdata->SetMarkerStyle(7);
+  hdata->SetMarkerStyle(8);
 
   auto catMap = srCatMap();
   for (unsigned ireg = 0; ireg < split.size(); ++ireg){
@@ -276,19 +276,16 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     }
 
 
-    if (region.Contains("lm")) {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 10.0; PLOT_LOGY_MAX_SCALE = 10;}
-    else {LOG_YMIN = 0.01; PLOT_MAX_YSCALE = 1.0; PLOT_LOGY_MAX_SCALE = 100;}
+    if (region.Contains("lm")) {LOG_YMIN = 0.1; PLOT_MAX_YSCALE = 10.0; PLOT_LOGY_MAX_SCALE = 10;}
+    else {LOG_YMIN = 0.1; PLOT_MAX_YSCALE = 1.0; PLOT_LOGY_MAX_SCALE = 10;}
 
-    hdata->SetMarkerStyle(7);
+    hdata->SetMarkerStyle(8);
 
     auto leg = prepLegends({hdata}, datalabel, "EP");
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
-//    appendLegends(leg, {hDataRawMC}, {"Simulation", "L"});
-  //  leg->SetTextSize(0.03);
-    setLegend(leg, 2, 0.52, 0.71, 0.94, 0.87);
-
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true);
+    setLegend(leg, 2, 0.50, 0.63, 0.97, 0.87);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.4, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.035);
