@@ -285,7 +285,7 @@ void getFinalPlot_validation(TString inputDir="31Jul2020_Run2_dev_v7", TString o
     appendLegends(leg, pred_leg, bkglabels, "F");
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     setLegend(leg, 2, 0.50, 0.63, 0.97, 0.87);
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.4, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true, true);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0.4, ratioYmax[ireg], xlow, xhigh, {}, unc, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.035);

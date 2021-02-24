@@ -383,7 +383,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
     setLegend(leg, 2, 0.49, 0.63, 0.97, 0.87);
-    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true, true);
+    TCanvas* c = drawStackAndRatio(pred, hdata, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);
@@ -402,7 +402,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
     addLegendEntry(leg, unc,"Bkg. uncertainty","F");
     appendLegends(leg, hsigs, siglabels, "L");
     setLegend(leg, 2, 0.49, 0.63, 0.97, 0.87);
-    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true, true);
+    c = drawStackAndRatio(pred_post, hdata_post, leg, true, "N_{obs}/N_{exp}", 0, 1.999, xlow, xhigh, hsigs, unc_post, {}, nullptr, false, false, true);
     c->SetCanvasSize(800, 600);
     gStyle->SetOptStat(0);
     drawTLatexNDC(splitlabels.at(ireg), 0.195, 0.84, 0.030);

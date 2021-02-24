@@ -1577,8 +1577,10 @@ void plot1LepInclusiveWithSyst(){
 
   LOG_YMIN = 1.;
   RATIOPLOT_XLABEL_FONTSIZE = 0.11;
-  RATIOPLOT_XTITLE_OFFSET = 0.90;
-
+  RATIOPLOT_XTITLE_OFFSET = 1.05;
+  RATIOPLOT_XLABEL_OFFSET = 0.02;
+  PAD_SPLIT_Y = 0.34;
+  PAD_BOTTOM_MARGIN = 0.4;
   config.categories.push_back("dummy");
   config.catMaps["dummy"] = Category::dummy_category();
 
@@ -1596,9 +1598,7 @@ void plot1LepInclusiveWithSyst(){
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttx-2016", "ttx-2017", "ttx-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018"};
-  vector<TString> mc_samples_2016 = {"ttbar-2016", "wjets-2016",
-				"tW-2016", "ttx-2016", 
-				"polyboson-2016"};
+  mc_samples = {"ttbar-2016", "wjets-2016", "tW-2016", "ttx-2016", "polyboson-2016"};
   vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
@@ -1607,11 +1607,11 @@ void plot1LepInclusiveWithSyst(){
   map<TString, BinInfo> varDict {
 	//{"toppt_nowgt", 	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
-	//{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
+	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	//{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1675,17 +1675,15 @@ void plot1LepInclusiveWithSyst(){
       z.resetSelection();
       //Make final plot with stat + syst
       z.setSelection(LLCR_HM, "llcr_hm_syst" + suffix, "");
+      if (var.first.Contains("_nowgt")) plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
+      else                              plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
       } else if (!var.first.Contains("toppt") && suffix.Contains("norm")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
         z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn);
       } else if (var.first.Contains("_nowgt")){
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{#splitline{High #Deltam}{LL control region}}{No Top p_{T} Weight}", 0.2, 0.77, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       } else {
-        plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{High #Deltam}{LL control region}", 0.2, 0.79, 0.035); };
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       }
     }

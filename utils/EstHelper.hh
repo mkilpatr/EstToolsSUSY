@@ -672,6 +672,7 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   }
   p1->RedrawAxis();
   p1->RedrawAxis("G");
+  redrawBorder();
 
 #ifdef TDR_STYLE_
   TGraphAsymmErrors *unc = inUnc ? inUnc : new TGraphAsymmErrors(hbkgtotal);
@@ -703,18 +704,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   if (leg) leg->Draw();
 
   p1->SetTicks(1, 1);
-  if(finalPlot){ 
+  if(finalPlot && !manualLabelChange){ 
     p1->SetTicks(1, 0);
     hbkgtotal->Draw("AXISsame");
   }
   p1->RedrawAxis();
   p1->RedrawAxis("G");
   redrawBorder();
-  //pGrid->cd();
-  //TH1* hGrid = (TH1*)hbkgtotal->Clone("hGridaxis");
-  //hGrid->GetYaxis()->SetTickLength(0.);
-  //hGrid->GetXaxis()->SetTickLength(0.);
-  //hGrid->Draw("AXIS");
 
 #ifdef DEBUG_
   cout << "-->drawing drawStackAndRatio stack: "<< hstack->GetName() << endl;
@@ -754,15 +750,13 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
   haxis->GetYaxis()->SetRangeUser(lowY,highY);
   if(lowX<highX) haxis->GetXaxis()->SetRangeUser(lowX, highX);
   if(finalPlot){
-    haxis->SetLabelSize(0.145,"Y");
-    haxis->SetLabelSize(0.145,"X");
-    haxis->SetTitleSize(0.145,"X");
+    haxis->SetTitleSize  (0.14,"Y");
+    haxis->SetTitleSize  (0.15,"X");
+    haxis->SetLabelSize  (0.14,"Y");
+    haxis->SetLabelSize  (0.14,"X");
+    haxis->SetTitleOffset(0.46,"Y");
   }
   if(manualLabelChange){
-    haxis->SetTitleSize  (0.15,"Y");
-    haxis->SetTitleSize  (0.15,"X");
-    haxis->SetLabelSize  (0.15,"Y");
-    haxis->SetLabelSize  (0.15,"X");
     if(name.Contains("nTop") || name.Contains("nW") || name.Contains("nResolved")){
       haxis->GetXaxis()->ChangeLabel(1, -1, 0.);
       haxis->GetXaxis()->ChangeLabel(3, -1, 0.);
@@ -771,7 +765,6 @@ TCanvas* drawStackAndRatio(vector<TH1*> inhists, TH1* inData, TLegend *leg = 0, 
       haxis->GetXaxis()->ChangeLabel(6, -1, -1, -1, 1, -1, "2+");
     } else if(name.Contains("MET")){
       haxis->GetXaxis()->ChangeLabel(8, -1, -1, -1, 1, -1, "#infty");
-      haxis->SetTitleSize  (0.144,"X");
     }
     if((lowX == 0 && highX == 53) || (lowX == 105 && highX == 153)){
       haxis->GetXaxis()->ChangeLabel(1, -1, 0.);  

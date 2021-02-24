@@ -1082,7 +1082,9 @@ public:
       else if (mcRatio)
         c = drawStackAndRatio(mchists, hdata, leg, plotlog, "N_{el}/N_{mu}", RATIO_YMIN, RATIO_YMAX, 0, -1, {}, nullptr, {}, nullptr, false, false, false, false, mcRatio);
       else if (inUnc_up.size() != 0 && inUnc_dn.size() != 0){
-        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, false, true);
+        addLegendEntry(leg, unc,"Bkg. uncertainty","F");
+        setLegend(leg, 1, 0.58, 0.45, 0.94, 0.87);
+        c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, true, true);
         c->SetCanvasSize(600, 650);
         //c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          inRatios, nullptr, false, false, false, true);
       } else
