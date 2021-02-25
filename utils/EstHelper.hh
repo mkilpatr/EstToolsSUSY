@@ -259,7 +259,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false)
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false, float lowX = 999., float highX = -1.)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
 
@@ -279,11 +279,17 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
     h->GetYaxis()->SetTitleFont(42);
     h->GetXaxis()->SetLabelFont(42);
     h->GetYaxis()->SetLabelFont(42);
+    h->SetTitleSize  (0.04,"Y");
+    h->SetTitleSize  (0.04,"X");
+    h->SetLabelSize  (0.04,"Y");
+    h->SetLabelSize  (0.04,"X");
+    h->SetTitleOffset(1.15,"X");
     if (isFirst){
       isFirst = false;
-      h->GetYaxis()->SetRangeUser(0,1.25*ymax);
+      h->GetYaxis()->SetRangeUser(0,1.5*ymax);
+      if(lowX<highX) h->GetXaxis()->SetRangeUser(lowX, highX);
       if(logymin>0) {
-        float gap = 0.20;
+        float gap = 0.30;
         h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
         h->SetMinimum(logymin);
         gPad->SetLogy(1);

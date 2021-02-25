@@ -1598,7 +1598,7 @@ void plot1LepInclusiveWithSyst(){
   vector<TString> mc_samples = {"ttbar-2016", "ttbar-2017", "ttbar-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttx-2016", "ttx-2017", "ttx-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018"};
-  mc_samples = {"ttbar-2016", "wjets-2016", "tW-2016", "ttx-2016", "polyboson-2016"};
+  //mc_samples = {"ttbar-2016", "wjets-2016", "tW-2016", "ttx-2016", "polyboson-2016"};
   vector<TString> mc_samples_notoppt = {"ttbar-notoppt-2016", "ttbar-notoppt-2017", "ttbar-notoppt-2018", "wjets-2016", "wjets-2017", "wjets-2018",
 				"tW-2016", "tW-2017", "tW-2018", "ttW-2016", "ttW-2017", "ttW-2018",
 				"polyboson-2016", "polyboson-2017", "polyboson-2018", "ttZ-2016", "ttZ-2017", "ttZ-2018"};
@@ -1609,11 +1609,11 @@ void plot1LepInclusiveWithSyst(){
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	//{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1640,6 +1640,7 @@ void plot1LepInclusiveWithSyst(){
   for (unsigned i = 0; i < 1; i++){
     for (auto &var : varDict){
       if (var.first.Contains("nw") || var.first.Contains("met")) PLOT_LOGY_MAX_SCALE = 1000;
+      else if (var.first.Contains("ntop")) PLOT_LOGY_MAX_SCALE = 10000;
       else PLOT_LOGY_MAX_SCALE = 100000;
       if (var.first.Contains("nrestop")){
         RATIO_YMIN = 0.749;
