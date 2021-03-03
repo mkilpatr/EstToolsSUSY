@@ -6,7 +6,7 @@
 
 using namespace EstTools;
 
-void formatFinalPlots(TString inputFile="/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot"){
+void formatFinalPlots(TString inputFile="$CMSSW_BASE/src/Limits/SumOfBkg.root", TString outputName="getFinalPlot"){
 
   gSystem->mkdir(outputName, true);
 

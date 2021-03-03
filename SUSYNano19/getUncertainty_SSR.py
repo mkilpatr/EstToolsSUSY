@@ -835,8 +835,8 @@ def main():
     
     readRelUnc(args.configdir)
     readYields(args.predfile)
-    #calcAbsUnc()
-    #writeFullUnc(args.predfile)
+    calcAbsUnc()
+    writeFullUnc(args.predfile)
     if args.printTable : 
         makeYieldTable()
         makeUncertaintyTable()
