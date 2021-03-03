@@ -12,7 +12,7 @@ void compPredMethods(TString bkg = "ttbarplusw"){
 
   SetStyle();
   TDR_EXTRA_LABEL_ = "Supplementary";
-  TDR_EXTRA_LABEL_2 = "arXiv: XXXX.XXXXX";
+  TDR_EXTRA_LABEL_2 = "arXiv: 2103.01290";
   PAD_SPLIT_Y = 0.35;
 
   double xlow=69, xhigh = 153;
