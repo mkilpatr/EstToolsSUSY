@@ -1480,7 +1480,7 @@ void plot1LepInclusiveLepton(){
 void plotMtb(){
   TDR_EXTRA_LABEL_ = "Simulation";
   TDR_EXTRA_LABEL_2 = "Supplementary";
-  TDR_EXTRA_LABEL_3 = "arXiv: XXXX.XXXXX";
+  TDR_EXTRA_LABEL_3 = "arXiv: 2103.01290";
   auto config = lepConfig();
   TString mtb = "Pass_Baseline && Pass_dPhiMETHighDM && Stop0l_Mtb > 0 && Stop0l_Mtb < 350";
   config.sel = baseline;
@@ -1523,7 +1523,7 @@ void plotMtb(){
   config.addSample("T2tt-850-100",     "T2tt(850, 100)",     inputdir_sig_2017+"SMS_T2tt_mStop_850_mLSP_100",  "1.0", datasel);
   config.addSample("T2ttC-650-600",    "T2ttC(650, 600)",     inputdir_sig_2017+"SMS_T2fbd_mStop650_mLSP600",  "1.0", datasel);
 
-  TString region = "lepcr_inclusive_devv7_083120_suplementary";
+  TString region = "lepcr_inclusive_devv7_030321_suplementary";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);

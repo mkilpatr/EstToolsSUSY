@@ -460,6 +460,28 @@ map<TString, Category> mergedSRCatMap(){
   return cmap;
 }
 
+std::map<TString, TString> mergedSSRcuts = []{
+    std::map<TString, TString> cuts;
+    for (auto name : mergedSSRbins){
+      cuts[name] = createCutString(name, cutMap);
+    }
+    return cuts;
+}();
+
+std::map<TString, TString> mergedSSRlabels = []{
+    std::map<TString, TString> cmap;
+    for (auto s: mergedSSRbins) cmap[s] = s;
+    return cmap;
+}();
+
+map<TString, Category> mergedSSRCatMap(){
+  map<TString, Category> cmap;
+  for (auto &name : mergedSSRbins){
+    cmap[name] = Category(name, mergedSSRcuts.at(name), mergedSSRlabels.at(name), BinInfo("MET_pt", "#slash{E}_{T}", mergedSSRMETbins.at(name), "GeV"));
+  }
+  return cmap;
+}
+
 BaseConfig srConfig(){
   BaseConfig     config;
 
@@ -530,8 +552,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
       TString nivfgt0_bin = TString(merged_cat_name);
       categories_to_process.push_back(TString(nivfgt0_bin).ReplaceAll("nivfgt0", "nivf0"));
       categories_to_process.push_back(TString(nivfgt0_bin).ReplaceAll("nivfgt0", "nivf1"));
-    } else if(merged_cat_name.Contains("lm_nb0_nivf0_highptisr_nj6")) categories_to_process.push_back(TString(merged_cat_name));
-    else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_lowptb")) categories_to_process.push_back(TString(merged_cat_name));
+    } else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_lowptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_medptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb2_lowmtb_highptisr_medptb12")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
@@ -601,12 +622,13 @@ map<std::string, std::string> makeBinMap(TString control_region){
 
     // create the sr-to-cr map
     const auto& merged_bin = merged_srCatMap.at(merged_cat_name);
+    cout << "merged_bin: " << merged_bin.bin.binnames << endl;
     for (const auto &split_cat_name : categories_to_process){
       // loop over all categories to consider, e.g., ht bins
-      cout << split_cat_name << endl;
+      cout << "split_cat_name: " << split_cat_name << endl;
       const auto &split_bin = split_srCatMap.at(split_cat_name);
       for (unsigned ibin=0; ibin<merged_bin.bin.nbins; ++ibin){
-      cout << merged_bin.bin.binnames.at(ibin) << endl;
+      cout << "merged_bin_name: " << merged_bin.bin.binnames.at(ibin) << endl;
         std::string mergedsr_binname = ("bin_"+merged_cat_name+"_"+merged_bin.bin.binnames.at(ibin)).Data();
         if (merged_bin.bin.plotbins.at(ibin+1) == split_bin.bin.plotbins.at(ibin+1)) {
 	  if (merged_cat_name.Contains("lowmtb")) continue;
@@ -644,88 +666,70 @@ map<std::string, std::string> makeSRBinMap(){
   map<std::string, vector<TString>> results; // srbinname_met -> [(sr_sub1, cr_sub1), ...]
 
   const auto &merged_srCatMap = mergedSRCatMap();
-  const auto &split_srCatMap = srCatMap();
+  const auto &split_srCatMap = mergedSSRCatMap();
 
   for (const auto &merged_cat_name : mergedSRbins){
     vector<TString> categories_to_process; // get the categories to consider
+    cout << merged_cat_name << endl;
     if(merged_cat_name.Contains("nivfgt0")){
       TString nivfgt0_bin = TString(merged_cat_name);
       categories_to_process.push_back(TString(nivfgt0_bin).ReplaceAll("nivfgt0", "nivf0"));
       categories_to_process.push_back(TString(nivfgt0_bin).ReplaceAll("nivfgt0", "nivf1"));
-    } else if(merged_cat_name.Contains("lm_nb0_nivf0_highptisr_nj6")) categories_to_process.push_back(TString(merged_cat_name));
-    else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_lowptb")) categories_to_process.push_back(TString(merged_cat_name));
+    } else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_lowptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_medptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb2_lowmtb_highptisr_medptb12")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
 
     if (merged_cat_name.Contains("hm")){
       if (merged_cat_name.Contains("htgt1300")) {
-          categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1300", "ht1300to1500"));
-          categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1300", "htgt1500"));
+          categories_to_process.push_back(TString(merged_cat_name));
       } else if (merged_cat_name.Contains("htgt1000")) {
-          categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1000", "ht1000to1300"));
-          categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1000", "ht1300to1500"));
+          categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1000", "ht1000to1500"));
           categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("htgt1000", "htgt1500"));
-      } else if (!merged_cat_name.Contains("ht")) {
+      } else {
         if(merged_cat_name.Contains("lowmtb")) categories_to_process.push_back(TString(merged_cat_name));
-        else if(!merged_cat_name.Contains("nb3")){
-          categories_to_process.push_back(TString(merged_cat_name) + "_htlt1000");
-          categories_to_process.push_back(TString(merged_cat_name) + "_ht1000to1300");
-          categories_to_process.push_back(TString(merged_cat_name) + "_ht1300to1500");
-          categories_to_process.push_back(TString(merged_cat_name) + "_htgt1500");
+        else if(merged_cat_name.Contains("nbeq2")){
+          if(merged_cat_name.Contains("nt1_nrt1_nw0")){
+            categories_to_process.push_back(TString(merged_cat_name) + "_htlt1300");
+            categories_to_process.push_back(TString(merged_cat_name) + "_htgt1300");
+          } else if(merged_cat_name.Contains("nt0_nrt2_nw0")){
+            categories_to_process.push_back(TString(merged_cat_name) + "_htlt1300");
+            categories_to_process.push_back(TString(merged_cat_name) + "_htgt1300");
+          } else {
+            categories_to_process.push_back(TString(merged_cat_name));
+          }
         } else {
           if(merged_cat_name.Contains("nrtntnw1")){
             TString nt1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw1", "nt1_nrt0_nw0");
             categories_to_process.push_back(TString(nt1_bin) + "_htlt1000");
             categories_to_process.push_back(TString(nt1_bin) + "_ht1000to1500");
             categories_to_process.push_back(TString(nt1_bin) + "_htgt1500");
-            TString nw1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw1", "nt0_nrt0_nw1");
-            categories_to_process.push_back(TString(nw1_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nw1_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nw1_bin) + "_htgt1500");
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw1", "nt0_nrt0_nw1"));
             TString nrt1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw1", "nt0_nrt1_nw0");
             categories_to_process.push_back(TString(nrt1_bin) + "_htlt1000");
             categories_to_process.push_back(TString(nrt1_bin) + "_ht1000to1500");
             categories_to_process.push_back(TString(nrt1_bin) + "_htgt1500");
           } else if(merged_cat_name.Contains("nrtntnw2")){
-            TString nt1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt1_nrt0_nw1");
-            categories_to_process.push_back(TString(nt1_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nt1_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nt1_bin) + "_htgt1500");
-            TString nw1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt1_nrt1_nw0");
-            categories_to_process.push_back(TString(nw1_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nw1_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nw1_bin) + "_htgt1500");
-            TString nrt1_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt1_nw1");
-            categories_to_process.push_back(TString(nrt1_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nrt1_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nrt1_bin) + "_htgt1500");
-            TString nt2_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt2_nrt0_nw0");
-            categories_to_process.push_back(TString(nt2_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nt2_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nt2_bin) + "_htgt1500");
-            TString nw2_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt0_nw2");
-            categories_to_process.push_back(TString(nw2_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nw2_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nw2_bin) + "_htgt1500");
-            TString nrt2_bin = TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt2_nw0");
-            categories_to_process.push_back(TString(nrt2_bin) + "_htlt1000");
-            categories_to_process.push_back(TString(nrt2_bin) + "_ht1000to1500");
-            categories_to_process.push_back(TString(nrt2_bin) + "_htgt1500");
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt1_nrt0_nw1"));
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt1_nrt1_nw0"));
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt1_nw1"));
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt2_nrt0_nw0"));
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt0_nw2"));
+            categories_to_process.push_back(TString(merged_cat_name).ReplaceAll("nrtntnw2", "nt0_nrt2_nw0"));
           } else {
-            categories_to_process.push_back(TString(merged_cat_name) + "_htlt1000");
-            categories_to_process.push_back(TString(merged_cat_name) + "_ht1000to1500");
-            categories_to_process.push_back(TString(merged_cat_name) + "_htgt1500");
+            categories_to_process.push_back(TString(merged_cat_name));
           }
         }
       }
     }
 
+    cout << categories_to_process << endl;
     // create the sr-to-cr map
+    cout << "merged_cat_name: " << merged_cat_name << endl;
     const auto& merged_bin = merged_srCatMap.at(merged_cat_name);
     for (const auto &split_cat_name : categories_to_process){
       // loop over all categories to consider, e.g., ht bins
-      cout << split_cat_name << endl;
+      cout << "split_cat_name: " << split_cat_name << endl;
       const auto &split_bin = split_srCatMap.at(split_cat_name);
       for (unsigned ibin=0; ibin<merged_bin.bin.nbins; ++ibin){
       cout << merged_bin.bin.binnames.at(ibin) << endl;
