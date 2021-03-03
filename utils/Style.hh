@@ -363,7 +363,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   float cmsTextFont   = 62;  // default is helvetic-bold
 
   bool writeExtraText = true;
-  float extraTextFont = 52;  // default is helvetica-italics
+  float extraTextFont = 42;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
   // in unit of the top margin size

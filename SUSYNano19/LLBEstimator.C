@@ -1480,7 +1480,7 @@ void plot1LepInclusiveLepton(){
 void plotMtb(){
   TDR_EXTRA_LABEL_ = "Simulation";
   TDR_EXTRA_LABEL_2 = "Supplementary";
-  TDR_EXTRA_LABEL_3 = "arXiv: 2103.01290";
+  TDR_EXTRA_LABEL_3 = "arXiv:2103.01290";
   auto config = lepConfig();
   TString mtb = "Pass_Baseline && Pass_dPhiMETHighDM && Stop0l_Mtb > 0 && Stop0l_Mtb < 350";
   config.sel = baseline;
@@ -1558,7 +1558,7 @@ void plotMtb(){
   for (auto &var : varDict){
     //z.resetSelection();
     z.setSelection(mtb, "baseline", "");
-    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Signal scaled}{to bkg sum}", 0.715, 0.65); };
+    plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{Signal scaled}{to bkg sum}", 0.715, 0.67); };
     z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false);
     //z.plotSigVsBkg(var.second, mc_samples, sig_samples, Category::dummy_category(), true, true, true, &plotextra, false);
   }

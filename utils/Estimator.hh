@@ -814,8 +814,8 @@ public:
 
     TCanvas *c = nullptr;
     if (!inRatio){
-      leg->SetTextSize(0.028);
-      setLegend(leg, 2, 0.55, 0.69, 0.92, 0.90);
+      leg->SetTextSize(0.025);
+      setLegend(leg, 2, 0.49, 0.73, 0.92, 0.90);
       c = drawStack(mchists, sighists, plotlog, leg);
     }else if (normalize){
       c = drawStackAndRatio(mchists, nullptr, leg, plotlog, "Significance", 0, 0.150, 0, -1, sighists, nullptr, sigmahists);
