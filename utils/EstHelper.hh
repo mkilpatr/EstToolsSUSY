@@ -43,6 +43,17 @@ double RATIO_YMAX = 1.999;
 double LOG_YMIN = 0.01;
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void redrawBorder()
+{
+   gPad->Update();
+   gPad->RedrawAxis();
+   TLine l;
+   l.SetLineWidth(3);
+   l.DrawLine(gPad->GetUxmin(), gPad->GetUymin(), gPad->GetUxmin(), gPad->GetUymax());
+   l.DrawLine(gPad->GetUxmax(), gPad->GetUymin(), gPad->GetUxmax(), gPad->GetUymax());
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Quantity getYields(TTree *intree, TString wgtvar, TString sel){
   assert(intree);
 
@@ -555,7 +566,7 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   for (auto *sig : sighists){
     auto h = (TH1*)sig->Clone();
     h->SetLineWidth(3);
-    h->Draw("histsame");
+    h->Draw("histsame][");
 #ifdef DEBUG_
   cout << "-->drawing drawStack: "<< h->GetName() << endl;
 #endif
@@ -573,21 +584,13 @@ TCanvas* drawStack(vector<TH1*> bkghists, vector<TH1*> sighists, bool plotlog = 
   CMS_lumi(c, 4, 10);
 #endif
   if (leg) leg->Draw();
+  redrawBorder();
 
   c->RedrawAxis();
   c->Update();
   c->cd();
 
   return c;
-}
-
-void redrawBorder()
-{
-   gPad->Update();
-   gPad->RedrawAxis();
-   TLine l;
-   l.DrawLine(gPad->GetUxmin(), gPad->GetUymin(), gPad->GetUxmin(), gPad->GetUymax());
-   l.DrawLine(gPad->GetUxmax(), gPad->GetUymin(), gPad->GetUxmax(), gPad->GetUymax());
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

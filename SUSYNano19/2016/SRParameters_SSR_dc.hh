@@ -555,7 +555,7 @@ map<std::string, std::string> makeBinMap(TString control_region){
     } else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_lowptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb1_nivf0_lowmtb_highptisr_medptb")) categories_to_process.push_back(TString(merged_cat_name));
     else if(merged_cat_name.Contains("lm_nb2_lowmtb_highptisr_medptb12")) categories_to_process.push_back(TString(merged_cat_name));
-    else if(merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) continue;
+    else if(merged_cat_name.BeginsWith("lm") || merged_cat_name.Contains("lowmtb")) categories_to_process.push_back(TString(merged_cat_name));
 
     if (merged_cat_name.Contains("hm")){
       if (merged_cat_name.Contains("htgt1300")) {
@@ -631,14 +631,11 @@ map<std::string, std::string> makeBinMap(TString control_region){
       cout << "merged_bin_name: " << merged_bin.bin.binnames.at(ibin) << endl;
         std::string mergedsr_binname = ("bin_"+merged_cat_name+"_"+merged_bin.bin.binnames.at(ibin)).Data();
         if (merged_bin.bin.plotbins.at(ibin+1) == split_bin.bin.plotbins.at(ibin+1)) {
-	  if (merged_cat_name.Contains("lowmtb")) continue;
-          else{
-            // no splitting in MET: merged in nj
-            auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin);
-            auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(ibin);
-            results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
-            results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
-          }
+          // no splitting in MET: merged in nj
+          auto splitsrbinname = "bin_"+split_cat_name+"_"+split_bin.bin.binnames.at(ibin);
+          auto crbinname = "bin_"+control_region+"_"+TString(crMapping.at(split_cat_name)).ReplaceAll("NoDPhi_","_")+"_"+split_bin.bin.binnames.at(ibin);
+          results[mergedsr_binname]; // touch it: initialize it if not, otherwise should append (5-6j, and >=7j)
+          results[mergedsr_binname].push_back("<"+splitsrbinname+">*("+crbinname+")");
         }else{
           // also merge in MET
           for (unsigned icr = ibin; icr < split_bin.bin.nbins; ++icr){

@@ -1505,9 +1505,9 @@ void plotMtb(){
   config.addSample("ttbarplusw-ttZ-2017",           "t#bar{t} + single t",           inputdir_2017+"ttZ",             lepselwgt_2017,      datasel);
   config.addSample("ttbarplusw-ttZ-2018",           "t#bar{t} + single t",           inputdir_2018+"ttZ",             lepselwgt_2018,      datasel);
   // W+jets
-  config.addSample("wjets-2016",         "W+jets",        inputdir_2016+"wjets",           lepselwgt,      datasel);
-  config.addSample("wjets-2017",         "W+jets",        inputdir_2017+"wjets",           lepselwgt_2017,      datasel);
-  config.addSample("wjets-2018",         "W+jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel);
+  config.addSample("wjets-2016",         "W + jets",        inputdir_2016+"wjets",           lepselwgt,      datasel);
+  config.addSample("wjets-2017",         "W + jets",        inputdir_2017+"wjets",           lepselwgt_2017,      datasel);
+  config.addSample("wjets-2018",         "W + jets",        inputdir_2018+"wjets",           lepselwgt_2018,      datasel);
   // qcdsr
   config.addSample("qcd-2016",         "QCD",           inputdir_2016+"qcd",       qcdwgt,         datasel);
   config.addSample("qcd-2017",  "QCD",           inputdir_2017+"qcd",              qcdwgt_2017,    datasel);

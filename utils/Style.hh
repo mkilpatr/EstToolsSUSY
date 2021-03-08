@@ -363,7 +363,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
   float cmsTextFont   = 62;  // default is helvetic-bold
 
   bool writeExtraText = true;
-  float extraTextFont = 42;  // default is helvetica-italics
+  float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
   // in unit of the top margin size
@@ -519,7 +519,7 @@ void CMS_lumi(TPad* pad, int iPeriod, int iPosX, TString extraText=TDR_EXTRA_LAB
         latex.SetTextAlign(align_);
         latex.SetTextSize(extraTextSize*t);
         latex.DrawLatex(posX_, posY_- 2*relExtraDY*cmsTextSize*t, extraText2);
-        latex.SetTextFont(extraTextFont);
+        latex.SetTextFont(42);
         latex.SetTextAlign(align_);
         latex.SetTextSize(extraTextSize3*t);
         latex.DrawLatex(posX_, posY_- 3*relExtraDY*cmsTextSize*t, extraText3);

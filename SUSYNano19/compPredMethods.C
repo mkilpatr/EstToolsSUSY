@@ -252,12 +252,12 @@ void compPredMethods(TString bkg = "ttbarplusw"){
   unc->Draw("E2same");
   pred_noextrap->Draw("P0same");
 
-  setLegend(leg_new, 1, 0.5, 0.70, 0.92, 0.87);
+  setLegend(leg_new, 1, 0.5, 0.65, 0.92, 0.87);
   leg_new->Draw();
   CMS_lumi(p1new, 4, 10);
   
   cnew->cd();
-  drawTLatexNDC(splitlabels.at(0), 0.605, 0.76, 0.032);
+  drawTLatexNDC(splitlabels.at(0), 0.605, 0.73, 0.032);
 
   TPad *p2new = new TPad("p2new","p2new",0,0,1,PAD_SPLIT_Y);
   p2new->SetLeftMargin  (0.16);

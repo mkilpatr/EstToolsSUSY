@@ -27,8 +27,6 @@ void formatFinalPlots(TString inputFile="$CMSSW_BASE/src/Limits/SumOfBkg.root", 
   vector<TString> datalabel = {"Observed"};
   vector<double> ratioYmax = {2.999, 2.999, 2.999, 6.999, 2.999, 6.999};
 
-  auto xlabels = convertBinRangesToLabels<int>(srbins, srMETbins);
-
   vector<TH1*> pred;
   vector<TH1*> hsigs;
 

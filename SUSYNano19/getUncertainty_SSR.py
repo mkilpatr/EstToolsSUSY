@@ -82,7 +82,8 @@ test_bin  = ['bin_hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to350']
 test_type = ['PDF_Weight']
 
 # ordered bin list
-binlist=("bin_lm_nb0_nivfgt0_highptisr_nj2to5_MET_pt750toinf",
+binlist=(
+    "bin_lm_nb0_nivfgt0_highptisr_nj2to5_MET_pt750toinf",
     "bin_lm_nb0_nivfgt0_highptisr_nj6_MET_pt550to750",
     "bin_lm_nb0_nivfgt0_highptisr_nj6_MET_pt750toinf",
     "bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to750",
@@ -92,9 +93,7 @@ binlist=("bin_lm_nb0_nivfgt0_highptisr_nj2to5_MET_pt750toinf",
     "bin_lm_nb2_lowmtb_highptisr_lowptb12_MET_pt650toinf",
     "bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt450to650",
     "bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt650toinf",
-    "bin_hm_nb1_lowmtb_nj7_nrtgeq1_MET_pt400to500",
     "bin_hm_nb1_lowmtb_nj7_nrtgeq1_MET_pt500toinf",
-    "bin_hm_nb2_lowmtb_nj7_nrtgeq1_MET_pt400to500",
     "bin_hm_nb2_lowmtb_nj7_nrtgeq1_MET_pt500toinf",
     "bin_hm_nbeq2_highmtb_nt1_nrt0_nw0_htgt1000_MET_pt650toinf",
     "bin_hm_nbeq2_highmtb_nt0_nrt0_nw1_htgt1300_MET_pt450toinf",
@@ -148,6 +147,8 @@ labelMap = {
     'medptb12': r'$80 < \ptbonetwo < 140\GeV$',
     'nrtgeq1': r'$\Nres \geq 1$',
     'nj6': r'$\Nj \geq 6$',
+    'nrtntnw1': r'$(\Nt+\Nres+\Nw) \geq 1$',
+    'nrtntnw2': r'$(\Nt+\Nres+\Nw) \geq 2$',
     'nrtntnwgeq2': r'$(\Nt+\Nres+\Nw) \geq 2$',
     'nrtntnwgeq3': r'$(\Nt+\Nres+\Nw) \geq 3$',
     'htlt1000': r'$\HT < 1000\GeV$',
@@ -210,8 +211,9 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
     log_syst_down_sum = 0.
     log_syst_up_total = 0.
     log_syst_down_total = 0.
+    #print("where {0} {1}".format(sample, bin))
     if p == 0: 
-        systUnc_rel_pieces[sample][bin] = [1.0, 1.0]
+        if sample != "": systUnc_rel_pieces[sample][bin] = [1.0, 1.0]
         return [0,0]
     for err, type in zip(unc_list, type_):
         p_up    = err[1]
@@ -248,7 +250,7 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
         print sample
         print "pred={0}, log_syst_up_total={1}, log_syst_down_total={2}".format(p, log_syst_up_total, log_syst_down_total)
     if bin != "" and sample != "": 
-        systUnc_rel_pieces[sample][bin] = [log_syst_down_total, log_syst_up_total]
+        if sample != "": systUnc_rel_pieces[sample][bin] = [log_syst_down_total, log_syst_up_total]
     return [p - log_syst_down_total*p, log_syst_up_total*p - p]
 
 def sumUnc(unc_list):
@@ -572,7 +574,7 @@ def writeFullUnc(pred_file):
         h_syst_pieces[sample + "_dn"].Write(sample+'_syst_dn', rt.TObject.kOverwrite)
     f.Close()
 
-def makeYieldTable(output='pred_sr.tex'):
+def makeYieldTable(output='pred_ssr.tex'):
     ''' Make a Latex-formatted table with each bkg plus unc, total bkg plus unc, and observed data for every bin. '''
     print '\nprinting yield table...\n'
     s = makeTable()
@@ -660,7 +662,7 @@ def makeTable():
     s=''
     ibin=0
     ibini=0
-    table_splits = [0, 28, 53, 81, 108, 137, 162, 183]
+    table_splits = [0, 10, 25]
     table_split_index = 0
     for bin in binlist: 
         if ibin == table_splits[table_split_index]:
@@ -723,7 +725,7 @@ def makeUncTable(unc_header):
             n = yields_total[bin]
             s += formatUncertainty(n,e_low,e_up)
         s += ' \\\\ \n'
-        if ibin == 53 or ibin == 94 or ibin == 135:
+        if ibin == 10:
             s += endUncTable(ibini, ibin-1)
             s += beginUncTable()
             s += unc_header
