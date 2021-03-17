@@ -7,8 +7,8 @@
 namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
-//const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_allVars_011921/";
+const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_030821_higgsSort/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
@@ -21,7 +21,7 @@ TString getLumi(){return lumistr(TRegexp("[0-9]+.[0-9]"));}
 
 // lumi and base weight
 const TString basic_wgt = "*Stop0l_evtWeight";
-const TString wgtvar = lumistr+"*1000*"+basic_wgt;// //2016
+const TString wgtvar = lumistr+"*1000"+basic_wgt;// //2016
 
 // photon trigger eff.
 const TString phowgt = wgtvar;
@@ -73,9 +73,14 @@ const TString onelepcrwgt  = lepselwgt;
 const TString sigwgt = lepvetowgt;
 
 //Separate channel cuts
-const TString emuChannel = "(HiggsSVFit_channel == 5 && HiggsSVFit_DZeta > -35 && HiggsSVFit_elecMuonMT < 60)";
-const TString lephadChannel = "(HiggsSVFit_channel == 0 && HiggsSVFit_PassTight && HiggsSVFit_tau1_muMT < 50) || (HiggsSVFit_channel == 1 && HiggsSVFit_PassTight && HiggsSVFit_tau1_elecMT < 50)";
-const TString hadhadChannel = "(HiggsSVFit_channel == 2 && HiggsSVFit_PassTight && HiggsSVFit_ditauDR > 0.5 && HiggsSVFit_ditauPt > 50)";
+const TString Lead_lepmuonChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
+const TString Lead_elechadChannel   = "(SVFit_channel[SVIndex[0]] == 1 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_elecMT[SVIndex[0]] < 50)";
+const TString Lead_hadhadChannel    = "(SVFit_channel[SVIndex[0]] == 2 && SVFit_PassTight[SVIndex[0]] && SVFit_ditauDR[SVIndex[0]] > 0.5 && SVFit_ditauPt[SVIndex[0]] > 50)";
+const TString Lead_emuChannel       = "(SVFit_channel[SVIndex[0]] == 5 && SVFit_DZeta[SVIndex[0]] > -35 && SVFit_elecMuonMT[SVIndex[0]] < 60)";
+const TString SubLead_lepmuonChannel= "(SVFit_channel[SVIndex[1]] == 0 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_muMT[SVIndex[1]] < 50)";
+const TString SubLead_elechadChannel= "(SVFit_channel[SVIndex[1]] == 1 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_elecMT[SVIndex[1]] < 50)";
+const TString SubLead_hadhadChannel = "(SVFit_channel[SVIndex[1]] == 2 && SVFit_PassTight[SVIndex[1]] && SVFit_ditauDR[SVIndex[1]] > 0.5 && SVFit_ditauPt[SVIndex[1]] > 50)";
+const TString SubLead_emuChannel    = "(SVFit_channel[SVIndex[1]] == 5 && SVFit_DZeta[SVIndex[1]] > -35 && SVFit_elecMuonMT[SVIndex[1]] < 60)";
 
 // triggers
 const TString dibosonBadEventRemoval = " && event != 237972";
@@ -83,7 +88,7 @@ const TString trigSR = " && Pass_trigger_MET";
 const TString trigPhoCR = " && passtrigphoOR && origmet<200";
 const TString phoBadEventRemoval = " && (!(lumi==189375 && event==430170481) && !(lumi==163479 && event==319690728) && !(lumi==24214 && event==55002562) && !(lumi==12510 && event==28415512) && !(lumi==16662 && event==32583938) && !(lumi==115657 && event==226172626) && !(lumi==149227 && event==431689582) && !(lumi==203626 && event==398201606))";
 const TString trigDiLepCR = " && passtrigdilepOR && dileppt>200";
-const TString datasel = " && Pass_EventFilter && Pass_JetID && (" + emuChannel + " || " + lephadChannel + " || " + hadhadChannel + ")";
+const TString datasel = " && Pass_EventFilter && Pass_JetID";
 const TString qcdSpikeRemovals = "";
 const TString dphi_invert = " && Pass_dPhiQCD";
 const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETLowDM) || (!(Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0) && Pass_dPhiMETHighDM) )"; // ( ((passLM) && dPhiLM) || ((!passLM) && dPhiHM) )
@@ -91,7 +96,7 @@ const TString dphi_cut = " && ( ((Stop0l_Mtb<175 && Stop0l_nTop==0 && Stop0l_nW=
 // ------------------------------------------------------------------------
 // search regions and control regions
 
-const TString baseline = "Pass_NJets30 && SVFitMET_isValid && HiggsSVFit_PassBaseline && HiggsSVFit_PassLepton";
+const TString baseline = "Pass_NJets30 && SVFitMET_isValid && SVFit_PassBaseline && SVFit_PassLepton";
 
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
@@ -361,20 +366,21 @@ BaseConfig lepConfig(){
 BaseConfig sigConfig(){
   BaseConfig     config;
 
+  config.inputdir = inputdir_local;
   //config.inputdir = inputdir;
-  config.inputdir = inputdir;
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
-  config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
-  config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
-  //config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
-  //config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
-  //config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
-  config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
-  config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
-  config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
+  config.addSample("local",             "Local",          "nano_Skim", wgtvar,  datasel);
+  //config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
+  //config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
+  //config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
+  ////config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
+  ////config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
+  ////config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
+  //config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
+  //config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
+  //config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
 
   //config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
   //config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
@@ -390,28 +396,92 @@ BaseConfig sigConfig(){
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 map<TString, BinInfo> varDict {
-  {"norm",      BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{0, 1000}, "GeV")},
-  {"met",       BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
-  {"metgx",       BinInfo("MET_pt", "#slash{E}_{T}^{(#gamma)}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-  {"metzg",       BinInfo("MET_pt", "#slash{E}_{T}^{#gamma/ll}", vector<int>{250, 350, 450, 550, 650, 850}, "GeV")},
-  {"origmet",   BinInfo("MET_pt", "Original #slash{E}_{T}", 20, 0, 500, "GeV")},
-  {"njets",     BinInfo("Stop0l_nJets", "N_{j}", 8, -0.5, 7.5)},
-  {"njl",       BinInfo("njl", "N_{j}^{ISR}", 4, 0.5, 4.5)},
-  {"nlbjets",   BinInfo("nlbjets", "N_{B}^{loose}", 5, -0.5, 4.5)},
-  {"nbjets",    BinInfo("Stop0l_nbtags",  "N_{B}^{medium}", 5, -0.5, 4.5)},
-  {"dphij1met", BinInfo("Jet_dPhiMET[0]", "#Delta#phi(j_{1},#slash{E}_{T})", 30, 0, 3)},
-  {"dphij2met", BinInfo("Jet_dPhiMET[1]", "#Delta#phi(j_{2},#slash{E}_{T})", 30, 0, 3)},
-  {"metovsqrtht",BinInfo("Stop0l_METSig", "#slash{E}_{T}/#sqrt{H_{T}}", 10, 0, 20)},
-  {"dphiisrmet",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", vector<double>{0, 2, 3})},
-  {"dphiisrmet_fine",BinInfo("dphiisrmet", "#Delta#phi(j_{1}^{ISR},#slash{E}_{T})", 12, 0, 3)},
-  {"mtcsv12met",BinInfo("mtcsv12met", "min(m_{T}(b_{1},#slash{E}_{T}),m_{T}(b_{2},#slash{E}_{T}))", 6, 0, 300)},
-  {"leptonpt",  BinInfo("leptonpt", "p_{T}^{lep} [GeV]", 12, 0, 600)},
-  {"leptonptovermet",  BinInfo("leptonpt/met", "p_{T}^{lep}/#slash{E}_{T}", 20, 0, 1.)},
-  {"ak8isrpt",  BinInfo("ak8isrpt", "p_{T}(ISR) [GeV]",  6, 200, 800)},
-  {"csvj1pt",   BinInfo("csvj1pt", "p_{T}(b_{1}) [GeV]", 8, 20, 100)},
-  {"ptb12",     BinInfo("csvj1pt+csvj2pt", "p_{T}(b_{1})+p_{T}(b_{2}) [GeV]", 8, 40, 200)},
-  {"dphilepisr",  BinInfo("dphilepisr", "#Delta#phi(lep, j_{1}^{ISR})", 30, 0, 3)},
-  {"drlepisr",  BinInfo("drlepisr", "#DeltaR(lep, j_{1}^{ISR})", 25, 0, 5)},
+	{"Lead_tauChannel",	BinInfo("SVFit_channel[SVIndex[0]]",   "Tau channel", 6, -0.5, 5.5)},
+	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVIndex[0]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"Lead_higgsEta",	BinInfo("SVFit_Eta[SVIndex[0]]", 	"#eta(H)", 16, -4, 4)},
+	{"Lead_higgsPhi",	BinInfo("SVFit_Phi[SVIndex[0]]", 	"#phi(H)", 64, -3.2, 3.2)},
+	{"Lead_higgsMass",	BinInfo("SVFit_Mass[SVIndex[0]]",	"M_{H}", 25, 0, 500)},
+	{"Lead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVIndex[0]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"Lead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVIndex[0]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
+	{"Lead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVIndex[0]]", 	"#eta(#tau_{1})", 16, -4, 4)},
+	{"Lead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVIndex[0]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
+	{"Lead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVIndex[0]]",	"M_{#tau_{1}}", 20, 0, 4)},
+	{"Lead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVIndex[0]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
+	{"Lead_tau1DM",	BinInfo("SVFit_tau1DM[SVIndex[0]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"Lead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVIndex[0]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
+	{"Lead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVIndex[0]]", 	"#eta(#tau_{2})", 16, -4, 4)},
+	{"Lead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVIndex[0]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
+	{"Lead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVIndex[0]]",	"M_{#tau_{2}}", 20, 0, 4)},
+	{"Lead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVIndex[0]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
+	{"Lead_tau2DM",	BinInfo("SVFit_tau2DM[SVIndex[0]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
+	{"Lead_ht",		BinInfo("SVFit_HT",        "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000, 1500}, "GeV")},
+	{"Lead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVIndex[0]]","M_{T}^{e+#mu}", 20, 0, 200)},
+	{"Lead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVIndex[0]]","M_{T}^{e}", 20, 0, 200)},
+	{"Lead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVIndex[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"Lead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVIndex[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"Lead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVIndex[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"Lead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVIndex[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"Lead_ditauMass",	BinInfo("SVFit_ditauMass[SVIndex[0]]",  "M_{#tau#tau}", 50, 0, 500)},
+	{"Lead_ditauPt",	BinInfo("SVFit_ditauPt[SVIndex[0]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
+	{"Lead_ditau_dR",	BinInfo("SVFit_ditauDR[SVIndex[0]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
+	{"Lead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVIndex[0]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
+	{"Lead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVIndex[0]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
+	{"Lead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVIndex[0]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"Lead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVIndex[0]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"Lead_DZeta",	BinInfo("SVFit_DZeta[SVIndex[0]]",  "D_{#zeta}", 24, -40, 200)},
+	{"SubLead_tauChannel",	BinInfo("SVFit_channel[SVIndex[1]]",   "Tau channel", 5, 0, 5)},
+	{"SubLead_higgsPt",	BinInfo("SVFit_Pt[SVIndex[1]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"SubLead_higgsEta",	BinInfo("SVFit_Eta[SVIndex[1]]", 	"#eta(H)", 16, -4, 4)},
+	{"SubLead_higgsPhi",	BinInfo("SVFit_Phi[SVIndex[1]]", 	"#phi(H)", 64, -3.2, 3.2)},
+	{"SubLead_higgsMass",	BinInfo("SVFit_Mass[SVIndex[1]]",	"M_{H}", 25, 0, 500)},
+	{"SubLead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVIndex[1]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"SubLead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVIndex[1]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVIndex[1]]", 	"#eta(#tau_{1})", 16, -4, 4)},
+	{"SubLead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVIndex[1]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
+	{"SubLead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVIndex[1]]",	"M_{#tau_{1}}", 20, 0, 4)},
+	{"SubLead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVIndex[1]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
+	{"SubLead_tau1DM",	BinInfo("SVFit_tau1DM[SVIndex[1]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"SubLead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVIndex[1]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVIndex[1]]", 	"#eta(#tau_{2})", 16, -4, 4)},
+	{"SubLead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVIndex[1]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
+	{"SubLead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVIndex[1]]",	"M_{#tau_{2}}", 20, 0, 4)},
+	{"SubLead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVIndex[1]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
+	{"SubLead_tau2DM",	BinInfo("SVFit_tau2DM[SVIndex[1]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
+	{"SubLead_ht",		BinInfo("SVFit_HT",        "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000, 1500}, "GeV")},
+	{"SubLead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVIndex[1]]","M_{T}^{e+#mu}", 20, 0, 200)},
+	{"SubLead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVIndex[1]]","M_{T}^{e}", 20, 0, 200)},
+	{"SubLead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVIndex[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"SubLead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVIndex[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"SubLead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVIndex[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"SubLead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVIndex[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"SubLead_ditauMass",	BinInfo("SVFit_ditauMass[SVIndex[1]]",  "M_{#tau#tau}", 50, 0, 500)},
+	{"SubLead_ditauPt",	BinInfo("SVFit_ditauPt[SVIndex[1]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
+	{"SubLead_ditau_dR",	BinInfo("SVFit_ditauDR[SVIndex[1]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
+	{"SubLead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVIndex[1]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
+	{"SubLead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVIndex[1]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
+	{"SubLead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVIndex[1]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"SubLead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVIndex[1]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"SubLead_DZeta",	BinInfo("SVFit_DZeta[SVIndex[1]]",  "D_{#zeta}", 24, -40, 200)},
+	{"njets",	BinInfo("nJets30",      	 "N_{j}", 8, 1.5, 9.5)}, 
+	{"bj1Pt",	BinInfo("SVFit_bj1Pt",  	 "p_{T}(b_{1}) [GeV]", 20, 0, 200)},
+	{"bj2Pt",	BinInfo("SVFit_bj2Pt",  	 "p_{T}(b_{2}) [GeV]", 20, 0, 200)},
+	{"j1Pt",	BinInfo("SVFit_j1Pt",  	 "p_{T}(j_{1}) [GeV]", 40, 0, 400)},
+	{"j1Eta",	BinInfo("SVFit_j1Eta", 	 "#eta(j_{1})", 16, -4, 4)},
+	{"j1Phi",	BinInfo("SVFit_j1Phi", 	 "#phi(j_{1})", 64, -3.2, 3.2)},
+	{"j1Mass",	BinInfo("SVFit_j1Mass",	 "M_{j_{1}}", 20, 0, 40)},
+	{"j2Pt",	BinInfo("SVFit_j2Pt",  	 "p_{T}(j_{2}) [GeV]", 40, 0, 400)},
+	{"j2Eta",	BinInfo("SVFit_j2Eta", 	 "#eta(j_{2})", 26, -4, 4)},
+	{"j2Phi",	BinInfo("SVFit_j2Phi", 	 "#phi(j_{2})", 64, -3.2, 3.2)},
+	{"j2Mass",	BinInfo("SVFit_j2Mass",	 "M_{j_{2}}", 20, 0, 40)},
+	{"j3Pt",	BinInfo("SVFit_j3Pt",  	 "p_{T}(j_{3}) [GeV]", 40, 0, 400)},
+	{"j3Eta",	BinInfo("SVFit_j3Eta", 	 "#eta(j_{3})", 36, -4, 4)},
+	{"j3Phi",	BinInfo("SVFit_j3Phi", 	 "#phi(j_{3})", 64, -3.2, 3.2)},
+	{"j3Mass",	BinInfo("SVFit_j3Mass",	 "M_{j_{3}}", 20, 0, 40)},
+	{"dijetMass",	BinInfo("SVFit_dijetMass",  "M_{jj}", 20, 300, 1500)},
+	{"dijetPt",	BinInfo("SVFit_dijetPt",    "p_{T}^{jj}", 25, 0, 400)},
+	{"dijet_dR",	BinInfo("SVFit_dijetDR",    "#DeltaR(j_{1}, j_{2})", 30, 0, 6)},
+	{"dijet_dEta",	BinInfo("SVFit_dijetDEta",  "#Delta#eta(j_{1}, j_{2})", 30, 0, 6)},
+	{"met",         BinInfo("MET_pt", "#slash{E}_{T}", vector<int>{0, 50, 150, 250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 };
 
 }

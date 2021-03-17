@@ -714,7 +714,7 @@ public:
 
   }
 
-  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, bool normalize = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool inRatio = true, float scale = -1.){
+  void plotSigVsBkg(const BinInfo& var_info, const vector<TString>& mc_samples, const vector<TString>& sig_sample, const Category& category, bool showSigma = true,  bool plotlog = false, bool normalize = false, std::function<void(TCanvas*)> *plotextra = nullptr, bool inRatio = true, float scale = -1., TString hName = ""){
     // make BKG vs Signal plots with the given cateogory selection
     // plot S/sqrt(B) in the lower pad
 
@@ -830,6 +830,7 @@ public:
     if (plotextra) (*plotextra)(c);
 
     TString plotname = filterString(plotvar)+"_SigVsBkg_"+category.name+"__"+postfix_;
+    if(hName != "") plotname = hName+"_SigVsBkg_"+category.name+"__"+postfix_;
     c->SetTitle(plotname);
     savePlot(c, plotname);
 
