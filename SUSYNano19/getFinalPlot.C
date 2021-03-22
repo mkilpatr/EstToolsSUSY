@@ -325,6 +325,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
   prepHists(pred_comp_post, false, false, false, {kBlue, kBlue, kBlue, kBlue, kBlue});
   prepHists(pred_leg, false, false, true, {866, 623, 811, 391});
   if(hdata) prepHists({hdata, hdata_post}, false, false, false, {kBlack, kBlack});
+  cout << "Data Line width = " << hdata->GetLineWidth() << endl;
   if(hdata_post) prepHists({hdata_post}, false, false, false, {kBlack});
   if(hdata) prepHists({pull, pull_post}, false, false, false, {kRed, kRed});
   if(hdata_post) prepHists({pull_post}, false, false, false, {kRed});

@@ -295,12 +295,13 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
     h->SetLabelSize  (0.04,"Y");
     h->SetLabelSize  (0.04,"X");
     h->SetTitleOffset(1.15,"X");
+    h->SetTitleOffset(1.50,"Y");
     if (isFirst){
       isFirst = false;
       h->GetYaxis()->SetRangeUser(0,1.5*ymax);
       if(lowX<highX) h->GetXaxis()->SetRangeUser(lowX, highX);
       if(logymin>0) {
-        float gap = 0.30;
+        float gap = 0.45;
         h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
         h->SetMinimum(logymin);
         gPad->SetLogy(1);

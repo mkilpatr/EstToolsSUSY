@@ -76,10 +76,10 @@ json_bkgPred = uncdir_local + '/combine_bkgPred.json'
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
 systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
-debug = False
-test_samp = ['znunu']
-test_bin  = ['bin_hm_nb3_highmtb_nt1_nrt0_nw0_htgt1500_MET_pt250to350']
-test_type = ['PDF_Weight']
+debug = True
+test_samp = ['ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare']
+test_bin  = ['bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to750']
+test_type = ['b_light']
 
 # ordered bin list
 binlist=(
@@ -193,6 +193,8 @@ with open(json_bkgPred) as jf:
     yields_dc  = j_bkg['yieldsMap']
     binlist = j_bkg['binlist']
     binnum  = j_bkg['binNum']
+    srmerge = j_bkg['srmerge']
+    ssrMaps = j_bkg['ssrMaps']
     crbinlist = {
         'lepcr': yields_dc['lepcr_data'].keys(),
         'phocr': yields_dc['phocr_data'].keys(),
@@ -221,16 +223,16 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
         if p_up == 0 or p_down == 0: continue
         log_syst_up     = p_up / p
         log_syst_down   = p_down / p
-        if sample in test_samp and bin in test_bin and debug:
-            print "%20s Up: %8.6f Down: %8.6f" % (type, log_syst_up, log_syst_down)
+        if sample in test_samp and bin in test_bin and type in test_type and debug:
+            print "%10s %20s Up: %8.6f Down: %8.6f" % (sample, type, log_syst_up, log_syst_down)
         # If both systematics go the same direction, need to symmetrize
         # Because all the nuisance parameters are log-normal, symmetrize by dividing by the geometric mean
         if ((log_syst_up > 1) and (log_syst_down > 1)) or ((log_syst_up < 1) and (log_syst_down < 1)):
             geometric_mean = np.sqrt(log_syst_up * log_syst_down)
             log_syst_up   /= geometric_mean
             log_syst_down /= geometric_mean
-            if sample in test_samp and bin in test_bin and debug and ((log_syst_up > 1 and log_syst_down < 1) or (log_syst_down > 1 and log_syst_up < 1)):
-                print "%20s Up: %8.6f Down: %8.6f geometric_mean: %8.6f" % (type, log_syst_up, log_syst_down, geometric_mean)
+            if sample in test_samp and bin in test_bin and type in test_type and debug and ((log_syst_up > 1 and log_syst_down < 1) or (log_syst_down > 1 and log_syst_up < 1)):
+                print "%10s %20s Up: %8.6f Down: %8.6f geometric_mean: %8.6f" % (sample, type, log_syst_up, log_syst_down, geometric_mean)
         #if sample in ['TTZ', 'Rare'] and log_syst_up > 2.:
         #    log_syst_up = 2.0
         # Because all the nuisance parameters are log-normal, sum the log of the ratios in quadrature
@@ -245,7 +247,7 @@ def sumUncLogNorm(unc_list, p, bin = "", sample = "", type_ = {}):
             log_syst_down_sum   += np.log(log_syst_up)**2
         log_syst_up_total   = np.exp( np.sqrt(log_syst_up_sum))
         log_syst_down_total = np.exp(-np.sqrt(log_syst_down_sum)) # Minus sign is needed because this is the *down* ratio
-    if sample in test_samp and bin in test_bin and debug:
+    if sample in test_samp and bin in test_bin and type in test_type and debug:
         print bin
         print sample
         print "pred={0}, log_syst_up_total={1}, log_syst_down_total={2}".format(p, log_syst_up_total, log_syst_down_total)
@@ -310,6 +312,8 @@ def readRelUnc(config_path):
                         up = float(value)
                         down = np.exp(-1 * np.log(up))
                         relUnc[type][bin][sample] = (down, up)
+                    if sample in test_samp and bin in test_bin and debug: 
+                        print"{1} {2} {0} --> ({3}, {4})".format(type, bin, sample, down, up)
 
     # for all bin uncs
     if all_bin_unc_file != '':
@@ -418,6 +422,10 @@ def bkgTFPrediction(cr_description, bin, type, sample):
         else:
             sr = bin
             cr = entry
+        if srmerge and sample in ['TTZ', 'Rare']:
+            sr = entry
+            cr = entry
+            if sample in test_samp and bin in test_bin and type in test_type and debug: print("{0} {1} {2}".format(cr_description, bin, entry))
         if '<' in cr: sr, cr = cr, sr
         sr = sr.strip('<>')
         cr = cr.strip('()')
@@ -427,7 +435,7 @@ def bkgTFPrediction(cr_description, bin, type, sample):
         srunit_dn += yields_dc[sample][sr][0] * relUnc[type][bin][sample][0]
 
         #Data doesn't have a fluction
-        crdata += yields_dc[crproc + '_data'][cr][0]
+        crdata += yields_dc[crproc + '_data'][cr][0] if sample not in ['TTZ', 'Rare'] else 0.
 
         if 'ttbar' in sample: 
             crunit_up += yields_dc[crproc+'_'+sample][cr][0] * relUnc[type][cr][sample][1]
@@ -456,6 +464,9 @@ def bkgTFPrediction(cr_description, bin, type, sample):
     elif 'qcd' in sample: 
         total_up = np.clip(crdata - crother_up, 1, None)*srunit_up/crunit_up
         total_dn = np.clip(crdata - crother_dn, 1, None)*srunit_dn/crunit_dn
+    elif sample in ['TTZ', 'Rare']:
+        total_up = srunit_up
+        total_dn = srunit_dn
     else:                 
         total_up = crdata*srunit_up/crunit_up
         total_dn = crdata*srunit_dn/crunit_dn
@@ -502,8 +513,7 @@ def calcAbsUnc():
                 if sample not in ['TTZ', 'Rare']:
                     tempUnc_down, tempUnc_up = bkgTFPrediction(binMaps[processMap[sample]][bin], bin, type, sample)
                 else:
-                    tempUnc_down += relUnc[type][bin][sample][0] * yields[bin][sample]
-                    tempUnc_up   += relUnc[type][bin][sample][1] * yields[bin][sample]
+                    tempUnc_down, tempUnc_up = bkgTFPrediction(srmerge[bin], bin, type, sample)
 
                 # Add the same type of unc. linearly
                 absUnc[bin][type][0]                += tempUnc_down
@@ -511,7 +521,7 @@ def calcAbsUnc():
                 absUnc[bin][type][1]                += tempUnc_up
                 absUnc_pieces[sample][bin][type][1] += tempUnc_up
 
-                if sample in test_samp and bin in test_bin and debug:
+                if sample in test_samp and bin in test_bin and type in test_type and debug:
                     up = float(absUnc_pieces[sample][bin][type][1]/yields[bin][sample])
                     down = float(absUnc_pieces[sample][bin][type][0]/yields[bin][sample])
                     print "%3s %30s %20s Up: %8.6f Down: %8.6f" % (sample, bin, type, up, down)
