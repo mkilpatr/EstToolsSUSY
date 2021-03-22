@@ -8,7 +8,7 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_030821_higgsSort/";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_032221/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
@@ -366,21 +366,21 @@ BaseConfig lepConfig(){
 BaseConfig sigConfig(){
   BaseConfig     config;
 
-  config.inputdir = inputdir_local;
-  //config.inputdir = inputdir;
+  //config.inputdir = inputdir_local;
+  config.inputdir = inputdir;
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("local",             "Local",          "nano_Skim", wgtvar,  datasel);
-  //config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
-  //config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
-  //config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
-  ////config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
-  ////config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
-  ////config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
-  //config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
-  //config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
-  //config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
+  //config.addSample("local",             "Local",          "nano_Skim", wgtvar,  datasel);
+  config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
+  config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
+  config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
+  //config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
+  //config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
+  //config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
+  config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
+  config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
+  config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
 
   //config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
   //config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
