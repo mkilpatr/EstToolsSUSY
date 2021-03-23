@@ -62,26 +62,29 @@ void plotHtoTaus(){
   vector<TString> mc_samples = {"diboson", "wjets", "dyll"};
   //vector<TString> mc_samples = {"local"};
 
-  //const TString Lead_lepmuonChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
+  //const TString Lead_muonhadChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
   //const TString Lead_elechadChannel   = "(SVFit_channel[SVIndex[0]] == 1 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_elecMT[SVIndex[0]] < 50)";
   //const TString Lead_hadhadChannel    = "(SVFit_channel[SVIndex[0]] == 2 && SVFit_PassTight[SVIndex[0]] && SVFit_ditauDR[SVIndex[0]] > 0.5 && SVFit_ditauPt[SVIndex[0]] > 50)";
   //const TString Lead_emuChannel       = "(SVFit_channel[SVIndex[0]] == 5 && SVFit_DZeta[SVIndex[0]] > -35 && SVFit_elecMuonMT[SVIndex[0]] < 60)";
+  //const TString SubLead_muonhadChannel= "(SVFit_channel[SVIndex[1]] == 0 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_muMT[SVIndex[1]] < 50)";
+  //const TString SubLead_elechadChannel= "(SVFit_channel[SVIndex[1]] == 1 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_elecMT[SVIndex[1]] < 50)";
+  //const TString SubLead_hadhadChannel = "(SVFit_channel[SVIndex[1]] == 2 && SVFit_PassTight[SVIndex[1]] && SVFit_ditauDR[SVIndex[1]] > 0.5 && SVFit_ditauPt[SVIndex[1]] > 50)";
+  //const TString SubLead_emuChannel    = "(SVFit_channel[SVIndex[1]] == 5 && SVFit_DZeta[SVIndex[1]] > -35 && SVFit_elecMuonMT[SVIndex[1]] < 60)";
 
   vector< pair<TString, TString> > channel = {
-    make_pair("allChannel_elec", "(" + Lead_elechadChannel + ")"),
-    make_pair("allChannel_muon", "(" + Lead_lepmuonChannel + ")"),
-    make_pair("allChannel_had", "(" + Lead_hadhadChannel  + ")"),
-    make_pair("allChannel_emu", "(" + Lead_emuChannel     + ")"),
     make_pair("allOther", "1 == 1"),
-    //make_pair("Lead_emu_", Lead_emuChannel),
-    //make_pair("Lead_lephad_", Lead_lephadChannel),
-    //make_pair("Lead_hadhad_", Lead_hadhadChannel),
-    //make_pair("SubLead_emu_", SubLead_emuChannel),
-    //make_pair("SubLead_lephad_", SubLead_lephadChannel),
-    //make_pair("SubLead_hadhad_", SubLead_hadhadChannel),
+    make_pair("allBaseline", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ")"),
+    make_pair("Lead_emu_", Lead_emuChannel),
+    make_pair("Lead_elechad_", Lead_elechadChannel),
+    make_pair("Lead_muonhad_", Lead_muonhadChannel),
+    make_pair("Lead_hadhad_", Lead_hadhadChannel),
+    make_pair("SubLead_emu_", SubLead_emuChannel),
+    make_pair("SubLead_elechad_", SubLead_elechadChannel),
+    make_pair("SubLead_muonhad_", SubLead_muonhadChannel),
+    make_pair("SubLead_hadhad_", SubLead_hadhadChannel),
   };
 
-  TString hName = "Lead_tauChannel";
+  TString hName = "Lead_higgsMass";
   auto varDictSmall = varDict.at(hName);
 
   std::function<void(TCanvas*)> plotextra;
@@ -92,18 +95,10 @@ void plotHtoTaus(){
       z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018", "");
       plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
       z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, true, false, &plotextra, false, -1., hName);
-      z.resetSelection();
-      z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_linear", "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra, false, -1., hName);
       //z.resetSelection();
-      //z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_norm", "");
+      //z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_linear", "");
       //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      //z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, true, true, &plotextra, false, -1., hName);
-      //z.resetSelection();
-      //z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_linear_norm", "");
-      //plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      //z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, false, true, &plotextra, false, -1., hName);
+      //z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra, false, -1., hName);
     }
   }
 }

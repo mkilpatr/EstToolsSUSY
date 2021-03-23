@@ -73,11 +73,11 @@ const TString onelepcrwgt  = lepselwgt;
 const TString sigwgt = lepvetowgt;
 
 //Separate channel cuts
-const TString Lead_lepmuonChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
+const TString Lead_muonhadChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
 const TString Lead_elechadChannel   = "(SVFit_channel[SVIndex[0]] == 1 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_elecMT[SVIndex[0]] < 50)";
 const TString Lead_hadhadChannel    = "(SVFit_channel[SVIndex[0]] == 2 && SVFit_PassTight[SVIndex[0]] && SVFit_ditauDR[SVIndex[0]] > 0.5 && SVFit_ditauPt[SVIndex[0]] > 50)";
 const TString Lead_emuChannel       = "(SVFit_channel[SVIndex[0]] == 5 && SVFit_DZeta[SVIndex[0]] > -35 && SVFit_elecMuonMT[SVIndex[0]] < 60)";
-const TString SubLead_lepmuonChannel= "(SVFit_channel[SVIndex[1]] == 0 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_muMT[SVIndex[1]] < 50)";
+const TString SubLead_muonhadChannel= "(SVFit_channel[SVIndex[1]] == 0 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_muMT[SVIndex[1]] < 50)";
 const TString SubLead_elechadChannel= "(SVFit_channel[SVIndex[1]] == 1 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_elecMT[SVIndex[1]] < 50)";
 const TString SubLead_hadhadChannel = "(SVFit_channel[SVIndex[1]] == 2 && SVFit_PassTight[SVIndex[1]] && SVFit_ditauDR[SVIndex[1]] > 0.5 && SVFit_ditauPt[SVIndex[1]] > 50)";
 const TString SubLead_emuChannel    = "(SVFit_channel[SVIndex[1]] == 5 && SVFit_DZeta[SVIndex[1]] > -35 && SVFit_elecMuonMT[SVIndex[1]] < 60)";
