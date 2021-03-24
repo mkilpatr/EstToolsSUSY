@@ -76,10 +76,11 @@ json_bkgPred = uncdir_local + '/combine_bkgPred.json'
 processMap = {'ttbarplusw':'lepcr', 'znunu':'phocr', 'qcd':'qcdcr'}
 systUnc_rel_pieces={'ttbarplusw':{}, 'znunu':{}, 'qcd':{}, 'TTZ':{}, 'Rare':{}}
 
-debug = True
+debug = False
 test_samp = ['ttbarplusw', 'znunu', 'TTZ', 'Rare', 'qcd', 'phocr_gjets', 'phocr_back', 'Rare']
+#test_bin  = ['bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to750', 'bin_lm_nb2_lowmtb_highptisr_medptb12_MET_pt450to650', 'bin_hm_nb3_highmtb_nrtntnw2_MET_pt250toinf']
 test_bin  = ['bin_lm_nb1_nivf0_lowmtb_highptisr_lowptb_MET_pt550to750']
-test_type = ['b_light']
+test_type = ['b_light', 'PDF_Weight', 'JES']
 
 # ordered bin list
 binlist=(
@@ -368,7 +369,15 @@ def readRelUnc(config_path):
                     # for sample specific unc.: set other samples to 0
                     if sample not in relUnc[type][bin]:
                         relUnc[type][bin][sample] = (1.0, 1.0)
-
+            for sr in srmerge[bin].replace(' ','').split('+'):
+                if sr not in relUnc[type]:
+                    relUnc[type][sr] = {sample: (1.0,1.0) for sample in unc_samples}
+                else:
+                    for sample in unc_samples:
+                        # for sample specific unc.: set other samples to 0
+                        if sample not in relUnc[type][sr]:
+                            relUnc[type][sr][sample] = (1.0, 1.0)
+                        
 
 def readYields(pred_file):
     ''' Read in predicted bkg yields and the stat. unc. 
@@ -431,8 +440,12 @@ def bkgTFPrediction(cr_description, bin, type, sample):
         cr = cr.strip('()')
 
         #Get total sr unit yeild up and down
-        srunit_up += yields_dc[sample][sr][0] * relUnc[type][bin][sample][1]
-        srunit_dn += yields_dc[sample][sr][0] * relUnc[type][bin][sample][0]
+        if srmerge and sample in ['TTZ', 'Rare']:
+            srunit_up += yields_dc[sample][sr][0] * relUnc[type][sr][sample][1]
+            srunit_dn += yields_dc[sample][sr][0] * relUnc[type][sr][sample][0]
+        else:
+            srunit_up += yields_dc[sample][sr][0] * relUnc[type][bin][sample][1]
+            srunit_dn += yields_dc[sample][sr][0] * relUnc[type][bin][sample][0]
 
         #Data doesn't have a fluction
         crdata += yields_dc[crproc + '_data'][cr][0] if sample not in ['TTZ', 'Rare'] else 0.
@@ -456,7 +469,7 @@ def bkgTFPrediction(cr_description, bin, type, sample):
             crother_dn+=yields_dc[crproc+'_back'][cr][0] * relUnc[type][cr][crproc+'_back'][0]
 
         if sample in test_samp and bin in test_bin and type in test_type and debug:
-            print "srunit_up: {0}, crdata: {1}, crunit_up: {2}, crother_up: {3}".format(srunit_up, crdata, crunit_up, crother_up)
+            print "Uncert: {4} --> srunit_up: {0}, crdata: {1}, crunit_up: {2}, crother_up: {3}".format(srunit_up, crdata, crunit_up, crother_up, relUnc[type][sr][sample])
 
     if 'znunu' in sample: 
         total_up = (crdata/(crunit_up + crother_up))*srunit_up
