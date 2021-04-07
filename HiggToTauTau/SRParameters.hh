@@ -8,12 +8,13 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_032221/";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_05Apr21_skim/";
+const TString inputdir_2018_old = "nanoaod_2018_skim_diHiggs_04Apr21_oldMethods/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_skim_diHiggs_allVars_011921/";
+const TString datadir = "nanoaod_2018_skim_diHiggs_033021/";
 
 TString lumistr = "59.699489";
 
@@ -73,14 +74,14 @@ const TString onelepcrwgt  = lepselwgt;
 const TString sigwgt = lepvetowgt;
 
 //Separate channel cuts
-const TString Lead_muonhadChannel   = "(SVFit_channel[SVIndex[0]] == 0 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_muMT[SVIndex[0]] < 50)";
-const TString Lead_elechadChannel   = "(SVFit_channel[SVIndex[0]] == 1 && SVFit_PassTight[SVIndex[0]] && SVFit_tau1_elecMT[SVIndex[0]] < 50)";
-const TString Lead_hadhadChannel    = "(SVFit_channel[SVIndex[0]] == 2 && SVFit_PassTight[SVIndex[0]] && SVFit_ditauDR[SVIndex[0]] > 0.5 && SVFit_ditauPt[SVIndex[0]] > 50)";
-const TString Lead_emuChannel       = "(SVFit_channel[SVIndex[0]] == 5 && SVFit_DZeta[SVIndex[0]] > -35 && SVFit_elecMuonMT[SVIndex[0]] < 60)";
-const TString SubLead_muonhadChannel= "(SVFit_channel[SVIndex[1]] == 0 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_muMT[SVIndex[1]] < 50)";
-const TString SubLead_elechadChannel= "(SVFit_channel[SVIndex[1]] == 1 && SVFit_PassTight[SVIndex[1]] && SVFit_tau1_elecMT[SVIndex[1]] < 50)";
-const TString SubLead_hadhadChannel = "(SVFit_channel[SVIndex[1]] == 2 && SVFit_PassTight[SVIndex[1]] && SVFit_ditauDR[SVIndex[1]] > 0.5 && SVFit_ditauPt[SVIndex[1]] > 50)";
-const TString SubLead_emuChannel    = "(SVFit_channel[SVIndex[1]] == 5 && SVFit_DZeta[SVIndex[1]] > -35 && SVFit_elecMuonMT[SVIndex[1]] < 60)";
+const TString Lead_muonhadChannel   = "(SVFit_channel[SVFit_Index[0]] == 0 && SVFit_PassTight[SVFit_Index[0]] && SVFit_tau1_muMT[SVFit_Index[0]] < 50)";
+const TString Lead_elechadChannel   = "(SVFit_channel[SVFit_Index[0]] == 1 && SVFit_PassTight[SVFit_Index[0]] && SVFit_tau1_elecMT[SVFit_Index[0]] < 50)";
+const TString Lead_hadhadChannel    = "(SVFit_channel[SVFit_Index[0]] == 2 && SVFit_PassTight[SVFit_Index[0]] && SVFit_ditauDR[SVFit_Index[0]] > 0.5 && SVFit_ditauPt[SVFit_Index[0]] > 50)";
+const TString Lead_emuChannel       = "(SVFit_channel[SVFit_Index[0]] == 5 && SVFit_DZeta[SVFit_Index[0]] > -35 && SVFit_elecMuonMT[SVFit_Index[0]] < 60)";
+const TString SubLead_muonhadChannel= "(SVFit_channel[SVFit_Index[1]] == 0 && SVFit_PassTight[SVFit_Index[1]] && SVFit_tau1_muMT[SVFit_Index[1]] < 50)";
+const TString SubLead_elechadChannel= "(SVFit_channel[SVFit_Index[1]] == 1 && SVFit_PassTight[SVFit_Index[1]] && SVFit_tau1_elecMT[SVFit_Index[1]] < 50)";
+const TString SubLead_hadhadChannel = "(SVFit_channel[SVFit_Index[1]] == 2 && SVFit_PassTight[SVFit_Index[1]] && SVFit_ditauDR[SVFit_Index[1]] > 0.5 && SVFit_ditauPt[SVFit_Index[1]] > 50)";
+const TString SubLead_emuChannel    = "(SVFit_channel[SVFit_Index[1]] == 5 && SVFit_DZeta[SVFit_Index[1]] > -35 && SVFit_elecMuonMT[SVFit_Index[1]] < 60)";
 
 // triggers
 const TString dibosonBadEventRemoval = " && event != 237972";
@@ -322,47 +323,6 @@ map<TString, Category> lepCatMap(){
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-BaseConfig lepConfig(){
-  BaseConfig     config;
-
-  config.inputdir = inputdir;
-  config.outputdir = outputdir+"/Tau";
-  config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
-
-  // samples for cr categories
-  if (ADD_LEP_TO_MET){
-    config.addSample("ttbar",       "t#bar{t}",      inputdir_2018+"ttbar",           onelepcrwgt+"*ISRWeight", datasel + trigLepCR + lepcrsel);
-    config.addSample("wjets",       "W+jets",        inputdir_2018+"wjets",           onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("tW",          "tW",            inputdir_2018+"tW",              onelepcrwgt, datasel + trigLepCR + lepcrsel);
-    config.addSample("ttW",         "t#bar{t}W",           inputdir_2018+"ttW",             onelepcrwgt, datasel + trigLepCR + lepcrsel);
-  }else{
-    config.addSample("ttbar",       "t#bar{t}",      inputdir_2018+"ttbar",           lepselwgt+"*ISRWeight",      datasel + revert_vetoes);
-    config.addSample("wjets",       "W+jets",        inputdir_2018+"wjets",           lepselwgt,      datasel + revert_vetoes);
-    config.addSample("tW",          "Single t",      inputdir_2018+"tW",              lepselwgt,      datasel + revert_vetoes);
-    config.addSample("ttW",         "t#bar{t}W",     inputdir_2018+"ttW",             lepselwgt,      datasel + revert_vetoes);
-    config.addSample("ttZ",         "ttZ",           inputdir_2018+"ttZ",             lepselwgt+"*"+ttznorm, datasel + revert_vetoes + invert_genLep);
-    config.addSample("diboson",     "Rare",            inputdir_2018+"diboson",         lepselwgt, datasel + revert_vetoes + invert_genLep + dibosonBadEventRemoval);
-  }
-
-  // samples for sr categories
-  config.addSample("diboson-sr",     "diboson",      inputdir_2018+"diboson",              lepvetowgt, datasel + vetoes + invert_genLep);
-
-  std::vector<TString> srbins_small;
-  for (auto name : srbins){
-    if(name != binMap() && binMap() != "allBins") continue;
-    srbins_small.push_back(name);
-  }
-  
-  config.sel = baseline;
-  config.categories = (binMap() == "allBins") ? srbins : srbins_small;
-  config.catMaps = srCatMap();
-  config.crCatMaps = lepCatMap();
-
-  return config;
-}
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 BaseConfig sigConfig(){
   BaseConfig     config;
 
@@ -371,22 +331,20 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  //config.addSample("local",             "Local",          "nano_Skim", wgtvar,  datasel);
   config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
   config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
   config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
-  //config.addSample("vv",                "VV",                                     inputdir_2018+"vv",         wgtvar,  datasel);
-  //config.addSample("ww",                "WW",                                     inputdir_2018+"ww",         wgtvar,  datasel);
-  //config.addSample("wz",                "WZ",                                     inputdir_2018+"wz",         wgtvar,  datasel);
   config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
   config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
   config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
 
-  //config.addSample("T1tttt-v2p7-sr",  "T1tttt v2p7",  inputdir_sig+"T1tttt_2200_100_v2p7",  "1.0", datasel + vetoes);
-  //config.addSample("T1tttt-v3-sr",  "T1tttt v3",  inputdir_sig+"T1tttt_2200_100_v3",  "1.0", datasel + vetoes);
-//  config.addSample("T2fbd_375_325",  "T2-4bd(375,325)",  "sig/T2fbd_375_325",  sigwgt, datasel + vetoes);
-//  config.addSample("T2fbd_375_295",  "T2-4bd(375,295)",  "sig/T2fbd_375_295",  sigwgt, datasel + vetoes);
-//
+  config.addSample("old_ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018_old+"ggHHto2b2tau", wgtvar,  datasel);
+  config.addSample("old_ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018_old+"ggHto2tau", wgtvar,  datasel);
+  config.addSample("old_vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018_old+"vbfHto2tau",    wgtvar,  datasel);
+  config.addSample("old_diboson",                "VV",                                     inputdir_2018_old+"diboson",         wgtvar,  datasel);
+  config.addSample("old_wjets",                  "W+jets",                                 inputdir_2018_old+"wjets",         wgtvar,  datasel);
+  config.addSample("old_dyll",                   "DY+jets",                                 inputdir_2018_old+"dyll",         wgtvar,  datasel);
+
   config.sel = baseline;
   config.categories = srbins;
   config.catMaps = srCatMap();
@@ -396,72 +354,72 @@ BaseConfig sigConfig(){
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 map<TString, BinInfo> varDict {
-	{"Lead_tauChannel",	BinInfo("SVFit_channel[SVIndex[0]]",   "Tau channel", 6, -0.5, 5.5)},
-	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVIndex[0]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
-	{"Lead_higgsEta",	BinInfo("SVFit_Eta[SVIndex[0]]", 	"#eta(H)", 16, -4, 4)},
-	{"Lead_higgsPhi",	BinInfo("SVFit_Phi[SVIndex[0]]", 	"#phi(H)", 64, -3.2, 3.2)},
-	{"Lead_higgsMass",	BinInfo("SVFit_Mass[SVIndex[0]]",	"M_{H}", 25, 0, 500)},
-	{"Lead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVIndex[0]]",	"M_{T}^{H}", 25, 0, 500)},
-	{"Lead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVIndex[0]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
-	{"Lead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVIndex[0]]", 	"#eta(#tau_{1})", 16, -4, 4)},
-	{"Lead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVIndex[0]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
-	{"Lead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVIndex[0]]",	"M_{#tau_{1}}", 20, 0, 4)},
-	{"Lead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVIndex[0]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
-	{"Lead_tau1DM",	BinInfo("SVFit_tau1DM[SVIndex[0]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
-	{"Lead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVIndex[0]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
-	{"Lead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVIndex[0]]", 	"#eta(#tau_{2})", 16, -4, 4)},
-	{"Lead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVIndex[0]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
-	{"Lead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVIndex[0]]",	"M_{#tau_{2}}", 20, 0, 4)},
-	{"Lead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVIndex[0]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
-	{"Lead_tau2DM",	BinInfo("SVFit_tau2DM[SVIndex[0]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
+	{"Lead_tauChannel",	BinInfo("SVFit_channel[SVFit_Index[0]]",   "Tau channel", 6, -0.5, 5.5)},
+	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVFit_Index[0]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"Lead_higgsEta",	BinInfo("SVFit_Eta[SVFit_Index[0]]", 	"#eta(H)", 16, -4, 4)},
+	{"Lead_higgsPhi",	BinInfo("SVFit_Phi[SVFit_Index[0]]", 	"#phi(H)", 64, -3.2, 3.2)},
+	{"Lead_higgsMass",	BinInfo("SVFit_Mass[SVFit_Index[0]]",	"M_{H}", 25, 0, 500)},
+	{"Lead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVFit_Index[0]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"Lead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVFit_Index[0]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
+	{"Lead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVFit_Index[0]]", 	"#eta(#tau_{1})", 16, -4, 4)},
+	{"Lead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVFit_Index[0]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
+	{"Lead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVFit_Index[0]]",	"M_{#tau_{1}}", 20, 0, 4)},
+	{"Lead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVFit_Index[0]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
+	{"Lead_tau1DM",	BinInfo("SVFit_tau1DM[SVFit_Index[0]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"Lead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVFit_Index[0]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
+	{"Lead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVFit_Index[0]]", 	"#eta(#tau_{2})", 16, -4, 4)},
+	{"Lead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVFit_Index[0]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
+	{"Lead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVFit_Index[0]]",	"M_{#tau_{2}}", 20, 0, 4)},
+	{"Lead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVFit_Index[0]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
+	{"Lead_tau2DM",	BinInfo("SVFit_tau2DM[SVFit_Index[0]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
 	{"Lead_ht",		BinInfo("SVFit_HT",        "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000, 1500}, "GeV")},
-	{"Lead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVIndex[0]]","M_{T}^{e+#mu}", 20, 0, 200)},
-	{"Lead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVIndex[0]]","M_{T}^{e}", 20, 0, 200)},
-	{"Lead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVIndex[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
-	{"Lead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVIndex[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
-	{"Lead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVIndex[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
-	{"Lead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVIndex[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
-	{"Lead_ditauMass",	BinInfo("SVFit_ditauMass[SVIndex[0]]",  "M_{#tau#tau}", 50, 0, 500)},
-	{"Lead_ditauPt",	BinInfo("SVFit_ditauPt[SVIndex[0]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
-	{"Lead_ditau_dR",	BinInfo("SVFit_ditauDR[SVIndex[0]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
-	{"Lead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVIndex[0]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
-	{"Lead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVIndex[0]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
-	{"Lead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVIndex[0]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
-	{"Lead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVIndex[0]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
-	{"Lead_DZeta",	BinInfo("SVFit_DZeta[SVIndex[0]]",  "D_{#zeta}", 24, -40, 200)},
-	{"SubLead_tauChannel",	BinInfo("SVFit_channel[SVIndex[1]]",   "Tau channel", 5, 0, 5)},
-	{"SubLead_higgsPt",	BinInfo("SVFit_Pt[SVIndex[1]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
-	{"SubLead_higgsEta",	BinInfo("SVFit_Eta[SVIndex[1]]", 	"#eta(H)", 16, -4, 4)},
-	{"SubLead_higgsPhi",	BinInfo("SVFit_Phi[SVIndex[1]]", 	"#phi(H)", 64, -3.2, 3.2)},
-	{"SubLead_higgsMass",	BinInfo("SVFit_Mass[SVIndex[1]]",	"M_{H}", 25, 0, 500)},
-	{"SubLead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVIndex[1]]",	"M_{T}^{H}", 25, 0, 500)},
-	{"SubLead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVIndex[1]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
-	{"SubLead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVIndex[1]]", 	"#eta(#tau_{1})", 16, -4, 4)},
-	{"SubLead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVIndex[1]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
-	{"SubLead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVIndex[1]]",	"M_{#tau_{1}}", 20, 0, 4)},
-	{"SubLead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVIndex[1]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
-	{"SubLead_tau1DM",	BinInfo("SVFit_tau1DM[SVIndex[1]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
-	{"SubLead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVIndex[1]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
-	{"SubLead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVIndex[1]]", 	"#eta(#tau_{2})", 16, -4, 4)},
-	{"SubLead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVIndex[1]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
-	{"SubLead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVIndex[1]]",	"M_{#tau_{2}}", 20, 0, 4)},
-	{"SubLead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVIndex[1]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
-	{"SubLead_tau2DM",	BinInfo("SVFit_tau2DM[SVIndex[1]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
+	{"Lead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVFit_Index[0]]","M_{T}^{e+#mu}", 20, 0, 200)},
+	{"Lead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVFit_Index[0]]","M_{T}^{e}", 20, 0, 200)},
+	{"Lead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVFit_Index[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"Lead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVFit_Index[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"Lead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVFit_Index[0]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"Lead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVFit_Index[0]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"Lead_ditauMass",	BinInfo("SVFit_ditauMass[SVFit_Index[0]]",  "M_{#tau#tau}", 50, 0, 500)},
+	{"Lead_ditauPt",	BinInfo("SVFit_ditauPt[SVFit_Index[0]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
+	{"Lead_ditau_dR",	BinInfo("SVFit_ditauDR[SVFit_Index[0]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
+	{"Lead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVFit_Index[0]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
+	{"Lead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVFit_Index[0]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
+	{"Lead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVFit_Index[0]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"Lead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVFit_Index[0]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"Lead_DZeta",	BinInfo("SVFit_DZeta[SVFit_Index[0]]",  "D_{#zeta}", 24, -40, 200)},
+	{"SubLead_tauChannel",	BinInfo("SVFit_channel[SVFit_Index[1]]",   "Tau channel", 5, 0, 5)},
+	{"SubLead_higgsPt",	BinInfo("SVFit_Pt[SVFit_Index[1]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"SubLead_higgsEta",	BinInfo("SVFit_Eta[SVFit_Index[1]]", 	"#eta(H)", 16, -4, 4)},
+	{"SubLead_higgsPhi",	BinInfo("SVFit_Phi[SVFit_Index[1]]", 	"#phi(H)", 64, -3.2, 3.2)},
+	{"SubLead_higgsMass",	BinInfo("SVFit_Mass[SVFit_Index[1]]",	"M_{H}", 25, 0, 500)},
+	{"SubLead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVFit_Index[1]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"SubLead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVFit_Index[1]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVFit_Index[1]]", 	"#eta(#tau_{1})", 16, -4, 4)},
+	{"SubLead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVFit_Index[1]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
+	{"SubLead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVFit_Index[1]]",	"M_{#tau_{1}}", 20, 0, 4)},
+	{"SubLead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVFit_Index[1]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
+	{"SubLead_tau1DM",	BinInfo("SVFit_tau1DM[SVFit_Index[1]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"SubLead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVFit_Index[1]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVFit_Index[1]]", 	"#eta(#tau_{2})", 16, -4, 4)},
+	{"SubLead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVFit_Index[1]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
+	{"SubLead_tau2Mass",	BinInfo("SVFit_tau2Mass[SVFit_Index[1]]",	"M_{#tau_{2}}", 20, 0, 4)},
+	{"SubLead_tau2pdgid",	BinInfo("SVFit_tau2pdgId[SVFit_Index[1]]",	"pdgId #tau_{2}", 6, -0.5, 5.5)},
+	{"SubLead_tau2DM",	BinInfo("SVFit_tau2DM[SVFit_Index[1]]",	"Decay Mode #tau_{2}", 16, -0.5, 15.5)},
 	{"SubLead_ht",		BinInfo("SVFit_HT",        "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000, 1500}, "GeV")},
-	{"SubLead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVIndex[1]]","M_{T}^{e+#mu}", 20, 0, 200)},
-	{"SubLead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVIndex[1]]","M_{T}^{e}", 20, 0, 200)},
-	{"SubLead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVIndex[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
-	{"SubLead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVIndex[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
-	{"SubLead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVIndex[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
-	{"SubLead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVIndex[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
-	{"SubLead_ditauMass",	BinInfo("SVFit_ditauMass[SVIndex[1]]",  "M_{#tau#tau}", 50, 0, 500)},
-	{"SubLead_ditauPt",	BinInfo("SVFit_ditauPt[SVIndex[1]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
-	{"SubLead_ditau_dR",	BinInfo("SVFit_ditauDR[SVIndex[1]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
-	{"SubLead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVIndex[1]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
-	{"SubLead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVIndex[1]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
-	{"SubLead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVIndex[1]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
-	{"SubLead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVIndex[1]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
-	{"SubLead_DZeta",	BinInfo("SVFit_DZeta[SVIndex[1]]",  "D_{#zeta}", 24, -40, 200)},
+	{"SubLead_elecMuonMT",	BinInfo("SVFit_elecMuonMT[SVFit_Index[1]]","M_{T}^{e+#mu}", 20, 0, 200)},
+	{"SubLead_elecMT_tau1",	BinInfo("SVFit_tau1_elecMT[SVFit_Index[1]]","M_{T}^{e}", 20, 0, 200)},
+	{"SubLead_muonMT_tau1",	BinInfo("SVFit_tau1_muMT[SVFit_Index[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"SubLead_tauMT_tau1",	BinInfo("SVFit_tau1_hadMT[SVFit_Index[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"SubLead_muonMT_tau2",	BinInfo("SVFit_tau2_muMT[SVFit_Index[1]]",  "M_{T}^{#mu}", 20, 0, 200)},
+	{"SubLead_tauMT_tau2",	BinInfo("SVFit_tau2_hadMT[SVFit_Index[1]]", "M_{T}^{#tau_{h}}", 20, 0, 200)},
+	{"SubLead_ditauMass",	BinInfo("SVFit_ditauMass[SVFit_Index[1]]",  "M_{#tau#tau}", 50, 0, 500)},
+	{"SubLead_ditauPt",	BinInfo("SVFit_ditauPt[SVFit_Index[1]]",    "p_{T}^{#tau#tau+miss} [GeV]", 25, 0, 600)},
+	{"SubLead_ditau_dR",	BinInfo("SVFit_ditauDR[SVFit_Index[1]]",    "#DeltaR(#tau_{1}, #tau_{2})", 30, 0, 6)},
+	{"SubLead_elecMuon_dR",	BinInfo("SVFit_deltaREMu[SVFit_Index[1]]",  "#DeltaR(e, #mu)", 30, 0, 6)},
+	{"SubLead_ditaudijetMass",BinInfo("SVFit_2tau2jetPt[SVFit_Index[1]]", 	"p_{T}^{#tau#taujj+miss}", 40, 0, 1000)},
+	{"SubLead_maxdR_bjettau",BinInfo("SVFit_MaxbjetTauDR[SVFit_Index[1]]",    "max(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"SubLead_mindR_bjettau",BinInfo("SVFit_MinbjetTauDR[SVFit_Index[1]]",    "min(#DeltaR(b, #tau)", 30, 0, 6)},
+	{"SubLead_DZeta",	BinInfo("SVFit_DZeta[SVFit_Index[1]]",  "D_{#zeta}", 24, -40, 200)},
 	{"njets",	BinInfo("nJets30",      	 "N_{j}", 8, 1.5, 9.5)}, 
 	{"bj1Pt",	BinInfo("SVFit_bj1Pt",  	 "p_{T}(b_{1}) [GeV]", 20, 0, 200)},
 	{"bj2Pt",	BinInfo("SVFit_bj2Pt",  	 "p_{T}(b_{2}) [GeV]", 20, 0, 200)},

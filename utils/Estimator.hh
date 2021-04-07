@@ -814,6 +814,12 @@ public:
     leg->SetTextSize(0.04);
     setLegend(leg, 2, 0.45, 0.6, 0.92, 0.87);
 
+    for(auto* s : sighists){
+      double nevent = s->Integral(1, s->GetNbinsX()+1);
+      cout << s->GetName() << ": " << nevent << endl;
+    }
+    
+
     TCanvas *c = nullptr;
     if (!inRatio){
       leg->SetTextSize(0.025);
