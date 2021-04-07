@@ -9,7 +9,6 @@ namespace EstTools{
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
 const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_05Apr21_skim/";
-const TString inputdir_2018_old = "nanoaod_2018_skim_diHiggs_04Apr21_oldMethods/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
@@ -102,168 +101,56 @@ const TString baseline = "Pass_NJets30 && SVFitMET_isValid && SVFit_PassBaseline
 std::map<TString, TString> cutMap = []{
     // Underscore "_" not allowed in the names!!!
     std::map<TString, TString> cmap = {
-        {"lmNoDPhi",    "Stop0l_ISRJetPt>=200 && Stop0l_Mtb < 175 && Stop0l_nTop==0 && Stop0l_nW==0 && Stop0l_nResolved==0 && Stop0l_METSig>=10"},
-        {"dPhiLM",      "Pass_dPhiMETLowDM"},
-        {"hmNoDPhi",    "Stop0l_nJets>=5 && Stop0l_nbtags>=1"},
-        {"dPhiHM",      "Pass_dPhiMETHighDM"},
-        {"invertDPhi",  "Pass_dPhiQCD"},
-
-        {"nb0",         "Stop0l_nbtags==0"},
-        {"nb1",         "Stop0l_nbtags==1"},
-        {"nbgeq1",      "Stop0l_nbtags>=1"},
-        {"nb2",         "Stop0l_nbtags>=2"},
-        {"nbeq2",       "Stop0l_nbtags==2"},
-        {"nb3",         "Stop0l_nbtags>=3"},
-        {"nivf0",       "Stop0l_nSoftb==0"},
-        {"nivf1",       "Stop0l_nSoftb>=1"},
         {"lowptisr",    "Stop0l_ISRJetPt>=300 && Stop0l_ISRJetPt<500"},
-        {"medptisr",    "Stop0l_ISRJetPt>=300"},
-        {"highptisr",   "Stop0l_ISRJetPt>=500"},
-        {"nj2to5",      "Stop0l_nJets>=2 && Stop0l_nJets<=5"},
-        {"nj6",         "Stop0l_nJets>=6"},
-        {"nj7",         "Stop0l_nJets>=7"},
-        {"lowmtb",      "Stop0l_Mtb<175"},
-        {"highmtb",     "Stop0l_Mtb>=175"},
-        {"lowptb",      "Stop0l_Ptb<40"},
-        {"medptb",      "Stop0l_Ptb>=40 && Stop0l_Ptb<70"},
-        {"highptb",     "Stop0l_Ptb>=70"},
-        {"lowptb12",    "Stop0l_Ptb<80"},
-        {"medptb12",    "Stop0l_Ptb>=80 && Stop0l_Ptb<140"},
-        {"highptb12",   "Stop0l_Ptb>=140"},
-        {"nt0",         "Stop0l_nTop==0"},
-        {"nt1",         "Stop0l_nTop==1"},
-        {"nt2",         "Stop0l_nTop==2"},
-        {"ntgeq1",      "Stop0l_nTop>=1"},
-        {"nw0",         "Stop0l_nW==0"},
-        {"nw1",         "Stop0l_nW==1"},
-        {"nw2",         "Stop0l_nW==2"},
-        {"nwgeq1",      "Stop0l_nW>=1"},
-        {"nrt0",        "Stop0l_nResolved==0"},
-        {"nrt1",        "Stop0l_nResolved==1"},
-        {"nrt2",        "Stop0l_nResolved==2"},
-        {"nrtgeq1",     "Stop0l_nResolved>=1"},
-	{"nrtntnwgeq2", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 2"},
-	{"nrtntnwgeq3", "(Stop0l_nTop+Stop0l_nResolved+Stop0l_nW) >= 3"},
-	{"htlt1000",    "Stop0l_HT<1000"},	
-	{"htgt1000",    "Stop0l_HT>=1000"},	
-	{"ht1000to1500","Stop0l_HT>=1000 && Stop0l_HT<1500"},	
-        {"ht1000to1300","Stop0l_HT>=1000 && Stop0l_HT<1300"},
-        {"ht1300to1500","Stop0l_HT>=1300 && Stop0l_HT<1500"},
-	{"htgt1500",    "Stop0l_HT>=1500"},	
-	{"htlt1300",    "Stop0l_HT<1300"},	
-	{"htgt1300",    "Stop0l_HT>=1300"},	
         {"noextrap",    "1 == 1"},
     };
 
-    cmap["lm"] = createCutString("lmNoDPhi_dPhiLM", cmap);
-    cmap["hm"] = createCutString("hmNoDPhi_dPhiHM", cmap);
     return cmap;
 }();
 
 
 std::map<TString, TString> labelMap{
-  {"lowptisr", R"($300\leq\ptisr<500$\,GeV)"},
-  {"ntgeq1", R"($\nt\geq1$)"},
-  {"nt2", R"($\nt=2$)"},
-  {"nivf0", R"($\nsv=0$)"},
-  {"nivf1", R"($\nsv\geq1$)"},
-  {"nw2", R"($\nw=2$)"},
-  {"nj2to5", R"($2\leq\nj\leq5$)"},
-  {"nb2", R"($\nb\geq2$)"},
-  {"nbeq2", R"($\nb=2$)"},
-  {"nb3", R"($\nb\geq3$)"},
-  {"nb1", R"($\nb=1$)"},
-  {"nbgeq1", R"($\nb\geq1$)"},
-  {"nb0", R"($\nb=0$)"},
-  {"nrt2", R"($\nrt=2$)"},
-  {"medptisr", R"($\ptisr\geq300$\,GeV)"},
-  {"highptisr", R"($\ptisr\geq500$\,GeV)"},
-  {"nj7", R"($\nj\geq7$)"},
-  {"highptb", R"($\ptb\geq70$\,GeV)"},
-  {"hm", R"(High \dm)"},
-  {"nw0", R"($\nw=0$)"},
-  {"nwgeq1", R"($\nw\geq1$)"},
-  {"nw1", R"($\nw=1$)"},
-  {"nrt0", R"($\nrt=0$)"},
-  {"nrt1", R"($\nrt=1$)"},
-  {"lowptb", R"($\ptb<40$\,GeV)"},
-  {"medptb", R"($40<\ptb<70$\,GeV)"},
-  {"nt0", R"($\nt=0$)"},
-  {"lm", R"(Low \dm)"},
-  {"lowptb12", R"($\ptbonetwo<80$\,GeV)"},
-  {"highptb12", R"($\ptbonetwo\geq140$\,GeV)"},
-  {"lowmtb", R"($\mtb<175$~\GeV)"},
-  {"highmtb", R"($\mtb\geq175$~\GeV)"},
-  {"nt1", R"($\nt=1$)"},
-  {"medptb12", R"($80<\ptbonetwo<140$\,GeV)"},
-  {"nrtgeq1", R"($\nrt\geq1$)"},
-  {"nj6", R"($\nj\geq6$)"},
-  {"nrtntnwgeq2", R"($(\nt+\nrt+\nw)\geq2$)"},
-  {"nrtntnwgeq3", R"($(\nt+\nrt+\nw)\geq3$)"},
-  {"htlt1000",    R"($\Ht<1000$)"},	
-  {"htgt1000",    R"($\Ht\geq1000$)"},	
-  {"ht1000to1500",R"($1000\leq\Ht<1500$)"},	
-  {"ht1000to1300",R"($1000\leq\Ht<1300$)"},	
-  {"ht1300to1500",R"($1300\leq\Ht<1500$)"},	
-  {"htgt1500",    R"($\Ht\geq1500$)"},	
-  {"htlt1300",    R"($\Ht<1300$)"},	
-  {"htgt1300",    R"($\Ht\geq1300$)"},	
-  {"lmNoDPhi",    R"(Low $\Delta m$)"},
-  {"hmNoDPhi",    R"(High $\Delta m$)"},
-  {"noextrap",    R"()"},
-  
+  {"hptgt100", R"(p_{T}(H) > 100)"},
+  {"djgt300", R"(M_{jj} > 300)"},
+  {"emu",    R"(e\mu)"},
+  {"elechad",    R"(e\tau_{h})"},
+  {"muonhad",    R"(\mu\tau_{h})"},
+  {"hadhad",    R"(\tau_{h}\tau_{h})"},
+  {"Lead",    R"()"},
+  {"SubLead",    R"()"},
+  {"channels",    R"()"},
+  {"allBaseline",    R"()"},
+  {"comp1",    R"()"},
+  {"comp2",    R"()"},
+  {"comp3",    R"()"},
+  {"comp4",    R"()"},
+  {"comp5",    R"()"},
+  {"comp6",    R"()"},
+  {"comp7",    R"()"},
+  {"comp8",    R"()"},
+  {"comp9",    R"()"},
 };
 
 std::map<TString, TString> plotLabelMap{
-  {"lowptisr", R"(300 #leq p_{T}(ISR) < 500)"},
-  {"ntgeq1", R"(N_{t} #geq 1)"},
-  {"nt2", R"(N_{t} = 2)"},
-  {"nivf0", R"(N_{SV} = 0)"},
-  {"nivf1", R"(N_{SV} #geq 1)"},
-  {"nw2", R"(N_{W} = 2)"},
-  {"nj2to5", R"(2 #leq N_{j} #leq 5)"},
-  {"nb2", R"(N_{b} #geq 2)"},
-  {"nbeq2", R"(N_{b} = 2)"},
-  {"nb3", R"(N_{b} #geq 3)"},
-  {"nb1", R"(N_{b} = 1)"},
-  {"nbgeq1", R"(N_{b} #geq 1)"},
-  {"nb0", R"(N_{b} = 0)"},
-  {"nrt2", R"(N_{res} = 2)"},
-  {"medptisr", R"(p_{T}(ISR) #geq 300)"},
-  {"highptisr", R"(p_{T}(ISR) #geq 500)"},
-  {"nj7", R"(N_{j} #geq 7)"},
-  {"highptb", R"(p_{T}(b) #geq 70)"},
-  {"hm", R"(High #Deltam)"},
-  {"nw0", R"(N_{W} = 0)"},
-  {"nwgeq1", R"(N_{W} #geq 1)"},
-  {"nw1", R"(N_{W} = 1)"},
-  {"nrt0", R"(N_{res} = 0)"},
-  {"nrt1", R"(N_{res} = 1)"},
-  {"lowptb", R"(p_{T}(b) < 40)"},
-  {"medptb", R"(40 < p_{T}(b) < 70)"},
-  {"nt0", R"(N_{t} = 0)"},
-  {"lm", R"(Low #Deltam)"},
-  {"lowptb12", R"(p_{T}(b_{12}) < 80)"},
-  {"highptb12", R"(p_{T}(b_{12}) #geq 140)"},
-  {"lowmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) < 175)"},
-  {"highmtb", R"(M_{T}(b_{1,2},#vec{p}_{T}^{miss}) #geq 175)"},
-  {"nt1", R"(N_{t} = 1)"},
-  {"medptb12", R"(80 < p_{T}(b_{12}) < 140)"},
-  {"nrtgeq1", R"(N_{res} #geq 1)"},
-  {"nj6", R"(N_{j} #geq 6)"},
-  {"nrtntnwgeq2", R"((N_{t}+N_{res}+N_{W}) #geq 2)"},
-  {"nrtntnwgeq3", R"((N_{t}+N_{res}+N_{W}) #geq 3)"},
-  {"htlt1000",    R"(H_{T}<1000)"},	
-  {"htgt1000",    R"(H_{T} #geq 1000)"},	
-  {"ht1000to1500",R"(1000#leqH_{T}<1500)"},	
-  {"ht1000to1300",R"(1000#leqH_{T}<1300)"},	
-  {"ht1300to1500",R"(1300#leqH_{T}<1500)"},	
-  {"htgt1500",    R"(H_{T}#geq1500)"},	
-  {"htlt1300",    R"(H_{T}<1300)"},	
-  {"htgt1300",    R"(H_{T}#geq1300)"},	
-  {"lmNoDPhi",    R"(Low #Delta m)"},
-  {"hmNoDPhi",    R"(High #Delta m)"},
-  {"noextrap",    R"()"},
+  {"hptgt100", R"(p_{T}(H) > 100)"},
+  {"djgt300", R"(M_{jj} > 300)"},
+  {"emu",    R"(e#mu)"},
+  {"elechad",    R"(e#tau_{h})"},
+  {"muonhad",    R"(#mu#tau_{h})"},
+  {"hadhad",    R"(#tau_{h}#tau_{h})"},
+  {"Lead",    R"()"},
+  {"SubLead",    R"()"},
+  {"channels",    R"()"},
+  {"allBaseline",    R"()"},
+  {"comp1",    R"()"},
+  {"comp2",    R"()"},
+  {"comp3",    R"()"},
+  {"comp4",    R"()"},
+  {"comp5",    R"()"},
+  {"comp6",    R"()"},
+  {"comp7",    R"()"},
+  {"comp8",    R"()"},
+  {"comp9",    R"()"},
 };
 
 std::map<TString, TString> srcuts = []{
@@ -331,19 +218,13 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
+  config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
   config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
-  config.addSample("vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
-  config.addSample("diboson",                "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
-  config.addSample("wjets",                  "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
-  config.addSample("dyll",                   "DY+jets",                                 inputdir_2018+"dyll",         wgtvar,  datasel);
-
-  config.addSample("old_ggHHto2b2tau",     	"gg#rightarrowHH#rightarrowbb#tau#tau",      inputdir_2018_old+"ggHHto2b2tau", wgtvar,  datasel);
-  config.addSample("old_ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018_old+"ggHto2tau", wgtvar,  datasel);
-  config.addSample("old_vbfHto2tau",           "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018_old+"vbfHto2tau",    wgtvar,  datasel);
-  config.addSample("old_diboson",                "VV",                                     inputdir_2018_old+"diboson",         wgtvar,  datasel);
-  config.addSample("old_wjets",                  "W+jets",                                 inputdir_2018_old+"wjets",         wgtvar,  datasel);
-  config.addSample("old_dyll",                   "DY+jets",                                 inputdir_2018_old+"dyll",         wgtvar,  datasel);
+  config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
+  config.addSample("diboson",          "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
+  config.addSample("wjets",            "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
+  config.addSample("wjets_small",      "W+jets",                                 inputdir_2018+"wjets_small",  wgtvar,  datasel);
+  config.addSample("dyll",             "DY+jets",                                inputdir_2018+"dyll",         wgtvar,  datasel);
 
   config.sel = baseline;
   config.categories = srbins;

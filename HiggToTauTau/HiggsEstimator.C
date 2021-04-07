@@ -40,64 +40,50 @@ void srYields(){
 
 void plotHtoTaus(){
   auto config = sigConfig();
-  //TString baseline_plus = "nJets30 >=2 && SVFit_Pt > 100 && JetTau_dijetMass > 300 && SVFit_Mass > 0";
+
   TString baseline_plus = "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300";
-  baseline_plus = "1 == 1";
-  //TString baseline_emuChan = " && HiggsSVFit_channel == 5";
   config.sel = baseline;
 
   LOG_YMIN = 10.;
-
-  config.categories.push_back("dummy");
-  config.catMaps["dummy"] = Category::dummy_category();
 
   TString region = "Tau_training_040621_comp";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> sig_samples = {"ggHto2tau", "ggHHto2b2tau", "vbfHto2tau"};
-  vector<TString> sig_samples_old = {"old_ggHto2tau", "old_ggHHto2b2tau", "old_vbfHto2tau"};
+  vector<TString> sig_samples = {"ggHto2tau", "vbfHto2tau"};
   vector<TString> mc_samples = {"diboson", "wjets", "dyll"};
-  vector<TString> mc_samples_old = {"old_diboson", "old_wjets", "old_dyll"};
 
   vector< pair<TString, TString> > channel = {
-    make_pair("allBaseline", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ")"),
-    //make_pair("Lead_emu_", Lead_emuChannel),
-    //make_pair("Lead_elechad_", Lead_elechadChannel),
-    //make_pair("Lead_muonhad_", Lead_muonhadChannel),
-    //make_pair("Lead_hadhad_", Lead_hadhadChannel),
-    //make_pair("SubLead_emu_", SubLead_emuChannel),
-    //make_pair("SubLead_elechad_", SubLead_elechadChannel),
-    //make_pair("SubLead_muonhad_", SubLead_muonhadChannel),
-    //make_pair("SubLead_hadhad_", SubLead_hadhadChannel),
+    make_pair("allBaseline", "nJets30 >=2"),
+    make_pair("allBaseline_hptgt100", "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100"),
+    make_pair("allBaseline_hptgt100_djgt300", "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("allBaseline_hptgt100_djgt300_channels", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ") && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("Lead_emu_hptgt100_djgt300", Lead_emuChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("Lead_elechad_hptgt100_djgt300", Lead_elechadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("Lead_muonhad_hptgt100_djgt300", Lead_muonhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("Lead_hadhad_hptgt100_djgt300", Lead_hadhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("SubLead_emu_hptgt100_djgt300", SubLead_emuChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("SubLead_elechad_hptgt100_djgt300", SubLead_elechadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("SubLead_muonhad_hptgt100_djgt300", SubLead_muonhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("SubLead_hadhad_hptgt100_djgt300", SubLead_hadhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
   };
 
-  TString hName = "Lead_higgsMass";
+  TString hName = "Lead_higgsPt";
   auto varDictSmall = varDict.at(hName);
 
-  std::function<void(TCanvas*)> plotextra;
-  //for (auto &var : varDictSmall){
+  map<TString, Category> cmap;
   for( const pair<TString, TString> &chan : channel){
-    if(chan.first.BeginsWith(hName(0,3)) || chan.first.Contains("all")){
-      z.resetSelection();
-      z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018", "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, true, false, &plotextra, false, -1., hName);
-      z.resetSelection();
-      z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_old", "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      z.plotSigVsBkg(varDictSmall, mc_samples_old, sig_samples_old, Category::dummy_category(), true, true, false, &plotextra, false, -1., hName);
-      z.resetSelection();
-      z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_linear", "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, Category::dummy_category(), true, false, false, &plotextra, false, -1., hName);
-      z.resetSelection();
-      z.setSelection(baseline_plus +  " && " + chan.second, chan.first + "baseline_2018_old_linear", "");
-      plotextra   = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{}", 0.2, 0.75); };
-      z.plotSigVsBkg(varDictSmall, mc_samples_old, sig_samples_old, Category::dummy_category(), true, false, false, &plotextra, false, -1., hName);
-    }
+    if(chan.first.BeginsWith(hName(0,3)) || chan.first.Contains("all"))
+      cmap[chan.first] = Category(chan.first, chan.second, translateString(chan.first, plotLabelMap, "_", ", ", true), varDictSmall);
   }
+
+  for( const pair<TString, TString> &chan : channel){
+    std::function<void(TCanvas*)> plotextra = [&](TCanvas *c){ c->cd(); drawTLatexNDC("#splitline{2018 baseline}{" + cmap[chan.first].label + "}", 0.23, 0.75); };
+    z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, cmap[chan.first], true,  true, false, &plotextra, false, -1., hName);
+    //z.plotSigVsBkg(varDictSmall, mc_samples, sig_samples, cmap[chan.first], true, false, false, &plotextra, false, -1., hName);
+  }
+
 }
 
 void HiggsEstimator(){

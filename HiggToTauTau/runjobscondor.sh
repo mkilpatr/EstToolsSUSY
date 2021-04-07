@@ -44,7 +44,7 @@ cd ${CMSSW}/src/EstToolsSUSY/HiggToTauTau
 echo $outdir
 
 sed -i -e "s/Lead_higgsMass/$bins/g" HiggsEstimator.C
-sed -i -e "s/Tau_training_032221/$outdir/g" HiggsEstimator.C
+sed -i -e "s/Tau_training_040621_comp/$outdir/g" HiggsEstimator.C
 
 ulimit -s unlimited
 cd $location

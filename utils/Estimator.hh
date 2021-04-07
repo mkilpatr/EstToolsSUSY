@@ -834,9 +834,10 @@ public:
     }
 
     if (plotextra) (*plotextra)(c);
+    TString axis = plotlog ? "_log" : "_linear";
 
-    TString plotname = filterString(plotvar)+"_SigVsBkg_"+category.name+"__"+postfix_;
-    if(hName != "") plotname = hName+"_SigVsBkg_"+category.name+"__"+postfix_;
+    TString plotname = filterString(plotvar)+"_SigVsBkg_"+category.name+axis+"__"+postfix_;
+    if(hName != "") plotname = hName+"_SigVsBkg_"+category.name+axis+"__"+postfix_;
     c->SetTitle(plotname);
     savePlot(c, plotname);
 

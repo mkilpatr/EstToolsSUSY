@@ -114,6 +114,7 @@ TString translateString(TString name, const std::map<TString, TString>& strMap, 
   for (auto k : keys){
     //cout << "i: " << i << ", k: " << k << endl;
     try{
+      if(strMap.at(k) == "") continue;
       if(splitline){
 	if(k.Contains("ptisr") || k.Contains("ht") || k.Contains("nrtntnw")){
 	  substrs_3.push_back(strMap.at(k));
