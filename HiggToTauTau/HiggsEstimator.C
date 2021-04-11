@@ -44,32 +44,30 @@ void plotHtoTaus(){
   TString baseline_plus = "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300";
   config.sel = baseline;
 
-  LOG_YMIN = 10.;
+  LOG_YMIN = 1.;
 
   TString region = "Tau_training_040621_comp";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
-  vector<TString> sig_samples = {"ggHto2tau", "vbfHto2tau"};
+  vector<TString> sig_samples = {"ggHHto2b2tau", "ggHto2tau", "vbfHto2tau"};
   vector<TString> mc_samples = {"diboson", "wjets", "dyll"};
 
   vector< pair<TString, TString> > channel = {
-    make_pair("allBaseline", "nJets30 >=2"),
-    make_pair("allBaseline_hptgt100", "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100"),
-    make_pair("allBaseline_hptgt100_djgt300", "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
-    //make_pair("allBaseline_hptgt100_djgt300_channels", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ") && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
-    //make_pair("Lead_emu_hptgt100_djgt300", Lead_emuChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
-    //make_pair("Lead_elechad_hptgt100_djgt300", Lead_elechadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
-    //make_pair("Lead_muonhad_hptgt100_djgt300", Lead_muonhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
-    //make_pair("Lead_hadhad_hptgt100_djgt300", Lead_hadhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    //make_pair("allBaseline_hptgt100_djgt300", "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    make_pair("allBaseline_hptgt100_djgt300_channels", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ") && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    make_pair("Lead_emu_hptgt100_djgt300", Lead_emuChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    make_pair("Lead_elechad_hptgt100_djgt300", Lead_elechadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    make_pair("Lead_muonhad_hptgt100_djgt300", Lead_muonhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
+    make_pair("Lead_hadhad_hptgt100_djgt300", Lead_hadhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
     //make_pair("SubLead_emu_hptgt100_djgt300", SubLead_emuChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
     //make_pair("SubLead_elechad_hptgt100_djgt300", SubLead_elechadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
     //make_pair("SubLead_muonhad_hptgt100_djgt300", SubLead_muonhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
     //make_pair("SubLead_hadhad_hptgt100_djgt300", SubLead_hadhadChannel + " && nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300"),
   };
 
-  TString hName = "Lead_higgsPt";
+  TString hName = "Lead_higgsMass";
   auto varDictSmall = varDict.at(hName);
 
   map<TString, Category> cmap;

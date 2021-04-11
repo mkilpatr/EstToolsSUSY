@@ -236,7 +236,7 @@ BaseConfig sigConfig(){
 
 map<TString, BinInfo> varDict {
 	{"Lead_tauChannel",	BinInfo("SVFit_channel[SVFit_Index[0]]",   "Tau channel", 6, -0.5, 5.5)},
-	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVFit_Index[0]]",  	"p_{T}(H) [GeV]", 12, 100, 1000)},
+	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVFit_Index[0]]",  	"p_{T}(H) [GeV]", 20, 0, 500)},
 	{"Lead_higgsEta",	BinInfo("SVFit_Eta[SVFit_Index[0]]", 	"#eta(H)", 16, -4, 4)},
 	{"Lead_higgsPhi",	BinInfo("SVFit_Phi[SVFit_Index[0]]", 	"#phi(H)", 64, -3.2, 3.2)},
 	{"Lead_higgsMass",	BinInfo("SVFit_Mass[SVFit_Index[0]]",	"M_{H}", 25, 0, 500)},
