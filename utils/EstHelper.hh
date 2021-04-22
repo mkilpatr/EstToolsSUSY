@@ -273,6 +273,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
 TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false, float lowX = 999., float highX = -1., bool changeLabel = false)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
+  gStyle->SetOptStat(0);
 
   vector<TH1*> hists;
   for (auto *h : inhists) hists.push_back((TH1*)h->Clone());
@@ -298,7 +299,8 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
     h->SetTitleOffset(1.50,"Y");
     if (isFirst){
       isFirst = false;
-      h->GetYaxis()->SetRangeUser(0,1.5*ymax);
+      cout << ymax << endl;
+      h->GetYaxis()->SetRangeUser(0,1.1*ymax);
       if(lowX<highX) h->GetXaxis()->SetRangeUser(lowX, highX);
       if(logymin>0) {
         float gap = 0.45;
@@ -306,15 +308,6 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
         h->SetMinimum(logymin);
         gPad->SetLogy(1);
       }
-      //if(changeLabel){
-      //  h->GetXaxis()->ChangeLabel(1, -1, -1, -1, 1, -1, "-0.015");  
-      //  h->GetXaxis()->ChangeLabel(2, -1, -1, -1, 1, -1, "0.085");  
-      //  h->GetXaxis()->ChangeLabel(3, -1, -1, -1, 1, -1, "0.185");  
-      //  h->GetXaxis()->ChangeLabel(4, -1, -1, -1, 1, -1, "0.285");  
-      //  h->GetXaxis()->ChangeLabel(5, -1, -1, -1, 1, -1, "0.385");  
-      //  h->GetXaxis()->ChangeLabel(6, -1, -1, -1, 1, -1, "0.485");  
-      //  h->GetXaxis()->ChangeLabel(7, -1, -1, -1, 1, -1, "0.585");  
-      //}
       h->Draw(drawType);
     }
     h->Draw(drawType + "same");
