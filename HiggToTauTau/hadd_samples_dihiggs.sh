@@ -4,21 +4,21 @@ cmsenv
 files=$1
 cd /eos/uscms/$files
 mkdir ggHto2tau
-mv GluGluHToTauTau* ggHto2tau/.
+mv *GluGluHToTauTau* ggHto2tau/.
 mkdir ggHHto2b2tau
-mv GluGluToHHTo2B2Tau* ggHHto2b2tau/.
+mv *GluGluToHHTo2B2Tau* ggHHto2b2tau/.
 mkdir vbfHto2tau
-mv VBFHToTauTau* vbfHto2tau/.
+mv *VBFHToTauTau* vbfHto2tau/.
 mkdir -p diboson/ww
-mv WW* diboson/ww/.
+mv *WW* diboson/ww/.
 mkdir -p diboson/wz
-mv WZ* diboson/wz/.
+mv *WZ* diboson/wz/.
 mkdir -p diboson/zz
-mv ZZ* diboson/zz/.
+mv *ZZ* diboson/zz/.
 mkdir -p wjets
-mv WJetsToLNu* wjets/.
+mv *WJetsToLNu* wjets/.
 mkdir -p dyll
-mv DYJetsToLL* dyll/.
+mv *DYJetsToLL* dyll/.
 cd -
 
 haddnano ggHHto2b2tau_tree.root `xrdfsls -u ${files}/ggHHto2b2tau | grep '\.root'`
