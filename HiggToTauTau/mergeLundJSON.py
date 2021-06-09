@@ -28,21 +28,20 @@ def open_json(jsonfilename, nEvents):
     tweets = []
     with gzip.open(jsonfilename,'r') as fin:        
         for line in fin:        
-            tweets.append(json.loads(line))
+            if line == "\n": continue
+            write_json(json.loads(line))
             nEvents+=1
             if nEvents > args.nEvents: break
 
-    return tweets, nEvents
+    return nEvents
 
 print(Dist)
 
-
-
 for d in Dist:
-    nEvents = 0
     if "json" in d: continue
     subDist = os.listdir(eosDir + d)
     for type in ['genHiggs', 'otherMatch']:
+        nEvents = 0
         onlyFiles = []
         for sd in subDist:
             if os.path.isdir(eosDir + d + "/" + sd): continue
@@ -54,12 +53,7 @@ for d in Dist:
         fout = gzip.open(os.path.join(args.baseDir, args.saveDir) + "/" + type + "_" + d + ".json.gz", 'w')
 
         print(eosDir + d + "/" + onlyFiles[0])
-        newData = []
         for idx, sd in enumerate(onlyFiles):
-            json_insert, nEvents = open_json(eosDir + d + "/" + sd, nEvents)
-            if idx == 0: newData = json_insert
-            else:        newData.append(json_insert)
+            nEvents = open_json(eosDir + d + "/" + sd, nEvents)
             if nEvents > args.nEvents: break
-
-        write_json(newData)
 
