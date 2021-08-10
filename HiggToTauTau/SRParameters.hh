@@ -8,12 +8,12 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_05Apr21_skim/";
+const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_09Aug21_skim/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_skim_diHiggs_033021/";
+const TString datadir = "nanoaod_2018_skim_diHiggs_09Aug21_skim/";
 
 TString lumistr = "59.699489";
 
@@ -218,12 +218,12 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
+  //config.addSampleChain("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
   config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
   config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
   config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
   config.addSample("diboson",          "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
   config.addSample("wjets",            "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
-  config.addSample("wjets_small",      "W+jets",                                 inputdir_2018+"wjets_small",  wgtvar,  datasel);
   config.addSample("dyll",             "DY+jets",                                inputdir_2018+"dyll",         wgtvar,  datasel);
 
   config.sel = baseline;
@@ -241,12 +241,20 @@ map<TString, BinInfo> varDict {
 	{"Lead_higgsPhi",	BinInfo("SVFit_Phi[SVFit_Index[0]]", 	"#phi(H)", 64, -3.2, 3.2)},
 	{"Lead_higgsMass",	BinInfo("SVFit_Mass[SVFit_Index[0]]",	"M_{H}", 25, 0, 500)},
 	{"Lead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVFit_Index[0]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"Lead_tau1nuPx",	BinInfo("SVFit_tau1nuPx[SVFit_Index[0]]",  	"p_{x}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau1nuPy",	BinInfo("SVFit_tau1nuPy[SVFit_Index[0]]",  	"p_{y}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau1nuPz",	BinInfo("SVFit_tau1nuPz[SVFit_Index[0]]",  	"p_{z}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau1nuE",	BinInfo("SVFit_tau1nuE[SVFit_Index[0]]",  	"E(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
 	{"Lead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVFit_Index[0]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
 	{"Lead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVFit_Index[0]]", 	"#eta(#tau_{1})", 16, -4, 4)},
 	{"Lead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVFit_Index[0]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
 	{"Lead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVFit_Index[0]]",	"M_{#tau_{1}}", 20, 0, 4)},
 	{"Lead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVFit_Index[0]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
 	{"Lead_tau1DM",	BinInfo("SVFit_tau1DM[SVFit_Index[0]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"Lead_tau2nuPx",	BinInfo("SVFit_tau2nuPx[SVFit_Index[0]]",  	"p_{x}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau2nuPy",	BinInfo("SVFit_tau2nuPy[SVFit_Index[0]]",  	"p_{y}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau2nuPz",	BinInfo("SVFit_tau2nuPz[SVFit_Index[0]]",  	"p_{z}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"Lead_tau2nuE",	BinInfo("SVFit_tau2nuE[SVFit_Index[0]]",  	"E(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
 	{"Lead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVFit_Index[0]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
 	{"Lead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVFit_Index[0]]", 	"#eta(#tau_{2})", 16, -4, 4)},
 	{"Lead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVFit_Index[0]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},
@@ -274,12 +282,20 @@ map<TString, BinInfo> varDict {
 	{"SubLead_higgsPhi",	BinInfo("SVFit_Phi[SVFit_Index[1]]", 	"#phi(H)", 64, -3.2, 3.2)},
 	{"SubLead_higgsMass",	BinInfo("SVFit_Mass[SVFit_Index[1]]",	"M_{H}", 25, 0, 500)},
 	{"SubLead_higgsTransverseMass",	BinInfo("SVFit_TransverseMass[SVFit_Index[1]]",	"M_{T}^{H}", 25, 0, 500)},
+	{"SubLead_tau1nuPx",	BinInfo("SVFit_tau1nuPx[SVFit_Index[1]]",  	"p_{x}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau1nuPy",	BinInfo("SVFit_tau1nuPy[SVFit_Index[1]]",  	"p_{y}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau1nuPz",	BinInfo("SVFit_tau1nuPz[SVFit_Index[1]]",  	"p_{z}(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau1nuE",	BinInfo("SVFit_tau1nuE[SVFit_Index[1]]",  	"E(#nu_{#tau_{1}}) [GeV]", 20, 0, 200)},
 	{"SubLead_tau1Pt",	BinInfo("SVFit_tau1Pt[SVFit_Index[1]]",  	"p_{T}(#tau_{1}) [GeV]", 20, 0, 200)},
 	{"SubLead_tau1Eta",	BinInfo("SVFit_tau1Eta[SVFit_Index[1]]", 	"#eta(#tau_{1})", 16, -4, 4)},
 	{"SubLead_tau1Phi",	BinInfo("SVFit_tau1Phi[SVFit_Index[1]]", 	"#phi(#tau_{1})", 64, -3.2, 3.2)},
 	{"SubLead_tau1Mass",	BinInfo("SVFit_tau1Mass[SVFit_Index[1]]",	"M_{#tau_{1}}", 20, 0, 4)},
 	{"SubLead_tau1pdgid",	BinInfo("SVFit_tau1pdgId[SVFit_Index[1]]",	"pdgId #tau_{1}", 6, -0.5, 5.5)},
 	{"SubLead_tau1DM",	BinInfo("SVFit_tau1DM[SVFit_Index[1]]",	"Decay Mode #tau_{1}", 16, -0.5, 15.5)},
+	{"SubLead_tau2nuPx",	BinInfo("SVFit_tau2nuPx[SVFit_Index[1]]",  	"p_{x}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau2nuPy",	BinInfo("SVFit_tau2nuPy[SVFit_Index[1]]",  	"p_{y}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau2nuPz",	BinInfo("SVFit_tau2nuPz[SVFit_Index[1]]",  	"p_{z}(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
+	{"SubLead_tau2nuE",	BinInfo("SVFit_tau2nuE[SVFit_Index[1]]",  	"E(#nu_{#tau_{2}}) [GeV]", 20, 0, 200)},
 	{"SubLead_tau2Pt",	BinInfo("SVFit_tau2Pt[SVFit_Index[1]]",  	"p_{T}(#tau_{2}) [GeV]", 20, 0, 200)},
 	{"SubLead_tau2Eta",	BinInfo("SVFit_tau2Eta[SVFit_Index[1]]", 	"#eta(#tau_{2})", 16, -4, 4)},
 	{"SubLead_tau2Phi",	BinInfo("SVFit_tau2Phi[SVFit_Index[1]]", 	"#phi(#tau_{2})", 64, -3.2, 3.2)},

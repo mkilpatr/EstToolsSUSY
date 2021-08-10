@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <glob.h>
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TString.h"
@@ -20,6 +21,7 @@
 #include "THStack.h"
 #include <TRandom3.h>
 #include "TMath.h"
+#include "TChain.h"
 
 #include "Quantity.h"
 
@@ -27,6 +29,19 @@ using namespace std;
 #endif
 
 namespace EstTools{
+
+// ----------------------------------------------------
+// Get vector list of files in directory
+std::vector<std::string> readFileTotal(const string& pattern){
+    glob_t glob_result;
+    glob(pattern.c_str(),GLOB_TILDE,NULL,&glob_result);
+    vector<string> files;
+    for(unsigned int i=0;i<glob_result.gl_pathc;++i){
+        files.push_back(string(glob_result.gl_pathv[i]));
+    }
+    globfree(&glob_result);
+    return files;
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 struct BinInfo{
@@ -236,6 +251,23 @@ struct BaseConfig {
     samples.emplace(name, Sample(name, label, file, filepath, wgtvar, extraCut));
 
     cerr << "### Open file " << filepath << " as *" << name << "*" << endl;
+  }
+
+  void addSampleChain(TString name, TString label, TString file, TString wgtvar, TString extraCut){
+    // add data/MC sample to the *sample* map, e.g.
+    // addSample("ttbar",     "t#bar{t}",    "lepcr/ttbar-mg",                                   "2.3*weight",      "nvetolep>0");
+    //     *key of the map*   *plot label*   *filepath (postfix "_tree.root" added by default)*  *weight variable*  *extra selection*
+    TChain Chain(name + "_Chain");
+    std::string filesStr(TString(inputdir+"/"+file).Data());
+    vector<string> files = readFileTotal(filesStr);
+    for(int i = 0; i != files.size(); i++){
+      cout << files[i] << endl;
+      Chain.AddFile(TString(files[i]));
+    }
+    samples.emplace(name, Sample(name, label, file, name + "_Chain", wgtvar, extraCut));
+    
+
+    cerr << "### Open file " << file << " as *" << name << "*" << endl;
   }
 
   unsigned nbins(){

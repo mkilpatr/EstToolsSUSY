@@ -31,12 +31,12 @@ def open_json(jsonfilename):
         for line in fin:        
             if line == "\n": continue
             write_json(json.loads(line))
-            if jsonfilename not in ['ggH', 'vbfH']:
+            if any(x in jsonfilename for x in ['dyll', 'diboson', 'wjets']):
                 writeTot_json(json.loads(line))
 
 print(Dist)
 
-for type in ['genHiggs', 'otherMatch']:
+for type in ['genHiggs', 'genTaus']:
     ftot = gzip.open(args.saveDir + "/" + type + "_bkg.json.gz", 'w')
     for d in Dist:
         if "json" in d: continue
