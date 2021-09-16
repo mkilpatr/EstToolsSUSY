@@ -1609,11 +1609,11 @@ void plot1LepInclusiveWithSyst(){
 	//{"toppt",       	BinInfo("FatJet_TopPt", "p_{T}(top) [GeV]", 12, 400, 1000)},
 	{"ntop",        	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
 	//{"ntop_nowgt",  	BinInfo("Stop0l_nTop", "N_{t}", 3, -0.5, 2.5)},
-	//{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
+	{"nrestop",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
 	//{"nrestop_nowgt",     	BinInfo("Stop0l_nResolved", "N_{res}", 3, -0.5, 2.5)},
-	//{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
+	{"nw",          	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
 	//{"nw_nowgt",    	BinInfo("Stop0l_nW", "N_{W}", 3, -0.5, 2.5)},
-	//{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
+	{"met",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"met_nowgt",         	BinInfo("MET_pt", "p^{miss}_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht",       		BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
 	//{"ht_nowgt",       	BinInfo("Stop0l_HT", "H_{T}", vector<int>{250, 350, 450, 550, 650, 750, 1000}, "GeV")},
@@ -1639,6 +1639,7 @@ void plot1LepInclusiveWithSyst(){
   vector<TH1*> ratiohist;
   for (unsigned i = 0; i < 1; i++){
     for (auto &var : varDict){
+      ratiohist.clear();
       if (var.first.Contains("nw") || var.first.Contains("met")) PLOT_LOGY_MAX_SCALE = 1000;
       else if (var.first.Contains("ntop")) PLOT_LOGY_MAX_SCALE = 10000;
       else PLOT_LOGY_MAX_SCALE = 100000;
@@ -1681,19 +1682,17 @@ void plot1LepInclusiveWithSyst(){
       if (var.first.Contains("_nowgt") && suffix.Contains("norm")){
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
       } else if (!var.first.Contains("toppt") && suffix.Contains("norm")){
-        z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn);
+        ratiohist.push_back(z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), true, "", true, &plotextra, false, unc_up, unc_dn));
       } else if (var.first.Contains("_nowgt")){
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples_notoppt, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       } else {
         ratiohist.push_back(z.plotDataMC(var.second, mc_samples, data_sample, Category::dummy_category(), false, "", true, &plotextra, false, unc_up, unc_dn));
       }
+      TFile *output = new TFile(config.outputdir+"/"+region + "/DataOverMC_"+var.first+".root", "RECREATE");
+      for (auto *h : ratiohist) h->Write();
+      output->Close();
     }
   }
-
-  TFile *output = new TFile(config.outputdir+"/"+region + "/DataOverMC_inclusive.root", "RECREATE");
-  for (auto *h : ratiohist) h->Write();
-  output->Close();
-
 }
 
 void topPtSyst(){

@@ -461,6 +461,7 @@ void getFinalPlot(TString inputDir="31Jul2020_Run2_dev_v7", TString outputName="
   if(hdata_post) pull_post->Write();
   if(hdata) hdata->Write();
   if(hdata) hdata_post->Write();
+  unc->Write();
   output->Close();
 
 }

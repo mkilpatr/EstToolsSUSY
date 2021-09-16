@@ -17,6 +17,7 @@
 
 #include "json.hpp"
 #include "MiniTools.hh"
+#include "TMultiGraph.h"
 
 #define DEBUG_
 
@@ -270,7 +271,7 @@ TCanvas* drawComp(vector<TH1*> inhists, TLegend *leg = 0)
   return c;
 }
 
-TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false, float lowX = 999., float highX = -1., bool changeLabel = false)
+TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "hist", bool noLumi = false, float lowX = 999., float highX = -1.)
 {
   double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
   gStyle->SetOptStat(0);
@@ -299,8 +300,7 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
     h->SetTitleOffset(1.50,"Y");
     if (isFirst){
       isFirst = false;
-      cout << ymax << endl;
-      h->GetYaxis()->SetRangeUser(0,1.1*ymax);
+      h->GetYaxis()->SetRangeUser(0,1.6*ymax);
       if(lowX<highX) h->GetXaxis()->SetRangeUser(lowX, highX);
       if(logymin>0) {
         float gap = 0.45;
@@ -315,6 +315,57 @@ TCanvas* drawCompMatt(vector<TH1*> inhists, TLegend *leg = 0, float logymin = -1
     cout << "-->drawing drawComp: "<< h->GetName() << endl;
 #endif
   }
+
+  if (leg) leg->Draw();
+#ifdef TDR_STYLE_
+  if(!noLumi) CMS_lumi(c, 4, 10);
+#endif
+  if (plotextra) (*plotextra)(c);
+  c->Update();
+
+  return c;
+}
+
+TCanvas* drawCompMatt(vector<TGraph*> inhists, TLegend *leg = 0, float logymin = -1., std::function<void(TCanvas*)> *plotextra = nullptr, TString drawType = "alp", bool noLumi = false, float lowX = 999., float highX = -1., TString label = ";xAxis;yAxis")
+{
+  double plotMax = leg?PLOT_MAX_YSCALE/leg->GetY1():PLOT_MAX_YSCALE;
+  gStyle->SetOptStat(0);
+
+  vector<TGraph*> hists;
+  for (auto *h : inhists) hists.push_back((TGraph*)h->Clone());
+
+  auto c = MakeCanvas();
+  c->cd();
+  double ymax = 0;
+  for (auto *h : hists){
+    if (h->GetMaximum()>ymax) ymax = h->GetMaximum();
+  }
+  auto mg = new TMultiGraph();
+  bool isFirst = true;
+  for (auto *h : hists){
+    h->SetLineWidth(3);
+    h->GetXaxis()->SetTitleFont(42);
+    h->GetYaxis()->SetTitleFont(42);
+    h->GetXaxis()->SetLabelFont(42);
+    h->GetYaxis()->SetLabelFont(42);
+    h->SetTitle(label);
+    if (isFirst){
+      isFirst = false;
+      h->GetYaxis()->SetRangeUser(-300,700);
+      if(lowX<highX) h->GetXaxis()->SetRangeUser(lowX, highX);
+      if(logymin>0) {
+        float gap = 0.45;
+        h->GetYaxis()->SetRangeUser(0., (logymin > 0 ? pow(ymax,1./(1.-gap))*pow(logymin,-gap/(1.-gap)) : 1.5*ymax));
+        h->SetMinimum(logymin);
+        gPad->SetLogy(1);
+      }
+    }
+    mg->Add(h);
+#ifdef DEBUG_
+    cout << "-->drawing drawComp: "<< h->GetName() << endl;
+#endif
+  }
+  mg->Draw(drawType);
 
   if (leg) leg->Draw();
 #ifdef TDR_STYLE_

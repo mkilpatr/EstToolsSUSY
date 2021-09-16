@@ -75,7 +75,20 @@ std::map<TString, Color_t> COLOR_MAP = {
     {"T2tt-500-325", kOrange},
     {"T2tt-850-100", kCyan+2},
     {"T1tttt-1200-800", kViolet+2},
-    {"T1tttt-2000-100", kSpring-9}
+    {"T1tttt-2000-100", kSpring-9},
+    {"color_comp1", 634},             // kRed+2
+    {"color_comp2", 862},             // kAzure+2
+    {"color_comp3", 797},             // kOrange-3
+    {"color_comp4", 882},             // kViolet+2
+    {"color_comp5", 419},             // kGreen+3
+    {"color_comp6", 603},             // kBlue+3
+    {"color_comp7", 802},             // kOrange+2
+    {"color_comp8", 616},             // kMagenta
+    {"color_comp9", 600},             // kBlue
+    {"color_comp10", 434},            // kCyan+2
+    {"color_comp11", 800},            // kOrange
+    {"color_comp12", 417},            // kGreen+1
+    {"color_comp13", 632}              // kRed
 };
 
 const vector<Color_t> comp_colors {kBlue, kRed, kBlack, kViolet-1, kGreen+3, kOrange+2, kBlue+3, kRed+2, kMagenta, kBlue, kCyan+2, kAzure+2};

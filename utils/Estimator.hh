@@ -1069,8 +1069,10 @@ public:
     vector<TH1*> inRatios = {};
     inRatios.push_back(makeRatioHistsCustom(nominal, hdata));
     inRatios.push_back(makeRatioHistsCustom(nominal, downPred));
-    TFile *output = new TFile(config.outputdir+"/DataOverMC_noNormSyst_"+inUnc_up[0]->GetName()+".root", "RECREATE");
-    for (auto *h : inRatios) h->Write();
+    TFile *output = new TFile(config.outputdir+"/DataOverMC_"+mchists[0]->GetName()+".root", "RECREATE");
+    for (auto *h : mchists) h->Write();
+    hdata->Write();
+    unc->Write();
     output->Close();
 
     TH1* pull = getPullHist(hdata, unc);
@@ -1086,7 +1088,6 @@ public:
         setLegend(leg, 1, 0.58, 0.45, 0.94, 0.87);
         c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          {}, nullptr, false, false, true, true);
         c->SetCanvasSize(600, 650);
-        //c       = drawStackAndRatio(mchists, hdata, leg, plotlog, RYTitle, RATIO_YMIN, RATIO_YMAX, 0, -1, {}, unc,          inRatios, nullptr, false, false, false, true);
       } else
         c = drawStackAndRatio(mchists, hdata, leg, plotlog);
     }else{

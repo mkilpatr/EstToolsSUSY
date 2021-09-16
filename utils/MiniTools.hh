@@ -115,7 +115,7 @@ TString translateString(TString name, const std::map<TString, TString>& strMap, 
     //cout << "i: " << i << ", k: " << k << endl;
     try{
       if(splitline){
-	if(k.Contains("ptisr") || k.Contains("ht") || k.Contains("nrtntnw")){
+	if(k.Contains("ptisr") || k.Contains("ht") || k.Contains("nrtntnw") || k.Contains("midSensor") || k.Contains("newSensor")){
 	  substrs_3.push_back(strMap.at(k));
 	} else if(k.Contains("ptb")){
 	  substrs_4.push_back(strMap.at(k));
@@ -637,6 +637,44 @@ void prepHists(vector<TH1*> hists, bool isNormalized = false, bool isOverflowAdd
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+void prepHists(vector<TGraph*> hists, vector<Color_t> colors = {}){
+  int count = 0;
+  for (unsigned ih = 0; ih < hists.size(); ++ih){
+    auto *h = hists.at(ih);
+    bool isColored = false;
+    if (ih < colors.size()){
+      h->SetLineColor(colors.at(ih));
+      isColored = true;
+    }else {
+      TString hname = h->GetName();
+      for (const auto &c : COLOR_MAP){
+        if (hname.Contains(c.first, TString::kIgnoreCase)){
+          h->SetLineColor(c.second);
+          isColored = true;
+          break;
+        }
+      }
+    }
+    if (!isColored) {
+      h->SetLineColor(comp_colors.at(count % comp_colors.size()));
+      ++count;
+    }
+    h->SetMarkerColor(h->GetLineColor());
+  }
+
+  std::set<Color_t> colorset;
+  for (auto *h : hists){
+    auto color = h->GetLineColor();
+    if (colorset.find(color)!=colorset.end()){
+      h->SetLineColor(color+2);
+      h->SetMarkerColor(color+2);
+    }
+    colorset.insert(color);
+  }
+
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 TLegend* initLegend(){
   double fLegX1 = 0.58, fLegY1 = 0.87, fLegX2 = 0.92, fLegY2 = 0.87;
   TLegend *leg = new TLegend(fLegX1, fLegY1, fLegX2, fLegY2);
@@ -669,6 +707,10 @@ TLegend* appendLegends(TLegend *leg, vector<T*> hists, vector<TString> labels, T
 
 TLegend* appendLegends(TLegend *leg, vector<TH1*> hists, vector<TString> labels, TString legType = "EP"){
   return appendLegends<TH1>(leg, hists, labels, legType);
+}
+
+TLegend* appendLegends(TLegend *leg, vector<TGraph*> hists, vector<TString> labels, TString legType = "EP"){
+  return appendLegends<TGraph>(leg, hists, labels, legType);
 }
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 template<class T>
