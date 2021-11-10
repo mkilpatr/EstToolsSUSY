@@ -8,7 +8,8 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include <glob.h>
+#include <fstream>
+#include <experimental/filesystem>
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TString.h"
@@ -26,21 +27,23 @@
 #include "Quantity.h"
 
 using namespace std;
+namespace fs = std::experimental::filesystem;
 #endif
 
 namespace EstTools{
 
-// ----------------------------------------------------
-// Get vector list of files in directory
-std::vector<std::string> readFileTotal(const string& pattern){
-    glob_t glob_result;
-    glob(pattern.c_str(),GLOB_TILDE,NULL,&glob_result);
-    vector<string> files;
-    for(unsigned int i=0;i<glob_result.gl_pathc;++i){
-        files.push_back(string(glob_result.gl_pathv[i]));
+/*
+ * Erase First Occurrence of given  substring from main string.
+ */
+void eraseSubStr(std::string & mainStr, const std::string & toErase)
+{
+    // Search for the substring in string
+    size_t pos = mainStr.find(toErase);
+    if (pos != std::string::npos)
+    {
+        // If found then erase it from string
+        mainStr.erase(pos, toErase.length());
     }
-    globfree(&glob_result);
-    return files;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,6 +182,14 @@ public:
     assert(tree);
     tree->SetTitle(name);
   }
+  Sample(TString name, TString label, TString fname, vector<string> filepaths, TString wgtvar, TString sel = "") :
+    name(name), label(label), fname(fname), filepaths(filepaths), wgtvar(wgtvar), sel(sel), tree(nullptr) {
+    TDirectory::TContext ctxt; // Will restore gDirectory to its 'current' value at the end of this scope
+    TChain chain(treename);
+    for(unsigned int i = 0; i != filepaths.size(); i++) chain.Add(filepaths[i].c_str());
+    assert(chain);
+    chain.SetTitle(name);
+  }
   Sample(const Sample &o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
       infile(o.infile) {}
   Sample(Sample &&o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
@@ -221,6 +232,7 @@ public:
   TString sel;    // sample-specific selection string
 
   TString filepath;
+  vector<string> filepaths;
   TString treename = "Events";
   TTree*  tree;   // the tree
 
@@ -251,23 +263,6 @@ struct BaseConfig {
     samples.emplace(name, Sample(name, label, file, filepath, wgtvar, extraCut));
 
     cerr << "### Open file " << filepath << " as *" << name << "*" << endl;
-  }
-
-  void addSampleChain(TString name, TString label, TString file, TString wgtvar, TString extraCut){
-    // add data/MC sample to the *sample* map, e.g.
-    // addSample("ttbar",     "t#bar{t}",    "lepcr/ttbar-mg",                                   "2.3*weight",      "nvetolep>0");
-    //     *key of the map*   *plot label*   *filepath (postfix "_tree.root" added by default)*  *weight variable*  *extra selection*
-    TChain Chain(name + "_Chain");
-    std::string filesStr(TString(inputdir+"/"+file).Data());
-    vector<string> files = readFileTotal(filesStr);
-    for(int i = 0; i != files.size(); i++){
-      cout << files[i] << endl;
-      Chain.AddFile(TString(files[i]));
-    }
-    samples.emplace(name, Sample(name, label, file, name + "_Chain", wgtvar, extraCut));
-    
-
-    cerr << "### Open file " << file << " as *" << name << "*" << endl;
   }
 
   unsigned nbins(){

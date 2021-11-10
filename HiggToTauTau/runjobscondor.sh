@@ -49,7 +49,7 @@ sed -i -e "s/Tau_training_040621_comp/$outdir/g" HiggsEstimator.C
 ulimit -s unlimited
 cd $location
 root -l -b -q $runmacro+
-xrdcp -np -r sig/$outdir root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}
+xrdcp -np -r sig/$outdir/* root://cmseos.fnal.gov//store/user/mkilpatr/13TeV/${outdir}
 ls -a
 
 status=`echo $?`

@@ -17,5 +17,7 @@ mkdir -p wjets
 mv *WJetsToLNu* wjets/.
 mkdir -p dyll
 mv *DYJetsToLL* dyll/.
+mkdir -p qcd
+mv *QCD_HT* qcd/.
 cd -
 
