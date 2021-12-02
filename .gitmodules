@@ -1,0 +1,3 @@
+[submodule "HGCStudies"]
+	path = "HGCStudies"
+	url = git@github.com:mkilpatr/HGCStudies.git
