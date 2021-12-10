@@ -53,7 +53,7 @@ void plotHtoTaus(){
   z.setConfig(config);
 
   vector<TString> sig_samples = {"ggHHto2b2tau", "ggHto2tau", "vbfHto2tau"};
-  vector<TString> mc_samples = {"diboson", "wjets", "dyll"};
+  vector<TString> mc_samples = {"diboson", "wjets", "dyll", "qcd"};
 
   vector< pair<TString, TString> > channel = {
     //make_pair("allBaseline_djgt300", "nJets30 >=2 && SVFit_dijetMass > 300"),

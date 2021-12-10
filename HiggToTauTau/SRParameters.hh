@@ -8,12 +8,12 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_skim_diHiggs_09Aug21_skim/";
+const TString inputdir_2018 = "nanoaod_2018_diHiggs_01Nov21_cut/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_skim_diHiggs_09Aug21_skim/";
+const TString datadir = "nanoaod_2018_diHiggs_01Nov21_cut/";
 
 TString lumistr = "59.699489";
 
@@ -219,11 +219,12 @@ BaseConfig sigConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
-  config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau", wgtvar,  datasel);
-  config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",    wgtvar,  datasel);
-  config.addSample("diboson",          "VV",                                     inputdir_2018+"diboson",         wgtvar,  datasel);
-  config.addSample("wjets",            "W+jets",                                 inputdir_2018+"wjets",         wgtvar,  datasel);
+  config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau",    wgtvar,  datasel);
+  config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",   wgtvar,  datasel);
+  config.addSample("diboson",          "VV",                                     inputdir_2018+"diboson",      wgtvar,  datasel);
+  config.addSample("wjets",            "W+jets",                                 inputdir_2018+"wjets",        wgtvar,  datasel);
   config.addSample("dyll",             "DY+jets",                                inputdir_2018+"dyll",         wgtvar,  datasel);
+  config.addSample("qcd",              "QCD",                                    inputdir_2018+"qcd",          wgtvar,  datasel);
 
   config.sel = baseline;
   config.categories = srbins;

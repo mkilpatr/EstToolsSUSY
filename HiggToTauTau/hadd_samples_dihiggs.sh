@@ -36,6 +36,7 @@ haddnano wz_tree.root `xrdfsls -u ${files}/diboson/wz | grep '\.root'`
 haddnano zz_tree.root `xrdfsls -u ${files}/diboson/zz | grep '\.root'`
 haddnano wjets_tree.root `xrdfsls -u ${files}/wjets | grep '\.root'`
 haddnano dyll_tree.root `xrdfsls -u ${files}/dyll | grep '\.root'`
+haddnano qcd_tree.root `xrdfsls -u ${files}/qcd | grep '\.root'`
 
 haddnano diboson_tree.root ww_tree.root wz_tree.root zz_tree.root
 
@@ -45,4 +46,5 @@ xrdcp zz_tree.root root://cmseos.fnal.gov/${files}/.
 xrdcp diboson_tree.root root://cmseos.fnal.gov/${files}/.
 xrdcp wjets_tree.root root://cmseos.fnal.gov/${files}/.
 xrdcp dyll_tree.root root://cmseos.fnal.gov/${files}/.
-rm -f diboson_tree.root ww_tree.root wz_tree.root zz_tree.root wjets_tree.root dyll_tree.root
+xrdcp qcd_tree.root root://cmseos.fnal.gov/${files}/.
+rm -f diboson_tree.root ww_tree.root wz_tree.root zz_tree.root wjets_tree.root dyll_tree.root qcd_tree.root
