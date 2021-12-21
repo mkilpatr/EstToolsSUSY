@@ -8,8 +8,6 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include <fstream>
-#include <experimental/filesystem>
 #include "TROOT.h"
 #include "TSystem.h"
 #include "TString.h"
@@ -22,29 +20,13 @@
 #include "THStack.h"
 #include <TRandom3.h>
 #include "TMath.h"
-#include "TChain.h"
 
 #include "Quantity.h"
 
 using namespace std;
-namespace fs = std::experimental::filesystem;
 #endif
 
 namespace EstTools{
-
-/*
- * Erase First Occurrence of given  substring from main string.
- */
-void eraseSubStr(std::string & mainStr, const std::string & toErase)
-{
-    // Search for the substring in string
-    size_t pos = mainStr.find(toErase);
-    if (pos != std::string::npos)
-    {
-        // If found then erase it from string
-        mainStr.erase(pos, toErase.length());
-    }
-}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 struct BinInfo{
@@ -182,14 +164,6 @@ public:
     assert(tree);
     tree->SetTitle(name);
   }
-  Sample(TString name, TString label, TString fname, vector<string> filepaths, TString wgtvar, TString sel = "") :
-    name(name), label(label), fname(fname), filepaths(filepaths), wgtvar(wgtvar), sel(sel), tree(nullptr) {
-    TDirectory::TContext ctxt; // Will restore gDirectory to its 'current' value at the end of this scope
-    TChain chain(treename);
-    for(unsigned int i = 0; i != filepaths.size(); i++) chain.Add(filepaths[i].c_str());
-    assert(chain);
-    chain.SetTitle(name);
-  }
   Sample(const Sample &o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
       infile(o.infile) {}
   Sample(Sample &&o) : name(o.name), label(o.label), fname(o.fname), filepath(o.filepath), wgtvar(o.wgtvar), sel(o.sel), tree(o.tree),
@@ -232,7 +206,6 @@ public:
   TString sel;    // sample-specific selection string
 
   TString filepath;
-  vector<string> filepaths;
   TString treename = "Events";
   TTree*  tree;   // the tree
 

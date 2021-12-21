@@ -6,14 +6,14 @@
 
 namespace EstTools{
 
-const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV/";
+const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_diHiggs_01Nov21_cut/";
+const TString inputdir_2018 = "nanoaod_2018_diHiggs_09Dec21_LundVar/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_diHiggs_01Nov21_cut/";
+const TString datadir = "nanoaod_2018_diHiggs_09Dec21_LundVar/";
 
 TString lumistr = "59.699489";
 
@@ -218,13 +218,15 @@ BaseConfig sigConfig(){
   config.outputdir = outputdir+"/sig";
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
-  config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", wgtvar,  datasel);
+  //signal
+  config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", "(1/12)*"+wgtvar,  datasel);
   config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau",    wgtvar,  datasel);
   config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",   wgtvar,  datasel);
+  //background
+  config.addSample("qcd",              "QCD",                                    inputdir_2018+"qcd",          wgtvar,  datasel);
   config.addSample("diboson",          "VV",                                     inputdir_2018+"diboson",      wgtvar,  datasel);
   config.addSample("wjets",            "W+jets",                                 inputdir_2018+"wjets",        wgtvar,  datasel);
   config.addSample("dyll",             "DY+jets",                                inputdir_2018+"dyll",         wgtvar,  datasel);
-  config.addSample("qcd",              "QCD",                                    inputdir_2018+"qcd",          wgtvar,  datasel);
 
   config.sel = baseline;
   config.categories = srbins;
@@ -235,6 +237,24 @@ BaseConfig sigConfig(){
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 map<TString, BinInfo> varDict {
+	{"LundTau1M",		BinInfo("SVFit_LundTau1M",    "#tau_{1} ln(m)", 40, -2, 6)},
+	{"LundTau1KT",		BinInfo("SVFit_LundTau1KT",   "#tau_{1} ln(k_{T})", 40, -2, 6)},
+	{"LundTau1Z",		BinInfo("SVFit_LundTau1Z",    "#tau_{1} ln(z)", 40, -2, 6)},
+	{"LundTau1Delta",	BinInfo("SVFit_LundTau1Delta","#tau_{1} ln(#Delta)", 40, -2, 6)},
+	{"LundTau1Kappa",	BinInfo("SVFit_LundTau1Kappa","#tau_{1} ln(#kappa)", 40, -2, 6)},
+	{"LundTau1Psi",		BinInfo("SVFit_LundTau1Psi",  "#tau_{1} #psi", 40, -2, 6)},
+	{"LundTau2M",		BinInfo("SVFit_LundTau2M",    "#tau_{2} ln(m)", 40, -2, 6)},
+	{"LundTau2KT",		BinInfo("SVFit_LundTau2KT",   "#tau_{2} ln(k_{T})", 40, -2, 6)},
+	{"LundTau2Z",		BinInfo("SVFit_LundTau2Z",    "#tau_{2} ln(z)", 40, -2, 6)},
+	{"LundTau2Delta",	BinInfo("SVFit_LundTau2Delta","#tau_{2} ln(#Delta)", 40, -2, 6)},
+	{"LundTau2Kappa",	BinInfo("SVFit_LundTau2Kappa","#tau_{2} ln(#kappa)", 40, -2, 6)},
+	{"LundTau2Psi",		BinInfo("SVFit_LundTau2Psi",  "#tau_{2} #psi", 40, -2, 6)},
+	{"LundHiggsM",		BinInfo("SVFit_LundHiggsM",    "Higgs ln(m)", 40, -2, 6)},
+	{"LundHiggsKT",		BinInfo("SVFit_LundHiggsKT",   "Higgs ln(k_{T})", 40, -2, 6)},
+	{"LundHiggsZ",		BinInfo("SVFit_LundHiggsZ",    "Higgs ln(z)", 40, -2, 6)},
+	{"LundHiggsDelta",	BinInfo("SVFit_LundHiggsDelta","Higgs ln(#Delta)", 40, -2, 6)},
+	{"LundHiggsKappa",	BinInfo("SVFit_LundHiggsKappa","Higgs ln(#kappa)", 40, -2, 6)},
+	{"LundHiggsPsi",	BinInfo("SVFit_LundHiggsPsi",  "Higgs #psi", 40, -2, 6)},
 	{"Lead_tauChannel",	BinInfo("SVFit_channel[SVFit_Index[0]]",   "Tau channel", 6, -0.5, 5.5)},
 	{"Lead_higgsPt",	BinInfo("SVFit_Pt[SVFit_Index[0]]",  	"p_{T}(H) [GeV]", 20, 0, 500)},
 	{"Lead_higgsEta",	BinInfo("SVFit_Eta[SVFit_Index[0]]", 	"#eta(H)", 16, -4, 4)},

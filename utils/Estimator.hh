@@ -734,13 +734,8 @@ public:
     vector<TString> mc;
     for(auto &scomb : mc_samples){
       TString sMC = TString(scomb);
-      if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
-      else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
-      else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttbar","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-tW","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttW","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttZ","");
+      sMC = sMC.ReplaceAll("-2016","").ReplaceAll("-2017","").ReplaceAll("-2018","");
+      sMC = sMC.ReplaceAll("-ttbar","").ReplaceAll("-tW","").ReplaceAll("-ttW","").ReplaceAll("-ttZ","");
       if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
@@ -750,15 +745,9 @@ public:
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
 	TString sMC = TString(sname);
-	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
-	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
-	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-tW","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttW","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
-	sMC = sMC.ReplaceAll("-cr","");
-	sMC = sMC.ReplaceAll("-withveto","");
+        sMC = sMC.ReplaceAll("-2016","").ReplaceAll("-2017","").ReplaceAll("-2018","");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw").ReplaceAll("ttbarplusw-tW","ttbarplusw").ReplaceAll("ttbarplusw-ttW","ttbarplusw").ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
+	sMC = sMC.ReplaceAll("-cr","").ReplaceAll("-withveto","");
 	if(sMC == scomb){
           label = sample.label;
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;
@@ -878,14 +867,8 @@ public:
     vector<TString> mc;
     for(auto &scomb : mc_samples){
       TString sMC = TString(scomb);
-      if(sMC.Contains("2016")) 	    sMC = sMC.ReplaceAll("-2016","");
-      else if(sMC.Contains("2017")) sMC = sMC.ReplaceAll("-2017","");
-      else if(sMC.Contains("2018")) sMC = sMC.ReplaceAll("-2018","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttbar","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-wjets","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-tW","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttW","");
-      if(sMC.Contains("ttbarplusw")) sMC = sMC.ReplaceAll("-ttZ","");
+      sMC = sMC.ReplaceAll("-2016","").ReplaceAll("-2017","").ReplaceAll("-2018","");
+      sMC = sMC.ReplaceAll("-ttbar","").ReplaceAll("-tW","").ReplaceAll("-ttW","").ReplaceAll("-ttZ","");
       if(!std::count(mc.begin(), mc.end(), sMC)) mc.push_back(sMC);
     }
 
@@ -896,16 +879,9 @@ public:
       for (auto &sname : mc_samples){
         const auto& sample = config.samples.at(sname);
 	TString sMC = TString(sname);
-	if(sMC.Contains("2016")) 	sMC = sMC.ReplaceAll("-2016","");
-	else if(sMC.Contains("2017"))   sMC = sMC.ReplaceAll("-2017","");
-	else if(sMC.Contains("2018")) 	sMC = sMC.ReplaceAll("-2018","");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-wjets","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-tW","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttW","ttbarplusw");
-        sMC = sMC.ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
-	sMC = sMC.ReplaceAll("-cr","");
-	sMC = sMC.ReplaceAll("-withveto","");
+        sMC = sMC.ReplaceAll("-2016","").ReplaceAll("-2017","").ReplaceAll("-2018","");
+        sMC = sMC.ReplaceAll("ttbarplusw-ttbar","ttbarplusw").ReplaceAll("ttbarplusw-tW","ttbarplusw").ReplaceAll("ttbarplusw-ttW","ttbarplusw").ReplaceAll("ttbarplusw-ttZ","ttbarplusw");
+	sMC = sMC.ReplaceAll("-cr","").ReplaceAll("-withveto","");
 	if(sMC == scomb){
           label = sample.label;
           auto hname = filterString(plotvar) + "_" + sname + "_" + category.name + "_" + postfix_;

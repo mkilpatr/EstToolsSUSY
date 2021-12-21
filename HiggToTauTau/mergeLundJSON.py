@@ -18,20 +18,20 @@ Dist = os.listdir(eosDir)
 
 
 samples = {
-'GluGluToHHTo2B2Tau_node_SM_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.04457, 399983, 17],
-'GluGluToHHTo2B2Tau_node_2_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.01008, 315961, 39],
-'GluGluToHHTo2B2Tau_node_3_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.5599, 384985, 15],
-'GluGluToHHTo2B2Tau_node_4_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [12.17, 399988, 12],
-'GluGluToHHTo2B2Tau_node_5_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.03537, 399983, 17],
-'GluGluToHHTo2B2Tau_node_6_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.8265, 387985, 15],
-'GluGluToHHTo2B2Tau_node_7_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [15.95, 344981, 19],
-'GluGluToHHTo2B2Tau_node_8_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [1375.0, 399983, 17],
-'GluGluToHHTo2B2Tau_node_9_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.0328, 394964, 36],
-'GluGluToHHTo2B2Tau_node_10_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [268.6, 399977, 23],
-'GluGluToHHTo2B2Tau_node_11_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [0.7869, 399978, 22],
-'GluGluToHHTo2B2Tau_node_12_TuneCP5_PSWeights_13TeV-madgraph-pythia8': [1348.0, 399980, 20],
-'GluGluHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8': [5.261, 20117451, 41567],
-'VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV-powheg-pythia8': [1.043, 24049754, 15429],
+'GluGluToHHTo2B2Tau_node_SM_TuneCP5_PSWeights_13TeV': [0.04457, 399983, 17],
+'GluGluToHHTo2B2Tau_node_2_TuneCP5_PSWeights_13TeV': [0.01008, 315961, 39],
+'GluGluToHHTo2B2Tau_node_3_TuneCP5_PSWeights_13TeV': [0.5599, 384985, 15],
+'GluGluToHHTo2B2Tau_node_4_TuneCP5_PSWeights_13TeV': [12.17, 399988, 12],
+'GluGluToHHTo2B2Tau_node_5_TuneCP5_PSWeights_13TeV': [0.03537, 399983, 17],
+'GluGluToHHTo2B2Tau_node_6_TuneCP5_PSWeights_13TeV': [0.8265, 387985, 15],
+'GluGluToHHTo2B2Tau_node_7_TuneCP5_PSWeights_13TeV': [15.95, 344981, 19],
+'GluGluToHHTo2B2Tau_node_8_TuneCP5_PSWeights_13TeV': [1375.0, 399983, 17],
+'GluGluToHHTo2B2Tau_node_9_TuneCP5_PSWeights_13TeV': [0.0328, 394964, 36],
+'GluGluToHHTo2B2Tau_node_10_TuneCP5_PSWeights_13TeV': [268.6, 399977, 23],
+'GluGluToHHTo2B2Tau_node_11_TuneCP5_PSWeights_13TeV': [0.7869, 399978, 22],
+'GluGluToHHTo2B2Tau_node_12_TuneCP5_PSWeights_13TeV': [1348.0, 399980, 20],
+'GluGluHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV': [5.261, 20117451, 41567],
+'VBFHToTauTauUncorrelatedDecay_Filtered_M125_TuneCP5_13TeV': [1.043, 24049754, 15429],
 'WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8': [45.68, 3812178, 870958],
 'WWTo2L2Nu_DoubleScattering_13TeV-pythia8': [0.1703, 871500, 0],
 'WWTo4Q_NNPDF31_TuneCP5_13TeV-powheg-pythia8': [47.73, 3801607, 7193],
@@ -41,22 +41,22 @@ samples = {
 'WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8': [3.054, 1305208, 384856],
 'ZZTo2L2Q_13TeV_TuneCP5_amcatnloFXFX_madspin_pythia8': [3.703, 23176603, 5114699],
 'ZZTo4L_TuneCP5_13TeV-amcatnloFXFX-pythia8': [0.003879, 22450654, 3920571],
-'WJetsToLNu_HT-70To100_TuneCP5_13TeV-madgraphMLM-pythia8': [1292.0, 28072273, 11971],
-'WJetsToLNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8': [1395.0, 29504734, 16424],
-'WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8': [407.9, 25446044, 22889],
-'WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8': [57.48, 5924335, 8366],
-'WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8': [12.87, 19735538, 35756],
-'WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8': [5.366, 8382457, 20230],
-'WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8': [1.074, 7602766, 31183],
-'WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8': [0.008001, 3232796, 41184],
-'DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [146.5, 10015512, 4172],
-'DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [160.7, 11524320, 6190],
-'DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [48.63, 11216164, 9723],
-'DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [6.993, 9629913, 13271],
-'DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [1.761, 8759728, 16577],
-'DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [0.8021, 3130052, 8077],
-'DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [0.1937, 534089, 2327],
-'DYJetsToLL_M-50_HT-2500toInf_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8': [0.003514, 421382, 5669],
+'WJetsToLNu_HT-70To100_TuneCP5_13TeV': [1292.0, 28072273, 11971],
+'WJetsToLNu_HT-100To200_TuneCP5_13TeV': [1395.0, 29504734, 16424],
+'WJetsToLNu_HT-200To400_TuneCP5_13TeV': [407.9, 25446044, 22889],
+'WJetsToLNu_HT-400To600_TuneCP5_13TeV': [57.48, 5924335, 8366],
+'WJetsToLNu_HT-600To800_TuneCP5_13TeV': [12.87, 19735538, 35756],
+'WJetsToLNu_HT-800To1200_TuneCP5_13TeV': [5.366, 8382457, 20230],
+'WJetsToLNu_HT-1200To2500_TuneCP5_13TeV': [1.074, 7602766, 31183],
+'WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV': [0.008001, 3232796, 41184],
+'DYJetsToLL_M-50_HT-70to100_TuneCP5_PSweights_13TeV': [146.5, 10015512, 4172],
+'DYJetsToLL_M-50_HT-100to200_TuneCP5_PSweights_13TeV': [160.7, 11524320, 6190],
+'DYJetsToLL_M-50_HT-200to400_TuneCP5_PSweights_13TeV': [48.63, 11216164, 9723],
+'DYJetsToLL_M-50_HT-400to600_TuneCP5_PSweights_13TeV': [6.993, 9629913, 13271],
+'DYJetsToLL_M-50_HT-600to800_TuneCP5_PSweights_13TeV': [1.761, 8759728, 16577],
+'DYJetsToLL_M-50_HT-800to1200_TuneCP5_PSweights_13TeV': [0.8021, 3130052, 8077],
+'DYJetsToLL_M-50_HT-1200to2500_TuneCP5_PSweights_13TeV': [0.1937, 534089, 2327],
+'DYJetsToLL_M-50_HT-2500toInf_TuneCP5_PSweights_13TeV': [0.003514, 421382, 5669],
 'QCD_HT50to100_TuneCP5_13TeV-madgraphMLM-pythia8': [185300000.0, 38753958, 272],
 'QCD_HT100to200_TuneCP5_13TeV-madgraphMLM-pythia8': [23590000.0, 93962673, 9705],
 'QCD_HT200to300_TuneCP5_13TeV-madgraphMLM-pythia8': [1551000.0, 54270554, 18888],
@@ -112,7 +112,7 @@ def open_json(jsonfilename, fname, maxEvents, isFirst):
                     maxEvents+=1
     return maxEvents, fileName(fname), isFirst
 
-for type in ['genHiggs', 'genTaus']:
+for type in ['genHiggs']:
     ftot = gzip.open(args.saveDir + "/" + type + "_bkg.json.gz", 'w')
     for d in Dist:
         if "json" in d: continue
@@ -127,7 +127,7 @@ for type in ['genHiggs', 'genTaus']:
                     onlyFiles.append(sd)
         fout = gzip.open(args.saveDir + "/" + type + "_" + d + ".json.gz", 'w')
 
-        print(eosDir + d + "/" + onlyFiles[0])
+        if(len(onlyFiles) > 0): print(eosDir + d + "/" + onlyFiles[0])
         maxEvents = 0
         name = ''
         isFirst = True

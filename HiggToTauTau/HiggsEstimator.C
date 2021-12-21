@@ -40,6 +40,7 @@ void srYields(){
 
 void plotHtoTaus(){
   auto config = sigConfig();
+  gROOT->SetBatch(1);
 
   //TString baseline_plus = "nJets30 >=2 && SVFit_Pt[SVFit_Index[0]] > 100 && SVFit_dijetMass > 300";
   TString baseline_plus = "nJets30 >=2 && SVFit_dijetMass > 300";
@@ -47,16 +48,16 @@ void plotHtoTaus(){
 
   LOG_YMIN = 1.;
 
-  TString region = "Tau_training_040621_comp";
+  TString region = "Tau_training_121321_comp";
   BaseEstimator z(config.outputdir+"/"+region);
   config.plotFormat = "pdf";
   z.setConfig(config);
 
   vector<TString> sig_samples = {"ggHHto2b2tau", "ggHto2tau", "vbfHto2tau"};
-  vector<TString> mc_samples = {"diboson", "wjets", "dyll", "qcd"};
+  vector<TString> mc_samples = {"qcd", "diboson", "wjets", "dyll"};
 
   vector< pair<TString, TString> > channel = {
-    //make_pair("allBaseline_djgt300", "nJets30 >=2 && SVFit_dijetMass > 300"),
+    make_pair("allBaseline_djgt300", "nJets30 >=2 && SVFit_dijetMass > 300"),
     make_pair("allBaseline_djgt300_channels", "(" + Lead_emuChannel + "||" + Lead_elechadChannel + "||" + Lead_muonhadChannel + "||" + Lead_hadhadChannel + ") && " + baseline_plus),
     make_pair("Lead_emu_djgt300", Lead_emuChannel + " && " + baseline_plus),
     make_pair("Lead_elechad_djgt300", Lead_elechadChannel + " && " + baseline_plus),
@@ -73,7 +74,7 @@ void plotHtoTaus(){
 
   map<TString, Category> cmap;
   for( const pair<TString, TString> &chan : channel){
-    if(chan.first.BeginsWith(hName(0,3)) || chan.first.Contains("all"))
+    if(chan.first.BeginsWith(hName(0,3)) || chan.first.Contains("all") || hName.Contains("Lund"))
       cmap[chan.first] = Category(chan.first, chan.second, translateString(chan.first, plotLabelMap, "_", ", ", true), varDictSmall);
   }
 
