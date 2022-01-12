@@ -1,6 +1,6 @@
 [submodule "HGCStudies"]
-	path = "HGCStudies"
+	path = HGCStudies
 	url = git@github.com:mkilpatr/HGCStudies.git
 [submodule "hexmap"]
-	path = "hexmap"
-	url = git@gitlab.cern.ch:7999/mkilpatr/hexmap.git
+	path = hexmap
+	url = ssh://git@gitlab.cern.ch:7999/mkilpatr/hexmap.git
