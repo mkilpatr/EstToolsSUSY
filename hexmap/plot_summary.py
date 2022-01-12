@@ -573,7 +573,7 @@ def plot_hexmaps(df, figdir = "./", hb_type = "LD", label = None, module = "modu
             plt.tight_layout()
 
             # save the figure
-            figname = figdir + str(label) + "_" + column + "_" + cycle.replace(" ", "") + ".png"
+            figname = figdir + str(module) + "_" + column + "_" + cycle.replace(" ", "") + ".png"
             print(figname)
             plt.savefig(figname)
     return 1
@@ -629,4 +629,5 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--testType", type=str, default="", help="Type of test that was run")
 
     args = parser.parse_args()
-    make_hexmap_plots_from_file(args.infname, args.figdir, args.hb_type, args.label, args.moduleName)
+    jsonModule = os.path.basename(args.infname).replace(".json", "")
+    make_hexmap_plots_from_file(args.infname, args.figdir, args.hb_type, args.label, jsonModule)
