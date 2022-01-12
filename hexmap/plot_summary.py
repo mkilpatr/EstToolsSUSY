@@ -8,7 +8,7 @@ import json
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib.patches import RegularPolygon, Rectangle
+from matplotlib.patches import RegularPolygon, Rectangle, Circle
 from matplotlib.collections import PatchCollection
 from matplotlib.legend_handler import HandlerPatch
 
@@ -348,6 +348,154 @@ def ad_chip_geo(ax, hb_type = "LD"):
     if len(chip_pos) != 0:
         ax.add_artist(chip_legend)
 
+# To mark asic (vacuum) places on the plot
+# axes: the plt.Axes object with the plot
+# hb_type: the type of the board ("LD" for low density or "HD" for high density)
+def ad_vacuum_geo(ax, hb_type = "LD"):
+    if hb_type == "LD":
+        #########################
+        # LD board geometry and
+        #    vacuum positions
+        #         ______
+        #        /  0  /\
+        #       /_____/ 1\
+        #       \  2  \  /
+        #        \_____\/
+        #
+        ##########################
+
+        # endpoints of line dividing vacuums 0 and 1
+        x_01 = [0., 3.]     
+        y_01 = [0., 5.]
+
+        # endpoints of line dividing vacuums 0 and 2
+        x_02 = [-5.5, 0.]
+        y_02 = [0., 0.]
+
+        # endpoints of line dividing vacuums 1 and 2
+        x_12 = [0., 3.]     
+        y_12 = [0., -5.6]
+
+        # list of divider lines' endpoints
+        line_co = [(x_01, y_01), (x_02, y_02), (x_12, y_12)]
+
+        # marker posisition, angle and annotation position, angle for vacuum0
+        vacuum0_pos = (-1.655, 2.25)      
+        vacuum0_anno_pos = (-4.9, 2.8)    
+
+        # marker posisition, angle and annotation position, angle for vacuum1
+        vacuum1_pos = (3.4, -0.9)
+        vacuum1_anno_pos = (4.15, 2.6)
+
+        # marker posisition, angle and annotation position, angle for vacuum2
+        vacuum2_pos = (-2.25, -2.8)
+        vacuum2_anno_pos = (-0.7, -5.95)
+
+        # lists of vacuum positions, angles and annotation positions, angles
+        vacuum_pos = [vacuum0_pos, vacuum1_pos, vacuum2_pos]
+        vacuum_anno_pos = [vacuum0_anno_pos, vacuum1_anno_pos, vacuum2_anno_pos]
+
+        # list of vacuum labels
+        vacuum_labels = ['vacuum0', 'vacuum1', 'vacuum2']
+
+        # vacuum marker width
+        width = 0.35
+
+    elif hb_type == "HD":
+        ########################
+        # HD board geometry and
+        #    vacuum positions
+        #        ______
+        #       / 0/ 1/\
+        #      /__/__/\5\
+        #      \__2__\4\/
+        #       \__3__\/
+        #
+        #########################
+
+        # endpoints of line dividing vacuums 1 and 4, 5
+        x_145 = [0., 3.2]     
+        y_145 = [0., 5.6]
+
+        # endpoints of line dividing vacuums 2 and 0, 1
+        x_201 = [-6.2, 0.]  
+        y_201 = [0., 0.]
+
+        # endpoints of line dividing vacuums 4 and 2, 3
+        x_423 = [0., 3.]     
+        y_423 = [0., -5.6]
+
+        # endpoints of line dividing vacuums 0 and 1
+        x_01 = [-3.1, 0.] 
+        y_01 = [0., 5.6]
+
+        # endpoints of line dividing vacuums 2 and 3
+        x_23 = [-4.8, 1.5] 
+        y_23 = [-2.9, -2.9]
+
+        # endpoints of line dividing vacuums 4 and 5
+        x_45 = [1.6, 4.8] 
+        y_45 = [2.5, -3.1]
+
+        # list of divider lines' endpoints
+        line_co = [(x_145, y_145), (x_201, y_201), (x_423, y_423), (x_01, y_01), (x_23, y_23), (x_45, y_45)]
+
+        # marker posisition, angle and annotation position, angle for vacuum0
+        vacuum0_pos = (-3.2, 2.1)      
+        vacuum0_anno_pos = (-1.9, 5.8)    
+
+        # marker posisition, angle and annotation position, angle for vacuum1
+        vacuum1_pos = (0., 2.1)      
+        vacuum1_anno_pos = (1.2, 5.8)    
+
+        # marker posisition, angle and annotation position, angle for vacuum2
+        vacuum2_pos = (-3.5, -1.6)      
+        vacuum2_anno_pos = (-6.2, -2.1)    
+
+        # marker posisition, angle and annotation position, angle for vacuum3
+        vacuum3_pos = (-2., -4.5)      
+        vacuum3_anno_pos = (-4.55, -5.)    
+
+        # marker posisition, angle and annotation position, angle for vacuum4
+        vacuum4_pos = (1.8, -1.05)      
+        vacuum4_anno_pos = (3.8, -4.9)    
+
+        # marker posisition, angle and annotation position, angle for vacuum5
+        vacuum5_pos = (3.4, 1.8)      
+        vacuum5_anno_pos = (5.4, -2.1)    
+
+        # lists of vacuum positions, angles and annotation positions, angles
+        vacuum_pos = [vacuum0_pos, vacuum1_pos, vacuum2_pos, vacuum3_pos, vacuum4_pos, vacuum5_pos]
+        vacuum_anno_pos = [vacuum0_anno_pos, vacuum1_anno_pos, vacuum2_anno_pos, vacuum3_anno_pos, vacuum4_anno_pos, 
+                                                                                            vacuum5_anno_pos]
+
+        # list of vacuum labels 
+        vacuum_labels = ['vacuum0', 'vacuum1', 'vacuum2', 'vacuum3', 'vacuum4', 'vacuum5']
+
+        # vacuum marker width
+        width = 1.3
+
+    # divider line and vacuum marker, annotation color
+    color = 'black'
+
+    # plot the divider lines
+    for co in line_co:
+        x, y = co
+        ax.plot(x, y, linestyle = 'dashed', linewidth = 4., color = color, alpha = 0.5)
+
+    # plot the vacuum markers and annotation
+    for vacuum_xy, vacuum_label, text_pos, in zip(vacuum_pos, vacuum_labels, vacuum_anno_pos):
+        ax.add_patch(Circle(vacuum_xy, radius = width, 
+                    fill = False, linewidth = 2, alpha = 0.8, color = color))
+        #ax.annotate(vacuum_label, text_pos, fontsize = 18, alpha = 1., color = color)
+
+    # create legend for vacuum position and add to plot
+    vacuum_legend_handle = [Circle((0.,0.), radius = 0.9, fill = False, color = color, alpha = 1.)]
+    vacuum_legend_label = ['vacuum position']
+    vacuum_legend = ax.legend(vacuum_legend_handle, vacuum_legend_label, loc = 'upper left', fontsize = 'small')
+    if len(vacuum_pos) != 0:
+        ax.add_artist(vacuum_legend)
+
 # To plot the ADC graphs from a pandas dataFrame containing the data
 # # df: pandas DataFrame with the data
 # figdir: the output directory for the plots
@@ -414,7 +562,8 @@ def plot_hexmaps(df, figdir = "./", hb_type = "LD", label = None, module = "modu
             else: cb.set_label(label = "Heights [mm]", size='large')
 
             # annotate chip positions on plot
-            ad_chip_geo(ax, hb_type = hb_type)
+            if args.testType == "PCBFlatness": ad_vacuum_geo(ax, hb_type = hb_type)
+            else: ad_chip_geo(ax, hb_type = hb_type)
 
             # add the legend
             add_channel_legend(ax, hb_type = hb_type)
