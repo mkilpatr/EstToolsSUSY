@@ -4,3 +4,6 @@
 [submodule "hexmap"]
 	path = hexmap
 	url = ssh://git@gitlab.cern.ch:7999/mkilpatr/hexmap.git
+[submodule "FiducialsQC"]
+	path = FiducialsQC
+	url = git@github.com:mkilpatr/FiducialsQC.git
