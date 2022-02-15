@@ -68,6 +68,12 @@ samples = {
 'QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8': [20.35, 5445111, 30566]
 }
 
+nEvents = 20000
+MaxEvents = {
+  'train': nEvents,
+  'test': 2*nEvents,
+  'valid': 4.5*nEvents
+}
 totalEvents = 0
 totalXsec = 0.
 for key, listOfValues in samples.items():
@@ -78,8 +84,11 @@ for key, listOfValues in samples.items():
 
 if not os.path.exists(args.saveDir):
     os.makedirs(args.saveDir)
+    os.makedirs(args.saveDir+"/train/")
+    os.makedirs(args.saveDir+"/test/")
+    os.makedirs(args.saveDir+"/valid/")
 
-def write_json(data):
+def write_json(fout, data):
     fout.write((json.dumps(data, sort_keys=False)+'\n').encode('utf-8'))
 
 def writeTot_json(data):
@@ -95,22 +104,23 @@ def fileName(fname):
     n = fname.replace(p.group(), '').replace(g + "_", '')
     return n
 
-def open_json(jsonfilename, fname, maxEvents, isFirst):
+def open_json(ftrain, ftest, fvalid, jsonfilename, fname, maxEvents):
     if gz_size(jsonfilename):
         eventList = samples[fileName(fname)]
         eventFrac, xsecFrac = float((eventList[1] - eventList[2])/totalEvents), float(eventList[0]/totalXsec)
         with gzip.open(jsonfilename,'r') as fin:        
             for line in fin:        
                 if line == "\n": continue
-                write_json(json.loads(line))
+                if maxEvents < MaxEvents["train"]: write_json(ftrain, json.loads(line))
+                elif maxEvents >= MaxEvents["train"] and maxEvents < MaxEvents["test"]: write_json(ftest, json.loads(line))
+                elif maxEvents >= MaxEvents["test"] and maxEvents < MaxEvents["valid"]: write_json(fvalid, json.loads(line))
+                else: break
+
                 if any(x in jsonfilename for x in ['dyll', 'diboson', 'wjets', 'qcd']):
                     if maxEvents/totalEvents < eventFrac and maxEvents/totalEvents < xsecFrac:
                         writeTot_json(json.loads(line))
-                    #elif isFirst:
-                    #    isFirst = False
-                    #    print("Event Limit reached on file {0} --> loaded a total of {1} events for total frac of {2} and total cross sec frac of {3}".format(fname, maxEvents, eventFrac, xsecFrac))
-                    maxEvents+=1
-    return maxEvents, fileName(fname), isFirst
+                maxEvents+=1
+    return maxEvents, fileName(fname)
 
 for type in ['genHiggs']:
     ftot = gzip.open(args.saveDir + "/" + type + "_bkg.json.gz", 'w')
@@ -125,15 +135,15 @@ for type in ['genHiggs']:
                     onlyFiles.append(sd)
                 elif type not in sd and 'gen' not in type:
                     onlyFiles.append(sd)
-        fout = gzip.open(args.saveDir + "/" + type + "_" + d + ".json.gz", 'w')
-
+    
+        ftrain = gzip.open(args.saveDir + "/train/" + type + "_" + d + ".json.gz", 'w')
+        ftest = gzip.open(args.saveDir + "/test/" + type + "_" + d + ".json.gz", 'w')
+        fvalid = gzip.open(args.saveDir + "/valid/" + type + "_" + d + ".json.gz", 'w')
         if(len(onlyFiles) > 0): print(eosDir + d + "/" + onlyFiles[0])
         maxEvents = 0
         name = ''
-        isFirst = True
         for idx, sd in enumerate(onlyFiles):
-            if name not in sd: 
+            buff = fileName(sd)
+            if name != buff:
                 maxEvents = 0
-                isFirst = True
-            maxEvents, name, isFirst = open_json(eosDir + d + "/" + sd, sd, maxEvents, isFirst)
-
+            maxEvents, name = open_json(ftrain, ftest, fvalid, eosDir + d + "/" + sd, sd, maxEvents)

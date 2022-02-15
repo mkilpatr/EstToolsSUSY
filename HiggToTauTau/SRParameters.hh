@@ -8,12 +8,12 @@ namespace EstTools{
 
 const TString inputdir = "root://cmseos.fnal.gov//eos/uscms/store/user/mkilpatr/13TeV";
 const TString inputdir_local = "/uscms/home/mkilpatr/nobackup/CMSSW_10_2_22/src/PhysicsTools/NanoSUSYTools/python/processors";
-const TString inputdir_2018 = "nanoaod_2018_diHiggs_09Dec21_LundVar/";
+const TString inputdir_2018 = "nanoaod_2018_diHiggs_21Dec21_LundVar/";
 //const TString inputdir_2018 = "";
 
 const TString outputdir = ".";
 
-const TString datadir = "nanoaod_2018_diHiggs_09Dec21_LundVar/";
+const TString datadir = "nanoaod_2018_diHiggs_21Dec21_LundVar/";
 
 TString lumistr = "59.699489";
 
@@ -219,7 +219,7 @@ BaseConfig sigConfig(){
   config.header = "#sqrt{s} = 13 TeV, "+lumistr+" fb^{-1}";
 
   //signal
-  config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau", "(1/12)*"+wgtvar,  datasel);
+  config.addSample("ggHHto2b2tau",     "gg#rightarrowHH#rightarrowbb#tau#tau",   inputdir_2018+"ggHHto2b2tau_SM", wgtvar,  datasel);
   config.addSample("ggHto2tau",        "gg#rightarrowH#rightarrow#tau#tau",      inputdir_2018+"ggHto2tau",    wgtvar,  datasel);
   config.addSample("vbfHto2tau",       "VBF#rightarrowH#rightarrow#tau#tau",     inputdir_2018+"vbfHto2tau",   wgtvar,  datasel);
   //background
