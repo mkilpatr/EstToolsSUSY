@@ -253,7 +253,9 @@ TH1* getIntegratedHist(const TH1* h, bool useGreaterThan = true, bool useUnderfl
   if (useUnderflow) addUnderflow(htmp);
   if (useOverflow) addOverflow(htmp);
 
-  TH1 *hist = (TH1 *)htmp->Clone(TString(h->GetName())+"_integrate");
+  TString direction = useGreaterThan ? "_backward" : "_forward";
+
+  TH1 *hist = (TH1 *)htmp->Clone(TString(h->GetName())+"_integrate" + direction);
   double integral, error;
 
   int nbins = hist->GetNbinsX();
